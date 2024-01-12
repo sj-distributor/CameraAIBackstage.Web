@@ -181,6 +181,7 @@ export const EquipmentList = () => {
             colorPrimaryHover: "#5168e3",
             defaultBorderColor: "#2853E3",
             defaultColor: "#2853E3",
+            linkHoverBg: "#F0F4FF",
           },
         },
       }}
