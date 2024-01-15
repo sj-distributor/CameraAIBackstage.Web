@@ -81,7 +81,7 @@ export const Home = () => {
     {
       label: (
         <div
-          className="LogOutIcon flex items-center hover:text-[#2853e3]"
+          className="flex items-center hover:text-[#2853e3]"
           onMouseEnter={() => setIsHover({ ...isHover, updatePassword: true })}
           onMouseLeave={() => setIsHover({ ...isHover, updatePassword: false })}
         >
