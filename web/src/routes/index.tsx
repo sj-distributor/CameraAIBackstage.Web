@@ -14,13 +14,7 @@ import { PortraitList } from "@/pages/system/portrait-list";
 import { UserList } from "@/pages/user/user-lilst";
 import { UserPermissions } from "@/pages/user/user-permissions";
 import { MonitorIcon, SystemIcon } from "@/routes/props";
-export interface IRouterListProps {
-  path: string;
-  element: JSX.Element;
-  name?: string;
-  icon?: JSX.Element;
-  children?: IRouterListProps[];
-}
+import { IRouterListProps } from "@/services/dtos/routes";
 
 export const routerList: IRouterListProps[] = [
   {
@@ -34,7 +28,7 @@ export const routerList: IRouterListProps[] = [
       {
         path: "/user/permissions",
         element: <UserPermissions />,
-        name: "用戶管理",
+        name: "用戶權限",
       },
     ],
   },
