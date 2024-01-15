@@ -63,3 +63,47 @@ code {
 .custom-device-modal .ant-modal-body {
   padding: 24px 24px 24px 24px;
 }
+
+.menuStyle .ant-menu-submenu .ant-menu-submenu-title {
+  color: #9d9fb0 !important;
+  font-weight: 500 !important;
+}
+
+.menuStyle .ant-menu-submenu-selected .ant-menu-submenu-title {
+  color: #323444 !important;
+  font-weight: 600 !important;
+}
+
+.menuStyle .ant-menu-item {
+  padding-left: 2.625rem !important;
+  margin: 0 0.25rem;
+}
+
+.menuStyle .ant-menu-item-selected {
+  background: #fff;
+}
+
+.menuStyle .ant-menu-sub {
+  background: #fff !important;
+}
+
+.menuStyle .ant-menu-item .ant-menu-title-content {
+  padding-left: 1.8125rem;
+  border-left: 0.125rem solid #f7f7fc;
+}
+
+.menuStyle > .ant-menu-item:nth-child(3) {
+  padding-left: 1.5rem !important;
+  color: #9d9fb0 !important;
+  font-weight: 500 !important;
+}
+
+.menuStyle > .ant-menu-item-selected:nth-child(3) {
+  color: #323444 !important;
+  font-weight: 600 !important;
+}
+
+.menuStyle > .ant-menu-item:nth-child(3) .ant-menu-title-content {
+  padding-left: 0;
+  border-left: none;
+}
