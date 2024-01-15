@@ -1,11 +1,12 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import { MonitorIcon, SystemIcon } from "@/assets/sider";
 import { AuthStatus } from "@/hooks/auth-status";
 import { EquipmentList } from "@/pages/equipment/equipment-list";
 import { EquipmentType } from "@/pages/equipment/equipment-type";
 import { Home } from "@/pages/home/index";
 import { Login } from "@/pages/login";
-import { Main } from "@/pages/main";
+import { Container } from "@/pages/main";
 import { Monitor } from "@/pages/monitor";
 import { AreaManagement } from "@/pages/system/area-management";
 import { LicensePlateManagement } from "@/pages/system/license-plate-management";
@@ -13,13 +14,12 @@ import { OperationLog } from "@/pages/system/operation-log";
 import { PortraitList } from "@/pages/system/portrait-list";
 import { UserList } from "@/pages/user/user-lilst";
 import { UserPermissions } from "@/pages/user/user-permissions";
-import { MonitorIcon, SystemIcon } from "@/routes/props";
 import { IRouterList } from "@/services/dtos/routes";
 
 export const routerList: IRouterList[] = [
   {
     path: "/user",
-    element: <Main />,
+    element: <Container />,
     name: "用戶管理",
     icon: <MonitorIcon path="/user" />,
     children: [
@@ -34,7 +34,7 @@ export const routerList: IRouterList[] = [
   },
   {
     path: "/equipment",
-    element: <Main />,
+    element: <Container />,
     name: "設備管理",
     icon: <MonitorIcon path="/equipment" />,
     children: [
@@ -59,7 +59,7 @@ export const routerList: IRouterList[] = [
   },
   {
     path: "/system",
-    element: <Main />,
+    element: <Container />,
     name: "系統管理",
     icon: <SystemIcon path="/system" />,
     children: [

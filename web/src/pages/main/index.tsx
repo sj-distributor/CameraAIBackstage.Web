@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-export const Main = () => {
+export const Container = () => {
   return (
     <div>
       <Outlet />

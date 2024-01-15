@@ -2,14 +2,15 @@ import { Dropdown, Layout, Menu, MenuProps } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { SubMenuType } from "antd/es/menu/hooks/useItems";
-import { useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
+import { KeyIcon, LogOutIcon } from "@/assets/top-menu";
 import { routerList } from "@/routes";
 
 import arrow from "../../assets/public/arrow.png";
 import avatar from "../../assets/public/avatar.png";
 import language from "../../assets/public/language.png";
-import { Main } from "../main";
+import { useAction } from "./hook";
 const headerStyle: React.CSSProperties = {
   height: "4rem",
   backgroundColor: "white",
@@ -74,20 +75,37 @@ const getMenu = () => {
 };
 
 export const Home = () => {
-  const navigate = useNavigate();
+  const { isHover, navigate, setIsHover } = useAction();
 
   const items: MenuProps["items"] = [
     {
       label: (
-        <a
+        <div
+          className="LogOutIcon flex items-center hover:text-[#2853e3]"
+          onMouseEnter={() => setIsHover({ ...isHover, updatePassword: true })}
+          onMouseLeave={() => setIsHover({ ...isHover, updatePassword: false })}
+        >
+          <KeyIcon isHover={isHover.updatePassword} />
+          <div className="ml-[.5rem]">修改密碼</div>
+        </div>
+      ),
+      key: "0",
+    },
+    {
+      label: (
+        <div
+          className="flex items-center hover:text-[#2853e3]"
+          onMouseEnter={() => setIsHover({ ...isHover, logOut: true })}
+          onMouseLeave={() => setIsHover({ ...isHover, logOut: false })}
           onClick={() => {
             navigate("login");
           }}
         >
-          登出
-        </a>
+          <LogOutIcon isHover={isHover.logOut} />
+          <div className="ml-[.5rem]">退出登錄</div>
+        </div>
       ),
-      key: "0",
+      key: "1",
     },
   ];
 
@@ -111,20 +129,24 @@ export const Home = () => {
             <img src={language} className="mr-[.375rem]" />
             中文
           </div>
-          <div className="flex justify-center items-center mr-[2rem]">
-            <img src={avatar} className="mr-[.375rem]" />
-            Janny.K
-          </div>
-          <Dropdown menu={{ items }} trigger={["click"]} placement="bottom">
-            <a
-              onClick={(e) => e.preventDefault()}
-              className="block h-[100%] pt-[1.8125rem]"
-            >
-              <img src={arrow} />
-            </a>
+          <Dropdown
+            menu={{ items }}
+            trigger={["click"]}
+            placement="bottom"
+            rootClassName="dropDownMenu"
+          >
+            <div className="flex items-center">
+              <div className="flex justify-center items-center mr-[2rem]">
+                <img src={avatar} className="mr-[.375rem]" />
+                Janny.K
+              </div>
+              <a onClick={(e) => e.preventDefault()}>
+                <img src={arrow} />
+              </a>
+            </div>
           </Dropdown>
         </Header>
-        <Main />
+        <Outlet />
       </Layout>
     </Layout>
   );
