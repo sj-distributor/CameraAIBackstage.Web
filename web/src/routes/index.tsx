@@ -14,9 +14,9 @@ import { PortraitList } from "@/pages/system/portrait-list";
 import { UserList } from "@/pages/user/user-lilst";
 import { UserPermissions } from "@/pages/user/user-permissions";
 import { MonitorIcon, SystemIcon } from "@/routes/props";
-import { IRouterListProps } from "@/services/dtos/routes";
+import { IRouterList } from "@/services/dtos/routes";
 
-export const routerList: IRouterListProps[] = [
+export const routerList: IRouterList[] = [
   {
     path: "/user",
     element: <Main />,
@@ -63,24 +63,24 @@ export const routerList: IRouterListProps[] = [
     name: "系統管理",
     icon: <SystemIcon path="/system" />,
     children: [
-      { path: "", element: <Navigate to={"/system/portraitList"} /> },
+      { path: "", element: <Navigate to={"/system/portrait"} /> },
       {
-        path: "/system/portraitList",
+        path: "/system/portrait",
         element: <PortraitList />,
         name: "人像列表",
       },
       {
-        path: "/system/licensePlateManagement",
+        path: "/system/license",
         element: <LicensePlateManagement />,
         name: "車牌管理",
       },
       {
-        path: "/system/areaManagement",
+        path: "/system/area",
         element: <AreaManagement />,
         name: "區域管理",
       },
       {
-        path: "/system/operationLog",
+        path: "/system/log",
         element: <OperationLog />,
         name: "操作日誌",
       },

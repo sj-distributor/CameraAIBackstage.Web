@@ -11,7 +11,7 @@ import avatar from "../../assets/public/avatar.png";
 import language from "../../assets/public/language.png";
 import { Main } from "../main";
 const headerStyle: React.CSSProperties = {
-  height: 64,
+  height: "4rem",
   backgroundColor: "white",
   display: "flex",
   justifyContent: "flex-end",
@@ -33,13 +33,13 @@ const siderHeaderStyle: React.CSSProperties = {
   textAlign: "center",
   backgroundColor: "white",
   color: "#2853E3",
-  fontSize: 16,
+  fontSize: "1rem",
   padding: 0,
   fontWeight: 600,
   borderRight: ".0625rem solid #F6F8FC",
   borderBottom: ".0625rem solid #F6F8FC",
   boxSizing: "border-box",
-  marginBottom: 20,
+  marginBottom: "1.25rem",
 };
 
 type MenuItem = Required<MenuProps>["items"][number];
