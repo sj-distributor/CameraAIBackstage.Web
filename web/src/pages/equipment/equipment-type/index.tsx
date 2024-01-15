@@ -98,7 +98,7 @@ export const EquipmentType = () => {
               onClick={() => setIsAddTypeOpen(true)}
             >
               <PlusOutlined className="pr-[8px]" />
-              添加設備
+              添加類型
             </Button>
           </div>
           <Table
