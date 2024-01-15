@@ -86,7 +86,7 @@ export const EquipmentType = () => {
         },
       }}
     >
-      <div className="h-full w-full p-[24px]">
+      <div>
         <div className="bg-white h-[calc(100vh-80px)] w-full flex-col justify-start p-[24px] overflow-scroll no-scrollbar">
           <span className="text-[18px] font-semibold tracking-tight">
             設備列表
