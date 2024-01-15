@@ -3,7 +3,7 @@ import { useState } from "react";
 import { IDeviceTypeDataType } from "./props";
 
 export const useAction = () => {
-  const [isAddTypeOpen, setIsAddTypeOpen] = useState(false);
+  const [isAddTypeOpen, setIsAddTypeOpen] = useState<boolean>(false);
 
   const [isDeleteDeviceOpen, setIsDeleteDeviceOpen] = useState<boolean>(false);
 
