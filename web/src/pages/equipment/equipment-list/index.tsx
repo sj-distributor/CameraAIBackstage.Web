@@ -102,7 +102,7 @@ export const EquipmentList = () => {
                 newList[index].whetherToBind = value;
                 setData(newList);
               }}
-              className="w-[50px] text-[10px] custom-switch"
+              className="w-[50px] text-[10px] customSwitch"
             />
           </Tooltip>
         );
@@ -275,7 +275,7 @@ export const EquipmentList = () => {
           setIsUnbindOpen(false);
         }}
         open={isUnbindOpen}
-        className={"custom-modal"}
+        className={"customModal"}
       >
         <span className="pl-[32px]">請確認是否解除綁定？</span>
       </CustomModal>
@@ -292,7 +292,7 @@ export const EquipmentList = () => {
           setIsDeleteDeviceOpen(false);
         }}
         open={isDeleteDeviceOpen}
-        className={"custom-modal"}
+        className={"customModal"}
       >
         <span className="pl-[32px]">請確認是否刪除設備？</span>
       </CustomModal>
@@ -302,7 +302,7 @@ export const EquipmentList = () => {
         onCancle={() => setIsBindingOpen(false)}
         onConfirm={() => setIsBindingOpen(false)}
         open={isBindingOpen}
-        className={"custom-device-modal"}
+        className={"customDeviceModal"}
         modalWidth={"960px"}
       >
         <Table
@@ -320,7 +320,7 @@ export const EquipmentList = () => {
         onCancle={() => setIsAddDeviceOpen(false)}
         onConfirm={() => setIsAddDeviceOpen(false)}
         open={isAddDeviceOpen}
-        className={"custom-device-modal"}
+        className={"customDeviceModal"}
         modalWidth={"680px"}
       >
         <Form colon={false}>

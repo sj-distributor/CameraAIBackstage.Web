@@ -31,39 +31,6 @@ code {
     monospace;
 }
 
-.custom-switch .ant-switch-inner {
-  padding-inline-start: 0px !important;
-  padding-inline-end: 17px !important;
-}
-
-.tableHiddenScrollBar .ant-table-body::-webkit-scrollbar {
-  display: none;
-}
-
-.tableHiddenScrollBar .ant-table-body {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.custom-modal .ant-modal-content,
-.custom-device-modal .ant-modal-content {
-  padding: 0;
-}
-
-.custom-modal .ant-modal-header {
-  padding: 24px 0 0 24px;
-}
-
-.custom-device-modal .ant-modal-header {
-  padding: 24px 0 24px 24px;
-  border-bottom: 1px solid #e7e8ee;
-}
-
-.custom-modal .ant-modal-body,
-.custom-device-modal .ant-modal-body {
-  padding: 24px 24px 24px 24px;
-}
-
 .menuStyle .ant-menu-submenu .ant-menu-submenu-title {
   color: #9d9fb0 !important;
   font-weight: 500 !important;
@@ -106,4 +73,37 @@ code {
 .menuStyle > .ant-menu-item:nth-child(3) .ant-menu-title-content {
   padding-left: 0;
   border-left: none;
+}
+
+.tableHiddenScrollBar .ant-table-body::-webkit-scrollbar {
+  display: none;
+}
+
+.tableHiddenScrollBar .ant-table-body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.customSwitch .ant-switch-inner {
+  padding-inline-start: 0px !important;
+  padding-inline-end: 17px !important;
+}
+
+.customModal .ant-modal-content,
+.customDeviceModal .ant-modal-content {
+  padding: 0;
+}
+
+.customModal .ant-modal-header {
+  padding: 24px 0 0 24px;
+}
+
+.customDeviceModal .ant-modal-header {
+  padding: 24px 0 24px 24px;
+  border-bottom: 1px solid #e7e8ee;
+}
+
+.customModal .ant-modal-body,
+.customDeviceModal .ant-modal-body {
+  padding: 24px 24px 24px 24px;
 }

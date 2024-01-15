@@ -134,7 +134,7 @@ export const EquipmentType = () => {
         onCancle={() => setIsAddTypeOpen(false)}
         onConfirm={() => setIsAddTypeOpen(false)}
         open={isAddTypeOpen}
-        className={"custom-device-modal"}
+        className={"customDeviceModal"}
         modalWidth={"680px"}
       >
         <Form colon={false}>
@@ -163,7 +163,7 @@ export const EquipmentType = () => {
         onCancle={() => setIsModifyOpen(false)}
         onConfirm={() => setIsModifyOpen(false)}
         open={isModifyOpen}
-        className={"custom-device-modal"}
+        className={"customDeviceModal"}
         modalWidth={"680px"}
       >
         <Form colon={false}>
@@ -199,7 +199,7 @@ export const EquipmentType = () => {
           setIsDeleteDeviceOpen(false);
         }}
         open={isDeleteDeviceOpen}
-        className={"custom-modal"}
+        className={"customModal"}
       >
         <span className="pl-[32px]">請確認是否刪除類型？</span>
       </CustomModal>
