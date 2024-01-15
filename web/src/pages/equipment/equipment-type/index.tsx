@@ -25,34 +25,34 @@ export const EquipmentType = () => {
     {
       title: "設備類型ID",
       dataIndex: "deviceTypeId",
-      width: "238px",
+      width: "14.875rem",
     },
     {
       title: "設備類型",
       dataIndex: "deviceType",
-      width: "242px",
+      width: "15.125rem",
     },
     {
       title: "備註信息",
       dataIndex: "deviceInformation",
-      width: "791px",
+      width: "49.4375rem",
     },
     {
       title: "操作",
       dataIndex: "operate",
-      width: "345px",
+      width: "21.5625rem",
       render: (_, record, index) => (
         <div>
           <Button
             type="link"
-            className="w-[96px]"
+            className="w-[6rem]"
             onClick={() => setIsModifyOpen(true)}
           >
             編輯
           </Button>
           <Button
             type="link"
-            className="w-[96px]"
+            className="w-[6rem]"
             onClick={() => {
               setIsDeleteIndex(index);
               setIsDeleteDeviceOpen(true);
@@ -87,17 +87,17 @@ export const EquipmentType = () => {
       }}
     >
       <div>
-        <div className="bg-white h-[calc(100vh-80px)] w-full flex-col justify-start p-[24px] overflow-scroll no-scrollbar">
-          <span className="text-[18px] font-semibold tracking-tight">
+        <div className="bg-white h-[calc(100vh-5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
+          <span className="text-[1.125rem] font-semibold tracking-tight">
             設備列表
           </span>
-          <div className="flex flex-row pt-[26px] justify-end">
+          <div className="flex flex-row pt-[1.625rem] justify-end">
             <Button
               type="primary"
-              className="h-[44px] w-[116px]"
+              className="h-[2.75rem] w-[7.25rem]"
               onClick={() => setIsAddTypeOpen(true)}
             >
-              <PlusOutlined className="pr-[8px]" />
+              <PlusOutlined className="pr-[.5rem]" />
               添加類型
             </Button>
           </div>
@@ -105,12 +105,12 @@ export const EquipmentType = () => {
             rowKey={(record) => record.deviceTypeId}
             columns={columns}
             dataSource={data}
-            className="pt-[18px] tableHiddenScrollBar"
+            className="pt-[1.125rem] tableHiddenScrollBar"
             scroll={{ y: 580 }}
             pagination={false}
           />
-          <div className="flex justify-between items-center pt-[1rem]">
-            <div className="text-[#929292] text-[14px]">
+          <div className="flex justify-between items-center pt-[16px]">
+            <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
               共{" "}
               <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
               條
@@ -124,6 +124,7 @@ export const EquipmentType = () => {
                 showQuickJumper
                 showSizeChanger
                 onChange={() => {}}
+                className="flex flex-wrap justify-center"
               />
             </div>
           </div>
@@ -135,7 +136,7 @@ export const EquipmentType = () => {
         onConfirm={() => setIsAddTypeOpen(false)}
         open={isAddTypeOpen}
         className={"customDeviceModal"}
-        modalWidth={"680px"}
+        modalWidth={"42.5rem"}
       >
         <Form colon={false}>
           <FormItem
@@ -164,7 +165,7 @@ export const EquipmentType = () => {
         onConfirm={() => setIsModifyOpen(false)}
         open={isModifyOpen}
         className={"customDeviceModal"}
-        modalWidth={"680px"}
+        modalWidth={"42.5rem"}
       >
         <Form colon={false}>
           <FormItem
@@ -190,7 +191,7 @@ export const EquipmentType = () => {
       <CustomModal
         title={
           <div>
-            <WarningFilled className="text-[#ED940F] pr-[10px]" />
+            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
             操作確認
           </div>
         }
@@ -201,7 +202,7 @@ export const EquipmentType = () => {
         open={isDeleteDeviceOpen}
         className={"customModal"}
       >
-        <span className="pl-[32px]">請確認是否刪除類型？</span>
+        <span className="pl-[2rem]">請確認是否刪除類型？</span>
       </CustomModal>
     </ConfigProvider>
   );

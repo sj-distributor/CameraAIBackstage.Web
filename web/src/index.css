@@ -85,8 +85,8 @@ code {
 }
 
 .customSwitch .ant-switch-inner {
-  padding-inline-start: 0px !important;
-  padding-inline-end: 17px !important;
+  padding-inline-start: 0rem !important;
+  padding-inline-end: 1.0625rem !important;
 }
 
 .customModal .ant-modal-content,
@@ -95,15 +95,24 @@ code {
 }
 
 .customModal .ant-modal-header {
-  padding: 24px 0 0 24px;
+  padding: 1.5rem 0 0 1.5rem;
 }
 
 .customDeviceModal .ant-modal-header {
-  padding: 24px 0 24px 24px;
-  border-bottom: 1px solid #e7e8ee;
+  padding: 1.5rem 0 1.5rem 1.5rem;
+  border-bottom: 0.0625rem solid #e7e8ee;
 }
 
 .customModal .ant-modal-body,
 .customDeviceModal .ant-modal-body {
-  padding: 24px 24px 24px 24px;
+  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+}
+
+.ant-modal-wrap {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.ant-modal-wrap::-webkit-scrollbar {
+  display: none;
 }

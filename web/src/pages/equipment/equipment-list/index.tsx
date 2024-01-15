@@ -54,13 +54,13 @@ export const EquipmentList = () => {
         <div>
           {record ? (
             <div className="flex flex-row items-center">
-              <div className="bg-[#34A46E] w-[6px] h-[6px] rounded-full mr-[8px]" />
+              <div className="bg-[#34A46E] w-[.375rem] h-[.375rem] rounded-full mr-[.5rem]" />
               <span>在線</span>
             </div>
           ) : (
             <div className="flex flex-row items-center">
-              <div className="bg-[#F04E4E] w-[6px] h-[6px] rounded-full mr-[8px]" />
-              <span>離線</span>
+              <div className="bg-[#F04E4E] min-w-[.375rem] max-w-[.375rem] h-[.375rem] rounded-full mr-[.5rem]" />
+              <span className="whitespace-nowrap">離線</span>
             </div>
           )}
         </div>
@@ -102,7 +102,7 @@ export const EquipmentList = () => {
                 newList[index].whetherToBind = value;
                 setData(newList);
               }}
-              className="w-[50px] text-[10px] customSwitch"
+              className="w-[3.125rem] text-[.625rem] customSwitch"
             />
           </Tooltip>
         );
@@ -116,14 +116,14 @@ export const EquipmentList = () => {
         <div>
           <Button
             type="link"
-            className="w-[96px]"
+            className="w-[6rem]"
             onClick={() => setIsBindingOpen(true)}
           >
             編輯
           </Button>
           <Button
             type="link"
-            className="w-[96px]"
+            className="w-[6rem]"
             onClick={() => {
               setIsDeleteIndex(index);
               setIsDeleteDeviceOpen(true);
@@ -140,28 +140,28 @@ export const EquipmentList = () => {
     {
       title: "",
       dataIndex: "radio",
-      width: "58px",
+      width: "3.625rem",
       render: () => <Radio />,
     },
     {
       title: "區域ID",
       dataIndex: "areaId",
-      width: "152px",
+      width: "9.5rem",
     },
     {
       title: "區域名稱",
       dataIndex: "areaName",
-      width: "152px",
+      width: "9.5rem",
     },
     {
       title: "區域地址",
       dataIndex: "areaAddress",
-      width: "398px",
+      width: "24.875rem",
     },
     {
       title: "負責人",
       dataIndex: "person",
-      width: "152px",
+      width: "9.5rem",
     },
   ];
 
@@ -187,19 +187,19 @@ export const EquipmentList = () => {
       }}
     >
       <div>
-        <div className="bg-white h-[calc(100vh-80px)] w-full flex-col justify-start p-[24px] overflow-scroll no-scrollbar">
-          <span className="text-[18px] font-semibold tracking-tight">
+        <div className="bg-white h-[calc(100vh-5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
+          <span className="text-[1.125rem] font-semibold tracking-tight">
             設備列表
           </span>
-          <div className="flex flex-row pt-[26px] justify-between">
+          <div className="flex flex-row pt-[1.625rem] justify-between">
             <div>
               <Input
-                className="w-[280px]"
+                className="w-[17.5rem]"
                 suffix={<img src={search} />}
                 placeholder="搜索設備ID、設備類型、設備名稱"
               />
               <Select
-                className="mx-[16px] w-[216px]"
+                className="mx-[1rem] w-[13.5rem]"
                 placeholder="是否在線"
                 defaultActiveFirstOption
                 options={[
@@ -210,7 +210,7 @@ export const EquipmentList = () => {
                 suffixIcon={<img src={down} />}
               />
               <Select
-                className="w-[216px]"
+                className="w-[13.5rem]"
                 placeholder="是否確定"
                 defaultActiveFirstOption
                 options={[
@@ -223,10 +223,10 @@ export const EquipmentList = () => {
             </div>
             <Button
               type="primary"
-              className="h-[44px] w-[116px]"
+              className="h-[2.75rem] w-[7.25rem]"
               onClick={() => setIsAddDeviceOpen(true)}
             >
-              <PlusOutlined className="pr-[8px]" />
+              <PlusOutlined className="pr-[.5rem]" />
               添加設備
             </Button>
           </div>
@@ -234,12 +234,12 @@ export const EquipmentList = () => {
             rowKey={(record) => record.deviceId}
             columns={columns}
             dataSource={data}
-            className="pt-[18px] tableHiddenScrollBar"
+            className="pt-[1.125rem] tableHiddenScrollBar"
             scroll={{ y: 580 }}
             pagination={false}
           />
-          <div className="flex justify-between items-center pt-[1rem]">
-            <div className="text-[#929292] text-[14px]">
+          <div className="flex justify-between items-center pt-[16px]">
+            <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
               共{" "}
               <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
               條
@@ -253,6 +253,7 @@ export const EquipmentList = () => {
                 showQuickJumper
                 showSizeChanger
                 onChange={() => {}}
+                className="flex flex-wrap justify-center"
               />
             </div>
           </div>
@@ -262,7 +263,7 @@ export const EquipmentList = () => {
       <CustomModal
         title={
           <div>
-            <WarningFilled className="text-[#ED940F] pr-[10px]" />
+            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
             操作確認
           </div>
         }
@@ -277,13 +278,13 @@ export const EquipmentList = () => {
         open={isUnbindOpen}
         className={"customModal"}
       >
-        <span className="pl-[32px]">請確認是否解除綁定？</span>
+        <span className="pl-[2rem]">請確認是否解除綁定？</span>
       </CustomModal>
 
       <CustomModal
         title={
           <div>
-            <WarningFilled className="text-[#ED940F] pr-[10px]" />
+            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
             操作確認
           </div>
         }
@@ -294,7 +295,7 @@ export const EquipmentList = () => {
         open={isDeleteDeviceOpen}
         className={"customModal"}
       >
-        <span className="pl-[32px]">請確認是否刪除設備？</span>
+        <span className="pl-[2rem]">請確認是否刪除設備？</span>
       </CustomModal>
 
       <CustomModal
@@ -303,7 +304,7 @@ export const EquipmentList = () => {
         onConfirm={() => setIsBindingOpen(false)}
         open={isBindingOpen}
         className={"customDeviceModal"}
-        modalWidth={"960px"}
+        modalWidth={"60rem"}
       >
         <Table
           rowKey={(record) => record.areaId}
@@ -321,7 +322,7 @@ export const EquipmentList = () => {
         onConfirm={() => setIsAddDeviceOpen(false)}
         open={isAddDeviceOpen}
         className={"customDeviceModal"}
-        modalWidth={"680px"}
+        modalWidth={"42.5rem"}
       >
         <Form colon={false}>
           <FormItem
