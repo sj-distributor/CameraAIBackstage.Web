@@ -23,6 +23,7 @@ const headerStyle: React.CSSProperties = {
 const siderStyle: React.CSSProperties = {
   backgroundColor: "white",
   justifyContent: "center",
+  zIndex: 10,
 };
 
 const layoutStyle = {

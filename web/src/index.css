@@ -59,3 +59,23 @@ code {
   padding-left: 0;
   border-left: none;
 }
+
+.custom-switch .ant-switch-inner {
+  padding-inline-start: 0rem !important;
+  padding-inline-end: 1.0625rem !important;
+}
+
+.custom-scollbar::-webkit-scrollbar-thumb {
+  border-radius: 0.625rem;
+  background-color: #d7d7e2;
+}
+
+.custom-scollbar::-webkit-scrollbar {
+  width: 0.75rem;
+  background-color: #fafafb;
+}
+
+.custom-scollbar::-webkit-scrollbar-track {
+  border-radius: 0.625rem;
+  background-color: #fafafb;
+}
