@@ -59,7 +59,7 @@ export const AddOrUpdateConfiguration = () => {
         <div className="bg-white h-[calc(100vh-3.25rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] text-[#5F6279]">監測管理 </span>
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            / {type === IMonitorConfigurationType.Update ? "修改" : "新增"}
+            / {type === IMonitorConfigurationType.Update ? "修改" : "新增"}配置
           </span>
           <div className="mx-[15.5625rem] my-[1rem] h-[calc(100%-7.2rem)]">
             <Form
