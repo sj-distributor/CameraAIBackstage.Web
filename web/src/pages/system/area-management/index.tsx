@@ -73,63 +73,63 @@ export const AreaManagement = () => {
 
   return (
     <div className="bg-white h-full w-full">
-      <div>
-        <div className="bg-white h-[calc(100vh-80px)] w-full flex-col justify-start p-[24px] overflow-scroll no-scrollbar">
-          <span className="text-[1.125rem] font-semibold tracking-tight">
-            區域管理
-          </span>
-          <div className="mt-[1.5rem] mb-[1.125rem] h-[2.5rem] flex justify-between">
-            <Input
-              className="w-[17.5rem] h-[2.2rem]"
-              placeholder="搜索區域ID、區域地址"
-              suffix={
-                <SearchOutlined
-                  style={{
-                    color: "#5F6279",
-                    fontSize: "1.1rem",
-                    fontWeight: "700",
-                  }}
-                />
-              }
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-            />
-            <Button
-              type="primary"
-              className="w-[5.5rem] h-[2.2rem] text-center"
-              onClick={() => setIsModalOpen(true)}
-            >
-              + 新增
-            </Button>
-          </div>
+      <div className="bg-white h-[calc(100vh-5rem)] w-full flex-col p-[1.5rem] overflow-scroll no-scrollbar">
+        <span className="text-[1.125rem] font-semibold tracking-tight">
+          區域管理
+        </span>
+        <div className="mt-[1.5rem] mb-[1.125rem] h-[2.5rem] flex justify-between">
+          <Input
+            className="w-[17.5rem] h-[2.2rem]"
+            placeholder="搜索區域ID、區域地址"
+            suffix={
+              <SearchOutlined
+                style={{
+                  color: "#5F6279",
+                  fontSize: "1.1rem",
+                  fontWeight: "700",
+                }}
+              />
+            }
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+          <Button
+            type="primary"
+            className="w-[5.5rem] h-[2.2rem] text-center"
+            onClick={() => setIsModalOpen(true)}
+          >
+            + 新增
+          </Button>
+        </div>
+        <div className="flex flex-col h-[calc(100%-6rem)] justify-between py-[1.125rem]">
           <Table
             columns={columns}
             dataSource={data}
             pagination={false}
             rowKey="areaId"
             loading={isTableLoading}
+            className="flex-1"
           />
+
           <div className="flex justify-between items-center pt-[1rem]">
-            <div className="text-[#929292] text-[.875rem]">
+            <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
               共
               <span className="text-[#2853E3] font-light mx-1">
                 {data.length}
               </span>
               條
             </div>
-            <div>
-              <Pagination
-                current={pageDto.pageIndex}
-                pageSize={pageDto.pageSize}
-                pageSizeOptions={[5, 10, 20]}
-                total={data.length}
-                showQuickJumper
-                showSizeChanger
-                onChange={(page, pageSize) =>
-                  setPageDto({ pageIndex: page, pageSize })
-                }
-              />
-            </div>
+            <Pagination
+              current={pageDto.pageIndex}
+              pageSize={pageDto.pageSize}
+              pageSizeOptions={[5, 10, 20]}
+              total={data.length}
+              showQuickJumper
+              showSizeChanger
+              onChange={(page, pageSize) =>
+                setPageDto({ pageIndex: page, pageSize })
+              }
+            />
           </div>
         </div>
       </div>
