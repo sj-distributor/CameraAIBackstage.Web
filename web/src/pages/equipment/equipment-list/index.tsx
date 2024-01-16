@@ -187,7 +187,7 @@ export const EquipmentList = () => {
       }}
     >
       <div>
-        <div className="bg-white h-[calc(100vh-5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
+        <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
             設備列表
           </span>
@@ -230,31 +230,33 @@ export const EquipmentList = () => {
               添加設備
             </Button>
           </div>
-          <Table
-            rowKey={(record) => record.deviceId}
-            columns={columns}
-            dataSource={data}
-            className="pt-[1.125rem] tableHiddenScrollBar"
-            scroll={{ y: 580 }}
-            pagination={false}
-          />
-          <div className="flex justify-between items-center pt-[16px]">
-            <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
-              共{" "}
-              <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
-              條
-            </div>
-            <div>
-              <Pagination
-                current={1}
-                pageSize={5}
-                pageSizeOptions={[5, 10, 20]}
-                total={data.length}
-                showQuickJumper
-                showSizeChanger
-                onChange={() => {}}
-                className="flex flex-wrap justify-center"
-              />
+          <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
+            <Table
+              rowKey={(record) => record.deviceId}
+              columns={columns}
+              dataSource={data}
+              className="tableHiddenScrollBar flex-1"
+              scroll={{ y: 510 }}
+              pagination={false}
+            />
+            <div className="flex justify-between items-center py-[1rem]">
+              <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
+                共{" "}
+                <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
+                條
+              </div>
+              <div>
+                <Pagination
+                  current={1}
+                  pageSize={5}
+                  pageSizeOptions={[5, 10, 20]}
+                  total={data.length}
+                  showQuickJumper
+                  showSizeChanger
+                  onChange={() => {}}
+                  className="flex flex-wrap justify-center"
+                />
+              </div>
             </div>
           </div>
         </div>
