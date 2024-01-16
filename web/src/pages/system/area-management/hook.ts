@@ -46,7 +46,7 @@ export const useAction = () => {
     pageSize: 5,
   });
 
-  const [inputFields, setInputFields] = useState([{ id: 1 }]);
+  const [inputFields, setInputFields] = useState<{ id: number }[]>([{ id: 1 }]);
 
   const handleAddInput = () => {
     setInputFields([...inputFields, { id: inputFields.length + 1 }]);

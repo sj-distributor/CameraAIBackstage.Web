@@ -80,9 +80,12 @@ export const useAction = () => {
   };
 
   const rangePresets: TimeRangePickerProps["presets"] = [
-    { label: "最近一週", value: [dayjs().add(-7, "d"), dayjs()] },
-    { label: "最近一個月", value: [dayjs().add(-30, "d"), dayjs()] },
-    { label: "最近三個月", value: [dayjs().add(-90, "d"), dayjs()] },
+    { label: "最近一週", value: [dayjs().subtract(7, "d"), dayjs()] },
+    {
+      label: "最近一個月",
+      value: [dayjs().subtract(1, "month"), dayjs()],
+    },
+    { label: "最近三個月", value: [dayjs().subtract(3, "month"), dayjs()] },
   ];
 
   return {
