@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, WarningFilled } from "@ant-design/icons";
 import {
   Button,
   ConfigProvider,
@@ -11,12 +11,20 @@ import {
 import { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 
-import down from "../../assets/public/down.png";
+import { CustomModal } from "@/components/custom-modal";
+
+import downArrow from "../../assets/public/down-arrow.png";
 import { useAction } from "./hook";
-import { IMonitorDataType } from "./props";
+import { IMonitorConfigurationType, IMonitorDataType } from "./props";
 
 export const Monitor = () => {
-  const { data } = useAction();
+  const {
+    data,
+    isDeleteOpen,
+    setIsDeleteOpen,
+    setIsDeleteIndex,
+    onChangeStatus,
+  } = useAction();
 
   const columns: ColumnsType<IMonitorDataType> = [
     {
@@ -39,14 +47,7 @@ export const Monitor = () => {
               unCheckedChildren=""
               value={record.condition}
               onChange={(value) => {
-                // const newList = clone(data);
-                // if (newList[index].whetherToBind && !value) {
-                //   setIsUnbindOpen(true);
-                //   setIsUnbindIndex(index);
-                //   return;
-                // }
-                // newList[index].whetherToBind = value;
-                // setData(newList);
+                onChangeStatus(index, value);
               }}
               className="w-[3.125rem] text-[.625rem] customSwitch"
             />
@@ -73,7 +74,14 @@ export const Monitor = () => {
           <Button
             type="link"
             className="w-[6rem]"
-            // onClick={() => setIsBindingOpen(true)}
+            onClick={() =>
+              navigate("/monitor/configuration/" + "update" + "/" + index, {
+                state: {
+                  type: IMonitorConfigurationType.Update,
+                  id: index,
+                },
+              })
+            }
           >
             編輯
           </Button>
@@ -81,8 +89,8 @@ export const Monitor = () => {
             type="link"
             className="w-[6rem]"
             onClick={() => {
-              // setIsDeleteIndex(index);
-              // setIsDeleteDeviceOpen(true);
+              setIsDeleteIndex(index);
+              setIsDeleteOpen(true);
             }}
           >
             刪除
@@ -116,7 +124,7 @@ export const Monitor = () => {
       }}
     >
       <div>
-        <div className="bg-white h-[calc(100vh-5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
+        <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
             監測管理
           </span>
@@ -131,7 +139,7 @@ export const Monitor = () => {
                   { value: "啟用", label: "啟用" },
                   { value: "關閉", label: "關閉" },
                 ]}
-                suffixIcon={<img src={down} />}
+                suffixIcon={<img src={downArrow} />}
               />
               <Select
                 className="w-[13.5rem]"
@@ -143,7 +151,7 @@ export const Monitor = () => {
                   { value: "識別車輛", label: "識別車輛" },
                   { value: "識別異常車輛", label: "識別異常車輛" },
                 ]}
-                suffixIcon={<img src={down} />}
+                suffixIcon={<img src={downArrow} />}
               />
             </div>
             <Button
@@ -155,34 +163,53 @@ export const Monitor = () => {
               新增
             </Button>
           </div>
-          <Table
-            rowKey={(record) => record.title}
-            columns={columns}
-            dataSource={data}
-            className="pt-[1.125rem] tableHiddenScrollBar"
-            scroll={{ y: 580 }}
-            pagination={false}
-          />
-          <div className="flex justify-between items-center pt-[16px]">
-            <div className="text-[#929292] text-[.875rem]">
-              共{" "}
-              <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
-              條
-            </div>
-            <div>
-              <Pagination
-                current={1}
-                pageSize={5}
-                pageSizeOptions={[5, 10, 20]}
-                total={data.length}
-                showQuickJumper
-                showSizeChanger
-                onChange={() => {}}
-              />
+          <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
+            <Table
+              rowKey={(record) => record.title}
+              columns={columns}
+              dataSource={data}
+              className="pt-[1.125rem] tableHiddenScrollBar"
+              scroll={{ y: 580 }}
+              pagination={false}
+            />
+            <div className="flex justify-between items-center pt-[16px]">
+              <div className="text-[#929292] text-[.875rem]">
+                共{" "}
+                <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
+                條
+              </div>
+              <div>
+                <Pagination
+                  current={1}
+                  pageSize={5}
+                  pageSizeOptions={[5, 10, 20]}
+                  total={data.length}
+                  showQuickJumper
+                  showSizeChanger
+                  onChange={() => {}}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <CustomModal
+        title={
+          <div>
+            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
+            操作確認
+          </div>
+        }
+        onCancle={() => setIsDeleteOpen(false)}
+        onConfirm={() => {
+          setIsDeleteOpen(false);
+        }}
+        open={isDeleteOpen}
+        className={"customModal"}
+      >
+        <span className="pl-[2rem]">請確認是否刪除類型？</span>
+      </CustomModal>
     </ConfigProvider>
   );
 };

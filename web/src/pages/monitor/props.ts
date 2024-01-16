@@ -5,3 +5,8 @@ export interface IMonitorDataType {
   notificationObject: string;
   operate: string;
 }
+
+export enum IMonitorConfigurationType {
+  Add,
+  Update,
+}

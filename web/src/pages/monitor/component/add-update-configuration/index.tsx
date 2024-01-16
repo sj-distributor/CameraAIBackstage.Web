@@ -1,4 +1,4 @@
-import Icon, { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 import {
   Button,
   Checkbox,
@@ -12,15 +12,18 @@ import TextArea from "antd/es/input/TextArea";
 import { clone, isEmpty } from "ramda";
 import { useLocation } from "react-router-dom";
 
-import down from "@/assets/public/down.png";
+import downArrow from "@/assets/public/down-arrow.png";
 
+import { IMonitorConfigurationType } from "../../props";
 import { useAction } from "./hook";
 import { NotificationToolType } from "./props";
 
-export const AddConfiguration = () => {
+export const AddOrUpdateConfiguration = () => {
   const [form] = Form.useForm();
 
   const location = useLocation();
+
+  const { type, id } = location.state;
 
   const {
     cronList,
@@ -56,7 +59,7 @@ export const AddConfiguration = () => {
         <div className="bg-white h-[calc(100vh-3.25rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] text-[#5F6279]">監測管理 </span>
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            / 新增
+            / {type === IMonitorConfigurationType.Update ? "修改" : "新增"}
           </span>
           <div className="mx-[15.5625rem] my-[1rem] h-[calc(100%-7.2rem)]">
             <Form
@@ -78,7 +81,7 @@ export const AddConfiguration = () => {
                       label="異常類型"
                       className="w-[26.3125rem] pr-[2rem]"
                     >
-                      <Select suffixIcon={<img src={down} />} />
+                      <Select suffixIcon={<img src={downArrow} />} />
                     </Form.Item>
                     <Form.Item
                       label="持續時長"
@@ -99,7 +102,7 @@ export const AddConfiguration = () => {
                             { value: "分", label: "分" },
                             { value: "時", label: "時" },
                           ]}
-                          suffixIcon={<img src={down} />}
+                          suffixIcon={<img src={downArrow} />}
                         />
                       </div>
                     </Form.Item>
@@ -111,7 +114,7 @@ export const AddConfiguration = () => {
                     >
                       <Select
                         placeholder="選擇設備（可多選）"
-                        suffixIcon={<img src={down} />}
+                        suffixIcon={<img src={downArrow} />}
                       />
                     </Form.Item>
                     <Form.Item
@@ -159,7 +162,7 @@ export const AddConfiguration = () => {
                           placeholder="選擇用戶（可多選）"
                           allowClear={false}
                           removeIcon={null}
-                          suffixIcon={<img src={down} />}
+                          suffixIcon={<img src={downArrow} />}
                           options={userList}
                           value={selectUserList.map((item) => item.name)}
                           mode="multiple"
@@ -299,7 +302,7 @@ export const AddConfiguration = () => {
                       <Form.Item label="選擇設備">
                         <Select
                           placeholder="請選擇（可多選）"
-                          suffixIcon={<img src={down} />}
+                          suffixIcon={<img src={downArrow} />}
                         />
                       </Form.Item>
                       <Form.Item label="廣播信息">
@@ -314,7 +317,7 @@ export const AddConfiguration = () => {
                       <Form.Item label="選擇設備">
                         <Select
                           placeholder="請選擇（可多選）"
-                          suffixIcon={<img src={down} />}
+                          suffixIcon={<img src={downArrow} />}
                         />
                       </Form.Item>
                     </div>

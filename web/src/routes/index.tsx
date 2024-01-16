@@ -8,8 +8,8 @@ import { Home } from "@/pages/home/index";
 import { Login } from "@/pages/login";
 import { Container } from "@/pages/main";
 import { Monitor } from "@/pages/monitor";
-import { AddConfiguration } from "@/pages/monitor/component/add-configuration";
 import { AddSelectType } from "@/pages/monitor/component/add-select-type";
+import { AddOrUpdateConfiguration } from "@/pages/monitor/component/add-update-configuration";
 import { AreaManagement } from "@/pages/system/area-management";
 import { LicensePlateManagement } from "@/pages/system/license-plate-management";
 import { OperationLog } from "@/pages/system/operation-log";
@@ -65,8 +65,8 @@ export const routerList: IRouterList[] = [
         element: <AddSelectType />,
       },
       {
-        path: "/monitor/add/configuration/:id",
-        element: <AddConfiguration />,
+        path: "/monitor/configuration/:type/:id",
+        element: <AddOrUpdateConfiguration />,
       },
     ],
   },

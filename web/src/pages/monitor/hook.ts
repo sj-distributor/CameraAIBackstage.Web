@@ -1,3 +1,4 @@
+import { clone } from "ramda";
 import { useState } from "react";
 
 import { IMonitorDataType } from "./props";
@@ -20,5 +21,28 @@ export const useAction = () => {
     },
   ]);
 
-  return { data, setData };
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+
+  const [isUnbindOpen, setIsUnbindOpen] = useState<boolean>(false);
+
+  const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
+
+  const onChangeStatus = (index: number, value: boolean) => {
+    const newList = clone(data);
+
+    newList[index].condition = value;
+    setData(newList);
+  };
+
+  return {
+    data,
+    setData,
+    isDeleteOpen,
+    setIsDeleteOpen,
+    isDeleteIndex,
+    setIsDeleteIndex,
+    onChangeStatus,
+    isUnbindOpen,
+    setIsUnbindOpen,
+  };
 };

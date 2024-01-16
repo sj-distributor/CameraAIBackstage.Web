@@ -3,6 +3,7 @@ import { Collapse, CollapseProps, ConfigProvider } from "antd";
 import cameraTag from "../../../../assets/monitor/camera-tag.png";
 import collapseDown from "../../../../assets/monitor/collapse-down.png";
 import menuIcon from "../../../../assets/monitor/menu-icon.svg";
+import { IMonitorConfigurationType } from "../../props";
 import { useAction } from "./hook";
 
 export const AddSelectType = () => {
@@ -18,8 +19,8 @@ export const AddSelectType = () => {
               className="hover:bg-[#F6F8FC] py-[1.5rem] px-[1rem] rounded-lg"
               key={index}
               onClick={() =>
-                navigate("/monitor/add/configuration/" + item.id, {
-                  state: { type: `${item.id}` },
+                navigate("/monitor/configuration/" + "add" + "/" + item.id, {
+                  state: { type: IMonitorConfigurationType.Add, id: item.id },
                 })
               }
             >
