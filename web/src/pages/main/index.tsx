@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 export const Container = () => {
   return (
-    <div>
+    <div className="mt-6 mx-6 flex-1">
       <Outlet />
     </div>
   );
