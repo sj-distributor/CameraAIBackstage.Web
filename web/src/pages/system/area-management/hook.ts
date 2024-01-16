@@ -28,6 +28,66 @@ export const useAction = () => {
       areaAddress: "Janny创建了角色经理",
       person: "Jim Green",
     },
+    {
+      areaId: 4,
+      areaName: "Jim Green",
+      areaAddress: "Janny创建了角色经理",
+      person: "Jim Green",
+    },
+    {
+      areaId: 4,
+      areaName: "Jim Green",
+      areaAddress: "Janny创建了角色经理",
+      person: "Jim Green",
+    },
+    {
+      areaId: 4,
+      areaName: "Jim Green",
+      areaAddress: "Janny创建了角色经理",
+      person: "Jim Green",
+    },
+    {
+      areaId: 4,
+      areaName: "Jim Green",
+      areaAddress: "Janny创建了角色经理",
+      person: "Jim Green",
+    },
+    {
+      areaId: 4,
+      areaName: "Jim Green",
+      areaAddress: "Janny创建了角色经理",
+      person: "Jim Green",
+    },
+    {
+      areaId: 4,
+      areaName: "Jim Green",
+      areaAddress: "Janny创建了角色经理",
+      person: "Jim Green",
+    },
+    {
+      areaId: 4,
+      areaName: "Jim Green",
+      areaAddress: "Janny创建了角色经理",
+      person: "Jim Green",
+    },
+    {
+      areaId: 4,
+      areaName: "Jim Green",
+      areaAddress: "Janny创建了角色经理",
+      person: "Jim Green",
+    },
+    {
+      areaId: 4,
+      areaName: "Jim Green",
+      areaAddress: "Janny创建了角色经理",
+      person: "Jim Green",
+    },
+    {
+      areaId: 4,
+      areaName: "Jim Green",
+      areaAddress: "Janny创建了角色经理",
+      person: "Jim Green",
+    },
   ];
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);

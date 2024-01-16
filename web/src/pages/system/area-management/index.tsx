@@ -72,8 +72,8 @@ export const AreaManagement = () => {
   ];
 
   return (
-    <div className="bg-white h-full w-full">
-      <div className="bg-white h-[calc(100vh-5rem)] w-full flex-col p-[1.5rem] overflow-scroll no-scrollbar">
+    <>
+      <div className="bg-white h-full w-full flex-col p-[1.5rem]">
         <span className="text-[1.125rem] font-semibold tracking-tight">
           區域管理
         </span>
@@ -101,16 +101,17 @@ export const AreaManagement = () => {
             + 新增
           </Button>
         </div>
-        <div className="flex flex-col h-[calc(100%-6rem)] justify-between py-[1.125rem]">
-          <Table
-            columns={columns}
-            dataSource={data}
-            pagination={false}
-            rowKey="areaId"
-            loading={isTableLoading}
-            className="flex-1"
-          />
-
+        <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">
+          <div className="h-full overflow-auto no-scrollbar pb-[1.125rem]">
+            <Table
+              columns={columns}
+              dataSource={data}
+              pagination={false}
+              rowKey="areaId"
+              loading={isTableLoading}
+              sticky={true}
+            />
+          </div>
           <div className="flex justify-between items-center pt-[1rem]">
             <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
               共
@@ -153,6 +154,6 @@ export const AreaManagement = () => {
           inputFields={inputFields}
         />
       </CustomModal>
-    </div>
+    </>
   );
 };
