@@ -1,3 +1,83 @@
+import { SearchOutlined } from "@ant-design/icons";
+import { DatePicker, Input, Pagination, Table } from "antd";
+
+import { useAction } from "./hook";
+
+const { RangePicker } = DatePicker;
+
 export const OperationLog = () => {
-  return <div>OperationLog</div>;
+  const {
+    columns,
+    data,
+    searchValue,
+    isTableLoading,
+    pageDto,
+    setSearchValue,
+    setPageDto,
+    rangePresets,
+    onRangeChange,
+  } = useAction();
+
+  return (
+    <div className="bg-white h-full">
+      <div>
+        <div className="bg-white h-[calc(100vh-80px)] w-full flex-col justify-start p-[24px] overflow-scroll no-scrollbar">
+          <span className="text-[1.125rem] font-semibold tracking-tight">
+            操作日誌
+          </span>
+          <div className="mt-[1.5rem] mb-[1.125rem] h-[2.5rem] flex items-center">
+            <Input
+              className="w-[17.5rem] h-[2.2rem]"
+              placeholder="搜索車牌號碼"
+              suffix={
+                <SearchOutlined
+                  style={{
+                    color: "#5F6279",
+                    fontSize: "1.1rem",
+                    fontWeight: "700",
+                  }}
+                />
+              }
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            <RangePicker
+              presets={rangePresets}
+              onChange={onRangeChange}
+              className="ml-5 w-[18.75rem] h-[2.2rem]"
+            />
+          </div>
+          <Table
+            columns={columns}
+            dataSource={data}
+            pagination={false}
+            rowKey="id"
+            loading={isTableLoading}
+          />
+          <div className="flex justify-between items-center pt-[1rem]">
+            <div className="text-[#929292] text-[.875rem]">
+              共
+              <span className="text-[#2853E3] font-light mx-1">
+                {data.length}
+              </span>
+              條
+            </div>
+            <div>
+              <Pagination
+                current={pageDto.pageIndex}
+                pageSize={pageDto.pageSize}
+                pageSizeOptions={[5, 10, 20]}
+                total={data.length}
+                showQuickJumper
+                showSizeChanger
+                onChange={(page, pageSize) =>
+                  setPageDto({ pageIndex: page, pageSize })
+                }
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
