@@ -7,8 +7,8 @@ import { Outlet } from "react-router-dom";
 import { KeyIcon, LogOutIcon } from "@/assets/top-menu";
 import { routerList } from "@/routes";
 
-import arrow from "../../assets/public/arrow.png";
 import avatar from "../../assets/public/avatar.png";
+import arrow from "../../assets/public/down.png";
 import language from "../../assets/public/language.png";
 import { useAction } from "./hook";
 const headerStyle: React.CSSProperties = {
@@ -141,7 +141,7 @@ export const Home = () => {
                 Janny.K
               </div>
               <a onClick={(e) => e.preventDefault()}>
-                <img src={arrow} />
+                <img src={arrow} className="flex items-center" />
               </a>
             </div>
           </Dropdown>

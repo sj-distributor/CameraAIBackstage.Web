@@ -17,8 +17,8 @@ import { clone } from "ramda";
 
 import { CustomModal } from "@/components/custom-modal";
 
-import down from "../../../assets/down.png";
-import search from "../../../assets/search.png";
+import down from "../../../assets/public/down.png";
+import search from "../../../assets/public/search.png";
 import { useAction } from "./hook";
 import { IDataType, IDeviceDataType } from "./props";
 
