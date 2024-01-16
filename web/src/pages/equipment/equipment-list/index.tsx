@@ -17,7 +17,7 @@ import { clone } from "ramda";
 
 import { CustomModal } from "@/components/custom-modal";
 
-import dropDown from "../../../assets/public/drop-down.png";
+import downArrow from "../../../assets/public/down-arrow.png";
 import search from "../../../assets/public/search.png";
 import { useAction } from "./hook";
 import { IDataType, IDeviceDataType } from "./props";
@@ -207,7 +207,7 @@ export const EquipmentList = () => {
                   { value: "在線", label: "在線" },
                   { value: "離線", label: "離線" },
                 ]}
-                suffixIcon={<img src={dropDown} />}
+                suffixIcon={<img src={downArrow} />}
               />
               <Select
                 className="w-[13.5rem]"
@@ -218,7 +218,7 @@ export const EquipmentList = () => {
                   { value: "已綁定", label: "已綁定" },
                   { value: "未綁定", label: "未綁定" },
                 ]}
-                suffixIcon={<img src={dropDown} />}
+                suffixIcon={<img src={downArrow} />}
               />
             </div>
             <Button
@@ -342,7 +342,7 @@ export const EquipmentList = () => {
             wrapperCol={{ span: 15 }}
           >
             <Select
-              suffixIcon={<img src={dropDown} />}
+              suffixIcon={<img src={downArrow} />}
               placeholder="請選擇"
               defaultActiveFirstOption
               options={[

@@ -8,7 +8,7 @@ import { KeyIcon, LogOutIcon } from "@/assets/top-menu";
 import { routerList } from "@/routes";
 
 import avatar from "../../assets/public/avatar.png";
-import dropDown from "../../assets/public/drop-down.png";
+import downArrow from "../../assets/public/down-arrow.png";
 import language from "../../assets/public/language.png";
 import { useAction } from "./hook";
 const headerStyle: React.CSSProperties = {
@@ -141,7 +141,7 @@ export const Home = () => {
                 Janny.K
               </div>
               <a onClick={(e) => e.preventDefault()}>
-                <img src={dropDown} className="flex items-center" />
+                <img src={downArrow} className="flex items-center" />
               </a>
             </div>
           </Dropdown>
