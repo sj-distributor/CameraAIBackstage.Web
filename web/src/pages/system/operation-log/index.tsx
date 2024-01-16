@@ -1,5 +1,10 @@
-import { SearchOutlined } from "@ant-design/icons";
+import {
+  CalendarOutlined,
+  ClockCircleFilled,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { DatePicker, Input, Pagination, Table } from "antd";
+import { Dayjs } from "dayjs";
 
 import { useAction } from "./hook";
 
@@ -16,7 +21,22 @@ export const OperationLog = () => {
     setPageDto,
     rangePresets,
     onRangeChange,
+    startDate,
+    endDate,
   } = useAction();
+
+  const renderDateAndTime = (date: Dayjs | null) => (
+    <>
+      <span>
+        <CalendarOutlined className="mr-2" />
+        {date?.format("YYYY-MM-DD")}
+      </span>
+      <span className="text-[#666774]">
+        <ClockCircleFilled className="mr-2" />
+        {date?.format("HH:mm:ss")}
+      </span>
+    </>
+  );
 
   return (
     <div className="bg-white h-full">
@@ -42,9 +62,15 @@ export const OperationLog = () => {
               onChange={(e) => setSearchValue(e.target.value)}
             />
             <RangePicker
+              className="ml-5 w-[18.75rem] h-[2.2rem]"
               presets={rangePresets}
               onChange={onRangeChange}
-              className="ml-5 w-[18.75rem] h-[2.2rem]"
+              renderExtraFooter={() => (
+                <div className="flex justify-between">
+                  {renderDateAndTime(startDate)}
+                  {renderDateAndTime(endDate)}
+                </div>
+              )}
             />
           </div>
           <Table

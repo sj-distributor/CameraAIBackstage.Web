@@ -68,15 +68,14 @@ export const useAction = () => {
     pageSize: 5,
   });
 
-  const onRangeChange = (
-    dates: null | (Dayjs | null)[],
-    dateStrings: string[]
-  ) => {
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+
+  const onRangeChange = (dates: null | (Dayjs | null)[]) => {
     if (dates) {
-      console.log("From: ", dates[0], ", to: ", dates[1]);
-      console.log("From: ", dateStrings[0], ", to: ", dateStrings[1]);
-    } else {
-      console.log("Clear");
+      setStartDate(dates[0]);
+      setEndDate(dates[1]);
     }
   };
 
@@ -97,5 +96,7 @@ export const useAction = () => {
     setIsTableLoading,
     rangePresets,
     onRangeChange,
+    startDate,
+    endDate,
   };
 };
