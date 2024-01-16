@@ -8,6 +8,8 @@ import { Home } from "@/pages/home/index";
 import { Login } from "@/pages/login";
 import { Container } from "@/pages/main";
 import { Monitor } from "@/pages/monitor";
+import { AddConfiguration } from "@/pages/monitor/component/add-configuration";
+import { AddSelectType } from "@/pages/monitor/component/add-select-type";
 import { AreaManagement } from "@/pages/system/area-management";
 import { LicensePlateManagement } from "@/pages/system/license-plate-management";
 import { OperationLog } from "@/pages/system/operation-log";
@@ -53,9 +55,20 @@ export const routerList: IRouterList[] = [
   },
   {
     path: "/monitor",
-    element: <Monitor />,
+    element: <Container />,
     name: "監測管理",
     icon: <MonitorIcon path="/monitor" />,
+    children: [
+      { path: "", element: <Monitor /> },
+      {
+        path: "/monitor/add",
+        element: <AddSelectType />,
+      },
+      {
+        path: "/monitor/add/configuration/:id",
+        element: <AddConfiguration />,
+      },
+    ],
   },
   {
     path: "/system",

@@ -60,22 +60,18 @@ code {
   border-left: none;
 }
 
-.custom-switch .ant-switch-inner {
-  padding-inline-start: 0rem !important;
-  padding-inline-end: 1.0625rem !important;
-}
-
-.custom-scollbar::-webkit-scrollbar-thumb {
+.customScollbar::-webkit-scrollbar-thumb {
   border-radius: 0.625rem;
   background-color: #d7d7e2;
 }
 
-.custom-scollbar::-webkit-scrollbar {
+.customScollbar::-webkit-scrollbar {
   width: 0.75rem;
   background-color: #fafafb;
+  border-radius: 0.625rem;
 }
 
-.custom-scollbar::-webkit-scrollbar-track {
+.customScollbar::-webkit-scrollbar-track {
   border-radius: 0.625rem;
   background-color: #fafafb;
 }

@@ -1,9 +1,12 @@
 import { clone } from "ramda";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { ISelectUserDto } from "./props";
 
 export const useAction = () => {
+  const navigate = useNavigate();
+
   const [cronList, setCronList] = useState([
     { title: "週一", value: false },
     { title: "週二", value: false },
@@ -63,5 +66,6 @@ export const useAction = () => {
     onSubmit,
     selectUserList,
     setSelectUserList,
+    navigate,
   };
 };

@@ -1,4 +1,4 @@
-import { CloseOutlined } from "@ant-design/icons";
+import Icon, { CloseOutlined } from "@ant-design/icons";
 import {
   Button,
   Checkbox,
@@ -10,13 +10,17 @@ import {
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { clone, isEmpty } from "ramda";
+import { useLocation } from "react-router-dom";
 
-import down from "../../../../assets/down.png";
+import down from "@/assets/public/down.png";
+
 import { useAction } from "./hook";
 import { NotificationToolType } from "./props";
 
 export const AddConfiguration = () => {
   const [form] = Form.useForm();
+
+  const location = useLocation();
 
   const {
     cronList,
@@ -27,6 +31,7 @@ export const AddConfiguration = () => {
     onSubmit,
     selectUserList,
     setSelectUserList,
+    navigate,
   } = useAction();
 
   return (
@@ -47,13 +52,13 @@ export const AddConfiguration = () => {
         },
       }}
     >
-      <div className="h-full w-full p-[1.5rem] relative">
+      <div className="relative">
         <div className="bg-white h-[calc(100vh-3.25rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] text-[#5F6279]">監測管理 </span>
           <span className="text-[1.125rem] font-semibold tracking-tight">
             / 新增
           </span>
-          <div className="mx-[15.5625rem] my-[1rem] h-[calc(100%-8.125rem)]">
+          <div className="mx-[15.5625rem] my-[1rem] h-[calc(100%-7.2rem)]">
             <Form
               onFinish={onSubmit}
               className="p-[2rem_1.5rem] h-full overflow-y-auto no-scrollbar"
@@ -71,7 +76,7 @@ export const AddConfiguration = () => {
                   <div className="flex flex-row w-full p-[2rem_5.25rem_0rem_5.25rem]">
                     <Form.Item
                       label="異常類型"
-                      className="w-[26.3125rem] pr-[2rem]  "
+                      className="w-[26.3125rem] pr-[2rem]"
                     >
                       <Select suffixIcon={<img src={down} />} />
                     </Form.Item>
@@ -317,7 +322,7 @@ export const AddConfiguration = () => {
                 </div>
               </Form.Item>
 
-              <div className="h-[5.75rem] absolute bottom-0 left-0 bg-white w-[100%] z-1 flex justify-center items-center shadow-[0_1.875rem_1.25rem_1.25rem_rgba(0,0,0,0.3)]">
+              <div className="h-[5rem] absolute bottom-[2rem] left-[-1.5rem] bg-white w-[calc(100%+3rem)] z-1 flex justify-center items-center shadow-[0_1.875rem_1.25rem_1.25rem_rgba(0,0,0,0.3)]">
                 <ConfigProvider
                   theme={{
                     components: {
@@ -328,13 +333,23 @@ export const AddConfiguration = () => {
                     },
                   }}
                 >
-                  <Button className="w-[6rem] h-[2.75rem]">返回</Button>
+                  <Button
+                    className="w-[6rem] h-[2.75rem]"
+                    onClick={() => {
+                      navigate("/monitor");
+                    }}
+                  >
+                    返回
+                  </Button>
                 </ConfigProvider>
 
                 <Button
                   htmlType="submit"
                   className="w-[6rem] h-[2.75rem] ml-[1.5rem]"
                   type="primary"
+                  onClick={() => {
+                    navigate("/monitor");
+                  }}
                 >
                   確定
                 </Button>

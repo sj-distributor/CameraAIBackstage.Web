@@ -11,7 +11,7 @@ import {
 import { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 
-import down from "../../assets/down.png";
+import down from "../../assets/public/down.png";
 import { useAction } from "./hook";
 import { IMonitorDataType } from "./props";
 
@@ -48,7 +48,7 @@ export const Monitor = () => {
                 // newList[index].whetherToBind = value;
                 // setData(newList);
               }}
-              className="w-[3.125rem] text-[.625rem] custom-switch"
+              className="w-[3.125rem] text-[.625rem] customSwitch"
             />
           </Tooltip>
         );
@@ -115,7 +115,7 @@ export const Monitor = () => {
         },
       }}
     >
-      <div className="h-full w-full p-[1.5rem]">
+      <div>
         <div className="bg-white h-[calc(100vh-5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
             監測管理
@@ -149,7 +149,7 @@ export const Monitor = () => {
             <Button
               type="primary"
               className="h-[2.75rem] w-[5.5rem]"
-              onClick={() => navigate("/system/add/configuration")}
+              onClick={() => navigate("/monitor/add")}
             >
               <PlusOutlined className="pr-[.5rem]" />
               新增

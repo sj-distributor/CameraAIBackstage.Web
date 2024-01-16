@@ -1,26 +1,14 @@
-import { Collapse, CollapseProps, ConfigProvider, theme } from "antd";
+import { Collapse, CollapseProps, ConfigProvider } from "antd";
 
-import cameraTag from "../../../../assets/camera-tag.png";
-import down from "../../../../assets/down.png";
-import icon from "../../../../assets/icon.svg";
+import cameraTag from "../../../../assets/monitor/camera-tag.png";
+import collapseDown from "../../../../assets/monitor/collapse-down.png";
+import menuIcon from "../../../../assets/monitor/menu-icon.svg";
+import { useAction } from "./hook";
 
 export const AddSelectType = () => {
-  const { token } = theme.useToken();
+  const { text, token, navigate } = useAction();
 
-  const text = [
-    "識別人員",
-    "識別車輛",
-    "識別車輛",
-    "識別車輛",
-    "識別車輛",
-    "識別車輛",
-    "識別車輛",
-    "識別車輛",
-    "識別車輛",
-    "識別車輛",
-  ];
-
-  const getItems: () => CollapseProps["items"] = () => [
+  const collapseItem: () => CollapseProps["items"] = () => [
     {
       key: "1",
       children: (
@@ -29,8 +17,13 @@ export const AddSelectType = () => {
             <div
               className="hover:bg-[#F6F8FC] py-[1.5rem] px-[1rem] rounded-lg"
               key={index}
+              onClick={() =>
+                navigate("/monitor/add/configuration/" + item.id, {
+                  state: { type: `${item.id}` },
+                })
+              }
             >
-              {item}
+              {item.name}
             </div>
           ))}
         </>
@@ -56,13 +49,10 @@ export const AddSelectType = () => {
             defaultColor: "#2853E3",
             linkHoverBg: "#F0F4FF",
           },
-          Collapse: {
-            contentBg: "red",
-          },
         },
       }}
     >
-      <div className="h-full w-full p-[1.5rem]">
+      <div>
         <div className="bg-white h-[calc(100vh-5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] text-[#5F6279]">監測管理 </span>
           <span className="text-[1.125rem] font-semibold tracking-tight">
@@ -70,21 +60,23 @@ export const AddSelectType = () => {
           </span>
           <div className="mx-[16.375rem] my-[1rem] h-[calc(100%-8.125rem)]">
             <div className="flex items-center">
-              <img src={icon} />
+              <img src={menuIcon} />
               <span className="text-[1.125rem] font-semibold py-[1rem]">
                 選擇類型
               </span>
             </div>
-            <div className="border border-[#E7E8EE] border-solid rounded-lg p-[2rem_1.5rem] h-full overflow-y-auto custom-scollbar">
+            <div className="border border-[#E7E8EE] border-solid rounded-lg p-[2rem_1.5rem] h-full overflow-y-auto customScollbar shadow-md">
               <Collapse
                 bordered={false}
+                defaultActiveKey={["1"]}
                 expandIcon={() => (
-                  <div className="flex items-center">
-                    <img src={down} /> <img src={cameraTag} className="pl-4" />
+                  <div className="flex items-center font-semibold">
+                    <img src={collapseDown} />
+                    <img src={cameraTag} className="pl-4" />
                   </div>
                 )}
                 style={{ background: token.colorBgContainer }}
-                items={getItems()}
+                items={collapseItem()}
               />
             </div>
           </div>
