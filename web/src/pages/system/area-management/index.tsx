@@ -112,7 +112,7 @@ export const AreaManagement = () => {
           <div className="flex justify-between items-center pt-[1rem]">
             <div className="text-[#929292] text-[.875rem]">
               共
-              <span className="text-[#2853E3] font-light  mx-1">
+              <span className="text-[#2853E3] font-light mx-1">
                 {data.length}
               </span>
               條

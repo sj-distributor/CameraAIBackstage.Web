@@ -19,7 +19,7 @@ export const useAction = () => {
     },
     {
       title: "操作內容",
-      dataIndex: "OperateContent",
+      dataIndex: "operateContent",
       width: "51%",
     },
     {
@@ -33,25 +33,25 @@ export const useAction = () => {
     {
       id: 1,
       userName: "Jim Green",
-      OperateContent: "Janny创建了角色经理",
+      operateContent: "Janny创建了角色经理",
       OperateTime: "2023-09-26 12:30",
     },
     {
       id: 2,
       userName: "Jim Green",
-      OperateContent: "Janny创建了角色经理",
+      operateContent: "Janny创建了角色经理",
       OperateTime: "2023-09-26 12:30",
     },
     {
       id: 3,
       userName: "Jim Green",
-      OperateContent: "Janny创建了角色经理",
+      operateContent: "Janny创建了角色经理",
       OperateTime: "2023-09-26 12:30",
     },
     {
       id: 4,
       userName: "Jim Green",
-      OperateContent: "Janny创建了角色经理",
+      operateContent: "Janny创建了角色经理",
       OperateTime: "2023-09-26 12:30",
     },
   ];

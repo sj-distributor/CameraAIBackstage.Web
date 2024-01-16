@@ -12,6 +12,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
       wrapperCol={{ span: 14 }}
       layout="horizontal"
       style={{ maxWidth: 600 }}
+      colon={false}
     >
       <Form.Item
         label="區域地址"
