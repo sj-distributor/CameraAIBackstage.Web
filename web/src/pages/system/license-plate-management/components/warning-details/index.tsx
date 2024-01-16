@@ -1,5 +1,7 @@
-import { GoIcon, PalyIcon, SuspendIcon } from "../icon";
 import { DatePicker, Popover } from "antd";
+import dayjs from "dayjs";
+
+import { GoIcon, PalyIcon, SuspendIcon } from "../icon";
 import { useAction } from "./hook";
 
 export const DetailsTitle = {
@@ -52,7 +54,7 @@ export const WarningDetails = () => {
       <div className="my-4 rounded-lg h-[58%] bg-[#ccc] w-full relative overflow-hidden">
         <video
           ref={videoRef}
-          onEnded={(e) => setIsPalyVideo(false)}
+          onEnded={(_) => setIsPalyVideo(false)}
           height={"100%"}
           src="https://video-builder.oss-cn-hongkong.aliyuncs.com/final/7f34d31e-aa1a-11ee-8ef7-bef7e46b6559.mp4"
         />
@@ -70,7 +72,9 @@ export const WarningDetails = () => {
               className="text-[0.75rem] border-0 bg-transparent videoDatePicker"
               format="dddd,  hh:mm:ss A"
               suffixIcon={false}
+              placeholder="Thursday,  05:41:28 PM"
               allowClear={false}
+              defaultValue={dayjs()}
             />
             <button className="flex border rounded ml-[1.5rem] items-center px-2">
               <GoIcon />
@@ -129,19 +133,22 @@ export const WarningDetails = () => {
           >
             <div className="flex flex-col h-full justify-between">
               <div className="w-full h-full flex ml-[4.375rem] mt-4">
-                <div className="w-1/4 bg-[#2853E3] rounded-[2.875rem] h-[1.125rem] mr-[4.375rem]"></div>
-                <div className="w-1/3 bg-[#2853E3] rounded-[2.875rem] h-[1.125rem] mr-[4.375rem]"></div>
-                <div className="w-1/4 bg-[#2853E3] rounded-[2.875rem] h-[1.125rem] mr-[4.375rem]"></div>
+                <div className="w-1/4 bg-[#2853E3] rounded-[2.875rem] h-[1.125rem] mr-[4.375rem]" />
+                <div className="w-1/3 bg-[#2853E3] rounded-[2.875rem] h-[1.125rem] mr-[4.375rem]" />
+                <div className="w-1/4 bg-[#2853E3] rounded-[2.875rem] h-[1.125rem] mr-[4.375rem]" />
               </div>
               <div className="w-full flex">
                 {[1, 2, 3, 4, 5].map((item) => {
                   return (
-                    <div className="w-1/4 flex flex-col">
+                    <div className="w-1/4 flex flex-col" key={item}>
                       <div className="text-start">3:04 PM</div>
                       <div className="h-2 flex">
                         {[1, 2, 3, 4, 5].map((item) => {
                           return (
-                            <div className="h-2 w-1/5 border-r border-[#D7D7E2]"></div>
+                            <div
+                              className="h-2 w-1/5 border-r border-[#D7D7E2]"
+                              key={item}
+                            />
                           );
                         })}
                       </div>

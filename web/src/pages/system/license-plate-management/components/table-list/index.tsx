@@ -69,12 +69,12 @@ export const LicensePlateManagementTable = (props: {
         <div>
           {record ? (
             <div className="flex flex-row items-center">
-              <div className="bg-[#34A46E] w-[0.375rem] h-[0.375rem] rounded-full mr-[0.5rem]" />
+              <div className="bg-[#34A46E] w-[6px] h-[6px] rounded-full mr-[8px]" />
               <span>在線</span>
             </div>
           ) : (
             <div className="flex flex-row items-center">
-              <div className="bg-[#F04E4E] w-[0.375rem] h-[0.375rem] rounded-full mr-[0.5rem]" />
+              <div className="bg-[#F04E4E] w-[6px] h-[6px] rounded-full mr-[8px]" />
               <span>離線</span>
             </div>
           )}
@@ -89,21 +89,21 @@ export const LicensePlateManagementTable = (props: {
         <div>
           <Button
             type="link"
-            className="w-[90.375rem]"
+            className="w-[96px]"
             onClick={() => setIsRegisterOpen(true)}
           >
             登記
           </Button>
           <Button
             type="link"
-            className="w-[90.375rem]"
+            className="w-[96px]"
             onClick={() => setShowWarningDetails(record.deviceId)}
           >
             查看詳情
           </Button>
           <Button
             type="link"
-            className="w-[90.375rem]"
+            className="w-[96px]"
             onClick={() => {
               setIsShowLicensePlateOpen(true);
             }}
@@ -137,7 +137,7 @@ export const LicensePlateManagementTable = (props: {
       }}
     >
       <div>
-        <div className="flex flex-row pt-[20.375rem] justify-between">
+        <div className="flex flex-row pt-[26px] justify-between">
           <div>
             <Input
               className="w-[280px]"
@@ -145,7 +145,7 @@ export const LicensePlateManagementTable = (props: {
               placeholder="搜索車輛號碼"
             />
             <Select
-              className="mx-[10.375rem] w-[210.375rem]"
+              className="mx-[16px] w-[216px]"
               placeholder="最近一周"
               defaultActiveFirstOption
               options={[
@@ -157,7 +157,7 @@ export const LicensePlateManagementTable = (props: {
               suffixIcon={<img src={down} />}
             />
             <Select
-              className="w-[210.375rem]"
+              className="w-[216px]"
               placeholder="未登記"
               defaultActiveFirstOption
               options={[
@@ -170,10 +170,10 @@ export const LicensePlateManagementTable = (props: {
           </div>
           <Button
             type="primary"
-            className="h-[2.75rem] w-[110.375rem] bg-[#2853E3] flex items-center"
+            className="h-[44px] w-[116px] bg-[#2853E3] flex items-center"
             onClick={() => setIsAddDeviceOpen(true)}
           >
-            <PlusOutlined className="pr-[0.5rem]" />
+            <PlusOutlined className="pr-[8px]" />
             添加設備
           </Button>
         </div>
@@ -181,13 +181,13 @@ export const LicensePlateManagementTable = (props: {
           rowKey={(record) => record.deviceId}
           columns={columns}
           dataSource={data}
-          className="pt-[10.5rem] tableHiddenScrollBar"
+          className="pt-[18px] tableHiddenScrollBar"
           scroll={{ y: 580 }}
           pagination={false}
         />
         <div className="flex justify-between items-center pt-[1rem]">
-          <div className="text-[#929292] text-[0.875rem]">
-            共 <span className="text-[#2853E3] font-light">{data.length}</span>
+          <div className="text-[#929292] text-[14px]">
+            共 <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
             條
           </div>
           <div>
@@ -207,7 +207,7 @@ export const LicensePlateManagementTable = (props: {
       <CustomModal
         title={
           <div>
-            <WarningFilled className="text-[#ED940F] pr-[0.625rem]" />
+            <WarningFilled className="text-[#ED940F] pr-[10px]" />
             操作確認
           </div>
         }
@@ -222,7 +222,7 @@ export const LicensePlateManagementTable = (props: {
         open={isUnbindOpen}
         className={"customModal"}
       >
-        <span className="pl-[2rem]">請確認是否解除綁定？</span>
+        <span className="pl-[32px]">請確認是否解除綁定？</span>
       </CustomModal>
 
       <CustomModal
@@ -254,7 +254,7 @@ export const LicensePlateManagementTable = (props: {
       </CustomModal>
 
       <CustomModal
-        title={<div className="px-[1.25rem] mb-[1.25rem] pt-4">登記</div>}
+        title={<div className="px-[20px] mb-[20px] pt-4">登記</div>}
         onCancle={() => setIsRegisterOpen(false)}
         onConfirm={() => setIsRegisterOpen(false)}
         open={isRegisterOpen}
@@ -279,7 +279,7 @@ export const LicensePlateManagementTable = (props: {
           </div>
         }
       >
-        <div className="py-[2rem] border-t">
+        <div className="py-[32px] border-t">
           <Form colon={false} className="ml-6">
             <FormItem
               name="id"
@@ -317,7 +317,7 @@ export const LicensePlateManagementTable = (props: {
         onConfirm={() => setIsAddDeviceOpen(false)}
         open={isAddDeviceOpen}
         className={"customDeviceModal"}
-        modalWidth={"42.5rem"}
+        modalWidth={"680px"}
       >
         <Form colon={false}>
           <FormItem
