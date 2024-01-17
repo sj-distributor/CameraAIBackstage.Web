@@ -131,7 +131,7 @@ export const Monitor = () => {
           <div className="flex flex-row pt-[1.625rem] justify-between">
             <div>
               <Select
-                className="mx-[1rem] w-[13.5rem]"
+                className="mr-[1rem] w-[13.5rem]"
                 placeholder="狀態"
                 defaultActiveFirstOption
                 options={[
@@ -143,7 +143,7 @@ export const Monitor = () => {
               />
               <Select
                 className="w-[13.5rem]"
-                placeholder="全部"
+                placeholder="預警類型篩選"
                 defaultActiveFirstOption
                 options={[
                   { value: "全部", label: "全部" },
@@ -159,7 +159,7 @@ export const Monitor = () => {
               className="h-[2.75rem] w-[5.5rem]"
               onClick={() => navigate("/monitor/add")}
             >
-              <PlusOutlined className="pr-[.5rem]" />
+              <PlusOutlined className="pr-[.25rem]" />
               新增
             </Button>
           </div>

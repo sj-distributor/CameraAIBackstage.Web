@@ -16,7 +16,7 @@ export const AddSelectType = () => {
         <>
           {text.map((item, index) => (
             <div
-              className="hover:bg-[#F6F8FC] py-[1.5rem] px-[1rem] rounded-lg"
+              className="hover:bg-[#F6F8FC] py-[1.5rem] px-[1rem] rounded-lg text-[.875rem]"
               key={index}
               onClick={() =>
                 navigate("/monitor/configuration/" + "add" + "/" + item.id, {
@@ -62,7 +62,7 @@ export const AddSelectType = () => {
           <div className="mx-[16.375rem] my-[1rem] h-[calc(100%-8.125rem)]">
             <div className="flex items-center">
               <img src={menuIcon} />
-              <span className="text-[1.125rem] font-semibold py-[1rem]">
+              <span className="text-[1rem] font-semibold py-[1rem] pl-[.625rem]">
                 選擇類型
               </span>
             </div>

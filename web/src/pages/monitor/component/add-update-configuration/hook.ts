@@ -1,8 +1,9 @@
+import { Dayjs } from "dayjs";
 import { clone } from "ramda";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { ISelectUserDto } from "./props";
+import { ISelectUserDto, TimeType } from "./props";
 
 export const useAction = () => {
   const navigate = useNavigate();
@@ -17,12 +18,46 @@ export const useAction = () => {
     { title: "週日", value: false },
   ]);
 
-  const [userList, setUserList] = useState([
+  const selectWeekday = useMemo(() => {
+    return cronList.filter((x) => x.value);
+  }, [cronList]);
+
+  const [userList, setUserList] = useState<{ label: string; value: string }[]>([
     { label: "Ted.F", value: "Ted.F" },
     { label: "Ivan.W", value: "Ivan.W" },
     { label: "Winnie.X", value: "Winnie.X" },
     { label: "Koki.K", value: "Koki.K" },
   ]);
+
+  const [exceptionTypeList, setExceptionTypeList] = useState<
+    { label: string; value: number }[]
+  >([
+    { label: "識別人員", value: 1 },
+    { label: "識別車輛", value: 2 },
+  ]);
+
+  const [selectExceptionId, setSelectExceptionId] = useState<number | null>(
+    null
+  );
+
+  const [deviceList, setDeviceList] = useState<
+    { label: string; value: number }[]
+  >([
+    { label: "設備 1", value: 1 },
+    { label: "設備 2", value: 2 },
+  ]);
+
+  const [selectDeviceId, setSelectDeviceId] = useState<number | null>(null);
+
+  const [timeSetting, setTimeSetting] = useState<
+    [Dayjs | null, Dayjs | null] | null
+  >(null);
+
+  const [duration, setDuration] = useState<string>("");
+
+  const [durationTimeType, setDurationTimeType] = useState<TimeType | null>(
+    null
+  );
 
   const [selectUserList, setSelectUserList] = useState<ISelectUserDto[]>([]);
 
@@ -54,7 +89,9 @@ export const useAction = () => {
     setSelectUserList(newSelectList);
   };
 
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    navigate("/monitor");
+  };
 
   return {
     cronList,
@@ -67,5 +104,20 @@ export const useAction = () => {
     selectUserList,
     setSelectUserList,
     navigate,
+    setDuration,
+    duration,
+    durationTimeType,
+    setDurationTimeType,
+    selectWeekday,
+    exceptionTypeList,
+    setExceptionTypeList,
+    selectExceptionId,
+    setSelectExceptionId,
+    deviceList,
+    setDeviceList,
+    selectDeviceId,
+    setSelectDeviceId,
+    timeSetting,
+    setTimeSetting,
   };
 };
