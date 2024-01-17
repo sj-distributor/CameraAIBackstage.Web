@@ -69,6 +69,14 @@ export const useAction = () => {
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
+  const [previewOpen, setPreviewOpen] = useState<boolean>(false);
+
+  const [previewImage, setPreviewImage] = useState<string>("");
+
+  const [previewTitle, setPreviewTitle] = useState<string>("");
+
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+
   const getBase64 = (file: RcFile): Promise<string> =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -77,14 +85,6 @@ export const useAction = () => {
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = (error) => reject(error);
     });
-
-  const [previewOpen, setPreviewOpen] = useState<boolean>(false);
-
-  const [previewImage, setPreviewImage] = useState<string>("");
-
-  const [previewTitle, setPreviewTitle] = useState<string>("");
-
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const handleCancel = () => {
     setPreviewOpen(false);

@@ -29,48 +29,48 @@ export const PortraitList = () => {
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <img src={upload} />
-      <div className="text-[#9696A7] text-[12px]">點擊上傳</div>
+      <div className="text-[#9696A7] text-[.75rem]">點擊上傳</div>
     </button>
   );
 
   return (
     <div>
-      <div className="p-[24px] bg-white">
-        <div className="text-[18px] font-semibold">人像管理</div>
-        <div className="flex justify-between items-center m-[24px_0_16px]">
+      <div className="p-[1.5rem] bg-white">
+        <div className="text-[1.125rem] font-semibold">人像管理</div>
+        <div className="flex justify-between items-center m-[1.5rem_0_1rem]">
           <div>
             <Input
-              className="w-[280px]"
+              className="w-[17.5rem]"
               placeholder="搜索用戶名、部門、崗位、組別"
               suffix={<img src={search} />}
             />
           </div>
           <Button
-            className="flex justify-center items-center w-[88px] h-[44px]"
+            className="flex justify-center items-center w-[5.5rem] h-[2.75rem]"
             type="primary"
             onClick={() => setIsOpenModal(true)}
           >
-            <img src={add} className="mr-[6px] w-[16px] h-[16px]" />
+            <img src={add} className="mr-[.375rem] w-[1rem] h-[1rem]" />
             新增
           </Button>
         </div>
-        <div className="grid grid-cols-2 grid-rows-2 xl:grid-cols-3 xl:grid-rows-3 gap-[16px]">
+        <div className="grid grid-cols-2 grid-rows-2 xl:grid-cols-3 xl:grid-rows-3 gap-[1rem]">
           {portraitData.map((item, index) => {
             return (
               <div
                 key={index}
-                className="shadow-[0px_2px_3px_1px_rgb(0,0,0,0.07)] rounded-[16px]"
+                className="shadow-[0rem_.125rem_.1875rem_.0625rem_rgb(0,0,0,0.07)] rounded-[1rem]"
               >
-                <div className="p-[16px] flex">
-                  <div className="mr-[16px]">
+                <div className="p-[1rem] flex">
+                  <div className="mr-[1rem]">
                     {item.portraitUrl ? (
                       item.portraitUrl
                     ) : (
                       <img src={avatar} width={64} height={64} />
                     )}
                   </div>
-                  <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-[12px]">
-                    <div className="col-span-2 font-semibold text-[20px]">
+                  <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-[.75rem]">
+                    <div className="col-span-2 font-semibold text-[1.25rem]">
                       {item.name}
                     </div>
                     <div>部門：{item.department}</div>
@@ -79,16 +79,16 @@ export const PortraitList = () => {
                     <div>電話：{item.phone}</div>
                   </div>
                 </div>
-                <div className="p-[16px_24px] flex justify-end items-center bg-[#F6F8FC]">
-                  <div className="flex items-center justify-center w-[88px] h-[44px] rounded-[8px] text-[#F04E4E] border border-solid border-[#F04E4E] cursor-pointer mr-[16px]">
-                    <img src={trash} className="mr-[8px]" />
+                <div className="p-[1rem_1.5rem] flex justify-end items-center bg-[#F6F8FC]">
+                  <div className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#F04E4E] border border-solid border-[#F04E4E] cursor-pointer mr-[1rem]">
+                    <img src={trash} className="mr-[.5rem]" />
                     刪除
                   </div>
                   <div
                     onClick={() => setIsOpenModal(true)}
-                    className="flex items-center justify-center w-[88px] h-[44px] rounded-[8px] text-[#2853E3] border border-solid border-[#2853E3] cursor-pointer"
+                    className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#2853E3] border border-solid border-[#2853E3] cursor-pointer"
                   >
-                    <img src={edit} className="mr-[8px]" />
+                    <img src={edit} className="mr-[.5rem]" />
                     編輯
                   </div>
                 </div>
@@ -97,7 +97,7 @@ export const PortraitList = () => {
           })}
         </div>
       </div>
-      <div className="flex justify-between items-center bg-[#F6F8FC] p-[16px_0_16px_16px]">
+      <div className="flex justify-between items-center bg-[#F6F8FC] p-[1rem_0_1rem_1rem]">
         <div>
           共 <span className="text-[#2853E3]">200</span> 条
         </div>
@@ -111,10 +111,10 @@ export const PortraitList = () => {
 
       <CustomModal
         title={
-          <div className="text-[20px] font-semibold flex justify-between items-center mb-[24px]">
+          <div className="text-[1.25rem] font-semibold flex justify-between items-center mb-[1.5rem]">
             <div>新增人像</div>
             <CloseOutlined
-              className="text-[16px] cursor-pointer"
+              className="text-[1rem] cursor-pointer"
               onClick={() => setIsOpenModal(false)}
             />
           </div>
@@ -124,8 +124,8 @@ export const PortraitList = () => {
         onConfirm={() => setIsOpenModal(false)}
         modalWidth={680}
       >
-        <div className="relative p-[32px_0_8px_16px]">
-          <div className="absolute w-[680px] h-[2px] bg-[#F3F3F6] top-0 left-[-24px]" />
+        <div className="relative p-[2rem_0_.5rem_1rem]">
+          <div className="absolute w-[42.5rem] h-[.125rem] bg-[#F3F3F6] top-0 left-[-1.5rem]" />
           <Form
             name="basic"
             wrapperCol={{ span: 16 }}
@@ -140,10 +140,10 @@ export const PortraitList = () => {
                 { required: true, message: "Please input your username!" },
               ]}
             >
-              <Input placeholder="請輸入" className="w-[400px]" />
+              <Input placeholder="請輸入" className="w-[25rem]" />
             </Form.Item>
 
-            <div className="ml-[24px]">
+            <div className="ml-[1.5rem]">
               <Form.Item label="部門" name="department">
                 <Select
                   suffixIcon={<img src={down} />}
@@ -156,18 +156,18 @@ export const PortraitList = () => {
                 />
               </Form.Item>
               <Form.Item label="組別" name="group">
-                <Input placeholder="請輸入" className="w-[400px]" />
+                <Input placeholder="請輸入" className="w-[25rem]" />
               </Form.Item>
               <Form.Item label="崗位" name="post">
-                <Input placeholder="請輸入" className="w-[400px]" />
+                <Input placeholder="請輸入" className="w-[25rem]" />
               </Form.Item>
               <Form.Item label="電話" name="phone">
-                <Input placeholder="例如:188-6666-6666" className="w-[400px]" />
+                <Input placeholder="例如:188-6666-6666" className="w-[25rem]" />
               </Form.Item>
             </div>
 
             <Form.Item
-              className="ml-[13px]"
+              className="ml-[.8125rem]"
               label="頭像"
               name="portrait"
               rules={[
@@ -185,9 +185,9 @@ export const PortraitList = () => {
                 >
                   {fileList.length === 0 && uploadButton}
                 </Upload>
-                <div className="text-[10px] text-[#9696A7]">
+                <div className="text-[.625rem] text-[#9696A7]">
                   <div className="font-semibold">上傳人像小竅門：</div>
-                  <div>建議圖片比例為1:1，文件大小小於2MB，</div>
+                  <div>建議圖片比例為1:1，文件大小小于2MB，</div>
                   <div>保持視覺元素居中</div>
                 </div>
               </div>
