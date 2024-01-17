@@ -5,25 +5,28 @@ import {
   ConfigProvider,
   Form,
   Input,
+  message,
   Select,
   TimePicker,
 } from "antd";
+import FormItem from "antd/es/form/FormItem";
 import TextArea from "antd/es/input/TextArea";
-import { clone, isEmpty, T, values } from "ramda";
+import { clone, isEmpty } from "ramda";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 import downArrow from "@/assets/public/down-arrow.png";
 
 import { IMonitorConfigurationType } from "../../props";
 import { useAction } from "./hook";
-import { NotificationToolType, TimeType } from "./props";
+import { IValidationError, NotificationToolType, TimeType } from "./props";
 
 export const AddOrUpdateConfiguration = () => {
   const [form] = Form.useForm();
 
   const location = useLocation();
 
-  const { type, id } = location.state;
+  const { type } = location.state;
 
   const {
     cronList,
@@ -40,17 +43,19 @@ export const AddOrUpdateConfiguration = () => {
     durationTimeType,
     setDurationTimeType,
     exceptionTypeList,
-    // setExceptionTypeList,
     selectExceptionId,
     setSelectExceptionId,
     deviceList,
-    // setDeviceList,
     selectDeviceId,
     setSelectDeviceId,
     timeSetting,
     setTimeSetting,
     selectWeekday,
   } = useAction();
+
+  useEffect(() => {
+    form.setFieldValue("repeatEveryWeek", selectWeekday);
+  }, [form, selectWeekday]);
 
   return (
     <ConfigProvider
@@ -96,219 +101,146 @@ export const AddOrUpdateConfiguration = () => {
                 rules={[
                   {
                     required: true,
-                    validator: async () => {
-                      let errors: string = "";
-
-                      const hasFailed = false;
-
-                      // await Promise.all([
-                      //   [
-                      //     "exceptionType",
-                      //     "timeDuration",
-                      //     "deviceSelect",
-                      //     "timeSetting",
-                      //     "repeatEveryWeek",
-                      //   ].map((field) => {
-                      //     return form
-                      //       .validateFields([field])
-                      //       .then(() => {})
-                      //       .catch(() => {
-                      //         console.log(hasFailed, "hasFailed");
-
-                      //         hasFailed = true;
-                      //         if (field === "repeatEveryWeek") {
-                      //           errors = "請選擇重複週期";
-                      //         } else {
-                      //           errors = "請填寫完整信息";
-                      //         }
-                      //       });
-                      //   }),
-                      // ]);
-
-                      if (!hasFailed && errors) {
-                        errors = "";
-                      }
-
-                      if (errors) {
-                        return Promise.reject(errors);
-                      }
-
-                      return Promise.resolve();
-                    },
+                    message: "",
                   },
                 ]}
               >
-                <div className="border border-[#E7E8EE] border-solid rounded-2xl shadow-md">
-                  <div className="flex flex-row w-full p-[2rem_5.25rem_0rem_5.25rem]">
-                    {/* <Form.Item
-                      name="exceptionType"
-                      rules={[
-                        {
-                          required: true,
-                          validator: () => {
-                            if (selectExceptionId !== null) {
-                              return Promise.resolve();
-                            }
-
-                            return Promise.reject();
-                          },
-                        },
-                      ]}
-                      noStyle
-                    >
+                <div className="border border-[#E7E8EE] border-solid rounded-2xl shadow-md py-[1.5rem]">
+                  <div className="flex flex-row w-full p-[0rem_5.25rem]">
+                    <Form.Item>
                       <div className="flex flex-col w-[26.3125rem] pr-[2rem]">
                         <span className="pb-2">異常類型</span>
-                        <Select
-                          suffixIcon={<img src={downArrow} />}
-                          options={exceptionTypeList}
-                          onChange={(value) => setSelectExceptionId(value)}
-                        />
+                        <FormItem
+                          name="exceptionType"
+                          rules={[
+                            { required: true, message: "請選擇異常類型" },
+                          ]}
+                        >
+                          <Select
+                            suffixIcon={<img src={downArrow} />}
+                            options={exceptionTypeList}
+                            onChange={(value) => setSelectExceptionId(value)}
+                          />
+                        </FormItem>
                       </div>
-                    </Form.Item> */}
-                    {/* <Form.Item
-                      name="timeDuration"
-                      rules={[
-                        {
-                          required: true,
-                          validator: () => {
-                            if (!!duration && durationTimeType !== null) {
-                              return Promise.resolve();
-                            }
-
-                            return Promise.reject();
-                          },
-                        },
-                      ]}
-                      noStyle
-                    >
-                      <div className="flex flex-col w-[26.4375rem] pb-[1.5rem]">
+                    </Form.Item>
+                    <Form.Item>
+                      <div className="flex flex-col w-[26.4375rem]">
                         <span className="pb-2">持續時長</span>
                         <div className="flex flex-row">
-                          <Input
+                          <FormItem
                             className="mr-[.5rem] w-[77%]"
-                            placeholder="請輸入"
-                            value={duration}
-                            onChange={(e) => {
-                              const sanitizedValue = e.target.value.replace(
-                                /[^0-9.]/g,
-                                ""
-                              );
+                            name="time"
+                            rules={[{ required: true, message: "請輸入時長" }]}
+                          >
+                            <Input
+                              placeholder="請輸入"
+                              value={duration}
+                              onChange={(e) => {
+                                const sanitizedValue = e.target.value.replace(
+                                  /[^0-9.]/g,
+                                  ""
+                                );
 
-                              setDuration(sanitizedValue);
+                                setDuration(sanitizedValue);
+                              }}
+                            />
+                          </FormItem>
+
+                          <FormItem
+                            className="w-[23%]"
+                            name="timeType"
+                            rules={[{ required: true, message: "請選擇單位" }]}
+                          >
+                            <Select
+                              placeholder="秒"
+                              defaultActiveFirstOption
+                              options={[
+                                { value: TimeType.Second, label: "秒" },
+                                { value: TimeType.Minute, label: "分" },
+                                { value: TimeType.Hours, label: "時" },
+                              ]}
+                              value={durationTimeType}
+                              onChange={(value) => setDurationTimeType(value)}
+                              suffixIcon={<img src={downArrow} />}
+                            />
+                          </FormItem>
+                        </div>
+                      </div>
+                    </Form.Item>
+                  </div>
+                  <div className="flex flex-row w-full p-[0rem_5.25rem_0rem_5.25rem]">
+                    <Form.Item>
+                      <div className="flex flex-col w-[26.3125rem] pr-[2rem]">
+                        <span className="pb-2">選擇設備</span>
+                        <FormItem
+                          name="deviceSelect"
+                          rules={[
+                            { required: true, message: "請選擇至少一個設備" },
+                          ]}
+                        >
+                          <Select
+                            placeholder="選擇設備（可多選）"
+                            suffixIcon={<img src={downArrow} />}
+                            options={deviceList}
+                            onChange={(value) => setSelectDeviceId(value)}
+                          />
+                        </FormItem>
+                      </div>
+                    </Form.Item>
+                    <Form.Item>
+                      <div className="flex flex-col w-[26.4375rem]">
+                        <span className="pb-2">設置時間</span>
+                        <FormItem
+                          name="timeSetting"
+                          rules={[
+                            { required: true, message: "請選擇時間範圍" },
+                          ]}
+                        >
+                          <TimePicker.RangePicker
+                            placeholder={["開始時間", "結束時間"]}
+                            className="flex"
+                            value={timeSetting}
+                            onChange={(dates) => {
+                              setTimeSetting(dates);
                             }}
                           />
-                          <Select
-                            className="max-w-[23%]"
-                            placeholder="秒"
-                            defaultActiveFirstOption
-                            options={[
-                              { value: TimeType.Second, label: "秒" },
-                              { value: TimeType.Minute, label: "分" },
-                              { value: TimeType.Hours, label: "時" },
-                            ]}
-                            value={durationTimeType}
-                            onChange={(value) => setDurationTimeType(value)}
-                            suffixIcon={<img src={downArrow} />}
-                          />
-                        </div>
-                      </div>
-                    </Form.Item> */}
-                  </div>
-                  <div className="flex flex-row w-full p-[0rem_5.25rem_0rem_5.25rem]">
-                    <Form.Item
-                      name="deviceSelect"
-                      key="deviceSelect"
-                      rules={[
-                        {
-                          required: true,
-                          validator: () => {
-                            if (selectDeviceId !== null) {
-                              return Promise.resolve();
-                            }
-
-                            return Promise.reject();
-                          },
-                        },
-                      ]}
-                      noStyle
-                    >
-                      <div className="flex flex-col w-[26.3125rem] pr-[2rem] pb-[1.5rem]">
-                        <span className="pb-2">選擇設備</span>
-                        <Select
-                          placeholder="選擇設備（可多選）"
-                          suffixIcon={<img src={downArrow} />}
-                          options={deviceList}
-                          onChange={(value) => setSelectDeviceId(value)}
-                        />
-                      </div>
-                    </Form.Item>
-                    <Form.Item
-                      name="timeSetting"
-                      key="timeSetting"
-                      rules={[
-                        {
-                          required: true,
-                          validator: () => {
-                            if (timeSetting !== null) {
-                              return Promise.resolve();
-                            }
-
-                            return Promise.reject();
-                          },
-                        },
-                      ]}
-                      noStyle
-                    >
-                      <div className="flex flex-col w-[26.4375rem] pb-[1.5rem]">
-                        <span className="pb-2">設置時間</span>
-                        <TimePicker.RangePicker
-                          placeholder={["開始時間", "結束時間"]}
-                          className="flex"
-                          value={timeSetting}
-                          onChange={(dates) => {
-                            setTimeSetting(dates);
-                          }}
-                        />
+                        </FormItem>
                       </div>
                     </Form.Item>
                   </div>
                   <div className="flex flex-row w-full p-[0rem_5.25rem_0rem_5.25rem]">
-                    <Form.Item
-                      name="repeatEveryWeek"
-                      key="repeatEveryWeek"
-                      rules={[
-                        {
-                          required: true,
-                          validator: () => {
-                            if (selectWeekday) {
-                              return Promise.resolve();
-                            }
-
-                            return Promise.reject();
-                          },
-                        },
-                      ]}
-                      noStyle
-                    >
-                      <div className="flex flex-col w-[48rem] pb-[1.5rem]">
+                    <Form.Item>
+                      <div className="flex flex-col w-[48rem]">
                         <span className="pb-2">每週重複</span>
-                        <div className="flex justify-between">
-                          {cronList.map((item, index) => (
-                            <Button
-                              type={item.value ? "primary" : "default"}
-                              key={index}
-                              className="w-[6rem]"
-                              onClick={() => {
-                                const newList = clone(cronList);
 
-                                newList[index].value = !newList[index].value;
-                                setCronList(newList);
-                              }}
-                            >
-                              {item.title}
-                            </Button>
-                          ))}
-                        </div>
+                        <FormItem
+                          name="repeatEveryWeek"
+                          rules={[
+                            {
+                              required: true,
+                              message: "請選擇時間範圍",
+                            },
+                          ]}
+                        >
+                          <div className="flex justify-between">
+                            {cronList.map((item, index) => (
+                              <Button
+                                type={item.value ? "primary" : "default"}
+                                key={index}
+                                className="w-[6rem]"
+                                onClick={() => {
+                                  const newList = clone(cronList);
+
+                                  newList[index].value = !newList[index].value;
+                                  setCronList(newList);
+                                }}
+                              >
+                                {item.title}
+                              </Button>
+                            ))}
+                          </div>
+                        </FormItem>
                       </div>
                     </Form.Item>
                   </div>

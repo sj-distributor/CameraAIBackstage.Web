@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { Dayjs } from "dayjs";
 import { clone } from "ramda";
 import { useMemo, useState } from "react";
@@ -90,6 +91,8 @@ export const useAction = () => {
   };
 
   const onSubmit = () => {
+    message.success("chenggong");
+
     navigate("/monitor");
   };
 

@@ -25,3 +25,9 @@ export enum DayOfWeekEnum {
   Saturday = "6",
   Sunday = "7",
 }
+
+export interface IValidationError {
+  name: string[];
+  errors: string[];
+  errorFields: IValidationError[];
+}
