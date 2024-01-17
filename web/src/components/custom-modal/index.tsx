@@ -15,7 +15,7 @@ export const CustomModal = ({
   children: JSX.Element;
   open: boolean;
   className?: string;
-  modalWidth?: string;
+  modalWidth?: number;
 }) => {
   return (
     <Modal

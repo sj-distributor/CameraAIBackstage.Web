@@ -116,3 +116,8 @@ code {
 .ant-modal-wrap::-webkit-scrollbar {
   display: none;
 }
+
+.portraitUploadStyle .ant-upload {
+  background-color: #f6f8fc;
+  margin-bottom: 0 !important;
+}
