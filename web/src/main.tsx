@@ -1,4 +1,5 @@
 import "./index.css";
+import "./i18n/ i18n";
 
 import ReactDOM from "react-dom/client";
 

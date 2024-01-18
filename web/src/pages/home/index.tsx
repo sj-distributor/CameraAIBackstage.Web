@@ -1,16 +1,19 @@
-import { Dropdown, Layout, Menu, MenuProps } from "antd";
+import { GlobalOutlined } from "@ant-design/icons";
+import { Dropdown, Layout, Menu, MenuProps, Select } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { SubMenuType } from "antd/es/menu/hooks/useItems";
 import { Outlet } from "react-router-dom";
 
 import { KeyIcon, LogOutIcon } from "@/assets/top-menu";
+import { useAuth } from "@/hooks/use-auth";
 import { routerList } from "@/routes";
 
 import avatar from "../../assets/public/avatar.png";
 import downArrow from "../../assets/public/down-arrow.png";
 import language from "../../assets/public/language.png";
 import { useAction } from "./hook";
+
 const headerStyle: React.CSSProperties = {
   height: "4rem",
   backgroundColor: "white",
@@ -77,6 +80,8 @@ const getMenu = () => {
 export const Home = () => {
   const { isHover, navigate, setIsHover } = useAction();
 
+  const { language, t, locale, changeLanguage } = useAuth();
+
   const items: MenuProps["items"] = [
     {
       label: (
@@ -125,15 +130,41 @@ export const Home = () => {
       </Sider>
       <Layout>
         <Header style={headerStyle}>
-          <div className="flex justify-center items-center mr-[2rem]">
-            <img src={language} className="mr-[.375rem]" />
-            中文
-          </div>
+          <Select
+            className="mr-4"
+            value={language}
+            style={{ width: 120 }}
+            defaultValue="ch"
+            bordered={false}
+            onChange={(value) => changeLanguage(value)}
+            popupClassName="navigation-select-dropdown teamNameSelect"
+            options={[
+              {
+                value: "ch",
+                label: (
+                  <div>
+                    <GlobalOutlined className="mr-2" />
+                    中文繁體
+                  </div>
+                ),
+              },
+              {
+                value: "en",
+                label: (
+                  <div>
+                    <GlobalOutlined className="mr-2" />
+                    English
+                  </div>
+                ),
+              },
+            ]}
+          />
           <Dropdown
             menu={{ items }}
             trigger={["click"]}
             placement="bottom"
             rootClassName="dropDownMenu"
+            open
           >
             <div className="flex items-center">
               <div className="flex justify-center items-center mr-[2rem]">
