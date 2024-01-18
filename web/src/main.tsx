@@ -1,5 +1,6 @@
 import "./index.css";
 import "./i18n/ i18n";
+import "./fonts/iconfont/iconfont.css";
 
 import ReactDOM from "react-dom/client";
 

@@ -1,0 +1,20 @@
+@font-face {
+  font-family: "iconfont"; /* Project id  */
+  src: url("iconfont.ttf?t=1705565566642") format("truetype");
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 1.25rem;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-sign_out:before {
+  content: "\e7e4";
+}
+
+.icon-a-Key2:before {
+  content: "\e75f";
+}

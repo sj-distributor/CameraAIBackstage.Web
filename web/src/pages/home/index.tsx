@@ -78,19 +78,15 @@ const getMenu = () => {
 };
 
 export const Home = () => {
-  const { isHover, navigate, setIsHover } = useAction();
+  const { navigate } = useAction();
 
-  const { language, t, locale, changeLanguage } = useAuth();
+  const { language, changeLanguage } = useAuth();
 
   const items: MenuProps["items"] = [
     {
       label: (
-        <div
-          className="flex items-center hover:text-[#2853e3]"
-          onMouseEnter={() => setIsHover({ ...isHover, updatePassword: true })}
-          onMouseLeave={() => setIsHover({ ...isHover, updatePassword: false })}
-        >
-          <KeyIcon isHover={isHover.updatePassword} />
+        <div className="flex items-center hover:text-[#2853e3]">
+          <span className="iconfont icon-a-Key2" />
           <div className="ml-[.5rem]">修改密碼</div>
         </div>
       ),
@@ -100,13 +96,11 @@ export const Home = () => {
       label: (
         <div
           className="flex items-center hover:text-[#2853e3]"
-          onMouseEnter={() => setIsHover({ ...isHover, logOut: true })}
-          onMouseLeave={() => setIsHover({ ...isHover, logOut: false })}
           onClick={() => {
             navigate("login");
           }}
         >
-          <LogOutIcon isHover={isHover.logOut} />
+          <span className="iconfont icon-sign_out" />
           <div className="ml-[.5rem]">退出登錄</div>
         </div>
       ),
@@ -164,7 +158,6 @@ export const Home = () => {
             trigger={["click"]}
             placement="bottom"
             rootClassName="dropDownMenu"
-            open
           >
             <div className="flex items-center">
               <div className="flex justify-center items-center mr-[2rem]">
