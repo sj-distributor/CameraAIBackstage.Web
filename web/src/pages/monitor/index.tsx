@@ -208,7 +208,7 @@ export const Monitor = () => {
         open={isDeleteOpen}
         className={"customModal"}
       >
-        <span className="pl-[2rem]">請確認是否刪除類型？</span>
+        <span className="pl-[2rem]">請確認是否刪除該配置？</span>
       </CustomModal>
     </ConfigProvider>
   );

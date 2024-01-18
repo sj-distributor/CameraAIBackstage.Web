@@ -1,11 +1,17 @@
 import { useUpdateEffect } from "ahooks";
-import { Form, message } from "antd";
+import { Form } from "antd";
 import { Dayjs } from "dayjs";
 import { clone } from "ramda";
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { ISelectUserDto, TimeType } from "./props";
+import {
+  ICronListDto,
+  IOptionsNumberDto,
+  IOptionsStringDto,
+  ISelectUserDto,
+  TimeType,
+} from "./props";
 
 export const useAction = () => {
   const navigate = useNavigate();
@@ -16,7 +22,7 @@ export const useAction = () => {
 
   const { type } = location.state;
 
-  const [cronList, setCronList] = useState([
+  const [cronList, setCronList] = useState<ICronListDto[]>([
     { title: "週一", value: false },
     { title: "週二", value: false },
     { title: "週三", value: false },
@@ -30,7 +36,7 @@ export const useAction = () => {
     return cronList.filter((x) => x.value);
   }, [cronList]);
 
-  const [userList, setUserList] = useState<{ label: string; value: string }[]>([
+  const [userList, setUserList] = useState<IOptionsStringDto[]>([
     { label: "Ted.F", value: "Ted.F" },
     { label: "Ivan.W", value: "Ivan.W" },
     { label: "Winnie.X", value: "Winnie.X" },
@@ -38,7 +44,7 @@ export const useAction = () => {
   ]);
 
   const [exceptionTypeList, setExceptionTypeList] = useState<
-    { label: string; value: number }[]
+    IOptionsNumberDto[]
   >([
     { label: "識別人員", value: 1 },
     { label: "識別車輛", value: 2 },
@@ -48,9 +54,7 @@ export const useAction = () => {
     null
   );
 
-  const [deviceList, setDeviceList] = useState<
-    { label: string; value: number }[]
-  >([
+  const [deviceList, setDeviceList] = useState<IOptionsNumberDto[]>([
     { label: "設備 1", value: 1 },
     { label: "設備 2", value: 2 },
   ]);
@@ -98,8 +102,6 @@ export const useAction = () => {
   };
 
   const onSubmit = () => {
-    message.success("chenggong");
-
     navigate("/monitor");
   };
 

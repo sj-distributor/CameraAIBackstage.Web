@@ -31,3 +31,18 @@ export interface IValidationError {
   errors: string[];
   errorFields: IValidationError[];
 }
+
+export interface ICronListDto {
+  title: string;
+  value: boolean;
+}
+
+export interface IOptionsStringDto {
+  label: string;
+  value: string;
+}
+
+export interface IOptionsNumberDto {
+  label: string;
+  value: number;
+}
