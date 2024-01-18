@@ -1,13 +1,20 @@
-import { message } from "antd";
+import { useUpdateEffect } from "ahooks";
+import { Form, message } from "antd";
 import { Dayjs } from "dayjs";
 import { clone } from "ramda";
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { ISelectUserDto, TimeType } from "./props";
 
 export const useAction = () => {
   const navigate = useNavigate();
+
+  const [form] = Form.useForm();
+
+  const location = useLocation();
+
+  const { type } = location.state;
 
   const [cronList, setCronList] = useState([
     { title: "週一", value: false },
@@ -96,6 +103,11 @@ export const useAction = () => {
     navigate("/monitor");
   };
 
+  useUpdateEffect(() => {
+    form.setFieldValue("repeatEveryWeek", selectWeekday);
+    form.validateFields(["repeatEveryWeek"]);
+  }, [form, selectWeekday]);
+
   return {
     cronList,
     setCronList,
@@ -122,5 +134,7 @@ export const useAction = () => {
     setSelectDeviceId,
     timeSetting,
     setTimeSetting,
+    form,
+    type,
   };
 };
