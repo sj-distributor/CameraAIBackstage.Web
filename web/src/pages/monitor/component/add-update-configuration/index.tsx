@@ -164,6 +164,7 @@ export const AddOrUpdateConfiguration = () => {
                           suffixIcon={<img src={downArrow} />}
                           options={deviceList}
                           onChange={(value) => setSelectDeviceId(value)}
+                          mode="multiple"
                         />
                       </FormItem>
                     </div>
@@ -415,6 +416,7 @@ export const AddOrUpdateConfiguration = () => {
                         <Select
                           placeholder="請選擇（可多選）"
                           suffixIcon={<img src={downArrow} />}
+                          mode="multiple"
                         />
                       </Form.Item>
                       <Form.Item label="廣播信息">
@@ -430,6 +432,7 @@ export const AddOrUpdateConfiguration = () => {
                         <Select
                           placeholder="請選擇（可多選）"
                           suffixIcon={<img src={downArrow} />}
+                          mode="multiple"
                         />
                       </Form.Item>
                     </div>
