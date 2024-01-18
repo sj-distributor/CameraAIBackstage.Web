@@ -59,15 +59,15 @@ export const AddOrUpdateConfiguration = () => {
       }}
     >
       <div className="relative">
-        <div className="bg-white h-[calc(100vh-3.25rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
+        <div className="bg-white h-[calc(100vh-3.25rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar min-w-[35rem]">
           <span className="text-[1.125rem] text-[#5F6279]">監測管理 / </span>
           <span className="text-[1.125rem] font-semibold tracking-tight">
             {type === IMonitorConfigurationType.Update ? "修改" : "新增"}配置
           </span>
-          <div className="mx-[15.5625rem] my-[1rem] h-[calc(100%-7.2rem)]">
+          <div className="my-[1rem] h-[calc(100%-7.2rem)] flex justify-center">
             <Form
               onFinish={onSubmit}
-              className="p-[2rem_1.5rem] h-full overflow-y-auto no-scrollbar"
+              className="p-[2rem_1.5rem] h-full overflow-y-auto no-scrollbar w-[71.25rem]"
               form={form}
               layout="vertical"
               autoComplete="off"
@@ -92,7 +92,7 @@ export const AddOrUpdateConfiguration = () => {
                 ]}
               >
                 <div className="border border-[#E7E8EE] border-solid rounded-2xl shadow-md py-[1.5rem]">
-                  <div className="flex flex-row w-full p-[0rem_5.25rem]">
+                  <div className="flex flex-row w-full p-[0rem_5.25rem] flex-wrap">
                     <div className="flex flex-col w-[26.3125rem] pr-[2rem]">
                       <span className="pb-2">異常類型</span>
                       <FormItem
@@ -150,7 +150,7 @@ export const AddOrUpdateConfiguration = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-row w-full p-[0rem_5.25rem_0rem_5.25rem]">
+                  <div className="flex flex-row w-full p-[0rem_5.25rem_0rem_5.25rem] flex-wrap">
                     <div className="flex flex-col w-[26.3125rem] pr-[2rem]">
                       <span className="pb-2">選擇設備</span>
                       <FormItem
@@ -205,7 +205,7 @@ export const AddOrUpdateConfiguration = () => {
                           },
                         ]}
                       >
-                        <div className="flex justify-between">
+                        <div className="flex justify-between flex-wrap">
                           {cronList.map((item, index) => (
                             <Button
                               type={item.value ? "primary" : "default"}

@@ -70,7 +70,7 @@ export const Monitor = () => {
       dataIndex: "operate",
       width: "16.6%",
       render: (_, record, index) => (
-        <div>
+        <div className="flex-wrap flex">
           <Button
             type="link"
             className="w-[6rem]"
@@ -128,7 +128,7 @@ export const Monitor = () => {
           <span className="text-[1.125rem] font-semibold tracking-tight">
             監測管理
           </span>
-          <div className="flex flex-row pt-[1.625rem] justify-between">
+          <div className="flex flex-row pt-[1.625rem] justify-between flex-wrap">
             <div>
               <Select
                 className="mr-[1rem] w-[13.5rem]"

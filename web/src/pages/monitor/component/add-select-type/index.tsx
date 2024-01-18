@@ -59,26 +59,28 @@ export const AddSelectType = () => {
           <span className="text-[1.125rem] font-semibold tracking-tight">
             / 新增
           </span>
-          <div className="mx-[16.375rem] my-[1rem] h-[calc(100%-8.125rem)]">
-            <div className="flex items-center">
-              <img src={menuIcon} />
-              <span className="text-[1rem] font-semibold py-[1rem] pl-[.625rem]">
-                選擇類型
-              </span>
-            </div>
-            <div className="border border-[#E7E8EE] border-solid rounded-lg p-[2rem_1.5rem] h-full overflow-y-auto customScollbar shadow-md">
-              <Collapse
-                bordered={false}
-                defaultActiveKey={["1"]}
-                expandIcon={() => (
-                  <div className="flex items-center font-semibold">
-                    <img src={collapseDown} />
-                    <img src={cameraTag} className="pl-4" />
-                  </div>
-                )}
-                style={{ background: token.colorBgContainer }}
-                items={collapseItem()}
-              />
+          <div className="my-[1rem] h-[calc(100%-8.125rem)] flex justify-center">
+            <div className=" w-[71.25rem]">
+              <div className="flex items-center">
+                <img src={menuIcon} />
+                <span className="text-[1rem] font-semibold py-[1rem] pl-[.625rem]">
+                  選擇類型
+                </span>
+              </div>
+              <div className="border border-[#E7E8EE] border-solid rounded-lg p-[2rem_1.5rem] h-full overflow-y-auto customScollbar shadow-md">
+                <Collapse
+                  bordered={false}
+                  defaultActiveKey={["1"]}
+                  expandIcon={() => (
+                    <div className="flex items-center font-semibold">
+                      <img src={collapseDown} />
+                      <img src={cameraTag} className="pl-4" />
+                    </div>
+                  )}
+                  style={{ background: token.colorBgContainer }}
+                  items={collapseItem()}
+                />
+              </div>
             </div>
           </div>
         </div>
