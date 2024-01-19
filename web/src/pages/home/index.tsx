@@ -3,15 +3,15 @@ import { Dropdown, Layout, Menu, MenuProps, Select } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { SubMenuType } from "antd/es/menu/hooks/useItems";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
-import { KeyIcon, LogOutIcon } from "@/assets/top-menu";
+import { MonitorIcon, SystemIcon } from "@/assets/sider";
 import { useAuth } from "@/hooks/use-auth";
-import { routerList } from "@/routes";
+import KEYS from "@/i18n/language/keys/home-menu-keys";
+import { IRouterList } from "@/services/dtos/routes";
 
 import avatar from "../../assets/public/avatar.png";
 import downArrow from "../../assets/public/down-arrow.png";
-import language from "../../assets/public/language.png";
 import { useAction } from "./hook";
 
 const headerStyle: React.CSSProperties = {
@@ -48,46 +48,112 @@ const siderHeaderStyle: React.CSSProperties = {
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-const getMenu = () => {
-  if (!routerList) return;
-
-  const items = routerList.reduce((accumulator, item) => {
-    if (item.path !== "") {
-      const menuItem: MenuItem | SubMenuType = {
-        label: item.name,
-        key: item.path,
-        icon: item.icon,
-      };
-
-      if (item.children) {
-        (menuItem as SubMenuType).children = item.children
-          .filter((child) => child.path !== "")
-          .map((child) => ({
-            label: child.name,
-            key: child.path,
-          }));
-      }
-
-      accumulator.push(menuItem);
-    }
-
-    return accumulator;
-  }, [] as MenuItem[]);
-
-  return items;
-};
-
 export const Home = () => {
   const { navigate } = useAction();
 
-  const { language, changeLanguage } = useAuth();
+  const { language, changeLanguage, t } = useAuth();
+
+  const routerList: IRouterList[] = [
+    {
+      path: "/user",
+      name: t(KEYS.USER_MANAGEMENT, { ns: "homeMenu" }),
+      icon: <MonitorIcon path="/user" />,
+      children: [
+        { path: "" },
+        {
+          path: "/user/list",
+          name: t(KEYS.USER_LIST, { ns: "homeMenu" }),
+        },
+        {
+          path: "/user/permissions",
+          name: t(KEYS.USER_PERMISSIONS, { ns: "homeMenu" }),
+        },
+      ],
+    },
+    {
+      path: "/equipment",
+      name: t(KEYS.DEVICE_MANAGEMENT, { ns: "homeMenu" }),
+      icon: <MonitorIcon path="/equipment" />,
+      children: [
+        { path: "" },
+        {
+          path: "/equipment/list",
+          name: t(KEYS.DEVICE_LIST, { ns: "homeMenu" }),
+        },
+        {
+          path: "/equipment/type",
+          name: t(KEYS.DEVICE_TYPE, { ns: "homeMenu" }),
+        },
+      ],
+    },
+    {
+      path: "/monitor",
+      name: t(KEYS.MONITOR, { ns: "homeMenu" }),
+      icon: <MonitorIcon path="/monitor" />,
+    },
+    {
+      path: "/system",
+      name: t(KEYS.SYSTEM_MANAGEMENT, { ns: "homeMenu" }),
+      icon: <SystemIcon path="/system" />,
+      children: [
+        { path: "" },
+        {
+          path: "/system/portrait",
+          name: t(KEYS.PORTRAIT_LIST, { ns: "homeMenu" }),
+        },
+        {
+          path: "/system/license",
+          name: t(KEYS.LICENSE_PLATE_MANAGEMENT, { ns: "homeMenu" }),
+        },
+        {
+          path: "/system/area",
+          name: t(KEYS.AREA_MANAGEMENT, { ns: "homeMenu" }),
+        },
+        {
+          path: "/system/log",
+          name: t(KEYS.OPERATION_LOG, { ns: "homeMenu" }),
+        },
+      ],
+    },
+  ];
+
+  const getMenu = () => {
+    if (!routerList) return;
+
+    const items = routerList.reduce((accumulator, item) => {
+      if (item.path !== "") {
+        const menuItem: MenuItem | SubMenuType = {
+          label: item.name,
+          key: item.path,
+          icon: item.icon,
+        };
+
+        if (item.children) {
+          (menuItem as SubMenuType).children = item.children
+            .filter((child) => child.path !== "")
+            .map((child) => ({
+              label: child.name,
+              key: child.path,
+            }));
+        }
+
+        accumulator.push(menuItem);
+      }
+
+      return accumulator;
+    }, [] as MenuItem[]);
+
+    return items;
+  };
 
   const items: MenuProps["items"] = [
     {
       label: (
         <div className="flex items-center hover:text-[#2853e3]">
           <span className="iconfont icon-a-Key2" />
-          <div className="ml-[.5rem]">修改密碼</div>
+          <div className="ml-[.5rem]">
+            {t(KEYS.CHANGE_PASSWORD, { ns: "homeMenu" })}
+          </div>
         </div>
       ),
       key: "0",
@@ -101,7 +167,9 @@ export const Home = () => {
           }}
         >
           <span className="iconfont icon-sign_out" />
-          <div className="ml-[.5rem]">退出登錄</div>
+          <div className="ml-[.5rem]">
+            {t(KEYS.SIGN_OUT, { ns: "homeMenu" })}
+          </div>
         </div>
       ),
       key: "1",

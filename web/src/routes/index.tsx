@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import { MonitorIcon, SystemIcon } from "@/assets/sider";
 import { AuthStatus } from "@/hooks/auth-status";
 import { EquipmentList } from "@/pages/equipment/equipment-list";
 import { EquipmentType } from "@/pages/equipment/equipment-type";
@@ -16,79 +15,67 @@ import { UserList } from "@/pages/user/user-lilst";
 import { UserPermissions } from "@/pages/user/user-permissions";
 import { IRouterList } from "@/services/dtos/routes";
 
-export const routerList: IRouterList[] = [
-  {
-    path: "/user",
-    element: <Container />,
-    name: "用戶管理",
-    icon: <MonitorIcon path="/user" />,
-    children: [
-      { path: "", element: <Navigate to={"/user/list"} /> },
-      { path: "/user/list", element: <UserList />, name: "用戶列表" },
-      {
-        path: "/user/permissions",
-        element: <UserPermissions />,
-        name: "用戶權限",
-      },
-    ],
-  },
-  {
-    path: "/equipment",
-    element: <Container />,
-    name: "設備管理",
-    icon: <MonitorIcon path="/equipment" />,
-    children: [
-      { path: "", element: <Navigate to={"/equipment/list"} /> },
-      {
-        path: "/equipment/list",
-        element: <EquipmentList />,
-        name: "設備列表",
-      },
-      {
-        path: "/equipment/type",
-        element: <EquipmentType />,
-        name: "設備類型",
-      },
-    ],
-  },
-  {
-    path: "/monitor",
-    element: <Monitor />,
-    name: "監測管理",
-    icon: <MonitorIcon path="/monitor" />,
-  },
-  {
-    path: "/system",
-    element: <Container />,
-    name: "系統管理",
-    icon: <SystemIcon path="/system" />,
-    children: [
-      { path: "", element: <Navigate to={"/system/portrait"} /> },
-      {
-        path: "/system/portrait",
-        element: <PortraitList />,
-        name: "人像列表",
-      },
-      {
-        path: "/system/license",
-        element: <LicensePlateManagement />,
-        name: "車牌管理",
-      },
-      {
-        path: "/system/area",
-        element: <AreaManagement />,
-        name: "區域管理",
-      },
-      {
-        path: "/system/log",
-        element: <OperationLog />,
-        name: "操作日誌",
-      },
-    ],
-  },
-];
-
 export const Router = () => {
+  const routerList: IRouterList[] = [
+    {
+      path: "/user",
+      element: <Container />,
+      children: [
+        { path: "", element: <Navigate to={"/user/list"} /> },
+        {
+          path: "/user/list",
+          element: <UserList />,
+        },
+        {
+          path: "/user/permissions",
+          element: <UserPermissions />,
+        },
+      ],
+    },
+    {
+      path: "/equipment",
+      element: <Container />,
+      children: [
+        { path: "", element: <Navigate to={"/equipment/list"} /> },
+        {
+          path: "/equipment/list",
+          element: <EquipmentList />,
+        },
+        {
+          path: "/equipment/type",
+          element: <EquipmentType />,
+        },
+      ],
+    },
+    {
+      path: "/monitor",
+      element: <Monitor />,
+    },
+    {
+      path: "/system",
+      element: <Container />,
+      children: [
+        { path: "", element: <Navigate to={"/system/portrait"} /> },
+        {
+          path: "/system/portrait",
+          element: <PortraitList />,
+        },
+        {
+          path: "/system/license",
+          element: <LicensePlateManagement />,
+        },
+        {
+          path: "/system/area",
+          element: <AreaManagement />,
+        },
+        {
+          path: "/system/log",
+          element: <OperationLog />,
+        },
+      ],
+    },
+  ];
+
   return (
     <Routes>
       <Route path="/login" element={<Login />} />

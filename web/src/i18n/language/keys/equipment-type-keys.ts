@@ -1,0 +1,15 @@
+export default {
+  DEVICE_TYPE_ID: "DeviceTypeID",
+  DEVICE_TYPE: "DeviceType",
+  REMARKS: "Remarks",
+  ADD_TYPE: "AddType",
+  INSTRUCTION_MANUAL: "InstructionManual",
+  PLEASE_ENTER_DEVICE_TYPE: "PleaseEnterDeviceTypeName",
+  PLEASE_ENTER_INSTRUCTION_MANUAL: "PleaseEnterTheDeviceTypeRemarks",
+  OPERATE: "Operate",
+  EDIT: "Edit",
+  DELETE: "Delete",
+  MODIFICATION_TYPE: "ModifyType",
+  OPERATION_CONFIRMATION: "OperationConfirmation",
+  PLEASE_CONFIRM_WHETHER_TO_DELETE: "PleaseConfirmWhetherToDelete?",
+};

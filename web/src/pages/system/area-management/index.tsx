@@ -2,6 +2,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Pagination, Table, TableColumnsType } from "antd";
 
 import { CustomModal } from "@/components/custom-modal";
+import KEYS from "@/i18n/language/keys/area-management-keys";
 
 import { AddAreaModal } from "./conponents/add-area-model";
 import { useAction } from "./hook";
@@ -21,31 +22,32 @@ export const AreaManagement = () => {
     handleAddInput,
     handleRemoveInput,
     inputFields,
+    t,
   } = useAction();
 
   const columns: TableColumnsType<IAreaManagementData> = [
     {
-      title: "區域ID",
+      title: t(KEYS.AREA_ID, { ns: "areaManagement" }),
       dataIndex: "areaId",
       width: "10%",
     },
     {
-      title: "區域｜名稱",
+      title: t(KEYS.AREA_NAME, { ns: "areaManagement" }),
       dataIndex: "areaName",
       width: "10%",
     },
     {
-      title: "區域地址",
+      title: t(KEYS.AREA_ADDRESS, { ns: "areaManagement" }),
       dataIndex: "areaAddress",
       width: "50%",
     },
     {
-      title: "負責人",
+      title: t(KEYS.PRINCIPAL, { ns: "areaManagement" }),
       dataIndex: "person",
       width: "10%",
     },
     {
-      title: "操作",
+      title: t(KEYS.OPERATE, { ns: "areaManagement" }),
       dataIndex: "operate",
       width: "20%",
       render: (_, __, index) => (
@@ -55,7 +57,7 @@ export const AreaManagement = () => {
             className="w-[6rem]"
             onClick={() => setIsModalOpen(true)}
           >
-            編輯
+            {t(KEYS.EDIT, { ns: "areaManagement" })}
           </Button>
           <Button
             type="link"
@@ -64,7 +66,7 @@ export const AreaManagement = () => {
               setIsDeleteIndex(index);
             }}
           >
-            刪除
+            {t(KEYS.DELETE, { ns: "areaManagement" })}
           </Button>
         </div>
       ),
@@ -75,12 +77,14 @@ export const AreaManagement = () => {
     <>
       <div className="bg-white h-full w-full flex-col p-[1.5rem]">
         <span className="text-[1.125rem] font-semibold tracking-tight">
-          區域管理
+          {t(KEYS.AREA_MANAGEMENT, { ns: "areaManagement" })}
         </span>
         <div className="mt-[1.5rem] mb-[1.125rem] h-[2.5rem] flex justify-between">
           <Input
             className="w-[17.5rem] h-[2.2rem]"
-            placeholder="搜索區域ID、區域地址"
+            placeholder={t(KEYS.SEARCH_AREA_ID_AREA_ADDRESS, {
+              ns: "areaManagement",
+            })}
             suffix={
               <SearchOutlined
                 style={{
@@ -98,7 +102,7 @@ export const AreaManagement = () => {
             className="w-[5.5rem] h-[2.2rem] text-center"
             onClick={() => setIsModalOpen(true)}
           >
-            + 新增
+            + {t(KEYS.ADD, { ns: "areaManagement" })}
           </Button>
         </div>
         <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">
@@ -137,7 +141,7 @@ export const AreaManagement = () => {
       <CustomModal
         title={
           <div className="text-[1.25rem] font-semibold tracking-tight leading-[1.875rem]">
-            新增區域
+            {t(KEYS.ADD_AREA, { ns: "areaManagement" })}
           </div>
         }
         onCancle={() => setIsModalOpen(false)}

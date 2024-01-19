@@ -1,33 +1,13 @@
-import { TableColumnsType, TimeRangePickerProps } from "antd";
+import { TimeRangePickerProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
+
+import { useAuth } from "@/hooks/use-auth";
 
 import { IOperationLogData } from "./props";
 
 export const useAction = () => {
-  const columns: TableColumnsType<IOperationLogData> = [
-    {
-      title: "序號",
-      dataIndex: "id",
-      sorter: (a, b) => a.id - b.id,
-      width: "13%",
-    },
-    {
-      title: "用戶名",
-      dataIndex: "userName",
-      width: "11%",
-    },
-    {
-      title: "操作內容",
-      dataIndex: "operateContent",
-      width: "51%",
-    },
-    {
-      title: "操作時間",
-      dataIndex: "OperateTime",
-      width: "25%",
-    },
-  ];
+  const { t } = useAuth();
 
   const data: IOperationLogData[] = [
     {
@@ -89,7 +69,6 @@ export const useAction = () => {
   ];
 
   return {
-    columns,
     data,
     searchValue,
     isTableLoading,
@@ -101,5 +80,6 @@ export const useAction = () => {
     onRangeChange,
     startDate,
     endDate,
+    t,
   };
 };
