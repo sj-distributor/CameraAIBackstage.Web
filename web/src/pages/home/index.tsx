@@ -199,6 +199,7 @@ export const Home = () => {
             defaultValue="ch"
             bordered={false}
             onChange={(value) => changeLanguage(value)}
+            suffixIcon={false}
             popupClassName="navigation-select-dropdown teamNameSelect"
             options={[
               {
