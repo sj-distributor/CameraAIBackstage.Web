@@ -108,5 +108,6 @@ export const useAction = () => {
     setVideoSpeed,
     videoDuration,
     swiperRef,
+    details,
   };
 };

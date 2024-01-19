@@ -53,7 +53,47 @@ export const WarningDetails = () => {
     setVideoSpeed,
     timeAxisList,
     videoDuration,
+    details,
   } = useAction();
+
+  const WarnDataVisualizer = (props: {
+    warnData: {
+      startTime: string;
+      endTime: string;
+    }[];
+    type: "car" | "man";
+    index: number;
+  }) => {
+    const { warnData, index, type } = props;
+
+    return (
+      <>
+        {warnData.map((item, i) => {
+          const perMinuteWidth = swiperRef.current.swiper.width / 40;
+
+          const left =
+            dayjs(item.startTime).diff(
+              dayjs(details.startTime).add(index * 40, "minute"),
+              "minute"
+            ) * perMinuteWidth;
+
+          const width =
+            dayjs(item.endTime).diff(dayjs(item.startTime), "minute") *
+            perMinuteWidth;
+
+          return (
+            <div
+              key={index}
+              style={{ left: `${left}px`, width: `${width}px` }}
+              className={`rounded-[2.875rem] ${
+                type === "car" ? "bg-[#2853E3]" : "bg-[#34A46E]"
+              } absolute h-4`}
+            />
+          );
+        })}
+      </>
+    );
+  };
 
   return (
     <div className="h-full flex flex-col">
@@ -165,7 +205,7 @@ export const WarningDetails = () => {
 
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, FreeMode, A11y]}
-        spaceBetween={10}
+        spaceBetween={0}
         slidesPerView={1}
         ref={swiperRef}
         scrollbar={{ draggable: true, hide: true }}
@@ -181,18 +221,59 @@ export const WarningDetails = () => {
           <ArrowLeftIcon />
         </div>
         {timeAxisList?.map((item, index) => {
+          const warnData = {
+            man: [
+              {
+                startTime: "2023-05-02 12:02:00",
+                endTime: "2023-05-02 12:12:00",
+              },
+              {
+                startTime: "2023-05-02 12:14:00",
+                endTime: "2023-05-02 12:20:00",
+              },
+            ],
+            car: [
+              {
+                startTime: "2023-05-02 12:18:00",
+                endTime: "2023-05-02 12:21:00",
+              },
+            ],
+          };
+
+          const currentStartTime = dayjs(details.startTime).add(
+            index + 1 * 40,
+            "minute"
+          );
+
+          const currentCarData = warnData.car.filter(
+            (item) => dayjs(item.startTime) < currentStartTime
+          );
+
+          const currentManData = warnData.man.filter(
+            (item) => dayjs(item.startTime) < currentStartTime
+          );
+
           return (
             <SwiperSlide key={index} className="w-full">
               <div key={index} className="w-full h-full min-w-full">
                 <div className="flex flex-col h-full justify-between">
-                  <div className="w-full h-full flex ml-[4.375rem] mt-4">
-                    <div className="w-1/4 bg-[#2853E3] rounded-[2.875rem] h-[1.125rem] mr-[4.375rem]" />
-                    <div className="w-1/3 bg-[#2853E3] rounded-[2.875rem] h-[1.125rem] mr-[4.375rem]" />
-                    <div className="w-1/5 bg-[#2853E3] rounded-[2.875rem] h-[1.125rem] mr-[4.375rem]" />
+                  <div className="w-full h-full flex mt-4">
+                    <div className="w-full h-[1.125rem]">
+                      <WarnDataVisualizer
+                        warnData={currentCarData}
+                        index={index}
+                        type="car"
+                      />
+                      <WarnDataVisualizer
+                        warnData={currentManData}
+                        index={index}
+                        type="man"
+                      />
+                    </div>
                   </div>
                   <div className="w-full flex">
                     {item.timeList.map((item, i) => {
-                      const startTime = dayjs("2023-05-02 12:00:00");
+                      const startTime = dayjs(details.startTime);
 
                       const duration = dayjs(item[0]).diff(startTime, "second");
 
