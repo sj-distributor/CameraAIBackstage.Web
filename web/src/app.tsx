@@ -1,5 +1,3 @@
-// import "./i18n/i18n";
-
 import { ConfigProvider } from "antd";
 import { BrowserRouter } from "react-router-dom";
 
