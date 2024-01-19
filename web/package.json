@@ -16,7 +16,9 @@
     "ramda": "^0.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.19.0"
+    "react-router-dom": "^6.19.0",
+    "swiper": "^11.0.5",
+    "yarn": "^1.22.21"
   },
   "devDependencies": {
     "@sj-distributor/eslint-plugin-react": "^0.7.1",
