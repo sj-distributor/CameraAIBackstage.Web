@@ -9,6 +9,7 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.2.6",
     "ahooks": "^3.7.4",
     "antd": "^5.12.8",
     "axios": "^1.4.0",
