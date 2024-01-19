@@ -47,7 +47,7 @@ export const OperationLog = () => {
     },
     {
       title: t(KEYS.OPERATING_TIME, { ns: "operationLog" }),
-      dataIndex: "operateTime", // assuming lowercase "operateTime" in your data
+      dataIndex: "operateTime",
       width: "25%",
     },
   ];

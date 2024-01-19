@@ -3,12 +3,10 @@ import { Dropdown, Layout, Menu, MenuProps, Select } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { SubMenuType } from "antd/es/menu/hooks/useItems";
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
-import { MonitorIcon, SystemIcon } from "@/assets/sider";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/home-menu-keys";
-import { IRouterList } from "@/services/dtos/routes";
 
 import avatar from "../../assets/public/avatar.png";
 import downArrow from "../../assets/public/down-arrow.png";
@@ -51,71 +49,7 @@ type MenuItem = Required<MenuProps>["items"][number];
 export const Home = () => {
   const { navigate } = useAction();
 
-  const { language, changeLanguage, t } = useAuth();
-
-  const routerList: IRouterList[] = [
-    {
-      path: "/user",
-      name: t(KEYS.USER_MANAGEMENT, { ns: "homeMenu" }),
-      icon: <MonitorIcon path="/user" />,
-      children: [
-        { path: "" },
-        {
-          path: "/user/list",
-          name: t(KEYS.USER_LIST, { ns: "homeMenu" }),
-        },
-        {
-          path: "/user/permissions",
-          name: t(KEYS.USER_PERMISSIONS, { ns: "homeMenu" }),
-        },
-      ],
-    },
-    {
-      path: "/equipment",
-      name: t(KEYS.DEVICE_MANAGEMENT, { ns: "homeMenu" }),
-      icon: <MonitorIcon path="/equipment" />,
-      children: [
-        { path: "" },
-        {
-          path: "/equipment/list",
-          name: t(KEYS.DEVICE_LIST, { ns: "homeMenu" }),
-        },
-        {
-          path: "/equipment/type",
-          name: t(KEYS.DEVICE_TYPE, { ns: "homeMenu" }),
-        },
-      ],
-    },
-    {
-      path: "/monitor",
-      name: t(KEYS.MONITOR, { ns: "homeMenu" }),
-      icon: <MonitorIcon path="/monitor" />,
-    },
-    {
-      path: "/system",
-      name: t(KEYS.SYSTEM_MANAGEMENT, { ns: "homeMenu" }),
-      icon: <SystemIcon path="/system" />,
-      children: [
-        { path: "" },
-        {
-          path: "/system/portrait",
-          name: t(KEYS.PORTRAIT_LIST, { ns: "homeMenu" }),
-        },
-        {
-          path: "/system/license",
-          name: t(KEYS.LICENSE_PLATE_MANAGEMENT, { ns: "homeMenu" }),
-        },
-        {
-          path: "/system/area",
-          name: t(KEYS.AREA_MANAGEMENT, { ns: "homeMenu" }),
-        },
-        {
-          path: "/system/log",
-          name: t(KEYS.OPERATION_LOG, { ns: "homeMenu" }),
-        },
-      ],
-    },
-  ];
+  const { language, changeLanguage, t, routerList } = useAuth();
 
   const getMenu = () => {
     if (!routerList) return;
