@@ -97,13 +97,38 @@ export const WarningDetails = () => {
               allowClear={false}
               defaultValue={dayjs()}
             />
-            <button className="flex border rounded ml-[1.5rem] items-center px-2">
+            <div className="cursor-pointer flex rounded ml-[1.5rem] items-center px-2 text-white border border-white border-solid">
               <GoIcon />
               <span className="text-[1.125rem]">Live</span>
-            </button>
+            </div>
           </div>
           <div className="flex text-white font-semibold">
-            <div className="mr-[1.5rem] cursor-pointer">導出</div>
+            <div
+              className="mr-[1.5rem] cursor-pointer"
+              onClick={() => {
+                const a = document.createElement("a");
+
+                const videoUrl =
+                  "https://cdn-busybee.wiltechs.com/2097_1705455545.mp4";
+
+                fetch(videoUrl)
+                  .then((response) => response.blob())
+                  .then((blob) => {
+                    const url = window.URL.createObjectURL(blob);
+
+                    a.href = url;
+                    a.download = videoUrl.split("com/")[1];
+                    a.click();
+
+                    window.URL.revokeObjectURL(url);
+                  })
+                  .catch((error) =>
+                    console.error("Error downloading video:", error)
+                  );
+              }}
+            >
+              導出
+            </div>
 
             <Popover
               content={[0.5, 1, 1.25, 1.5, 2].map((item) => {
@@ -147,14 +172,14 @@ export const WarningDetails = () => {
         freeMode={true}
         className="w-full w-full h-24 bg-white rounded-lg relative"
       >
-        <button
+        <div
           onClick={() => {
             swiperRef.current && swiperRef.current.swiper.slidePrev();
           }}
-          className="absolute top-[1.65rem] z-[99] left-4 transform -translate-y-1/2 text-2xl"
+          className="absolute cursor-pointer top-[1.8rem] z-[99] left-4 transform -translate-y-1/2 text-2xl"
         >
           <ArrowLeftIcon />
-        </button>
+        </div>
         {timeAxisList?.map((item, index) => {
           return (
             <SwiperSlide key={index} className="w-full">
@@ -212,14 +237,14 @@ export const WarningDetails = () => {
             </SwiperSlide>
           );
         })}
-        <button
+        <div
           onClick={() => {
             swiperRef.current && swiperRef.current.swiper.slideNext();
           }}
-          className="absolute z-[99] top-[1.5rem] right-4 transform -translate-y-1/2 text-2xl"
+          className="absolute cursor-pointer z-[99] top-[1.8rem] right-4 transform -translate-y-1/2 text-2xl"
         >
           <ArrowRightIcon />
-        </button>
+        </div>
       </Swiper>
     </div>
   );
