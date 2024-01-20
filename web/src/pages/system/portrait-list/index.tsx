@@ -50,7 +50,7 @@ export const PortraitList = () => {
             type="primary"
             onClick={() => setIsOpenModal(true)}
           >
-            <img src={add} className="mr-[.375rem] w-[1rem] h-[1rem]" />
+            <img src={add} className="mr-[.375rem]" />
             新增
           </Button>
         </div>

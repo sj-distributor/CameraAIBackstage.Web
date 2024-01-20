@@ -75,7 +75,8 @@ const getMenu = () => {
 };
 
 export const Home = () => {
-  const { isHover, navigate, setIsHover } = useAction();
+  const { isHover, menuInformation, navigate, setIsHover, setMenuInformation } =
+    useAction();
 
   const items: MenuProps["items"] = [
     {
@@ -115,12 +116,22 @@ export const Home = () => {
         <Header style={siderHeaderStyle}>Camera AI後台管理系統</Header>
         <Menu
           className="menuStyle"
-          onClick={({ _, key }) => {
-            navigate(key);
-          }}
           mode="inline"
           items={getMenu()}
           style={{ border: "none" }}
+          openKeys={menuInformation.openKeys}
+          selectedKeys={menuInformation.selectedKeys}
+          onOpenChange={(keyPath) => {
+            setMenuInformation({ ...menuInformation, openKeys: keyPath });
+          }}
+          onClick={({ key, keyPath }) => {
+            setMenuInformation({
+              ...menuInformation,
+              selectedKeys: [keyPath[0]],
+            });
+
+            navigate(key);
+          }}
         />
       </Sider>
       <Layout>
