@@ -1,5 +1,5 @@
 FROM nginx:stable-alpine
-COPY /dist /usr/share/nginx/html
+COPY /build /usr/share/nginx/html
 
 RUN  sed -i '12a error_page 404 /index.html;' /etc/nginx/conf.d/default.conf
 
