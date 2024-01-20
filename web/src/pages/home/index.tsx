@@ -57,7 +57,7 @@ const getMenu = () => {
         icon: item.icon,
       };
 
-      if (item.children && !item.path.includes("/monitor")) {
+      if (item.children) {
         (menuItem as SubMenuType).children = item.children
           .filter((child) => child.path !== "")
           .map((child) => ({
