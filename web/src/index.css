@@ -121,3 +121,9 @@ code {
   background-color: #f6f8fc;
   margin-bottom: 0 !important;
 }
+
+.teamNameSelect .ant-select-item-option-selected {
+  border-radius: 2rem !important;
+  color: #2853e4 !important;
+  font-weight: 500 !important;
+}

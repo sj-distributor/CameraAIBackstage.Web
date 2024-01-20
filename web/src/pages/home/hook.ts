@@ -6,11 +6,6 @@ export const useAction = () => {
 
   const pathname = window.location.pathname;
 
-  const [isHover, setIsHover] = useState<{
-    updatePassword: boolean;
-    logOut: boolean;
-  }>({ updatePassword: false, logOut: false });
-
   const [menuInformation, setMenuInformation] = useState<{
     openKeys: string[];
     selectedKeys: string[];
@@ -20,10 +15,8 @@ export const useAction = () => {
   });
 
   return {
-    isHover,
     menuInformation,
     navigate,
-    setIsHover,
     setMenuInformation,
   };
 };
