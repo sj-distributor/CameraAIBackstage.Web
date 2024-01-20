@@ -1,8 +1,12 @@
 import { useState } from "react";
 
+import { useAuth } from "@/hooks/use-auth";
+
 import { IAreaManagementData } from "./props";
 
 export const useAction = () => {
+  const { t } = useAuth();
+
   const data: IAreaManagementData[] = [
     {
       areaId: 1,
@@ -71,5 +75,6 @@ export const useAction = () => {
     handleAddInput,
     handleRemoveInput,
     inputFields,
+    t,
   };
 };

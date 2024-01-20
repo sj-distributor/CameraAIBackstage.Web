@@ -1,8 +1,12 @@
 import { useState } from "react";
 
+import { useAuth } from "@/hooks/use-auth";
+
 import { IDataType, IDeviceDataType } from "./props";
 
 export const useAction = () => {
+  const { t } = useAuth();
+
   const [isUnbindOpen, setIsUnbindOpen] = useState<boolean>(false);
 
   const [isDeleteDeviceOpen, setIsDeleteDeviceOpen] = useState<boolean>(false);
@@ -210,5 +214,6 @@ export const useAction = () => {
     setData,
     deviceData,
     setDeviceData,
+    t,
   };
 };

@@ -1,0 +1,17 @@
+export default {
+  AREA_MANAGEMENT: "AreaManagement",
+  AREA_ID: "AreaId",
+  AREA_NAME: "AreaName",
+  AREA_ADDRESS: "AreaAddress",
+  SEARCH_AREA_ID_AREA_ADDRESS: "SearchAreaIdOrAreaAddress",
+  PRINCIPAL: "Principal",
+  OPERATE: "Operate",
+  ADD: "Add",
+  EDIT: "Edit",
+  DELETE: "Delete",
+  MODAL_AREA_NAME: "ModalAreaName",
+  ZONE_NAME: "ZoneName",
+  ADD_AREA: "AddArea",
+  PLEASE_INPUT: "PleaseInput",
+  PLEASE_SELECT: "PleaseSelect",
+};

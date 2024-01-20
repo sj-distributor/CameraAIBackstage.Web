@@ -1,0 +1,16 @@
+export default {
+  USER_MANAGEMENT: "UserManagement",
+  USER_LIST: "UserList",
+  USER_PERMISSIONS: "UserPermissions",
+  DEVICE_MANAGEMENT: "DeviceManagement",
+  DEVICE_LIST: "DeviceList",
+  DEVICE_TYPE: "DeviceType",
+  MONITOR: "Monitor",
+  SYSTEM_MANAGEMENT: "SystemManagement",
+  PORTRAIT_LIST: "PortraitList",
+  LICENSE_PLATE_MANAGEMENT: "LicensePlateManagement",
+  AREA_MANAGEMENT: "AreaManagement",
+  OPERATION_LOG: "OperationLog",
+  CHANGE_PASSWORD: "ChangePassword",
+  SIGN_OUT: "SignOut",
+};
