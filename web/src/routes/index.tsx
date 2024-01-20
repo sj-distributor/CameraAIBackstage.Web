@@ -54,6 +54,8 @@ export const routerList: IRouterList[] = [
   {
     path: "/monitor",
     element: <Monitor />,
+    name: "監測管理",
+    icon: <MonitorIcon path="/monitor" />,
   },
   {
     path: "/system",
