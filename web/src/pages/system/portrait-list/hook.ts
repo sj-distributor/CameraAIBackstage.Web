@@ -110,7 +110,6 @@ export const useAction = () => {
   return {
     portraitData,
     isOpenModal,
-
     imageInformation,
     fileList,
     handleChange,

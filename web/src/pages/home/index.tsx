@@ -96,9 +96,7 @@ export const Home = () => {
       label: (
         <div
           className="flex items-center hover:text-[#2853e3]"
-          onClick={() => {
-            navigate("login");
-          }}
+          onClick={() => navigate("login")}
         >
           <span className="iconfont icon-sign_out" />
           <div className="ml-[.5rem]">
