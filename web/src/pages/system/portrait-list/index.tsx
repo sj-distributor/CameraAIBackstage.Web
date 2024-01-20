@@ -16,9 +16,7 @@ export const PortraitList = () => {
   const {
     portraitData,
     isOpenModal,
-    previewOpen,
-    previewImage,
-    previewTitle,
+    imageInformation,
     fileList,
     handleChange,
     setIsOpenModal,
@@ -174,31 +172,36 @@ export const PortraitList = () => {
                 { required: true, message: "Please upload your portrait!" },
               ]}
             >
-              <div className="flex items-end portraitUploadStyle">
-                <Upload
-                  action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-                  listType="picture-card"
-                  fileList={fileList}
-                  onPreview={handlePreview}
-                  onChange={handleChange}
-                  className="!w-auto"
-                >
-                  {fileList.length === 0 && uploadButton}
-                </Upload>
-                <div className="text-[.625rem] text-[#9696A7]">
-                  <div className="font-semibold">上傳人像小竅門：</div>
-                  <div>建議圖片比例為1:1，文件大小小于2MB，</div>
-                  <div>保持視覺元素居中</div>
+              <div>
+                <div className="flex items-end portraitUploadStyle">
+                  <Upload
+                    action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                    listType="picture-card"
+                    fileList={fileList}
+                    onPreview={handlePreview}
+                    onChange={handleChange}
+                    className="!w-auto"
+                  >
+                    {fileList.length === 0 && uploadButton}
+                  </Upload>
+                  <div className="text-[.625rem] text-[#9696A7]">
+                    <div className="font-semibold">上傳人像小竅門：</div>
+                    <div>建議圖片比例為1:1，文件大小小于2MB，</div>
+                    <div>保持視覺元素居中</div>
+                  </div>
                 </div>
+                <Modal
+                  open={imageInformation.previewOpen}
+                  title={imageInformation.previewTitle}
+                  footer={null}
+                  onCancel={handleCancel}
+                >
+                  <img
+                    style={{ width: "100%" }}
+                    src={imageInformation.previewImage}
+                  />
+                </Modal>
               </div>
-              <Modal
-                open={previewOpen}
-                title={previewTitle}
-                footer={null}
-                onCancel={handleCancel}
-              >
-                <img style={{ width: "100%" }} src={previewImage} />
-              </Modal>
             </Form.Item>
           </Form>
         </div>

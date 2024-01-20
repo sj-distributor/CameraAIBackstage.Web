@@ -69,11 +69,11 @@ export const useAction = () => {
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
-  const [previewOpen, setPreviewOpen] = useState<boolean>(false);
-
-  const [previewImage, setPreviewImage] = useState<string>("");
-
-  const [previewTitle, setPreviewTitle] = useState<string>("");
+  const [imageInformation, setImageInformation] = useState<{
+    previewOpen: boolean;
+    previewImage: string;
+    previewTitle: string;
+  }>({ previewOpen: false, previewImage: "", previewTitle: "" });
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
@@ -87,7 +87,7 @@ export const useAction = () => {
     });
 
   const handleCancel = () => {
-    setPreviewOpen(false);
+    setImageInformation({ ...imageInformation, previewOpen: false });
   };
 
   const handlePreview = async (file: UploadFile) => {
@@ -95,11 +95,12 @@ export const useAction = () => {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
 
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-    setPreviewTitle(
-      file.name || file.url!.substring(file.url!.lastIndexOf("/") + 1)
-    );
+    setImageInformation({
+      previewOpen: true,
+      previewImage: file.url || (file.preview as string),
+      previewTitle:
+        file.name || file.url!.substring(file.url!.lastIndexOf("/") + 1),
+    });
   };
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
@@ -109,9 +110,8 @@ export const useAction = () => {
   return {
     portraitData,
     isOpenModal,
-    previewOpen,
-    previewImage,
-    previewTitle,
+
+    imageInformation,
     fileList,
     handleChange,
     setPortraitData,
