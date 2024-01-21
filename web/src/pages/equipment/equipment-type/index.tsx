@@ -43,7 +43,7 @@ export const EquipmentType = () => {
       title: t(KEYS.OPERATE, { ns: "equipmentType" }),
       dataIndex: "operate",
       width: "21.5625rem",
-      render: (_, record, index) => (
+      render: (_, _record, index) => (
         <div>
           <Button
             type="link"

@@ -116,7 +116,7 @@ export const Home = () => {
         <Header style={siderHeaderStyle}>Camera AI後台管理系統</Header>
         <Menu
           className="menuStyle"
-          onClick={({ _, key }) => {
+          onClick={({ key }) => {
             navigate(key);
           }}
           mode="inline"
