@@ -181,6 +181,8 @@ export const PortraitList = () => {
                     onPreview={handlePreview}
                     onChange={handleChange}
                     className="!w-auto"
+                    maxCount={1}
+                    accept=".jpg, .png"
                   >
                     {fileList.length === 0 && uploadButton}
                   </Upload>
