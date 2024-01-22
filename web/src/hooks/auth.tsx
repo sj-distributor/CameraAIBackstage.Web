@@ -12,6 +12,8 @@ import { EquipmentList } from "@/pages/equipment/equipment-list";
 import { EquipmentType } from "@/pages/equipment/equipment-type";
 import { Container } from "@/pages/main";
 import { Monitor } from "@/pages/monitor";
+import { AddSelectType } from "@/pages/monitor/component/add-select-type";
+import { AddOrUpdateConfiguration } from "@/pages/monitor/component/add-update-configuration";
 import { AreaManagement } from "@/pages/system/area-management";
 import { LicensePlateManagement } from "@/pages/system/license-plate-management";
 import { OperationLog } from "@/pages/system/operation-log";
@@ -80,9 +82,20 @@ export default ({ children }: { children: React.ReactNode }) => {
     },
     {
       path: "/monitor",
-      element: <Monitor />,
+      element: <Container />,
       name: t(KEYS.MONITOR, { ns: "homeMenu" }),
       icon: <MonitorIcon path="/monitor" />,
+      children: [
+        { path: "", element: <Monitor /> },
+        {
+          path: "/monitor/add",
+          element: <AddSelectType />,
+        },
+        {
+          path: "/monitor/configuration/:type/:id",
+          element: <AddOrUpdateConfiguration />,
+        },
+      ],
     },
     {
       path: "/system",
@@ -128,7 +141,7 @@ export default ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     localStorage.getItem("language")
       ? setLanguage(localStorage.getItem("language") as string)
-      : setLanguage("en");
+      : setLanguage("ch");
   }, []);
 
   const value = { language, t, locale, changeLanguage, routerList };

@@ -41,6 +41,9 @@ export const AddOrUpdateConfiguration = () => {
     setTimeSetting,
     form,
     type,
+    KEYS,
+    t,
+    source,
   } = useAction();
 
   return (
@@ -60,9 +63,14 @@ export const AddOrUpdateConfiguration = () => {
     >
       <div className="relative">
         <div className="bg-white h-[calc(100vh-3.25rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar min-w-[35rem]">
-          <span className="text-[1.125rem] text-[#5F6279]">監測管理 / </span>
+          <span className="text-[1.125rem] text-[#5F6279]">
+            {t(KEYS.MONITOR, source)} /{" "}
+          </span>
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            {type === IMonitorConfigurationType.Update ? "修改" : "新增"}配置
+            {type === IMonitorConfigurationType.Update
+              ? `${t(KEYS.EDIT, source)}`
+              : `${t(KEYS.ADD, source)}`}{" "}
+            {t(KEYS.CONFIGURATION, source)}
           </span>
           <div className="my-[1rem] h-[calc(100%-7.2rem)] flex justify-center">
             <Form
@@ -74,15 +82,23 @@ export const AddOrUpdateConfiguration = () => {
               scrollToFirstError
             >
               <Form.Item
-                label="標題"
+                label={t(KEYS.TITLE, source)}
                 name="title"
-                rules={[{ required: true, message: "請輸入預警標題" }]}
+                rules={[
+                  {
+                    required: true,
+                    message: `${t(KEYS.TITLE_PLACEHOLDER, source)}`,
+                  },
+                ]}
               >
-                <Input className="h-[5.1875rem]" placeholder="請輸入預警標題" />
+                <Input
+                  className="h-[5.1875rem]"
+                  placeholder={t(KEYS.TITLE_PLACEHOLDER, source)}
+                />
               </Form.Item>
 
               <Form.Item
-                label="規則設置"
+                label={t(KEYS.RULE_SETTING, source)}
                 name="rule"
                 rules={[
                   {
@@ -94,29 +110,56 @@ export const AddOrUpdateConfiguration = () => {
                 <div className="border border-[#E7E8EE] border-solid rounded-2xl shadow-md py-[1.5rem]">
                   <div className="flex flex-row w-full p-[0rem_5.25rem] flex-wrap">
                     <div className="flex flex-col w-[26.3125rem] pr-[2rem]">
-                      <span className="pb-2">異常類型</span>
+                      <span className="pb-2">
+                        {t(KEYS.EXCEPTION_TYPE, source)}
+                      </span>
                       <FormItem
                         name="exceptionType"
-                        rules={[{ required: true, message: "請選擇異常類型" }]}
+                        rules={[
+                          {
+                            required: true,
+                            message: `${t(
+                              KEYS.EXCEPTION_TYPE_PLACEHOLDER,
+                              source
+                            )}`,
+                          },
+                        ]}
                       >
                         <Select
                           suffixIcon={<img src={downArrow} />}
                           options={exceptionTypeList}
                           onChange={(value) => setSelectExceptionId(value)}
+                          placeholder={t(
+                            KEYS.EXCEPTION_TYPE_PLACEHOLDER,
+                            source
+                          )}
                         />
                       </FormItem>
                     </div>
 
                     <div className="flex flex-col w-[26.4375rem]">
-                      <span className="pb-2">持續時長</span>
+                      <span className="pb-2">
+                        {t(KEYS.DURATION_TIME, source)}
+                      </span>
                       <div className="flex flex-row">
                         <FormItem
                           className="mr-[.5rem] w-[77%]"
                           name="time"
-                          rules={[{ required: true, message: "請輸入時長" }]}
+                          rules={[
+                            {
+                              required: true,
+                              message: `${t(
+                                KEYS.DURATION_TIME_PLACEHOLDER,
+                                source
+                              )}`,
+                            },
+                          ]}
                         >
                           <Input
-                            placeholder="請輸入"
+                            placeholder={t(
+                              KEYS.DURATION_TIME_PLACEHOLDER,
+                              source
+                            )}
                             value={duration}
                             onChange={(e) => {
                               const sanitizedValue = e.target.value.replace(
@@ -132,15 +175,32 @@ export const AddOrUpdateConfiguration = () => {
                         <FormItem
                           className="w-[23%]"
                           name="timeType"
-                          rules={[{ required: true, message: "請選擇單位" }]}
+                          rules={[
+                            {
+                              required: true,
+                              message: `${t(
+                                KEYS.DURATION_UNIT_RULE_TIPS,
+                                source
+                              )}`,
+                            },
+                          ]}
                         >
                           <Select
-                            placeholder="秒"
+                            placeholder={t(KEYS.SECOND, source)}
                             defaultActiveFirstOption
                             options={[
-                              { value: TimeType.Second, label: "秒" },
-                              { value: TimeType.Minute, label: "分" },
-                              { value: TimeType.Hours, label: "時" },
+                              {
+                                value: TimeType.Second,
+                                label: `${t(KEYS.SECOND, source)}`,
+                              },
+                              {
+                                value: TimeType.Minute,
+                                label: `${t(KEYS.MINUTE, source)}`,
+                              },
+                              {
+                                value: TimeType.Hours,
+                                label: `${t(KEYS.HOUR, source)}`,
+                              },
                             ]}
                             value={durationTimeType}
                             onChange={(value) => setDurationTimeType(value)}
@@ -152,15 +212,26 @@ export const AddOrUpdateConfiguration = () => {
                   </div>
                   <div className="flex flex-row w-full p-[0rem_5.25rem_0rem_5.25rem] flex-wrap">
                     <div className="flex flex-col w-[26.3125rem] pr-[2rem]">
-                      <span className="pb-2">選擇設備</span>
+                      <span className="pb-2">
+                        {t(KEYS.SELECT_DEVICE, source)}
+                      </span>
                       <FormItem
                         name="deviceSelect"
                         rules={[
-                          { required: true, message: "請選擇至少一個設備" },
+                          {
+                            required: true,
+                            message: `${t(
+                              KEYS.SELECT_DEVICE_RULE_TIPS,
+                              source
+                            )}`,
+                          },
                         ]}
                       >
                         <Select
-                          placeholder="選擇設備（可多選）"
+                          placeholder={t(
+                            KEYS.SELECT_DEVICE_PLACEHOLDER,
+                            source
+                          )}
                           suffixIcon={<img src={downArrow} />}
                           options={deviceList}
                           onChange={(value) => setSelectDeviceId(value)}
@@ -169,13 +240,26 @@ export const AddOrUpdateConfiguration = () => {
                       </FormItem>
                     </div>
                     <div className="flex flex-col w-[26.4375rem]">
-                      <span className="pb-2">設置時間</span>
+                      <span className="pb-2">
+                        {t(KEYS.SETTING_TIME, source)}
+                      </span>
                       <FormItem
                         name="timeSetting"
-                        rules={[{ required: true, message: "請選擇時間範圍" }]}
+                        rules={[
+                          {
+                            required: true,
+                            message: `${t(
+                              KEYS.SETTING_TIME_RULE_TIPS,
+                              source
+                            )}`,
+                          },
+                        ]}
                       >
                         <TimePicker.RangePicker
-                          placeholder={["開始時間", "結束時間"]}
+                          placeholder={[
+                            `${t(KEYS.START_TIME, source)}`,
+                            `${t(KEYS.END_TIME, source)}`,
+                          ]}
                           className="flex"
                           value={timeSetting}
                           onChange={(dates) => {
@@ -187,13 +271,18 @@ export const AddOrUpdateConfiguration = () => {
                   </div>
                   <div className="flex flex-row w-full p-[0rem_5.25rem_0rem_5.25rem]">
                     <div className="flex flex-col w-[48rem]">
-                      <span className="pb-2">每週重複</span>
+                      <span className="pb-2">
+                        {t(KEYS.REPEAT_EVERY_WEEK, source)}
+                      </span>
                       <FormItem
                         name="repeatEveryWeek"
                         rules={[
                           {
                             required: true,
-                            message: "請選擇重複的週期",
+                            message: `${t(
+                              KEYS.REPEAT_EVERY_WEEK_RULE_TIPS,
+                              source
+                            )}`,
                             validator: (_, value) => {
                               console.log(value);
 
@@ -229,13 +318,15 @@ export const AddOrUpdateConfiguration = () => {
                 </div>
               </Form.Item>
 
-              <Form.Item label="行動">
+              <Form.Item label={t(KEYS.ACTION, source)}>
                 <div className="border border-[#E7E8EE] border-solid rounded-2xl shadow-md">
                   <div className="flex flex-col p-[2rem_11rem_0rem_5.25rem]">
-                    <span className="pb-[1rem] font-semibold">發送通知</span>
+                    <span className="pb-[1rem] font-semibold">
+                      {t(KEYS.NOTIFY_USER, source)}
+                    </span>
                     <div className="flex flex-col">
                       <Form.Item
-                        label="通知用戶"
+                        label={t(KEYS.NOTIFY_USER, source)}
                         rules={[
                           {
                             required: true,
@@ -250,7 +341,7 @@ export const AddOrUpdateConfiguration = () => {
                               }
 
                               return Promise.reject(
-                                "請選擇需要通知的用戶以及選擇通知渠道"
+                                `${t(KEYS.NOTIFY_USER_RULE_TIPS, source)}`
                               );
                             },
                           },
@@ -259,7 +350,10 @@ export const AddOrUpdateConfiguration = () => {
                       >
                         <div>
                           <Select
-                            placeholder="選擇用戶（可多選）"
+                            placeholder={t(
+                              KEYS.NOTIFY_USER_PLACEHOLDER,
+                              source
+                            )}
                             allowClear={false}
                             removeIcon={null}
                             suffixIcon={<img src={downArrow} />}
@@ -303,7 +397,7 @@ export const AddOrUpdateConfiguration = () => {
                                         }}
                                       />
                                       <span className="pl-[.3125rem]">
-                                        郵件
+                                        {t(KEYS.EMAIL, source)}
                                       </span>
                                     </div>
                                     <div className="flex flex-row items-center pr-[2.5625rem]">
@@ -330,7 +424,7 @@ export const AddOrUpdateConfiguration = () => {
                                         }}
                                       />
                                       <span className="pl-[.3125rem]">
-                                        企業微信
+                                        {t(KEYS.ENTERPRISE_WECHAT, source)}
                                       </span>
                                     </div>
                                     <div className="flex flex-row items-center pr-[2.5625rem]">
@@ -357,7 +451,7 @@ export const AddOrUpdateConfiguration = () => {
                                         }}
                                       />
                                       <span className="pl-[.3125rem]">
-                                        短信
+                                        {t(KEYS.SHORT_MESSAGE, source)}
                                       </span>
                                     </div>
                                     <div className="flex flex-row items-center pr-[2.5625rem]">
@@ -384,7 +478,7 @@ export const AddOrUpdateConfiguration = () => {
                                         }}
                                       />
                                       <span className="pl-[.3125rem]">
-                                        電話
+                                        {t(KEYS.TELEPHONE, source)}
                                       </span>
                                     </div>
                                   </div>
@@ -400,37 +494,59 @@ export const AddOrUpdateConfiguration = () => {
                         </div>
                       </Form.Item>
                       <Form.Item
-                        label="通知內容"
-                        rules={[{ required: true, message: "請填寫通知內容" }]}
+                        label={t(KEYS.NOTIFICATION_CONTENT, source)}
+                        rules={[
+                          {
+                            required: true,
+                            message: `${t(
+                              KEYS.NOTIFICATION_CONTENT_PLACEHOLDER,
+                              source
+                            )}`,
+                          },
+                        ]}
                         name="content"
                       >
-                        <TextArea placeholder="請輸入通知內容" />
+                        <TextArea
+                          placeholder={t(
+                            KEYS.NOTIFICATION_CONTENT_PLACEHOLDER,
+                            source
+                          )}
+                        />
                       </Form.Item>
                     </div>
                   </div>
 
                   <div className="flex flex-col p-[0rem_11rem_0rem_5.25rem]">
-                    <span className="pb-[1rem] font-semibold">大聲公</span>
+                    <span className="pb-[1rem] font-semibold">
+                      {t(KEYS.LOUDSPEAKER, source)}
+                    </span>
                     <div className="flex flex-col">
-                      <Form.Item label="選擇設備">
+                      <Form.Item label={t(KEYS.SELECT_DEVICE, source)}>
                         <Select
-                          placeholder="請選擇（可多選）"
+                          placeholder={t(KEYS.SELECT_RULE_TIPS, source)}
                           suffixIcon={<img src={downArrow} />}
                           mode="multiple"
                         />
                       </Form.Item>
-                      <Form.Item label="廣播信息">
-                        <TextArea placeholder="請輸入廣播信息" />
+                      <Form.Item label={t(KEYS.BROADCAST_INFORMATION, source)}>
+                        <TextArea
+                          placeholder={t(
+                            KEYS.BROADCAST_INFORMATION_PLACEHOLDER,
+                            source
+                          )}
+                        />
                       </Form.Item>
                     </div>
                   </div>
 
                   <div className="flex flex-col p-[0rem_11rem_0rem_5.25rem]">
-                    <span className="pb-[1rem] font-semibold">燈光提醒</span>
+                    <span className="pb-[1rem] font-semibold">
+                      {t(KEYS.LIGHT_REMINDER, source)}
+                    </span>
                     <div className="flex flex-col">
-                      <Form.Item label="選擇設備">
+                      <Form.Item label={t(KEYS.SELECT_DEVICE, source)}>
                         <Select
-                          placeholder="請選擇（可多選）"
+                          placeholder={t(KEYS.SELECT_RULE_TIPS, source)}
                           suffixIcon={<img src={downArrow} />}
                           mode="multiple"
                         />
@@ -457,7 +573,7 @@ export const AddOrUpdateConfiguration = () => {
                       navigate("/monitor");
                     }}
                   >
-                    返回
+                    {t(KEYS.BACK, source)}
                   </Button>
                 </ConfigProvider>
 
@@ -466,7 +582,7 @@ export const AddOrUpdateConfiguration = () => {
                   className="w-[6rem] h-[2.75rem] ml-[1.5rem]"
                   type="primary"
                 >
-                  確定
+                  {t(KEYS.CONFIRM, source)}
                 </Button>
               </div>
             </Form>

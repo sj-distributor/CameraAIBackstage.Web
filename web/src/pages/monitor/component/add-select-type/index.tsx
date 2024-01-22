@@ -7,7 +7,7 @@ import { IMonitorConfigurationType } from "../../props";
 import { useAction } from "./hook";
 
 export const AddSelectType = () => {
-  const { text, token, navigate } = useAction();
+  const { text, token, navigate, KEYS, t, source } = useAction();
 
   const collapseItem: () => CollapseProps["items"] = () => [
     {
@@ -55,16 +55,18 @@ export const AddSelectType = () => {
     >
       <div>
         <div className="bg-white h-[calc(100vh-5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
-          <span className="text-[1.125rem] text-[#5F6279]">監測管理 </span>
+          <span className="text-[1.125rem] text-[#5F6279]">
+            {t(KEYS.MONITOR, source)}{" "}
+          </span>
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            / 新增
+            / {t(KEYS.ADD, source)}
           </span>
           <div className="my-[1rem] h-[calc(100%-8.125rem)] flex justify-center">
             <div className=" w-[71.25rem]">
               <div className="flex items-center">
                 <img src={menuIcon} />
                 <span className="text-[1rem] font-semibold py-[1rem] pl-[.625rem]">
-                  選擇類型
+                  {t(KEYS.CHOOSE_TYPE, source)}
                 </span>
               </div>
               <div className="border border-[#E7E8EE] border-solid rounded-lg p-[2rem_1.5rem] h-full overflow-y-auto customScollbar shadow-md">

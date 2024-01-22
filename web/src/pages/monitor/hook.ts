@@ -1,9 +1,13 @@
 import { clone } from "ramda";
 import { useState } from "react";
 
+import { useAuth } from "@/hooks/use-auth";
+
 import { IMonitorDataType } from "./props";
 
 export const useAction = () => {
+  const { t, language } = useAuth();
+
   const [data, setData] = useState<IMonitorDataType[]>([
     {
       title: "1",
@@ -27,6 +31,8 @@ export const useAction = () => {
 
   const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
 
+  const source = { ns: "monitor" };
+
   const onChangeStatus = (index: number, value: boolean) => {
     const newList = clone(data);
 
@@ -44,5 +50,8 @@ export const useAction = () => {
     onChangeStatus,
     isUnbindOpen,
     setIsUnbindOpen,
+    t,
+    source,
+    language,
   };
 };

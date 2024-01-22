@@ -5,6 +5,9 @@ import { clone } from "ramda";
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { useAuth } from "@/hooks/use-auth";
+
+import KEYS from "../../../../i18n/language/keys/monitor-configuration-keys";
 import {
   ICronListDto,
   IOptionsNumberDto,
@@ -14,6 +17,10 @@ import {
 } from "./props";
 
 export const useAction = () => {
+  const { t } = useAuth();
+
+  const source = { ns: "monitorConfiguration" };
+
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
@@ -23,13 +30,13 @@ export const useAction = () => {
   const { type } = location.state;
 
   const [cronList, setCronList] = useState<ICronListDto[]>([
-    { title: "週一", value: false },
-    { title: "週二", value: false },
-    { title: "週三", value: false },
-    { title: "週四", value: false },
-    { title: "週五", value: false },
-    { title: "週六", value: false },
-    { title: "週日", value: false },
+    { title: `${t(KEYS.MONDAY, source)}`, value: false },
+    { title: `${t(KEYS.THURSDAY, source)}`, value: false },
+    { title: `${t(KEYS.WEDNESDAY, source)}`, value: false },
+    { title: `${t(KEYS.THURSDAY, source)}`, value: false },
+    { title: `${t(KEYS.FRIDAY, source)}`, value: false },
+    { title: `${t(KEYS.SATURDAY, source)}`, value: false },
+    { title: `${t(KEYS.SATURDAY, source)}`, value: false },
   ]);
 
   const selectWeekday = useMemo(() => {
@@ -138,5 +145,8 @@ export const useAction = () => {
     setTimeSetting,
     form,
     type,
+    KEYS,
+    t,
+    source,
   };
 };

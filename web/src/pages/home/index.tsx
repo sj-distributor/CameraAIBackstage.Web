@@ -63,7 +63,7 @@ export const Home = () => {
           icon: item.icon,
         };
 
-        if (item.children) {
+        if (item.children && !item.path.includes("/monitor")) {
           (menuItem as SubMenuType).children = item.children
             .filter((child) => child.path !== "")
             .map((child) => ({

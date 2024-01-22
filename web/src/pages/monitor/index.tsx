@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { CustomModal } from "@/components/custom-modal";
 
 import downArrow from "../../assets/public/down-arrow.png";
+import KEYS from "../../i18n/language/keys/monitor-keys";
 import { useAction } from "./hook";
 import { IMonitorConfigurationType, IMonitorDataType } from "./props";
 
@@ -24,49 +25,58 @@ export const Monitor = () => {
     setIsDeleteOpen,
     setIsDeleteIndex,
     onChangeStatus,
+    t,
+    source,
+    language,
   } = useAction();
 
   const columns: ColumnsType<IMonitorDataType> = [
     {
-      title: "標題",
+      title: `${t(KEYS.TITLE, source)}`,
       dataIndex: "title",
       width: "16.6%",
     },
     {
-      title: "狀態",
+      title: `${t(KEYS.STATUS, source)}`,
       dataIndex: "condition",
       width: "16.6%",
       render: (_, record, index) => {
         return (
           <Tooltip
             placement="topLeft"
-            title={record.condition ? "點擊關閉" : "點擊啟用"}
+            title={
+              record.condition
+                ? `${t(KEYS.CLICK, source)} ${t(KEYS.DEACTIVATE, source)}`
+                : `${t(KEYS.CLICK, source)} ${t(KEYS.ENABLE, source)}`
+            }
           >
             <Switch
-              checkedChildren="啟用"
+              checkedChildren={t(KEYS.ENABLE, source)}
               unCheckedChildren=""
               value={record.condition}
               onChange={(value) => {
                 onChangeStatus(index, value);
               }}
-              className="w-[3.125rem] text-[.625rem] customSwitch"
+              className={`${
+                language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
+              } text-[.625rem] customSwitch`}
             />
           </Tooltip>
         );
       },
     },
     {
-      title: "預警類型",
+      title: `${t(KEYS.ALERT_TYPE, source)}`,
       dataIndex: "warningType",
       width: "16.6%",
     },
     {
-      title: "通知對象",
+      title: `${t(KEYS.NOTIFICATION_OBJECT, source)}`,
       dataIndex: "notificationObject",
       width: "16.6%",
     },
     {
-      title: "操作",
+      title: `${t(KEYS.OPERATE, source)}`,
       dataIndex: "operate",
       width: "16.6%",
       render: (_, record, index) => (
@@ -83,7 +93,7 @@ export const Monitor = () => {
               })
             }
           >
-            編輯
+            {t(KEYS.EDIT, source)}
           </Button>
           <Button
             type="link"
@@ -93,7 +103,7 @@ export const Monitor = () => {
               setIsDeleteOpen(true);
             }}
           >
-            刪除
+            {t(KEYS.DELETE, source)}
           </Button>
         </div>
       ),
@@ -126,24 +136,33 @@ export const Monitor = () => {
       <div>
         <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            監測管理
+            {t(KEYS.MONITOR, source)}
           </span>
           <div className="flex flex-row pt-[1.625rem] justify-between flex-wrap">
             <div>
               <Select
                 className="mr-[1rem] w-[13.5rem]"
-                placeholder="狀態"
+                placeholder={t(KEYS.STATUS, source)}
                 defaultActiveFirstOption
                 options={[
-                  { value: "狀態", label: "狀態" },
-                  { value: "啟用", label: "啟用" },
-                  { value: "關閉", label: "關閉" },
+                  {
+                    value: `${t(KEYS.STATUS, source)}`,
+                    label: `${t(KEYS.STATUS, source)}`,
+                  },
+                  {
+                    value: `${t(KEYS.ENABLE, source)}`,
+                    label: `${t(KEYS.ENABLE, source)}`,
+                  },
+                  {
+                    value: `${t(KEYS.DEACTIVATE, source)}`,
+                    label: `${t(KEYS.DEACTIVATE, source)}`,
+                  },
                 ]}
                 suffixIcon={<img src={downArrow} />}
               />
               <Select
                 className="w-[13.5rem]"
-                placeholder="預警類型篩選"
+                placeholder={t(KEYS.ALERT_TYPE_FILTER, source)}
                 defaultActiveFirstOption
                 options={[
                   { value: "全部", label: "全部" },
@@ -160,7 +179,7 @@ export const Monitor = () => {
               onClick={() => navigate("/monitor/add")}
             >
               <PlusOutlined className="pr-[.25rem]" />
-              新增
+              {t(KEYS.NEW, source)}
             </Button>
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
@@ -174,9 +193,9 @@ export const Monitor = () => {
             />
             <div className="flex justify-between items-center pt-[16px]">
               <div className="text-[#929292] text-[.875rem]">
-                共{" "}
+                {t(KEYS.TOTAL, source)}{" "}
                 <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
-                條
+                {t(KEYS.ITEM, source)}
               </div>
               <div>
                 <Pagination
@@ -198,7 +217,7 @@ export const Monitor = () => {
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            操作確認
+            {t(KEYS.OPERATION_CONFIRMATION, source)}
           </div>
         }
         onCancle={() => setIsDeleteOpen(false)}
@@ -208,7 +227,9 @@ export const Monitor = () => {
         open={isDeleteOpen}
         className={"customModal"}
       >
-        <span className="pl-[2rem]">請確認是否刪除該配置？</span>
+        <span className="pl-[2rem]">
+          {t(KEYS.DELETE_CONFIRM_CONTENT, source)}
+        </span>
       </CustomModal>
     </ConfigProvider>
   );
