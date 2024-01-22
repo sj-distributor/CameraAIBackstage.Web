@@ -165,10 +165,22 @@ export const Monitor = () => {
                 placeholder={t(KEYS.ALERT_TYPE_FILTER, source)}
                 defaultActiveFirstOption
                 options={[
-                  { value: "全部", label: "全部" },
-                  { value: "識別人員", label: "識別人員" },
-                  { value: "識別車輛", label: "識別車輛" },
-                  { value: "識別異常車輛", label: "識別異常車輛" },
+                  {
+                    value: `${t(KEYS.ALL, source)}`,
+                    label: `${t(KEYS.ALL, source)}`,
+                  },
+                  {
+                    value: `${t(KEYS.IDENTIFY_PEOPLE, source)}`,
+                    label: `${t(KEYS.IDENTIFY_PEOPLE, source)}`,
+                  },
+                  {
+                    value: `${t(KEYS.IDENTIFY_VEHICLES, source)}`,
+                    label: `${t(KEYS.IDENTIFY_VEHICLES, source)}`,
+                  },
+                  {
+                    value: `${t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source)}`,
+                    label: `${t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source)}`,
+                  },
                 ]}
                 suffixIcon={<img src={downArrow} />}
               />

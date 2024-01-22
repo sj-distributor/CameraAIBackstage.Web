@@ -16,4 +16,8 @@ export default {
   DELETE_CONFIRM_CONTENT: "DeleteConfirmContent",
   TOTAL: "Total",
   ITEM: "Item",
+  ALL: "All",
+  IDENTIFY_PEOPLE: "IdentifyPeople",
+  IDENTIFY_VEHICLES: "IdentifyVehicles",
+  IDENTIFY_ABNORMAL_VEHICLES: "identifyAbnormalVehicles",
 };

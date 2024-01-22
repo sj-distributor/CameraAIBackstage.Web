@@ -21,6 +21,10 @@ export default {
       "Please confirm whether to delete this configuration?",
     [KEYS.TOTAL]: "Total",
     [KEYS.ITEM]: "Item",
+    [KEYS.ALL]: "All",
+    [KEYS.IDENTIFY_PEOPLE]: "Identify people",
+    [KEYS.IDENTIFY_VEHICLES]: "Identify vehicles",
+    [KEYS.IDENTIFY_ABNORMAL_VEHICLES]: "identify abnormal vehicles",
   },
   ch: {
     [KEYS.MONITOR]: "監測管理",
@@ -40,5 +44,9 @@ export default {
     [KEYS.DELETE_CONFIRM_CONTENT]: "請確認是否刪除該配置？",
     [KEYS.TOTAL]: "共",
     [KEYS.ITEM]: "條",
+    [KEYS.ALL]: "全部",
+    [KEYS.IDENTIFY_PEOPLE]: "識別人員",
+    [KEYS.IDENTIFY_VEHICLES]: "識別車輛",
+    [KEYS.IDENTIFY_ABNORMAL_VEHICLES]: "識別異常車輛",
   },
 };

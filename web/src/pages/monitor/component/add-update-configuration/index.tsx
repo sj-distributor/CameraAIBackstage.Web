@@ -300,7 +300,7 @@ export const AddOrUpdateConfiguration = () => {
                             <Button
                               type={item.value ? "primary" : "default"}
                               key={index}
-                              className="w-[6rem]"
+                              className="min-w-[6rem]"
                               onClick={() => {
                                 const newList = clone(cronList);
 
@@ -308,7 +308,7 @@ export const AddOrUpdateConfiguration = () => {
                                 setCronList(newList);
                               }}
                             >
-                              {item.title}
+                              {t(item.title, source)}
                             </Button>
                           ))}
                         </div>

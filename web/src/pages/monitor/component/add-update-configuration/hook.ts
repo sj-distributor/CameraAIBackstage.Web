@@ -30,13 +30,13 @@ export const useAction = () => {
   const { type } = location.state;
 
   const [cronList, setCronList] = useState<ICronListDto[]>([
-    { title: `${t(KEYS.MONDAY, source)}`, value: false },
-    { title: `${t(KEYS.THURSDAY, source)}`, value: false },
-    { title: `${t(KEYS.WEDNESDAY, source)}`, value: false },
-    { title: `${t(KEYS.THURSDAY, source)}`, value: false },
-    { title: `${t(KEYS.FRIDAY, source)}`, value: false },
-    { title: `${t(KEYS.SATURDAY, source)}`, value: false },
-    { title: `${t(KEYS.SATURDAY, source)}`, value: false },
+    { title: KEYS.MONDAY, value: false },
+    { title: KEYS.THURSDAY, value: false },
+    { title: KEYS.WEDNESDAY, value: false },
+    { title: KEYS.THURSDAY, value: false },
+    { title: KEYS.FRIDAY, value: false },
+    { title: KEYS.SATURDAY, value: false },
+    { title: KEYS.SUNDAY, value: false },
   ]);
 
   const selectWeekday = useMemo(() => {

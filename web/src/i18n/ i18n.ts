@@ -77,10 +77,10 @@ i18n.use(initReactI18next).init({
         ...monitor.ch,
       },
       monitorAdd: {
-        ...monitorAdd.en,
+        ...monitorAdd.ch,
       },
       monitorConfiguration: {
-        ...monitorConfiguration.en,
+        ...monitorConfiguration.ch,
       },
       portraitList: {
         ...portraitList.ch,
