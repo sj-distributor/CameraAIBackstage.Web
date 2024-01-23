@@ -5,6 +5,7 @@ import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
 
 import { CustomModal } from "@/components/custom-modal";
+import KEYS from "@/i18n/language/keys/equipment-type-keys";
 
 import { useAction } from "./hook";
 import { IDeviceTypeDataType } from "./props";
@@ -19,36 +20,37 @@ export const EquipmentType = () => {
     setIsModifyOpen,
     setIsDeleteIndex,
     data,
+    t,
   } = useAction();
 
   const columns: ColumnsType<IDeviceTypeDataType> = [
     {
-      title: "設備類型ID",
+      title: t(KEYS.DEVICE_TYPE_ID, { ns: "equipmentType" }),
       dataIndex: "deviceTypeId",
       width: "14.875rem",
     },
     {
-      title: "設備類型",
+      title: t(KEYS.DEVICE_TYPE, { ns: "equipmentType" }),
       dataIndex: "deviceType",
       width: "15.125rem",
     },
     {
-      title: "備註信息",
+      title: t(KEYS.REMARKS, { ns: "equipmentType" }),
       dataIndex: "deviceInformation",
       width: "49.4375rem",
     },
     {
-      title: "操作",
+      title: t(KEYS.OPERATE, { ns: "equipmentType" }),
       dataIndex: "operate",
       width: "21.5625rem",
-      render: (_, record, index) => (
+      render: (_, _record, index) => (
         <div>
           <Button
             type="link"
             className="w-[6rem]"
             onClick={() => setIsModifyOpen(true)}
           >
-            編輯
+            {t(KEYS.EDIT, { ns: "equipmentType" })}
           </Button>
           <Button
             type="link"
@@ -58,7 +60,7 @@ export const EquipmentType = () => {
               setIsDeleteDeviceOpen(true);
             }}
           >
-            刪除
+            {t(KEYS.DELETE, { ns: "equipmentType" })}
           </Button>
         </div>
       ),
@@ -89,7 +91,7 @@ export const EquipmentType = () => {
       <div>
         <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            設備列表
+            {t(KEYS.DEVICE_TYPE, { ns: "equipmentType" })}
           </span>
           <div className="flex flex-row pt-[1.625rem] justify-end">
             <Button
@@ -98,7 +100,7 @@ export const EquipmentType = () => {
               onClick={() => setIsAddTypeOpen(true)}
             >
               <PlusOutlined className="pr-[.5rem]" />
-              添加類型
+              {t(KEYS.ADD_TYPE, { ns: "equipmentType" })}
             </Button>
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
@@ -134,7 +136,7 @@ export const EquipmentType = () => {
       </div>
 
       <CustomModal
-        title={<div>添加類型</div>}
+        title={<div> {t(KEYS.ADD_TYPE, { ns: "equipmentType" })}</div>}
         onCancle={() => setIsAddTypeOpen(false)}
         onConfirm={() => setIsAddTypeOpen(false)}
         open={isAddTypeOpen}
@@ -144,26 +146,34 @@ export const EquipmentType = () => {
         <Form colon={false}>
           <FormItem
             name="deviceId"
-            label="設備類型"
+            label={t(KEYS.DEVICE_TYPE, { ns: "equipmentType" })}
             rules={[{ required: true }]}
-            labelCol={{ span: 3 }}
+            labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
           >
-            <Input placeholder="請輸入設備類型名稱" />
+            <Input
+              placeholder={t(KEYS.PLEASE_ENTER_DEVICE_TYPE, {
+                ns: "equipmentType",
+              })}
+            />
           </FormItem>
           <FormItem
             name="deviceType"
-            label="備註說明"
-            labelCol={{ span: 3 }}
+            label={t(KEYS.INSTRUCTION_MANUAL, { ns: "equipmentType" })}
+            labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
             style={{ marginBottom: 0 }}
           >
-            <TextArea placeholder="請輸入設備類型備註說明" />
+            <TextArea
+              placeholder={t(KEYS.PLEASE_ENTER_INSTRUCTION_MANUAL, {
+                ns: "equipmentType",
+              })}
+            />
           </FormItem>
         </Form>
       </CustomModal>
       <CustomModal
-        title={<div>修改類型</div>}
+        title={<div> {t(KEYS.MODIFICATION_TYPE, { ns: "equipmentType" })}</div>}
         onCancle={() => setIsModifyOpen(false)}
         onConfirm={() => setIsModifyOpen(false)}
         open={isModifyOpen}
@@ -173,21 +183,29 @@ export const EquipmentType = () => {
         <Form colon={false}>
           <FormItem
             name="deviceId"
-            label="設備類型"
+            label={t(KEYS.DEVICE_TYPE, { ns: "equipmentType" })}
             rules={[{ required: true }]}
-            labelCol={{ span: 3 }}
+            labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
           >
-            <Input placeholder="請輸入設備類型名稱" />
+            <Input
+              placeholder={t(KEYS.PLEASE_ENTER_DEVICE_TYPE, {
+                ns: "equipmentType",
+              })}
+            />
           </FormItem>
           <FormItem
             name="deviceType"
-            label="備註說明"
-            labelCol={{ span: 3 }}
+            label={t(KEYS.INSTRUCTION_MANUAL, { ns: "equipmentType" })}
+            labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
             style={{ marginBottom: 0 }}
           >
-            <TextArea placeholder="請輸入設備類型備註說明" />
+            <TextArea
+              placeholder={t(KEYS.PLEASE_ENTER_INSTRUCTION_MANUAL, {
+                ns: "equipmentType",
+              })}
+            />
           </FormItem>
         </Form>
       </CustomModal>
@@ -195,7 +213,9 @@ export const EquipmentType = () => {
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            操作確認
+            {t(KEYS.OPERATION_CONFIRMATION, {
+              ns: "equipmentType",
+            })}
           </div>
         }
         onCancle={() => setIsDeleteDeviceOpen(false)}
@@ -205,7 +225,11 @@ export const EquipmentType = () => {
         open={isDeleteDeviceOpen}
         className={"customModal"}
       >
-        <span className="pl-[2rem]">請確認是否刪除類型？</span>
+        <span className="pl-[2rem]">
+          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, {
+            ns: "equipmentType",
+          })}
+        </span>
       </CustomModal>
     </ConfigProvider>
   );

@@ -133,3 +133,9 @@ code {
 .ant-modal-wrap::-webkit-scrollbar {
   display: none;
 }
+
+.teamNameSelect .ant-select-item-option-selected {
+  border-radius: 2rem !important;
+  color: #2853e4 !important;
+  font-weight: 500 !important;
+}

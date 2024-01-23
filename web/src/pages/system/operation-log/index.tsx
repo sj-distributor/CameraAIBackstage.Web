@@ -3,16 +3,18 @@ import {
   ClockCircleFilled,
   SearchOutlined,
 } from "@ant-design/icons";
-import { DatePicker, Input, Pagination, Table } from "antd";
+import { DatePicker, Input, Pagination, Table, TableColumnsType } from "antd";
 import { Dayjs } from "dayjs";
 
+import KEYS from "@/i18n/language/keys/operation-log-keys";
+
 import { useAction } from "./hook";
+import { IOperationLogData } from "./props";
 
 const { RangePicker } = DatePicker;
 
 export const OperationLog = () => {
   const {
-    columns,
     data,
     searchValue,
     isTableLoading,
@@ -23,7 +25,32 @@ export const OperationLog = () => {
     onRangeChange,
     startDate,
     endDate,
+    t,
   } = useAction();
+
+  const columns: TableColumnsType<IOperationLogData> = [
+    {
+      title: t(KEYS.SERIAL_NUMBER, { ns: "operationLog" }),
+      dataIndex: "id",
+      sorter: (a, b) => a.id - b.id,
+      width: "13%",
+    },
+    {
+      title: t(KEYS.USER_NAME, { ns: "operationLog" }),
+      dataIndex: "userName",
+      width: "11%",
+    },
+    {
+      title: t(KEYS.OPERATING_CONTENT, { ns: "operationLog" }),
+      dataIndex: "operateContent",
+      width: "51%",
+    },
+    {
+      title: t(KEYS.OPERATING_TIME, { ns: "operationLog" }),
+      dataIndex: "operateTime",
+      width: "25%",
+    },
+  ];
 
   const renderDateAndTime = (date: Dayjs | null) => (
     <>
@@ -41,12 +68,14 @@ export const OperationLog = () => {
   return (
     <div className="bg-white h-full w-full flex-col p-[1.5rem]">
       <span className="text-[1.125rem] font-semibold tracking-tight">
-        操作日誌
+        {t(KEYS.OPERATION_LOG, { ns: "operationLog" })}
       </span>
       <div className="mt-[1.5rem] mb-[1.125rem] h-[2.5rem] flex items-center">
         <Input
           className="w-[17.5rem] h-[2.2rem]"
-          placeholder="搜索車牌號碼"
+          placeholder={t(KEYS.SEARCH_LICENSE_PLATE_NUMBER, {
+            ns: "operationLog",
+          })}
           suffix={
             <SearchOutlined
               style={{
@@ -69,6 +98,10 @@ export const OperationLog = () => {
               {renderDateAndTime(endDate)}
             </div>
           )}
+          placeholder={[
+            t(KEYS.START_DATE, { ns: "operationLog" }),
+            t(KEYS.END_DATE, { ns: "operationLog" }),
+          ]}
         />
       </div>
       <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">

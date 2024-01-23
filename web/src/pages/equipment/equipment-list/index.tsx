@@ -16,6 +16,7 @@ import type { ColumnsType } from "antd/es/table";
 import { clone } from "ramda";
 
 import { CustomModal } from "@/components/custom-modal";
+import KEYS from "@/i18n/language/keys/equipment-list-keys";
 
 import downArrow from "../../../assets/public/down-arrow.png";
 import search from "../../../assets/public/search.png";
@@ -38,16 +39,17 @@ export const EquipmentList = () => {
     data,
     setData,
     deviceData,
+    t,
   } = useAction();
 
   const columns: ColumnsType<IDataType> = [
     {
-      title: "設備ID",
+      title: t(KEYS.DEVICE_ID, { ns: "equipmentList" }),
       dataIndex: "deviceId",
       width: "16.6%",
     },
     {
-      title: "是否在線",
+      title: t(KEYS.IS_ONLINE, { ns: "equipmentList" }),
       dataIndex: "isOnline",
       width: "16.6%",
       render: (record: boolean) => (
@@ -55,39 +57,43 @@ export const EquipmentList = () => {
           {record ? (
             <div className="flex flex-row items-center">
               <div className="bg-[#34A46E] w-[.375rem] h-[.375rem] rounded-full mr-[.5rem]" />
-              <span>在線</span>
+              <span>{t(KEYS.ONLINE, { ns: "equipmentList" })}</span>
             </div>
           ) : (
             <div className="flex flex-row items-center">
               <div className="bg-[#F04E4E] min-w-[.375rem] max-w-[.375rem] h-[.375rem] rounded-full mr-[.5rem]" />
-              <span className="whitespace-nowrap">離線</span>
+              <span className="whitespace-nowrap">
+                {t(KEYS.OFFLINE, { ns: "equipmentList" })}
+              </span>
             </div>
           )}
         </div>
       ),
     },
     {
-      title: "設備類型",
+      title: t(KEYS.DEVICE_TYPE, { ns: "equipmentList" }),
       dataIndex: "deviceType",
       width: "16.6%",
     },
     {
-      title: "設備名稱",
+      title: t(KEYS.DEVICE_NAME, { ns: "equipmentList" }),
       dataIndex: "equipmentName",
       width: "16.6%",
     },
     {
-      title: "是否綁定",
+      title: t(KEYS.IS_BLIND, { ns: "equipmentList" }),
       dataIndex: "whetherToBind",
       width: "16.6%",
       render: (_, record, index) => {
         return (
           <Tooltip
             placement="topLeft"
-            title={record ? "點擊解除綁定" : "點擊綁定"}
+            title={t(record ? KEYS.CLICK_TO_UNBIND : KEYS.CLICK_TO_BIND, {
+              ns: "equipmentList",
+            })}
           >
             <Switch
-              checkedChildren="綁定"
+              checkedChildren={t(KEYS.BINDING, { ns: "equipmentList" })}
               unCheckedChildren=""
               value={record.whetherToBind}
               onChange={(value) => {
@@ -109,17 +115,17 @@ export const EquipmentList = () => {
       },
     },
     {
-      title: "操作",
+      title: t(KEYS.OPERATE, { ns: "equipmentList" }),
       dataIndex: "operate",
       width: "16.6%",
-      render: (_, record, index) => (
+      render: (_, __, index) => (
         <div>
           <Button
             type="link"
             className="w-[6rem]"
             onClick={() => setIsBindingOpen(true)}
           >
-            編輯
+            {t(KEYS.EDIT, { ns: "equipmentList" })}
           </Button>
           <Button
             type="link"
@@ -129,7 +135,7 @@ export const EquipmentList = () => {
               setIsDeleteDeviceOpen(true);
             }}
           >
-            刪除
+            {t(KEYS.DELETE, { ns: "equipmentList" })}
           </Button>
         </div>
       ),
@@ -144,22 +150,22 @@ export const EquipmentList = () => {
       render: () => <Radio />,
     },
     {
-      title: "區域ID",
+      title: t(KEYS.AREA_ID, { ns: "equipmentList" }),
       dataIndex: "areaId",
       width: "9.5rem",
     },
     {
-      title: "區域名稱",
+      title: t(KEYS.AREA_NAME, { ns: "equipmentList" }),
       dataIndex: "areaName",
       width: "9.5rem",
     },
     {
-      title: "區域地址",
+      title: t(KEYS.AREA_ADDRESS, { ns: "equipmentList" }),
       dataIndex: "areaAddress",
       width: "24.875rem",
     },
     {
-      title: "負責人",
+      title: t(KEYS.PRINCIPAL, { ns: "equipmentList" }),
       dataIndex: "person",
       width: "9.5rem",
     },
@@ -189,34 +195,58 @@ export const EquipmentList = () => {
       <div>
         <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            設備列表
+            {t(KEYS.DEVICE_LIST, { ns: "equipmentList" })}
           </span>
           <div className="flex flex-row pt-[1.625rem] justify-between">
             <div>
               <Input
                 className="w-[17.5rem]"
                 suffix={<img src={search} />}
-                placeholder="搜索設備ID、設備類型、設備名稱"
+                placeholder={t(KEYS.SEARCH_DEVICE_ID_DEVICE_TYPE_DEVICE_NAME, {
+                  ns: "equipmentList",
+                })}
               />
               <Select
                 className="mx-[1rem] w-[13.5rem]"
-                placeholder="是否在線"
+                placeholder={t(KEYS.IS_ONLINE, {
+                  ns: "equipmentList",
+                })}
                 defaultActiveFirstOption
                 options={[
-                  { value: "是否在線", label: "是否在線" },
-                  { value: "在線", label: "在線" },
-                  { value: "離線", label: "離線" },
+                  {
+                    value: "是否在線",
+                    label: t(KEYS.IS_ONLINE, { ns: "equipmentList" }),
+                  },
+                  {
+                    value: "在線",
+                    label: t(KEYS.ONLINE, { ns: "equipmentList" }),
+                  },
+                  {
+                    value: "離線",
+                    label: t(KEYS.OFFLINE, { ns: "equipmentList" }),
+                  },
                 ]}
                 suffixIcon={<img src={downArrow} />}
               />
               <Select
                 className="w-[13.5rem]"
-                placeholder="是否確定"
+                placeholder={t(KEYS.IS_CONFIRM, {
+                  ns: "equipmentList",
+                })}
                 defaultActiveFirstOption
                 options={[
-                  { value: "是否確定", label: "是否確定" },
-                  { value: "已綁定", label: "已綁定" },
-                  { value: "未綁定", label: "未綁定" },
+                  {
+                    value: "是否確定",
+                    label: t(KEYS.IS_CONFIRM, { ns: "equipmentList" }),
+                  },
+                  {
+                    value: "已綁定",
+                    label: t(KEYS.BOUND, { ns: "equipmentList" }),
+                  },
+                  {
+                    value: "未綁定",
+                    label: t(KEYS.NOT_BOUND, { ns: "equipmentList" }),
+                  },
                 ]}
                 suffixIcon={<img src={downArrow} />}
               />
@@ -227,7 +257,9 @@ export const EquipmentList = () => {
               onClick={() => setIsAddDeviceOpen(true)}
             >
               <PlusOutlined className="pr-[.5rem]" />
-              添加設備
+              {t(KEYS.ADD_DEVICE, {
+                ns: "equipmentList",
+              })}
             </Button>
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
@@ -266,7 +298,9 @@ export const EquipmentList = () => {
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            操作確認
+            {t(KEYS.OPERATION_CONFIRMATION, {
+              ns: "equipmentList",
+            })}
           </div>
         }
         onCancle={() => setIsUnbindOpen(false)}
@@ -280,14 +314,20 @@ export const EquipmentList = () => {
         open={isUnbindOpen}
         className={"customModal"}
       >
-        <span className="pl-[2rem]">請確認是否解除綁定？</span>
+        <span className="pl-[2rem]">
+          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_UNBIND, {
+            ns: "equipmentList",
+          })}
+        </span>
       </CustomModal>
 
       <CustomModal
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            操作確認
+            {t(KEYS.OPERATION_CONFIRMATION, {
+              ns: "equipmentList",
+            })}
           </div>
         }
         onCancle={() => setIsDeleteDeviceOpen(false)}
@@ -297,11 +337,21 @@ export const EquipmentList = () => {
         open={isDeleteDeviceOpen}
         className={"customModal"}
       >
-        <span className="pl-[2rem]">請確認是否刪除設備？</span>
+        <span className="pl-[2rem]">
+          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, {
+            ns: "equipmentList",
+          })}
+        </span>
       </CustomModal>
 
       <CustomModal
-        title={<div>設備綁定</div>}
+        title={
+          <div>
+            {t(KEYS.DEVICE_BINDING, {
+              ns: "equipmentList",
+            })}
+          </div>
+        }
         onCancle={() => setIsBindingOpen(false)}
         onConfirm={() => setIsBindingOpen(false)}
         open={isBindingOpen}
@@ -319,7 +369,13 @@ export const EquipmentList = () => {
       </CustomModal>
 
       <CustomModal
-        title={<div>添加設備</div>}
+        title={
+          <div>
+            {t(KEYS.ADD_DEVICE, {
+              ns: "equipmentList",
+            })}
+          </div>
+        }
         onCancle={() => setIsAddDeviceOpen(false)}
         onConfirm={() => setIsAddDeviceOpen(false)}
         open={isAddDeviceOpen}
@@ -329,40 +385,65 @@ export const EquipmentList = () => {
         <Form colon={false}>
           <FormItem
             name="deviceId"
-            label="設備ID"
+            label={t(KEYS.DEVICE_ID, {
+              ns: "equipmentList",
+            })}
             rules={[{ required: true }]}
             labelCol={{ span: 3 }}
             wrapperCol={{ span: 15 }}
           >
-            <Input placeholder="請輸入" />
+            <Input
+              placeholder={t(KEYS.PLEASE_INPUT, {
+                ns: "equipmentList",
+              })}
+            />
           </FormItem>
           <FormItem
             name="deviceType"
-            label="設備類型"
+            label={t(KEYS.DEVICE_TYPE, {
+              ns: "equipmentList",
+            })}
             rules={[{ required: true }]}
             labelCol={{ span: 3 }}
             wrapperCol={{ span: 15 }}
           >
             <Select
               suffixIcon={<img src={downArrow} />}
-              placeholder="請選擇"
+              placeholder={t(KEYS.PLEASE_SELECT, {
+                ns: "equipmentList",
+              })}
               defaultActiveFirstOption
               options={[
-                { value: "請選擇", label: "請選擇" },
-                { value: "攝像頭", label: "攝像頭" },
-                { value: "大聲公", label: "大聲公" },
+                {
+                  value: "請選擇",
+                  label: t(KEYS.PLEASE_SELECT, { ns: "equipmentList" }),
+                },
+                {
+                  value: "攝像頭",
+                  label: t(KEYS.CAMERA, { ns: "equipmentList" }),
+                },
+                {
+                  value: "大聲公",
+                  label: t(KEYS.LOUD_SPEAKER, { ns: "equipmentList" }),
+                },
               ]}
             />
           </FormItem>
           <FormItem
             name="deviceName"
-            label="設備名稱"
+            label={t(KEYS.DEVICE_NAME, {
+              ns: "equipmentList",
+            })}
             rules={[{ required: true }]}
             labelCol={{ span: 3 }}
             wrapperCol={{ span: 15 }}
             style={{ marginBottom: 0 }}
           >
-            <Input placeholder="請輸入" />
+            <Input
+              placeholder={t(KEYS.PLEASE_INPUT, {
+                ns: "equipmentList",
+              })}
+            />
           </FormItem>
         </Form>
       </CustomModal>
