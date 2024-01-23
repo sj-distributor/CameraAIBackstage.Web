@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "antd";
 import { ColumnsType } from "antd/es/table";
+import { Trans } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { CustomModal } from "@/components/custom-modal";
@@ -205,9 +206,14 @@ export const Monitor = () => {
             />
             <div className="flex justify-between items-center pt-[16px]">
               <div className="text-[#929292] text-[.875rem]">
-                {t(KEYS.TOTAL, source)}{" "}
-                <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
-                {t(KEYS.ITEM, source)}
+                <Trans
+                  {...source}
+                  i18nKey="Pagination"
+                  ns="monitor"
+                  values={{ count: data.length.toString() }}
+                >
+                  <span className="text-[#2853E3] font-light" />
+                </Trans>
               </div>
               <div>
                 <Pagination
