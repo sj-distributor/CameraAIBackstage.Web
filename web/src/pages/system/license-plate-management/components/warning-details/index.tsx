@@ -31,6 +31,11 @@ export interface IDetailsDataDto {
   duration: string;
 }
 
+export enum WarningTypes {
+  Car,
+  Man,
+}
+
 export const WarningDetails = () => {
   const {
     detailsList,
@@ -48,15 +53,16 @@ export const WarningDetails = () => {
     timeAxisList,
     videoDuration,
     details,
+    source,
   } = useAction();
 
   const DetailsTitle = {
-    name: t(KEYS.DEVICE_NAME, { ns: "licensePlateManagement" }),
-    type: t(KEYS.ALERT_TYPE, { ns: "licensePlateManagement" }),
-    content: t(KEYS.ALERT_CONTENT, { ns: "licensePlateManagement" }),
-    startTime: t(KEYS.START_TIME, { ns: "licensePlateManagement" }),
-    address: t(KEYS.REGION_ADDRESS, { ns: "licensePlateManagement" }),
-    duration: t(KEYS.DURATION_TIME, { ns: "licensePlateManagement" }),
+    name: t(KEYS.DEVICE_NAME, source),
+    type: t(KEYS.ALERT_TYPE, source),
+    content: t(KEYS.ALERT_CONTENT, source),
+    startTime: t(KEYS.START_TIME, source),
+    address: t(KEYS.REGION_ADDRESS, source),
+    duration: t(KEYS.DURATION_TIME, source),
   };
 
   const WarnDataVisualizer = (props: {
@@ -64,14 +70,14 @@ export const WarningDetails = () => {
       startTime: string;
       endTime: string;
     }[];
-    type: "car" | "man";
+    type: WarningTypes;
     index: number;
   }) => {
     const { warnData, index, type } = props;
 
     return (
       <>
-        {warnData.map((item, i) => {
+        {warnData.map((item) => {
           const perMinuteWidth = swiperRef.current.swiper.width / 40;
 
           const left =
@@ -89,7 +95,7 @@ export const WarningDetails = () => {
               key={index}
               style={{ left: `${left}px`, width: `${width}px` }}
               className={`rounded-[2.875rem] ${
-                type === "car" ? "bg-[#2853E3]" : "bg-[#34A46E]"
+                type === WarningTypes.Car ? "bg-[#2853E3]" : "bg-[#34A46E]"
               } absolute h-4`}
             />
           );
@@ -170,7 +176,7 @@ export const WarningDetails = () => {
                   );
               }}
             >
-              {t(KEYS.EXPORT, { ns: "licensePlateManagement" })}
+              {t(KEYS.EXPORT, source)}
             </div>
 
             <Popover
@@ -192,13 +198,12 @@ export const WarningDetails = () => {
                 );
               })}
               trigger="click"
-              className=""
               open={open}
               arrow={false}
               onOpenChange={handleOpenChange}
             >
               <div className="cursor-pointer">
-                {t(KEYS.SPEED_MULTIPLIER, { ns: "licensePlateManagement" })}
+                {t(KEYS.SPEED_MULTIPLIER, source)}
               </div>
             </Popover>
           </div>
@@ -215,7 +220,7 @@ export const WarningDetails = () => {
         ref={swiperRef}
         scrollbar={{ draggable: true, hide: true }}
         freeMode={true}
-        className="w-full w-full h-24 bg-white rounded-lg relative"
+        className="w-full h-24 bg-white rounded-lg relative"
       >
         <div
           onClick={() => {
@@ -267,12 +272,12 @@ export const WarningDetails = () => {
                       <WarnDataVisualizer
                         warnData={currentCarData}
                         index={index}
-                        type="car"
+                        type={WarningTypes.Car}
                       />
                       <WarnDataVisualizer
                         warnData={currentManData}
                         index={index}
-                        type="man"
+                        type={WarningTypes.Man}
                       />
                     </div>
                   </div>

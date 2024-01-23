@@ -18,6 +18,8 @@ export const useAction = () => {
 
   const { t } = useAuth();
 
+  const source = { ns: "licensePlateManagement" };
+
   const detailsList = Object.entries(details);
 
   const videoRef = useRef<HTMLVideoElement>(null!);
@@ -114,5 +116,6 @@ export const useAction = () => {
     swiperRef,
     details,
     t,
+    source,
   };
 };

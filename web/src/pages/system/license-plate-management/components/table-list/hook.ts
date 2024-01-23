@@ -8,6 +8,8 @@ export const useAction = () => {
   const [isShowLicensePlateOpen, setIsShowLicensePlateOpen] =
     useState<boolean>(false);
 
+  const source = { ns: "licensePlateManagement" };
+
   const [isRegisterOpen, setIsRegisterOpen] = useState<boolean>(false);
 
   const [isAddDeviceOpen, setIsAddDeviceOpen] = useState<boolean>(false);
@@ -211,5 +213,6 @@ export const useAction = () => {
     setData,
     deviceData,
     setDeviceData,
+    source,
   };
 };
