@@ -15,6 +15,7 @@ import {
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
 import { clone } from "ramda";
+import { Trans } from "react-i18next";
 
 import down from "@/assets/public/down-arrow.png";
 import search from "@/assets/public/search.png";
@@ -212,10 +213,15 @@ export const LicensePlateManagementTable = (props: {
           pagination={false}
         />
         <div className="flex justify-between items-center pt-[1rem]">
-          <div className="text-[#929292] text-[0.875rem]">
-            <span className="text-[#2853E3] font-light">
-              {t(KEYS.TOTAL_ITEMS, { ...source, length: data.length })}
-            </span>
+          <div className="text-[#929292] text-[0.875rem] font-light">
+            <Trans
+              {...source}
+              i18nKey="TotalItems"
+              values={{ length: data.length.toString() }}
+              components={{
+                span: <span className="text-[#2853E3]" />,
+              }}
+            />
           </div>
           <div>
             <Pagination
