@@ -40,4 +40,5 @@ export default {
   DEVICE_TYPE: "DeviceType",
   REGISTERED_VEHICLES: "RegisteredVehicles",
   EDIT: "Edit",
+  DELETE: "Delete",
 };

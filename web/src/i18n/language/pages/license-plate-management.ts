@@ -44,6 +44,7 @@ export default {
     [KEYS.DEVICE_TYPE]: "Device type",
     [KEYS.REGISTERED_VEHICLES]: "Registered vehicles",
     [KEYS.EDIT]: "Edit",
+    [KEYS.DELETE]: "Delete",
   },
 
   ch: {
@@ -88,5 +89,6 @@ export default {
     [KEYS.DEVICE_TYPE]: "設備類型",
     [KEYS.REGISTERED_VEHICLES]: "已登記車輛",
     [KEYS.EDIT]: "編輯",
+    [KEYS.DELETE]: "刪除",
   },
 };

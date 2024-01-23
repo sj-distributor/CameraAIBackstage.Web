@@ -105,13 +105,15 @@ export const LicensePlateManagementTable = (props: {
           >
             {t(isRegisteredVehicle ? KEYS.EDIT : KEYS.REGISTER, source)}
           </Button>
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => setShowWarningDetails(record.deviceId)}
-          >
-            {t(KEYS.VIEW_DETAILS, source)}
-          </Button>
+          {!isRegisteredVehicle && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => setShowWarningDetails(record.deviceId)}
+            >
+              {t(KEYS.VIEW_DETAILS, source)}
+            </Button>
+          )}
           <Button
             type="link"
             className="w-[6rem]"
@@ -121,6 +123,18 @@ export const LicensePlateManagementTable = (props: {
           >
             {t(KEYS.LICENSE_PLATE_IMAGE, source)}
           </Button>
+
+          {isRegisteredVehicle && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                setIsShowLicensePlateOpen(true);
+              }}
+            >
+              {t(KEYS.DELETE, source)}
+            </Button>
+          )}
         </div>
       ),
     },
