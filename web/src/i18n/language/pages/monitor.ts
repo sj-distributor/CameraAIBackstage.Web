@@ -19,7 +19,7 @@ export default {
     [KEYS.OPERATION_CONFIRMATION]: "Operation confirmation",
     [KEYS.DELETE_CONFIRM_CONTENT]:
       "Please confirm whether to delete this configuration?",
-    [KEYS.PAGINATION]: "Total <1>{{count}}</1> Item",
+    [KEYS.PAGINATION]: "Total <span>{{count}}</span> Item",
     [KEYS.ALL]: "All",
     [KEYS.IDENTIFY_PEOPLE]: "Identify people",
     [KEYS.IDENTIFY_VEHICLES]: "Identify vehicles",
@@ -41,7 +41,7 @@ export default {
     [KEYS.DELETE]: "刪除",
     [KEYS.OPERATION_CONFIRMATION]: "操作確認",
     [KEYS.DELETE_CONFIRM_CONTENT]: "請確認是否刪除該配置？",
-    [KEYS.PAGINATION]: "共 <1>{{count}}</1> 條",
+    [KEYS.PAGINATION]: "共 <span>{{count}}</span> 條",
     [KEYS.ALL]: "全部",
     [KEYS.IDENTIFY_PEOPLE]: "識別人員",
     [KEYS.IDENTIFY_VEHICLES]: "識別車輛",

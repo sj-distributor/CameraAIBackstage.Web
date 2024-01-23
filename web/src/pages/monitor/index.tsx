@@ -211,13 +211,10 @@ export const Monitor = () => {
                   i18nKey="Pagination"
                   ns="monitor"
                   values={{ count: data.length.toString() }}
-                >
-                  共
-                  <span className="text-[#2853E3]">
-                    {data.length.toString()}
-                  </span>
-                  條
-                </Trans>
+                  components={{
+                    span: <span className="text-[#2853E3]" />,
+                  }}
+                />
               </div>
               <div>
                 <Pagination
