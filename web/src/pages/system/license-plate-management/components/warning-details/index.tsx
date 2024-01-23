@@ -19,7 +19,7 @@ import {
   GoIcon,
   PalyIcon,
   SuspendIcon,
-} from "../icon";
+} from "../../../../../assets/license-plate-management";
 import { Speed, useAction } from "./hook";
 
 export interface IDetailsDataDto {

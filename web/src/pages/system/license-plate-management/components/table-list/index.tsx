@@ -16,8 +16,8 @@ import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
 import { clone } from "ramda";
 
-import down from "@/assets/down.png";
-import search from "@/assets/search.png";
+import down from "@/assets/public/down-arrow.png";
+import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/license-plate-management-keys";
@@ -262,7 +262,7 @@ export const LicensePlateManagementTable = (props: {
         }}
         open={isShowLicensePlateOpen}
         className={"resettingModalPadding rounded-2xl max-h-max"}
-        modalWidth={"60%"}
+        modalWidth="69rem"
         footer={
           <div className="text-center absolute button-4 inset-x-0">
             <CloseCircleOutlined
@@ -272,9 +272,9 @@ export const LicensePlateManagementTable = (props: {
           </div>
         }
       >
-        <div className="flex items-center justify-center bg-[#D7D2D4] rounded-2xl overflow-hidden">
+        <div className="flex items-center justify-center bg-[#D7D2D4] rounded-2xl overflow-hidden w-[69rem] h-[38rem]">
           <img
-            src="/src/assets/carp.png"
+            src="/src/assets/logo.svg"
             alt=""
             width={"100%"}
             height={"100%"}
