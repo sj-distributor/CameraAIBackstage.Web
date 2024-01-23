@@ -63,11 +63,11 @@ export const useAction = () => {
   };
 
   const hide = () => {
-    setOpen(false);
+    setIsOpenSpeedList(false);
   };
 
   const handleOpenChange = (newOpen: boolean) => {
-    setOpen(newOpen);
+    setIsOpenSpeedList(newOpen);
   };
 
   const handleLoadedMetadata = () => {
