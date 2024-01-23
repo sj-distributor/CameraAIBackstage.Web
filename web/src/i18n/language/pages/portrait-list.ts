@@ -43,6 +43,6 @@ export default {
     [KEYS.UPLOAD_TIP_TITLE]: "上傳人像小竅門：",
     [KEYS.UPLOAD_TIP_CONTENT]:
       "建議圖片比例為1:1，文件大小小于2MB，保持視覺元素居中",
-    [KEYS.PAGINATION]: "共 <1>{{count}}</1> 條",
+    [KEYS.PAGINATION]: "共 <style>{{count}}</style> 條",
   },
 };

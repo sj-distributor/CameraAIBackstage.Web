@@ -2,13 +2,13 @@ import { CloseOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Pagination, Select, Upload } from "antd";
 import { Trans } from "react-i18next";
 
-import add from "@/assets/portrait/add.svg";
-import down from "@/assets/portrait/down.svg";
 import edit from "@/assets/portrait/edit.svg";
-import search from "@/assets/portrait/search.svg";
 import trash from "@/assets/portrait/trash.svg";
 import upload from "@/assets/portrait/upload.svg";
+import add from "@/assets/public/add.svg";
 import avatar from "@/assets/public/avatar.png";
+import down from "@/assets/public/down-arrow.png";
+import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/portrait-list-keys";
@@ -120,9 +120,8 @@ export const PortraitList = () => {
             i18nKey={KEYS.PAGINATION}
             ns="portraitList"
             values={{ count: 200 }}
-          >
-            共<span className="text-[#2853E3]">200</span>條
-          </Trans>
+            components={{ style: <span className="text-[#2853E3]" /> }}
+          />
         </div>
         <Pagination
           defaultCurrent={1}
