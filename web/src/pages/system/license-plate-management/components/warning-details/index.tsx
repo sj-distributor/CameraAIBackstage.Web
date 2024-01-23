@@ -81,19 +81,22 @@ export const WarningDetails = () => {
           const perMinuteWidth = swiperRef.current.swiper.width / 40;
 
           const left =
-            dayjs(item.startTime).diff(
+            (dayjs(item.startTime).diff(
               dayjs(details.startTime).add(index * 40, "minute"),
               "minute"
-            ) * perMinuteWidth;
+            ) *
+              perMinuteWidth) /
+            16;
 
           const width =
-            dayjs(item.endTime).diff(dayjs(item.startTime), "minute") *
-            perMinuteWidth;
+            (dayjs(item.endTime).diff(dayjs(item.startTime), "minute") *
+              perMinuteWidth) /
+            16;
 
           return (
             <div
               key={index}
-              style={{ left: `${left}px`, width: `${width}px` }}
+              style={{ left: `${left}rem`, width: `${width}rem` }}
               className={`rounded-[2.875rem] ${
                 type === WarningTypes.Car ? "bg-[#2853E3]" : "bg-[#34A46E]"
               } absolute h-4`}
