@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
 
-import { IMonitorDataType } from "./props";
+import { IMonitorDataType, IOpenOrStopStatus, IWarningType } from "./props";
 
 export const useAction = () => {
   const { t, language } = useAuth();
@@ -31,6 +31,12 @@ export const useAction = () => {
 
   const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
 
+  const [filterStatus, setFilterStatus] = useState<IOpenOrStopStatus>(
+    IOpenOrStopStatus.None
+  );
+
+  const [filterType, setFilterType] = useState<IWarningType>(IWarningType.All);
+
   const source = { ns: "monitor" };
 
   const onChangeStatus = (index: number, value: boolean) => {
@@ -38,6 +44,14 @@ export const useAction = () => {
 
     newList[index].condition = value;
     setData(newList);
+  };
+
+  const onFilterStatus = (value: IOpenOrStopStatus) => {
+    setFilterStatus(value);
+  };
+
+  const onFilterType = (value: IWarningType) => {
+    setFilterType(value);
   };
 
   return {
@@ -53,5 +67,9 @@ export const useAction = () => {
     t,
     source,
     language,
+    onFilterStatus,
+    onFilterType,
+    filterStatus,
+    filterType,
   };
 };

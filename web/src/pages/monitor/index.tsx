@@ -17,7 +17,12 @@ import { CustomModal } from "@/components/custom-modal";
 import downArrow from "../../assets/public/down-arrow.png";
 import KEYS from "../../i18n/language/keys/monitor-keys";
 import { useAction } from "./hook";
-import { IMonitorConfigurationType, IMonitorDataType } from "./props";
+import {
+  IMonitorConfigurationType,
+  IMonitorDataType,
+  IOpenOrStopStatus,
+  IWarningType,
+} from "./props";
 
 export const Monitor = () => {
   const {
@@ -29,6 +34,10 @@ export const Monitor = () => {
     t,
     source,
     language,
+    onFilterStatus,
+    onFilterType,
+    filterStatus,
+    filterType,
   } = useAction();
 
   const columns: ColumnsType<IMonitorDataType> = [
@@ -80,7 +89,7 @@ export const Monitor = () => {
       title: `${t(KEYS.OPERATE, source)}`,
       dataIndex: "operate",
       width: "16.6%",
-      render: (_, record, index) => (
+      render: (_, _record, index) => (
         <div className="flex-wrap flex">
           <Button
             type="link"
@@ -145,17 +154,21 @@ export const Monitor = () => {
                 className="mr-[1rem] w-[13.5rem]"
                 placeholder={t(KEYS.STATUS, source)}
                 defaultActiveFirstOption
+                value={filterStatus}
+                onChange={(value) => {
+                  onFilterStatus(value);
+                }}
                 options={[
                   {
-                    value: `${t(KEYS.STATUS, source)}`,
+                    value: IOpenOrStopStatus.None,
                     label: `${t(KEYS.STATUS, source)}`,
                   },
                   {
-                    value: `${t(KEYS.ENABLE, source)}`,
+                    value: IOpenOrStopStatus.Enable,
                     label: `${t(KEYS.ENABLE, source)}`,
                   },
                   {
-                    value: `${t(KEYS.DEACTIVATE, source)}`,
+                    value: IOpenOrStopStatus.Deactivate,
                     label: `${t(KEYS.DEACTIVATE, source)}`,
                   },
                 ]}
@@ -165,21 +178,23 @@ export const Monitor = () => {
                 className="w-[13.5rem]"
                 placeholder={t(KEYS.ALERT_TYPE_FILTER, source)}
                 defaultActiveFirstOption
+                value={filterType}
+                onChange={(value) => onFilterType(value)}
                 options={[
                   {
-                    value: `${t(KEYS.ALL, source)}`,
+                    value: IWarningType.All,
                     label: `${t(KEYS.ALL, source)}`,
                   },
                   {
-                    value: `${t(KEYS.IDENTIFY_PEOPLE, source)}`,
+                    value: IWarningType.IdentifyPersonnel,
                     label: `${t(KEYS.IDENTIFY_PEOPLE, source)}`,
                   },
                   {
-                    value: `${t(KEYS.IDENTIFY_VEHICLES, source)}`,
+                    value: IWarningType.IdentifyVehicle,
                     label: `${t(KEYS.IDENTIFY_VEHICLES, source)}`,
                   },
                   {
-                    value: `${t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source)}`,
+                    value: IWarningType.UnusualVehicle,
                     label: `${t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source)}`,
                   },
                 ]}

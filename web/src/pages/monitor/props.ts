@@ -10,3 +10,16 @@ export enum IMonitorConfigurationType {
   Add,
   Update,
 }
+
+export enum IOpenOrStopStatus {
+  None,
+  Enable,
+  Deactivate,
+}
+
+export enum IWarningType {
+  All,
+  IdentifyPersonnel,
+  IdentifyVehicle,
+  UnusualVehicle,
+}
