@@ -1,9 +1,14 @@
+import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/license-plate-management-keys";
+
 import { LicensePlateManagementTable } from "./components/table-list";
 import { WarningDetails } from "./components/warning-details";
 import { useAction } from "./hook";
 
 export const LicensePlateManagement = () => {
   const { showWarningDetails, setShowWarningDetails } = useAction();
+
+  const { t } = useAuth();
 
   return (
     <div>
@@ -15,13 +20,15 @@ export const LicensePlateManagement = () => {
             }`}
             onClick={() => setShowWarningDetails(undefined)}
           >
-            車牌管理
+            {t(KEYS.LICENSE_PLATE_MANAGEMENT, { ns: "licensePlateManagement" })}
           </span>
 
           {showWarningDetails && (
             <>
               <span className="text-[#5F6279]">/</span>
-              <span className="ml-2">預警詳情</span>
+              <span className="ml-2">
+                {t(KEYS.ALERT_DETAILS, { ns: "licensePlateManagement" })}
+              </span>
             </>
           )}
         </span>

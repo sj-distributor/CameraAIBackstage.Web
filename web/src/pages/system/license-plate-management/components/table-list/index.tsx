@@ -19,6 +19,8 @@ import { clone } from "ramda";
 import down from "@/assets/down.png";
 import search from "@/assets/search.png";
 import { CustomModal } from "@/components/custom-modal";
+import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/license-plate-management-keys";
 
 import { IDataType } from "../../props";
 import { useAction } from "./hook";
@@ -29,6 +31,8 @@ export const LicensePlateManagementTable = (props: {
   >;
 }) => {
   const { setShowWarningDetails } = props;
+
+  const { t } = useAuth();
 
   const {
     isUnbindOpen,
@@ -46,23 +50,23 @@ export const LicensePlateManagementTable = (props: {
 
   const columns: ColumnsType<IDataType> = [
     {
-      title: "序號",
+      title: t(KEYS.SERIAL_NUMBER, { ns: "licensePlateManagement" }),
       dataIndex: "deviceId",
       width: "16.6%",
     },
     {
-      title: "車牌號碼",
+      title: t(KEYS.LICENSE_PLATE_NUMBER, { ns: "licensePlateManagement" }),
       dataIndex: "isOnline",
       width: "16.6%",
       render: () => <div>粵C15468</div>,
     },
     {
-      title: "開始時間",
+      title: t(KEYS.START_TIME, { ns: "licensePlateManagement" }),
       dataIndex: "operate",
       width: "16.6%",
     },
     {
-      title: "車輛類型",
+      title: t(KEYS.VEHICLE_TYPE, { ns: "licensePlateManagement" }),
       dataIndex: "equipmentName",
       width: "16.6%",
       render: (record: boolean) => (
@@ -70,19 +74,19 @@ export const LicensePlateManagementTable = (props: {
           {record ? (
             <div className="flex flex-row items-center">
               <div className="bg-[#34A46E] w-[6px] h-[6px] rounded-full mr-[8px]" />
-              <span>在線</span>
+              <span>{t(KEYS.ONLINE, { ns: "licensePlateManagement" })}</span>
             </div>
           ) : (
             <div className="flex flex-row items-center">
               <div className="bg-[#F04E4E] w-[6px] h-[6px] rounded-full mr-[8px]" />
-              <span>離線</span>
+              <span>{t(KEYS.OFFLINE, { ns: "licensePlateManagement" })}</span>
             </div>
           )}
         </div>
       ),
     },
     {
-      title: "操作",
+      title: t(KEYS.OPERATION, { ns: "licensePlateManagement" }),
       dataIndex: "operate",
       width: "26.6%",
       render: (_, record, index) => (
@@ -92,14 +96,14 @@ export const LicensePlateManagementTable = (props: {
             className="w-[96px]"
             onClick={() => setIsRegisterOpen(true)}
           >
-            登記
+            {t(KEYS.REGISTER, { ns: "licensePlateManagement" })}
           </Button>
           <Button
             type="link"
             className="w-[96px]"
             onClick={() => setShowWarningDetails(record.deviceId)}
           >
-            查看詳情
+            {t(KEYS.VIEW_DETAILS, { ns: "licensePlateManagement" })}
           </Button>
           <Button
             type="link"
@@ -108,7 +112,7 @@ export const LicensePlateManagementTable = (props: {
               setIsShowLicensePlateOpen(true);
             }}
           >
-            車牌圖片
+            {t(KEYS.LICENSE_PLATE_IMAGE, { ns: "licensePlateManagement" })}
           </Button>
         </div>
       ),
@@ -142,39 +146,92 @@ export const LicensePlateManagementTable = (props: {
             <Input
               className="w-[280px]"
               suffix={<img src={search} />}
-              placeholder="搜索車輛號碼"
+              placeholder={t(KEYS.SEARCH_VEHICLE_NUMBER, {
+                ns: "licensePlateManagement",
+              })}
             />
             <Select
               className="mx-[16px] w-[216px]"
-              placeholder="最近一周"
+              placeholder={t(KEYS.LAST_WEEK, {
+                ns: "licensePlateManagement",
+              })}
               defaultActiveFirstOption
               options={[
-                { value: "最近一周", label: "最近一周" },
-                { value: "最近一個月", label: "最近一個月" },
-                { value: "最近三個月", label: "最近三個月" },
-                { value: "自定義時間範圍", label: "自定義時間範圍" },
+                {
+                  value: t(KEYS.LAST_WEEK, {
+                    ns: "licensePlateManagement",
+                  }),
+                  label: t(KEYS.LAST_WEEK, {
+                    ns: "licensePlateManagement",
+                  }),
+                },
+                {
+                  value: t(KEYS.LAST_MONTH, {
+                    ns: "licensePlateManagement",
+                  }),
+                  label: t(KEYS.LAST_MONTH, {
+                    ns: "licensePlateManagement",
+                  }),
+                },
+                {
+                  value: t(KEYS.LAST_THREE_MONTHS, {
+                    ns: "licensePlateManagement",
+                  }),
+                  label: t(KEYS.LAST_THREE_MONTHS, {
+                    ns: "licensePlateManagement",
+                  }),
+                },
+                {
+                  value: t(KEYS.CUSTOM_TIME_RANGE, {
+                    ns: "licensePlateManagement",
+                  }),
+                  label: t(KEYS.LAST_MONTH, {
+                    ns: "licensePlateManagement",
+                  }),
+                },
               ]}
               suffixIcon={<img src={down} />}
             />
             <Select
               className="w-[216px]"
-              placeholder="未登記"
+              placeholder={t(KEYS.UNREGISTERED, {
+                ns: "licensePlateManagement",
+              })}
               defaultActiveFirstOption
               options={[
-                { value: "正常車輛", label: "正常車輛" },
-                { value: "異常車輛", label: "異常車輛" },
-                { value: "未登記", label: "未登記" },
+                {
+                  value: t(KEYS.UNREGISTERED, {
+                    ns: "licensePlateManagement",
+                  }),
+                  label: t(KEYS.UNREGISTERED, { ns: "licensePlateManagement" }),
+                },
+                {
+                  value: t(KEYS.ABNORMAL_VEHICLES, {
+                    ns: "licensePlateManagement",
+                  }),
+                  label: t(KEYS.ABNORMAL_VEHICLES, {
+                    ns: "licensePlateManagement",
+                  }),
+                },
+                {
+                  value: t(KEYS.NORMAL_VEHICLES, {
+                    ns: "licensePlateManagement",
+                  }),
+                  label: t(KEYS.NORMAL_VEHICLES, {
+                    ns: "licensePlateManagement",
+                  }),
+                },
               ]}
               suffixIcon={<img src={down} />}
             />
           </div>
           <Button
             type="primary"
-            className="h-[44px] w-[116px] bg-[#2853E3] flex items-center"
+            className="h-[44px] max-w-max bg-[#2853E3] flex items-center"
             onClick={() => setIsAddDeviceOpen(true)}
           >
             <PlusOutlined className="pr-[8px]" />
-            添加設備
+            {t(KEYS.ADD_DEVICE, { ns: "licensePlateManagement" })}
           </Button>
         </div>
         <Table
@@ -187,8 +244,13 @@ export const LicensePlateManagementTable = (props: {
         />
         <div className="flex justify-between items-center pt-[1rem]">
           <div className="text-[#929292] text-[14px]">
-            共 <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
-            條
+            {t(KEYS.TOTAL, {
+              ns: "licensePlateManagement",
+            })}
+            <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
+            {t(KEYS.ITEMS, {
+              ns: "licensePlateManagement",
+            })}
           </div>
           <div>
             <Pagination
@@ -208,7 +270,9 @@ export const LicensePlateManagementTable = (props: {
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[10px]" />
-            操作確認
+            {t(KEYS.CONFIRM_OPERATION, {
+              ns: "licensePlateManagement",
+            })}
           </div>
         }
         onCancle={() => setIsUnbindOpen(false)}
@@ -222,7 +286,11 @@ export const LicensePlateManagementTable = (props: {
         open={isUnbindOpen}
         className={"customModal"}
       >
-        <span className="pl-[32px]">請確認是否解除綁定？</span>
+        <span className="pl-[32px]">
+          {t(KEYS.PLEASE_CONFIRM_UNBIND, {
+            ns: "licensePlateManagement",
+          })}
+        </span>
       </CustomModal>
 
       <CustomModal
@@ -254,7 +322,13 @@ export const LicensePlateManagementTable = (props: {
       </CustomModal>
 
       <CustomModal
-        title={<div className="px-[20px] mb-[20px] pt-4">登記</div>}
+        title={
+          <div className="px-[20px] mb-[20px] pt-4">
+            {t(KEYS.REGISTER, {
+              ns: "licensePlateManagement",
+            })}
+          </div>
+        }
         onCancle={() => setIsRegisterOpen(false)}
         onConfirm={() => setIsRegisterOpen(false)}
         open={isRegisterOpen}
@@ -267,14 +341,22 @@ export const LicensePlateManagementTable = (props: {
               onClick={() => setIsRegisterOpen(false)}
               className="ant-btn css-dev-only-do-not-override-9alsuj ant-btn-default w-[6rem] h-[2.75rem] mr-[1.5rem]"
             >
-              <span>取 消</span>
+              <span>
+                {t(KEYS.CANCEL, {
+                  ns: "licensePlateManagement",
+                })}
+              </span>
             </button>
             <button
               type="button"
               onClick={() => setIsRegisterOpen(false)}
               className="ant-btn css-dev-only-do-not-override-9alsuj ant-btn-primary w-[6rem] h-[2.75rem] mr-[1.5rem] bg-[#2853E3]"
             >
-              <span>確 定</span>
+              <span>
+                {t(KEYS.CONFIRM, {
+                  ns: "licensePlateManagement",
+                })}
+              </span>
             </button>
           </div>
         }
@@ -283,7 +365,9 @@ export const LicensePlateManagementTable = (props: {
           <Form colon={false} className="ml-6">
             <FormItem
               name="id"
-              label="車牌號碼"
+              label={t(KEYS.LICENSE_PLATE_NUMBER, {
+                ns: "licensePlateManagement",
+              })}
               labelCol={{ span: 3 }}
               wrapperCol={{ span: 15 }}
             >
@@ -291,19 +375,36 @@ export const LicensePlateManagementTable = (props: {
             </FormItem>
             <FormItem
               name="deviceType"
-              label="車輛類型"
+              label={t(KEYS.VEHICLE_TYPE, {
+                ns: "licensePlateManagement",
+              })}
               rules={[{ required: true }]}
               labelCol={{ span: 3 }}
               wrapperCol={{ span: 15 }}
             >
               <Select
                 suffixIcon={<img src={down} />}
-                placeholder="請選擇"
+                placeholder={t(KEYS.PLEASE_SELECT, {
+                  ns: "licensePlateManagement",
+                })}
                 defaultActiveFirstOption
                 options={[
-                  { value: "請選擇", label: "請選擇" },
-                  { value: "攝像頭", label: "攝像頭" },
-                  { value: "大聲公", label: "大聲公" },
+                  {
+                    value: t(KEYS.PLEASE_SELECT, {
+                      ns: "licensePlateManagement",
+                    }),
+                    label: t(KEYS.PLEASE_SELECT, {
+                      ns: "licensePlateManagement",
+                    }),
+                  },
+                  {
+                    value: t(KEYS.CAMERA, { ns: "licensePlateManagement" }),
+                    label: t(KEYS.CAMERA, { ns: "licensePlateManagement" }),
+                  },
+                  {
+                    value: t(KEYS.SPEAKER, { ns: "licensePlateManagement" }),
+                    label: t(KEYS.SPEAKER, { ns: "licensePlateManagement" }),
+                  },
                 ]}
               />
             </FormItem>
@@ -312,7 +413,13 @@ export const LicensePlateManagementTable = (props: {
       </CustomModal>
 
       <CustomModal
-        title={<div>添加設備</div>}
+        title={
+          <div>
+            {t(KEYS.ADD_DEVICE, {
+              ns: "licensePlateManagement",
+            })}
+          </div>
+        }
         onCancle={() => setIsAddDeviceOpen(false)}
         onConfirm={() => setIsAddDeviceOpen(false)}
         open={isAddDeviceOpen}
@@ -322,40 +429,69 @@ export const LicensePlateManagementTable = (props: {
         <Form colon={false}>
           <FormItem
             name="deviceId"
-            label="設備ID"
+            label={t(KEYS.DEVICE_ID, {
+              ns: "licensePlateManagement",
+            })}
             rules={[{ required: true }]}
             labelCol={{ span: 3 }}
             wrapperCol={{ span: 15 }}
           >
-            <Input placeholder="請輸入" />
+            <Input
+              placeholder={t(KEYS.PLEASE_ENTER, {
+                ns: "licensePlateManagement",
+              })}
+            />
           </FormItem>
           <FormItem
             name="deviceType"
-            label="設備類型"
+            label={t(KEYS.DEVICE_TYPE, {
+              ns: "licensePlateManagement",
+            })}
             rules={[{ required: true }]}
             labelCol={{ span: 3 }}
             wrapperCol={{ span: 15 }}
           >
             <Select
               suffixIcon={<img src={down} />}
-              placeholder="請選擇"
+              placeholder={t(KEYS.PLEASE_SELECT, {
+                ns: "licensePlateManagement",
+              })}
               defaultActiveFirstOption
               options={[
-                { value: "請選擇", label: "請選擇" },
-                { value: "攝像頭", label: "攝像頭" },
-                { value: "大聲公", label: "大聲公" },
+                {
+                  value: t(KEYS.PLEASE_SELECT, {
+                    ns: "licensePlateManagement",
+                  }),
+                  label: t(KEYS.PLEASE_SELECT, {
+                    ns: "licensePlateManagement",
+                  }),
+                },
+                {
+                  value: t(KEYS.CAMERA, { ns: "licensePlateManagement" }),
+                  label: t(KEYS.CAMERA, { ns: "licensePlateManagement" }),
+                },
+                {
+                  value: t(KEYS.SPEAKER, { ns: "licensePlateManagement" }),
+                  label: t(KEYS.SPEAKER, { ns: "licensePlateManagement" }),
+                },
               ]}
             />
           </FormItem>
           <FormItem
             name="deviceName"
-            label="設備名稱"
+            label={t(KEYS.DEVICE_NAME, {
+              ns: "licensePlateManagement",
+            })}
             rules={[{ required: true }]}
             labelCol={{ span: 3 }}
             wrapperCol={{ span: 15 }}
             style={{ marginBottom: 0 }}
           >
-            <Input placeholder="請輸入" />
+            <Input
+              placeholder={t(KEYS.PLEASE_ENTER, {
+                ns: "licensePlateManagement",
+              })}
+            />
           </FormItem>
         </Form>
       </CustomModal>

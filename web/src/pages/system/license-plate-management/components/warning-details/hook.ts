@@ -2,6 +2,8 @@ import dayjs from "dayjs";
 import { useRef, useState } from "react";
 import { SwiperRef } from "swiper/react";
 
+import { useAuth } from "@/hooks/use-auth";
+
 export type Speed = 0.5 | 1 | 1.25 | 1.5 | 2;
 
 export const useAction = () => {
@@ -13,6 +15,8 @@ export const useAction = () => {
     address: "廣東省中山市中山二路1號",
     duration: "1m10s",
   };
+
+  const { t } = useAuth();
 
   const detailsList = Object.entries(details);
 
@@ -109,5 +113,6 @@ export const useAction = () => {
     videoDuration,
     swiperRef,
     details,
+    t,
   };
 };

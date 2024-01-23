@@ -11,6 +11,8 @@ import {
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import KEYS from "@/i18n/language/keys/license-plate-management-keys";
+
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -19,15 +21,6 @@ import {
   SuspendIcon,
 } from "../icon";
 import { Speed, useAction } from "./hook";
-
-export const DetailsTitle = {
-  name: "設備名稱",
-  type: "預警類型",
-  content: "預警內容",
-  startTime: "開始時間",
-  address: "區域地址",
-  duration: "持續時間",
-};
 
 export interface IDetailsDataDto {
   name: string;
@@ -44,6 +37,7 @@ export const WarningDetails = () => {
     handleSetPalyVideo,
     open,
     isPalyVideo,
+    t,
     handleOpenChange,
     videoRef,
     setOpen,
@@ -55,6 +49,15 @@ export const WarningDetails = () => {
     videoDuration,
     details,
   } = useAction();
+
+  const DetailsTitle = {
+    name: t(KEYS.DEVICE_NAME, { ns: "licensePlateManagement" }),
+    type: t(KEYS.ALERT_TYPE, { ns: "licensePlateManagement" }),
+    content: t(KEYS.ALERT_CONTENT, { ns: "licensePlateManagement" }),
+    startTime: t(KEYS.START_TIME, { ns: "licensePlateManagement" }),
+    address: t(KEYS.REGION_ADDRESS, { ns: "licensePlateManagement" }),
+    duration: t(KEYS.DURATION_TIME, { ns: "licensePlateManagement" }),
+  };
 
   const WarnDataVisualizer = (props: {
     warnData: {
@@ -167,7 +170,7 @@ export const WarningDetails = () => {
                   );
               }}
             >
-              導出
+              {t(KEYS.EXPORT, { ns: "licensePlateManagement" })}
             </div>
 
             <Popover
@@ -194,7 +197,9 @@ export const WarningDetails = () => {
               arrow={false}
               onOpenChange={handleOpenChange}
             >
-              <div className="cursor-pointer">倍速</div>
+              <div className="cursor-pointer">
+                {t(KEYS.SPEED_MULTIPLIER, { ns: "licensePlateManagement" })}
+              </div>
             </Popover>
           </div>
         </div>
