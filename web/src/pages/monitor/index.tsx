@@ -212,7 +212,11 @@ export const Monitor = () => {
                   ns="monitor"
                   values={{ count: data.length.toString() }}
                 >
-                  <span className="text-[#2853E3] font-light" />
+                  共
+                  <span className="text-[#2853E3]">
+                    {data.length.toString()}
+                  </span>
+                  條
                 </Trans>
               </div>
               <div>
