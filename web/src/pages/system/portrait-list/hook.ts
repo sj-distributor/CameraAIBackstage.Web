@@ -2,7 +2,7 @@ import { UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
 import { useState } from "react";
 
-import { IImageInformationDto, IPortraitDto } from "@/services/dtos/portrait";
+import { IPreviewImageDto, IPortraitDto } from "@/services/dtos/portrait";
 
 export const useAction = () => {
   const initialPortraitData: IPortraitDto[] = [
@@ -69,12 +69,11 @@ export const useAction = () => {
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
-  const [imageInformation, setImageInformation] =
-    useState<IImageInformationDto>({
-      previewOpen: false,
-      previewImage: "",
-      previewTitle: "",
-    });
+  const [imageInformation, setImageInformation] = useState<IPreviewImageDto>({
+    previewOpen: false,
+    previewImage: "",
+    previewTitle: "",
+  });
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 

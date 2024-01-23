@@ -7,7 +7,7 @@ export interface IPortraitDto {
   phone: string;
 }
 
-export interface IImageInformationDto {
+export interface IPreviewImageDto {
   previewOpen: boolean;
   previewImage: string;
   previewTitle: string;
