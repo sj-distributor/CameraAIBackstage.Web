@@ -120,7 +120,7 @@ export const PortraitList = () => {
             i18nKey={KEYS.PAGINATION}
             ns="portraitList"
             values={{ count: 200 }}
-            components={{ style: <span className="text-[#2853E3]" /> }}
+            components={{ span: <span className="text-[#2853E3]" /> }}
           />
         </div>
         <Pagination
