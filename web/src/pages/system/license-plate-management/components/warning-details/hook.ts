@@ -26,11 +26,11 @@ export const useAction = () => {
 
   const swiperRef = useRef<SwiperRef>(null!);
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   const [isPalyVideo, setIsPalyVideo] = useState<boolean>(false);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   const [videoDuration, setVideoDuration] = useState<number>(0);
 
