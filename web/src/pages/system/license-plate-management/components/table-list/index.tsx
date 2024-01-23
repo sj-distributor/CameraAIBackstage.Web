@@ -33,7 +33,7 @@ export const LicensePlateManagementTable = (props: {
 }) => {
   const { setShowWarningDetails } = props;
 
-  const { t } = useAuth();
+  const { t, language } = useAuth();
 
   const {
     isUnbindOpen,
@@ -323,7 +323,7 @@ export const LicensePlateManagementTable = (props: {
             <FormItem
               name="id"
               label={t(KEYS.LICENSE_PLATE_NUMBER, source)}
-              labelCol={{ span: 3 }}
+              labelCol={{ span: language === "ch" ? 3 : 6 }}
               wrapperCol={{ span: 15 }}
             >
               <div>粵A C5635</div>
@@ -332,7 +332,7 @@ export const LicensePlateManagementTable = (props: {
               name="deviceType"
               label={t(KEYS.VEHICLE_TYPE, source)}
               rules={[{ required: true }]}
-              labelCol={{ span: 3 }}
+              labelCol={{ span: language === "ch" ? 3 : 6 }}
               wrapperCol={{ span: 15 }}
             >
               <Select
@@ -372,7 +372,7 @@ export const LicensePlateManagementTable = (props: {
             name="deviceId"
             label={t(KEYS.DEVICE_ID, source)}
             rules={[{ required: true }]}
-            labelCol={{ span: 3 }}
+            labelCol={{ span: language === "ch" ? 3 : 5 }}
             wrapperCol={{ span: 15 }}
           >
             <Input placeholder={t(KEYS.PLEASE_ENTER, source)} />
@@ -381,7 +381,7 @@ export const LicensePlateManagementTable = (props: {
             name="deviceType"
             label={t(KEYS.DEVICE_TYPE, source)}
             rules={[{ required: true }]}
-            labelCol={{ span: 3 }}
+            labelCol={{ span: language === "ch" ? 3 : 5 }}
             wrapperCol={{ span: 15 }}
           >
             <Select
@@ -408,7 +408,7 @@ export const LicensePlateManagementTable = (props: {
             name="deviceName"
             label={t(KEYS.DEVICE_NAME, source)}
             rules={[{ required: true }]}
-            labelCol={{ span: 3 }}
+            labelCol={{ span: language === "ch" ? 3 : 5 }}
             wrapperCol={{ span: 15 }}
             style={{ marginBottom: 0 }}
           >
