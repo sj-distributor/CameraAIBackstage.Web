@@ -121,7 +121,7 @@ export const PortraitList = () => {
             ns="portraitList"
             values={{ count: 200 }}
           >
-            共<span className="text-[#2853E3]">{200}</span>條
+            共<span className="text-[#2853E3]">200</span>條
           </Trans>
         </div>
         <Pagination
