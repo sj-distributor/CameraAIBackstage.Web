@@ -26,7 +26,7 @@ export const useAction = () => {
 
   const swiperRef = useRef<SwiperRef>(null!);
 
-  const [open, setOpen] = useState<boolean>(false);
+  const [isOpenSpeedList, setIsOpenSpeedList] = useState<boolean>(false);
 
   const [isPalyVideo, setIsPalyVideo] = useState<boolean>(false);
 
@@ -99,13 +99,13 @@ export const useAction = () => {
   return {
     detailsList,
     handleSetPalyVideo,
-    open,
+    isOpenSpeedList,
     hide,
     isPalyVideo,
     handleOpenChange,
     currentIndex,
     videoRef,
-    setOpen,
+    setIsOpenSpeedList,
     setIsPalyVideo,
     handleLoadedMetadata,
     timeAxisList,

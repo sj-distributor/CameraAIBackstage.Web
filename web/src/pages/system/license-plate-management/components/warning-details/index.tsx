@@ -40,12 +40,12 @@ export const WarningDetails = () => {
   const {
     detailsList,
     handleSetPalyVideo,
-    open,
+    isOpenSpeedList,
     isPalyVideo,
     t,
     handleOpenChange,
     videoRef,
-    setOpen,
+    setIsOpenSpeedList,
     setIsPalyVideo,
     handleLoadedMetadata,
     swiperRef,
@@ -124,7 +124,7 @@ export const WarningDetails = () => {
       <div className="my-4 rounded-lg h-[62%] bg-[#ccc] w-full relative overflow-hidden">
         <video
           ref={videoRef}
-          onEnded={(_) => setIsPalyVideo(false)}
+          onEnded={() => setIsPalyVideo(false)}
           onLoadedMetadata={handleLoadedMetadata}
           height={"100%"}
           width={"100%"}
@@ -193,7 +193,7 @@ export const WarningDetails = () => {
                         (videoRef.current.playbackRate = item);
                       setVideoSpeed(item as Speed);
 
-                      setOpen(false);
+                      setIsOpenSpeedList(false);
                     }}
                   >
                     {item}x
@@ -201,7 +201,7 @@ export const WarningDetails = () => {
                 );
               })}
               trigger="click"
-              open={open}
+              open={isOpenSpeedList}
               arrow={false}
               onOpenChange={handleOpenChange}
             >
