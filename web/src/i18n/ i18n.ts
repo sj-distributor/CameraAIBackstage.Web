@@ -74,6 +74,9 @@ i18n.use(initReactI18next).init({
       homeMenu: {
         ...homeMenu.ch,
       },
+      licensePlateManagement: {
+        ...licensePlateManagement.ch,
+      },
     },
   },
   lng: "en",
