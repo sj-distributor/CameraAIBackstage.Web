@@ -38,4 +38,6 @@ export default {
   DEVICE_ID: "DeviceID",
   PLEASE_ENTER: "PleaseEnter",
   DEVICE_TYPE: "DeviceType",
+  REGISTERED_VEHICLES: "RegisteredVehicles",
+  EDIT: "Edit",
 };

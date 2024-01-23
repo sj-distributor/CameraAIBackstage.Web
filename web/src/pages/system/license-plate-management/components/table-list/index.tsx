@@ -1,6 +1,6 @@
 import {
   CloseCircleOutlined,
-  PlusOutlined,
+  CloseOutlined,
   WarningFilled,
 } from "@ant-design/icons";
 import {
@@ -15,6 +15,7 @@ import {
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
 import { clone } from "ramda";
+import { Dispatch, SetStateAction } from "react";
 import { Trans } from "react-i18next";
 
 import down from "@/assets/public/down-arrow.png";
@@ -27,11 +28,14 @@ import { IDataType } from "../../props";
 import { useAction } from "./hook";
 
 export const LicensePlateManagementTable = (props: {
+  isRegisteredVehicle: boolean;
+  setIsRegisteredVehicle: Dispatch<SetStateAction<boolean>>;
   setShowWarningDetails: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
 }) => {
-  const { setShowWarningDetails } = props;
+  const { setShowWarningDetails, setIsRegisteredVehicle, isRegisteredVehicle } =
+    props;
 
   const { t, language } = useAuth();
 
@@ -66,6 +70,7 @@ export const LicensePlateManagementTable = (props: {
       title: t(KEYS.START_TIME, source),
       dataIndex: "operate",
       width: "16.6%",
+      key: "startTime",
     },
     {
       title: t(KEYS.VEHICLE_TYPE, source),
@@ -98,7 +103,7 @@ export const LicensePlateManagementTable = (props: {
             className="w-[6rem]"
             onClick={() => setIsRegisterOpen(true)}
           >
-            {t(KEYS.REGISTER, source)}
+            {t(isRegisteredVehicle ? KEYS.EDIT : KEYS.REGISTER, source)}
           </Button>
           <Button
             type="link"
@@ -174,39 +179,46 @@ export const LicensePlateManagementTable = (props: {
               ]}
               suffixIcon={<img src={down} />}
             />
-            <Select
-              className="w-[13.5rem]"
-              placeholder={t(KEYS.UNREGISTERED, source)}
-              defaultActiveFirstOption
-              options={[
-                {
-                  value: t(KEYS.UNREGISTERED, source),
-                  label: t(KEYS.UNREGISTERED, source),
-                },
-                {
-                  value: t(KEYS.ABNORMAL_VEHICLES, source),
-                  label: t(KEYS.ABNORMAL_VEHICLES, source),
-                },
-                {
-                  value: t(KEYS.NORMAL_VEHICLES, source),
-                  label: t(KEYS.NORMAL_VEHICLES, source),
-                },
-              ]}
-              suffixIcon={<img src={down} />}
-            />
+            {!isRegisteredVehicle && (
+              <Select
+                className="w-[13.5rem]"
+                placeholder={t(KEYS.UNREGISTERED, source)}
+                defaultActiveFirstOption
+                options={[
+                  {
+                    value: t(KEYS.UNREGISTERED, source),
+                    label: t(KEYS.UNREGISTERED, source),
+                  },
+                  {
+                    value: t(KEYS.ABNORMAL_VEHICLES, source),
+                    label: t(KEYS.ABNORMAL_VEHICLES, source),
+                  },
+                  {
+                    value: t(KEYS.NORMAL_VEHICLES, source),
+                    label: t(KEYS.NORMAL_VEHICLES, source),
+                  },
+                ]}
+                suffixIcon={<img src={down} />}
+              />
+            )}
           </div>
-          <Button
-            type="primary"
-            className="h-[2.75rem] max-w-max bg-[#2853E3] flex items-center"
-            onClick={() => setIsAddDeviceOpen(true)}
-          >
-            <PlusOutlined className="pr-2" />
-            {t(KEYS.ADD_DEVICE, source)}
-          </Button>
+          {!isRegisteredVehicle && (
+            <Button
+              type="primary"
+              className="h-[2.75rem] max-w-max bg-[#2853E3] flex items-center"
+              onClick={() => setIsRegisteredVehicle(true)}
+            >
+              {t(KEYS.REGISTERED_VEHICLES, source)}
+            </Button>
+          )}
         </div>
         <Table
           rowKey={(record) => record.deviceId}
-          columns={columns}
+          columns={
+            isRegisteredVehicle
+              ? columns.filter((item) => item.key !== "startTime")
+              : columns
+          }
           dataSource={data}
           className="pt-[1.125rem] tableHiddenScrollBar"
           scroll={{ y: 580 }}
@@ -290,8 +302,9 @@ export const LicensePlateManagementTable = (props: {
 
       <CustomModal
         title={
-          <div className="px-[1.25rem] mb-[1.25rem] pt-4">
-            {t(KEYS.REGISTER, source)}
+          <div className="px-[1.25rem] mb-[1.25rem] pt-4 text-[#323444] text-xl flex justify-between items-center">
+            <div>{t(KEYS.REGISTER, source)}</div>
+            <CloseOutlined onClick={() => setIsRegisterOpen(false)} />
           </div>
         }
         onCancle={() => setIsRegisterOpen(false)}

@@ -6,7 +6,12 @@ import { WarningDetails } from "./components/warning-details";
 import { useAction } from "./hook";
 
 export const LicensePlateManagement = () => {
-  const { showWarningDetails, setShowWarningDetails } = useAction();
+  const {
+    showWarningDetails,
+    isRegisteredVehicle,
+    setIsRegisteredVehicle,
+    setShowWarningDetails,
+  } = useAction();
 
   const { t } = useAuth();
 
@@ -16,18 +21,27 @@ export const LicensePlateManagement = () => {
         <span className="text-[1.125rem] font-semibold tracking-tight">
           <span
             className={`mr-2 cursor-pointer ${
-              showWarningDetails && "text-[#5F6279]"
+              (showWarningDetails || isRegisteredVehicle) && "text-[#5F6279]"
             }`}
-            onClick={() => setShowWarningDetails(undefined)}
+            onClick={() => {
+              isRegisteredVehicle
+                ? setIsRegisteredVehicle(false)
+                : setShowWarningDetails(undefined);
+            }}
           >
             {t(KEYS.LICENSE_PLATE_MANAGEMENT, { ns: "licensePlateManagement" })}
           </span>
 
-          {showWarningDetails && (
+          {(showWarningDetails || isRegisteredVehicle) && (
             <>
               <span className="text-[#5F6279]">/</span>
               <span className="ml-2">
-                {t(KEYS.ALERT_DETAILS, { ns: "licensePlateManagement" })}
+                {t(
+                  isRegisteredVehicle
+                    ? KEYS.REGISTERED_VEHICLES
+                    : KEYS.ALERT_DETAILS,
+                  { ns: "licensePlateManagement" }
+                )}
               </span>
             </>
           )}
@@ -36,6 +50,8 @@ export const LicensePlateManagement = () => {
           <WarningDetails />
         ) : (
           <LicensePlateManagementTable
+            isRegisteredVehicle={isRegisteredVehicle}
+            setIsRegisteredVehicle={setIsRegisteredVehicle}
             setShowWarningDetails={setShowWarningDetails}
           />
         )}
