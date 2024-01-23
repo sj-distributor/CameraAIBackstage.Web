@@ -3,6 +3,12 @@ export interface IPortraitDto {
   name: string;
   department: string;
   group: string;
-  post: string;
+  job: string;
   phone: string;
+}
+
+export interface IImageInformationDto {
+  previewOpen: boolean;
+  previewImage: string;
+  previewTitle: string;
 }

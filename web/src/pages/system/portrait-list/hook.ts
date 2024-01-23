@@ -2,7 +2,7 @@ import { UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
 import { useState } from "react";
 
-import { IPortraitDto } from "@/services/dtos/portrait";
+import { IImageInformationDto, IPortraitDto } from "@/services/dtos/portrait";
 
 export const useAction = () => {
   const initialPortraitData: IPortraitDto[] = [
@@ -11,7 +11,7 @@ export const useAction = () => {
       name: "Danny.K",
       department: "营运支持中心",
       group: "数据管理组",
-      post: "产品经理",
+      job: "产品经理",
       phone: "13402546565",
     },
     {
@@ -19,7 +19,7 @@ export const useAction = () => {
       name: "Danny.K",
       department: "营运支持中心",
       group: "数据管理组",
-      post: "产品经理",
+      job: "产品经理",
       phone: "13402546565",
     },
     {
@@ -27,7 +27,7 @@ export const useAction = () => {
       name: "Danny.K",
       department: "营运支持中心",
       group: "数据管理组",
-      post: "产品经理",
+      job: "产品经理",
       phone: "13402546565",
     },
     {
@@ -35,7 +35,7 @@ export const useAction = () => {
       name: "Danny.K",
       department: "营运支持中心",
       group: "数据管理组",
-      post: "产品经理",
+      job: "产品经理",
       phone: "13402546565",
     },
     {
@@ -43,7 +43,7 @@ export const useAction = () => {
       name: "Danny.K",
       department: "营运支持中心",
       group: "数据管理组",
-      post: "产品经理",
+      job: "产品经理",
       phone: "13402546565",
     },
     {
@@ -51,7 +51,7 @@ export const useAction = () => {
       name: "Danny.K",
       department: "营运支持中心",
       group: "数据管理组",
-      post: "产品经理",
+      job: "产品经理",
       phone: "13402546565",
     },
     {
@@ -59,7 +59,7 @@ export const useAction = () => {
       name: "Danny.K",
       department: "营运支持中心",
       group: "数据管理组",
-      post: "产品经理",
+      job: "产品经理",
       phone: "13402546565",
     },
   ];
@@ -69,11 +69,12 @@ export const useAction = () => {
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
-  const [imageInformation, setImageInformation] = useState<{
-    previewOpen: boolean;
-    previewImage: string;
-    previewTitle: string;
-  }>({ previewOpen: false, previewImage: "", previewTitle: "" });
+  const [imageInformation, setImageInformation] =
+    useState<IImageInformationDto>({
+      previewOpen: false,
+      previewImage: "",
+      previewTitle: "",
+    });
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 

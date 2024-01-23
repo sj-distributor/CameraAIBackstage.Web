@@ -1,15 +1,18 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Pagination, Select, Upload } from "antd";
+import { Trans } from "react-i18next";
 
+import add from "@/assets/portrait/add.svg";
+import down from "@/assets/portrait/down.svg";
+import edit from "@/assets/portrait/edit.svg";
+import search from "@/assets/portrait/search.svg";
+import trash from "@/assets/portrait/trash.svg";
+import upload from "@/assets/portrait/upload.svg";
+import avatar from "@/assets/public/avatar.png";
 import { CustomModal } from "@/components/custom-modal";
+import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/portrait-list-keys";
 
-import add from "../../../assets/portrait/add.svg";
-import down from "../../../assets/portrait/down.svg";
-import edit from "../../../assets/portrait/edit.svg";
-import search from "../../../assets/portrait/search.svg";
-import trash from "../../../assets/portrait/trash.svg";
-import upload from "../../../assets/portrait/upload.svg";
-import avatar from "../../../assets/public/avatar.png";
 import { useAction } from "./hook";
 
 export const PortraitList = () => {
@@ -24,22 +27,28 @@ export const PortraitList = () => {
     handlePreview,
   } = useAction();
 
+  const { t } = useAuth();
+
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <img src={upload} />
-      <div className="text-[#9696A7] text-[.75rem]">點擊上傳</div>
+      <div className="text-[#9696A7] text-[.75rem]">
+        {t(KEYS.CLICK_UPLOAD, { ns: "portraitList" })}
+      </div>
     </button>
   );
 
   return (
     <div>
       <div className="p-[1.5rem] bg-white">
-        <div className="text-[1.125rem] font-semibold">人像管理</div>
+        <div className="text-[1.125rem] font-semibold">
+          {t(KEYS.PORTRAIT_LIST, { ns: "portraitList" })}
+        </div>
         <div className="flex justify-between items-center m-[1.5rem_0_1rem]">
           <div>
             <Input
               className="w-[17.5rem]"
-              placeholder="搜索用戶名、部門、崗位、組別"
+              placeholder={t(KEYS.SEARCH, { ns: "portraitList" })}
               suffix={<img src={search} />}
             />
           </div>
@@ -49,7 +58,7 @@ export const PortraitList = () => {
             onClick={() => setIsOpenModal(true)}
           >
             <img src={add} className="mr-[.375rem]" />
-            新增
+            {t(KEYS.ADD, { ns: "portraitList" })}
           </Button>
         </div>
         <div className="grid grid-cols-2 grid-rows-2 xl:grid-cols-3 xl:grid-rows-3 gap-[1rem]">
@@ -71,23 +80,33 @@ export const PortraitList = () => {
                     <div className="col-span-2 font-semibold text-[1.25rem]">
                       {item.name}
                     </div>
-                    <div>部門：{item.department}</div>
-                    <div>組別：{item.group}</div>
-                    <div>崗位：{item.post}</div>
-                    <div>電話：{item.phone}</div>
+                    <div>
+                      {t(KEYS.DEPARTMENT, { ns: "portraitList" })} :{" "}
+                      {item.department}
+                    </div>
+                    <div>
+                      {t(KEYS.GROUP, { ns: "portraitList" })} : {item.group}
+                    </div>
+                    <div>
+                      {t(KEYS.JOB, { ns: "portraitList" })} : {item.job}
+                    </div>
+                    <div>
+                      {t(KEYS.PHONE_NUMBER, { ns: "portraitList" })} :{" "}
+                      {item.phone}
+                    </div>
                   </div>
                 </div>
                 <div className="p-[1rem_1.5rem] flex justify-end items-center bg-[#F6F8FC]">
                   <div className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#F04E4E] border border-solid border-[#F04E4E] cursor-pointer mr-[1rem]">
                     <img src={trash} className="mr-[.5rem]" />
-                    刪除
+                    {t(KEYS.DELETE, { ns: "portraitList" })}
                   </div>
                   <div
                     onClick={() => setIsOpenModal(true)}
                     className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#2853E3] border border-solid border-[#2853E3] cursor-pointer"
                   >
                     <img src={edit} className="mr-[.5rem]" />
-                    編輯
+                    {t(KEYS.EDIT, { ns: "portraitList" })}
                   </div>
                 </div>
               </div>
@@ -97,7 +116,13 @@ export const PortraitList = () => {
       </div>
       <div className="flex justify-between items-center bg-[#F6F8FC] p-[1rem_0_1rem_1rem]">
         <div>
-          共 <span className="text-[#2853E3]">200</span> 条
+          <Trans
+            i18nKey={KEYS.PAGINATION}
+            ns="portraitList"
+            values={{ count: 200 }}
+          >
+            共<span className="text-[#2853E3]">{200}</span>條
+          </Trans>
         </div>
         <Pagination
           defaultCurrent={1}
@@ -108,9 +133,10 @@ export const PortraitList = () => {
       </div>
 
       <CustomModal
+        className="customDeviceModal"
         title={
-          <div className="text-[1.25rem] font-semibold flex justify-between items-center mb-[1.5rem]">
-            <div>新增人像</div>
+          <div className="text-[1.25rem] font-semibold flex justify-between items-center">
+            <div>{t(KEYS.ADD_PORTRAIT, { ns: "portraitList" })}</div>
             <CloseOutlined
               className="text-[1rem] cursor-pointer"
               onClick={() => setIsOpenModal(false)}
@@ -122,8 +148,7 @@ export const PortraitList = () => {
         onConfirm={() => setIsOpenModal(false)}
         modalWidth={680}
       >
-        <div className="relative p-[2rem_0_.5rem_1rem]">
-          <div className="absolute w-[42.5rem] h-[.125rem] bg-[#F3F3F6] top-0 left-[-1.5rem]" />
+        <div className="pl-[.8125rem]">
           <Form
             name="basic"
             wrapperCol={{ span: 16 }}
@@ -132,41 +157,65 @@ export const PortraitList = () => {
             colon={false}
           >
             <Form.Item
-              label="用戶名"
+              label={t(KEYS.USER_NAME, { ns: "portraitList" })}
               name="username"
               rules={[
                 { required: true, message: "Please input your username!" },
               ]}
             >
-              <Input placeholder="請輸入" className="w-[25rem]" />
+              <Input
+                placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
+                className="w-[25rem]"
+              />
             </Form.Item>
 
             <div className="ml-[1.5rem]">
-              <Form.Item label="部門" name="department">
+              <Form.Item
+                label={t(KEYS.DEPARTMENT, { ns: "portraitList" })}
+                name="department"
+              >
                 <Select
                   suffixIcon={<img src={down} />}
                   style={{ width: 400 }}
-                  placeholder="請選擇"
+                  placeholder={t(KEYS.PLEASE_SELECT, { ns: "portraitList" })}
                   options={[
                     { value: "jack", label: "Jack" },
                     { value: "lucy", label: "Lucy" },
                   ]}
                 />
               </Form.Item>
-              <Form.Item label="組別" name="group">
-                <Input placeholder="請輸入" className="w-[25rem]" />
+              <Form.Item
+                label={t(KEYS.GROUP, { ns: "portraitList" })}
+                name="group"
+              >
+                <Input
+                  placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
+                  className="w-[25rem]"
+                />
               </Form.Item>
-              <Form.Item label="崗位" name="post">
-                <Input placeholder="請輸入" className="w-[25rem]" />
+              <Form.Item
+                label={t(KEYS.JOB, { ns: "portraitList" })}
+                name="post"
+              >
+                <Input
+                  placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
+                  className="w-[25rem]"
+                />
               </Form.Item>
-              <Form.Item label="電話" name="phone">
-                <Input placeholder="例如:188-6666-6666" className="w-[25rem]" />
+              <Form.Item
+                label={t(KEYS.PHONE_NUMBER, { ns: "portraitList" })}
+                name="phone"
+              >
+                <Input
+                  placeholder={t(KEYS.EXAMPLE, { ns: "portraitList" })}
+                  className="w-[25rem]"
+                />
               </Form.Item>
             </div>
 
             <Form.Item
-              className="ml-[.8125rem]"
-              label="頭像"
+              className="ml-[.8125rem] mb-0"
+              label={t(KEYS.PORTRAIT, { ns: "portraitList" })}
               name="portrait"
               rules={[
                 { required: true, message: "Please upload your portrait!" },
@@ -186,10 +235,13 @@ export const PortraitList = () => {
                   >
                     {fileList.length === 0 && uploadButton}
                   </Upload>
-                  <div className="text-[.625rem] text-[#9696A7]">
-                    <div className="font-semibold">上傳人像小竅門：</div>
-                    <div>建議圖片比例為1:1，文件大小小于2MB，</div>
-                    <div>保持視覺元素居中</div>
+                  <div className="text-[.625rem] text-[#9696A7] w-[11.875rem]">
+                    <div className="font-semibold">
+                      {t(KEYS.UPLOAD_TIP_TITLE, { ns: "portraitList" })}
+                    </div>
+                    <div>
+                      {t(KEYS.UPLOAD_TIP_CONTENT, { ns: "portraitList" })}
+                    </div>
                   </div>
                 </div>
                 <Modal
