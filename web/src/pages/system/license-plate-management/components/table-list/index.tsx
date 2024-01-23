@@ -303,7 +303,9 @@ export const LicensePlateManagementTable = (props: {
       <CustomModal
         title={
           <div className="px-[1.25rem] mb-[1.25rem] pt-4 text-[#323444] text-xl flex justify-between items-center">
-            <div>{t(KEYS.REGISTER, source)}</div>
+            <div>
+              {t(isRegisteredVehicle ? KEYS.EDIT : KEYS.REGISTER, source)}
+            </div>
             <CloseOutlined onClick={() => setIsRegisterOpen(false)} />
           </div>
         }
