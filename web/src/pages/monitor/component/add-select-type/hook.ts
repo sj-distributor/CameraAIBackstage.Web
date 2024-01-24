@@ -1,4 +1,3 @@
-// eslint-disable-next-line simple-import-sort/imports
 import { theme } from "antd";
 import { useNavigate } from "react-router-dom";
 
