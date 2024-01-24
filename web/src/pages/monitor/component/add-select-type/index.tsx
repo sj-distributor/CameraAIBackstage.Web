@@ -3,7 +3,6 @@ import { Collapse, CollapseProps, ConfigProvider } from "antd";
 import cameraTag from "../../../../assets/monitor/camera-tag.png";
 import collapseDown from "../../../../assets/monitor/collapse-down.png";
 import menuIcon from "../../../../assets/monitor/menu-icon.svg";
-import { IMonitorConfigurationType } from "../../props";
 import { useAction } from "./hook";
 
 export const AddSelectType = () => {
@@ -18,11 +17,7 @@ export const AddSelectType = () => {
             <div
               className="hover:bg-[#F6F8FC] py-[1.5rem] px-[1rem] rounded-lg text-[.875rem]"
               key={index}
-              onClick={() =>
-                navigate("/monitor/configuration/" + "add" + "/" + item.id, {
-                  state: { type: IMonitorConfigurationType.Add, id: item.id },
-                })
-              }
+              onClick={() => navigate(`/monitor/add/${item.id.toString()}`)}
             >
               {item.name}
             </div>
@@ -55,7 +50,10 @@ export const AddSelectType = () => {
     >
       <div>
         <div className="bg-white h-[calc(100vh-5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
-          <span className="text-[1.125rem] text-[#5F6279]">
+          <span
+            className="text-[1.125rem] text-[#5F6279] cursor-pointer"
+            onClick={() => navigate("/monitor")}
+          >
             {t(KEYS.MONITOR, source)}{" "}
           </span>
           <span className="text-[1.125rem] font-semibold tracking-tight">

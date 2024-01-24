@@ -17,12 +17,7 @@ import { CustomModal } from "@/components/custom-modal";
 import downArrow from "../../assets/public/down-arrow.png";
 import KEYS from "../../i18n/language/keys/monitor-keys";
 import { useAction } from "./hook";
-import {
-  IMonitorConfigurationType,
-  IMonitorDataType,
-  IOpenOrStopStatus,
-  IWarningType,
-} from "./props";
+import { IMonitorDataType, IOpenOrStopStatus, IWarningType } from "./props";
 
 export const Monitor = () => {
   const {
@@ -94,14 +89,7 @@ export const Monitor = () => {
           <Button
             type="link"
             className="w-[6rem]"
-            onClick={() =>
-              navigate("/monitor/configuration/" + "update" + "/" + index, {
-                state: {
-                  type: IMonitorConfigurationType.Update,
-                  id: index,
-                },
-              })
-            }
+            onClick={() => navigate(`/monitor/update/${index.toString()}`)}
           >
             {t(KEYS.EDIT, source)}
           </Button>

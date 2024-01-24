@@ -14,7 +14,6 @@ import { clone, isEmpty } from "ramda";
 
 import downArrow from "@/assets/public/down-arrow.png";
 
-import { IMonitorConfigurationType } from "../../props";
 import { useAction } from "./hook";
 import { NotificationToolType, TimeType } from "./props";
 
@@ -63,13 +62,17 @@ export const AddOrUpdateConfiguration = () => {
     >
       <div className="relative">
         <div className="bg-white h-[calc(100vh-3.25rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar min-w-[35rem]">
-          <span className="text-[1.125rem] text-[#5F6279]">
-            {t(KEYS.MONITOR, source)} /{" "}
+          <span
+            className="text-[1.125rem] text-[#5F6279] cursor-pointer"
+            onClick={() => navigate("/monitor")}
+          >
+            {t(KEYS.MONITOR, source)}{" "}
           </span>
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            {type === IMonitorConfigurationType.Update
+            /{" "}
+            {type === "add"
               ? `${t(KEYS.EDIT, source)}`
-              : `${t(KEYS.ADD, source)}`}{" "}
+              : `${t(KEYS.ADD, source)}`}
             {t(KEYS.CONFIGURATION, source)}
           </span>
           <div className="my-[1rem] h-[calc(100%-7.2rem)] flex justify-center">
@@ -570,7 +573,9 @@ export const AddOrUpdateConfiguration = () => {
                   <Button
                     className="w-[6rem] h-[2.75rem]"
                     onClick={() => {
-                      navigate("/monitor");
+                      type === "add"
+                        ? navigate("/monitor/add")
+                        : navigate("/monitor");
                     }}
                   >
                     {t(KEYS.BACK, source)}

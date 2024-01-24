@@ -6,11 +6,6 @@ export interface IMonitorDataType {
   operate: string;
 }
 
-export enum IMonitorConfigurationType {
-  Add,
-  Update,
-}
-
 export enum IOpenOrStopStatus {
   None,
   Enable,

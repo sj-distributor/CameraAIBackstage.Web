@@ -3,7 +3,7 @@ import { Form } from "antd";
 import { Dayjs } from "dayjs";
 import { clone } from "ramda";
 import { useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 
@@ -25,9 +25,7 @@ export const useAction = () => {
 
   const [form] = Form.useForm();
 
-  const location = useLocation();
-
-  const { type } = location.state;
+  const { type } = useParams();
 
   const [cronList, setCronList] = useState<ICronListDto[]>([
     { title: KEYS.MONDAY, value: false },
