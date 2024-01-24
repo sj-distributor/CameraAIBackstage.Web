@@ -8,7 +8,7 @@ export default {
     [KEYS.STATUS]: "Status",
     [KEYS.ALERT_TYPE_FILTER]: "Alert type filter",
     [KEYS.ALERT_TYPE]: "Alert type",
-    [KEYS.NOTIFICATION_OBJECT]: "Notification object",
+    [KEYS.NOTIFICATION_OBJECT]: "Notify Object",
     [KEYS.OPERATE]: "Operate",
     [KEYS.ENABLE]: "enable",
     [KEYS.DEACTIVATE]: "deactivate",

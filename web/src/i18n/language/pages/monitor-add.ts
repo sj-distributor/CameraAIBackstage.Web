@@ -4,7 +4,7 @@ export default {
   en: {
     [KEYS.MONITOR]: "Monitor",
     [KEYS.ADD]: "Add",
-    [KEYS.CHOOSE_TYPE]: "Choose a type",
+    [KEYS.CHOOSE_TYPE]: "Selective type",
   },
   ch: {
     [KEYS.MONITOR]: "監測管理",
