@@ -89,7 +89,9 @@ export const Monitor = () => {
           <Button
             type="link"
             className="w-[6rem]"
-            onClick={() => navigate(`/monitor/update/${index.toString()}`)}
+            onClick={() =>
+              navigate(`/monitor/configuration/update/${index.toString()}`)
+            }
           >
             {t(KEYS.EDIT, source)}
           </Button>
