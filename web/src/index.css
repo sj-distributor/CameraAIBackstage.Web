@@ -91,6 +91,23 @@ code {
   background-color: #fafafb;
 }
 
+.resettingModalPadding .ant-modal-content {
+  position: relative;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 1rem;
+}
+
+.videoDatePicker input {
+  color: #fff !important;
+  width: 10rem !important;
+}
+
+.swiper-scrollbar.swiper-scrollbar-horizontal {
+  height: 0 !important;
+  width: 0 !important;
+}
+
 .tableHiddenScrollBar .ant-table-body::-webkit-scrollbar {
   display: none;
 }
