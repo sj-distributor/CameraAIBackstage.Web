@@ -145,7 +145,7 @@ export const PortraitList = () => {
         open={isOpenModal}
         onCancle={() => setIsOpenModal(false)}
         onConfirm={() => setIsOpenModal(false)}
-        modalWidth={680}
+        modalWidth={"42.5rem"}
       >
         <div className="pl-[.8125rem]">
           <Form
