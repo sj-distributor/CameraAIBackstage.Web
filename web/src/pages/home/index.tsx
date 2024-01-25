@@ -47,7 +47,7 @@ const siderHeaderStyle: React.CSSProperties = {
 type MenuItem = Required<MenuProps>["items"][number];
 
 export const Home = () => {
-  const { navigate } = useAction();
+  const { menuInformation, navigate, setMenuInformation } = useAction();
 
   const { language, changeLanguage, t, routerList } = useAuth();
 
@@ -96,9 +96,7 @@ export const Home = () => {
       label: (
         <div
           className="flex items-center hover:text-[#2853e3]"
-          onClick={() => {
-            navigate("login");
-          }}
+          onClick={() => navigate("login")}
         >
           <span className="iconfont icon-sign_out" />
           <div className="ml-[.5rem]">
@@ -116,12 +114,22 @@ export const Home = () => {
         <Header style={siderHeaderStyle}>Camera AI後台管理系統</Header>
         <Menu
           className="menuStyle"
-          onClick={({ key }) => {
-            navigate(key);
-          }}
           mode="inline"
           items={getMenu()}
           style={{ border: "none" }}
+          openKeys={menuInformation.openKeys}
+          selectedKeys={menuInformation.selectedKeys}
+          onOpenChange={(keyPath) => {
+            setMenuInformation({ ...menuInformation, openKeys: keyPath });
+          }}
+          onClick={({ key, keyPath }) => {
+            setMenuInformation({
+              ...menuInformation,
+              selectedKeys: [keyPath[0]],
+            });
+
+            navigate(key);
+          }}
         />
       </Sider>
       <Layout>
