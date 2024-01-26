@@ -13,7 +13,7 @@ import { LicensePlateManagement } from "@/pages/system/license-plate-management"
 import { OperationLog } from "@/pages/system/operation-log";
 import { PortraitList } from "@/pages/system/portrait-list";
 import { UserList } from "@/pages/user/user-lilst";
-import { UserPermissions } from "@/pages/user/user-permissions";
+import { UserPermissions } from "@/pages/user/user-permissions/permission-list";
 import { IRouterList } from "@/services/dtos/routes";
 
 export const routerList: IRouterList[] = [
