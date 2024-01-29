@@ -17,7 +17,10 @@ import { LicensePlateManagement } from "@/pages/system/license-plate-management"
 import { OperationLog } from "@/pages/system/operation-log";
 import { PortraitList } from "@/pages/system/portrait-list";
 import { UserList } from "@/pages/user/user-lilst";
-import { UserPermissions } from "@/pages/user/user-permissions";
+import { PermissionsList } from "@/pages/user/user-permissions";
+import { UserEditList } from "@/pages/user/user-permissions/editlist";
+import { UserPermissions } from "@/pages/user/user-permissions/permission-list";
+import { AddNewPermissions } from "@/pages/user/user-permissions/user-newpermissions";
 import { IRouterList } from "@/services/dtos/routes";
 
 interface IAuthContextType {
@@ -54,8 +57,26 @@ export default ({ children }: { children: React.ReactNode }) => {
         },
         {
           path: "/user/permissions",
-          element: <UserPermissions />,
+          element: <PermissionsList />,
           name: t(KEYS.USER_PERMISSIONS, { ns: "homeMenu" }),
+          children: [
+            {
+              path: "",
+              element: <UserPermissions />,
+            },
+            {
+              path: "/user/permissions/newpermissions",
+              element: <AddNewPermissions />,
+            },
+            {
+              path: "/user/permissions/permissionslist",
+              element: <PermissionsList />,
+            },
+            {
+              path: "/user/permissions/editlist",
+              element: <UserEditList />,
+            },
+          ],
         },
       ],
     },

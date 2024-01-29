@@ -1,15 +1,19 @@
-import { PlusOutlined, WarningFilled } from "@ant-design/icons";
-import { Button, Input, Pagination, Table } from "antd";
+import { CloseOutlined, PlusOutlined, WarningFilled } from "@ant-design/icons";
+import { Button, Input, Pagination, Table, Transfer } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { CustomModal } from "@/components/custom-modal";
 
-export const UserPermissions = () => {
+export const UserEditList = () => {
   const [deletePermissions, setDeletePermissions] = useState<boolean>(false);
 
+  const [batchDeleteUser, setBatchDeleteUser] = useState<boolean>(false);
+
   const [isAddNewRole, setIsAddNewRole] = useState<boolean>(false);
+
+  const [isAddNewUser, setIsAddNewUser] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -28,39 +32,25 @@ export const UserPermissions = () => {
 
   const columns = [
     {
-      title: "角色名稱",
-      dataIndex: "characterName",
+      title: "用户名",
+      dataIndex: "userName",
     },
     {
-      title: "角色描述",
-      dataIndex: "roleDescription",
+      title: "更新时间",
+      dataIndex: "updateTime",
     },
     {
       title: "操作",
       dataIndex: "operate",
       render: () => {
         return (
-          <div className="flex justify-center items-center">
-            <Button
-              type="text"
-              className="text-[0.8rem] text-blue-400 h-[1.5rem] w-[5rem]"
-              onClick={() => navigate("/user/permissions/editlist")}
-            >
-              分配
-            </Button>
-            <Button
-              type="text"
-              className="text-[0.8rem] text-blue-400 h-[1.5rem] w-[5rem] ml-[0.5rem]"
-              onClick={() => navigate("/user/permissions/editlist")}
-            >
-              編輯
-            </Button>
+          <div>
             <Button
               type="text"
               className="text-[0.8rem] text-blue-400 h-[1.5rem] w-[5rem] ml-[0.5rem] rounded-none"
               onClick={() => setDeletePermissions(true)}
             >
-              刪除
+              移除
             </Button>
           </div>
         );
@@ -71,49 +61,33 @@ export const UserPermissions = () => {
   const data = [
     {
       key: "001",
-      characterName: "超級管理員",
-      roleDescription: "系統最高權限角色，擁有全部權限，不能刪除",
-      operate: "分配",
+      userName: "Janny",
+      updateTime: "2021-12-12 12:00",
     },
     {
       key: "002",
-      characterName: "管理員",
-      roleDescription: "管理員角色",
-      operate: "分配",
-      edit: "編輯",
-      delete: "刪除",
+      userName: "Tom",
+      updateTime: "2021-12-12 12:00",
     },
     {
       key: "003",
-      characterName: "普通員工1",
-      roleDescription: "系統默認角色",
-      operate: "分配",
-      edit: "編輯",
-      delete: "刪除",
+      userName: "Tonny",
+      updateTime: "2021-12-12 12:00",
     },
     {
       key: "004",
-      characterName: "普通員工2",
-      roleDescription: "自定義角色1",
-      operate: "分配",
-      edit: "編輯",
-      delete: "刪除",
+      userName: "Bonni",
+      updateTime: "2021-12-12 12:00",
     },
     {
       key: "005",
-      characterName: "倉務主管",
-      roleDescription: "自定義角色2",
-      operate: "分配",
-      edit: "編輯",
-      delete: "刪除",
+      userName: "Bonni",
+      updateTime: "2021-12-12 12:00",
     },
     {
       key: "006",
-      characterName: "採購主管",
-      roleDescription: "自定義角色3",
-      operate: "分配",
-      edit: "編輯",
-      delete: "刪除",
+      userName: "Rex",
+      updateTime: "2021-12-12 12:00",
     },
   ];
 
@@ -121,22 +95,35 @@ export const UserPermissions = () => {
     <div>
       <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-[calc(100vh-7rem)] ">
         <div className="bg-whitew-full flex-col justify-start pt-[1.5rem] overflow-scroll  no-scrollbar">
-          <span className="text-[1rem] font-semibold tracking-tight ">
-            角色列表
-          </span>
+          <Button type="text">
+            <span className="text-[1rem] tracking-tight ">角色列表</span>
+          </Button>
+          <span className="text-[1rem]">/</span>
+          <Button type="text">
+            <span className="text-[1rem] font-semibold">角色列表</span>
+          </Button>
+
           <br />
           <div className="flex flex-row  justify-between mt-[1rem] mb-[0.5rem]">
             <div>
               <Input className="w-[17.5rem]" placeholder="搜索角色名稱" />
             </div>
-            <Button
-              type="primary"
-              className="h-[2.75rem] w-[7.25rem]"
-              onClick={() => navigate("/user/permissions/newpermissions")}
-            >
-              <PlusOutlined />
-              新增角色
-            </Button>
+            <div>
+              <Button
+                className="h-[2.75rem] w-[7.25rem] mr-[1rem]"
+                onClick={() => setBatchDeleteUser(true)}
+              >
+                批量删除用户
+              </Button>
+              <Button
+                type="primary"
+                className="h-[2.75rem] w-[7.25rem]"
+                onClick={() => navigate("/user/permissions/newpermissions")}
+              >
+                <PlusOutlined />
+                添加用户
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -211,6 +198,30 @@ export const UserPermissions = () => {
         className={"customModal"}
       >
         <span className="pl-[2rem]">請確認是否刪除角色？</span>
+      </CustomModal>
+
+      <CustomModal
+        title={
+          <div className="flex flex-row justify-between ">
+            <div>添加用戶</div>
+            <CloseOutlined className="mr-[1rem]" />
+          </div>
+        }
+        onCancle={() => setIsAddNewUser(false)}
+        onConfirm={() => setIsAddNewUser(false)}
+        open={isAddNewUser}
+        className={"customDeviceModal"}
+      >
+        <Transfer
+          dataSource={data}
+          showSearch
+          render={(data) => data.userName}
+          titles={["标题"]}
+          listStyle={{
+            width: 280,
+            height: 250,
+          }}
+        />
       </CustomModal>
     </div>
   );

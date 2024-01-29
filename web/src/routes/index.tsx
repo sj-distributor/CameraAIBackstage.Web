@@ -4,9 +4,22 @@ import { AuthStatus } from "@/hooks/auth-status";
 import { useAuth } from "@/hooks/use-auth";
 import { Home } from "@/pages/home/index";
 import { Login } from "@/pages/login";
+import { IRouterList } from "@/services/dtos/routes";
 
 export const Router = () => {
   const { routerList } = useAuth();
+
+  const AuthRoutes = (Routes: IRouterList[]) => {
+    return Routes.map((childrenItem, childrenIndex) => (
+      <Route
+        key={childrenIndex}
+        path={childrenItem.path}
+        element={childrenItem.element}
+      >
+        {childrenItem.children && AuthRoutes(childrenItem.children)}
+      </Route>
+    ));
+  };
 
   return (
     <Routes>
@@ -20,7 +33,8 @@ export const Router = () => {
             path={item.path}
             element={<AuthStatus>{item.element}</AuthStatus>}
           >
-            {item.children &&
+            {item.children && AuthRoutes(item.children)}
+            {/* {item.children &&
               item.children.length > 0 &&
               item.children.map((childrenItem, childrenIndex) => {
                 return (
@@ -30,7 +44,7 @@ export const Router = () => {
                     element={childrenItem.element}
                   />
                 );
-              })}
+              })} */}
           </Route>
         ))}
       </Route>
