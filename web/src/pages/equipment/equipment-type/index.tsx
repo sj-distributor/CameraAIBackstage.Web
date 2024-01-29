@@ -8,7 +8,7 @@ import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-type-keys";
 
 import { useAction } from "./hook";
-import { IDeviceTypeDataType } from "./props";
+import { IEquipmentTypeList } from "@/services/dtos/equipment/type";
 
 export const EquipmentType = () => {
   const {
@@ -21,22 +21,31 @@ export const EquipmentType = () => {
     setIsDeleteIndex,
     data,
     t,
+    setPageDto,
+    loading,
+    typeName,
+    setTypeName,
+    description,
+    setDescription,
+    totalListCount,
+    onIsAddSubmit,
+    form,
   } = useAction();
 
-  const columns: ColumnsType<IDeviceTypeDataType> = [
+  const columns: ColumnsType<IEquipmentTypeList> = [
     {
       title: t(KEYS.DEVICE_TYPE_ID, { ns: "equipmentType" }),
-      dataIndex: "deviceTypeId",
+      dataIndex: "id",
       width: "14.875rem",
     },
     {
       title: t(KEYS.DEVICE_TYPE, { ns: "equipmentType" }),
-      dataIndex: "deviceType",
+      dataIndex: "name",
       width: "15.125rem",
     },
     {
       title: t(KEYS.REMARKS, { ns: "equipmentType" }),
-      dataIndex: "deviceInformation",
+      dataIndex: "description",
       width: "49.4375rem",
     },
     {
@@ -96,7 +105,7 @@ export const EquipmentType = () => {
           <div className="flex flex-row pt-[1.625rem] justify-end">
             <Button
               type="primary"
-              className="h-[2.75rem] w-[7.25rem]"
+              className="h-[2.75rem]"
               onClick={() => setIsAddTypeOpen(true)}
             >
               <PlusOutlined className="pr-[.5rem]" />
@@ -105,7 +114,8 @@ export const EquipmentType = () => {
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
             <Table
-              rowKey={(record) => record.deviceTypeId}
+              loading={loading}
+              rowKey={(record) => record.id}
               columns={columns}
               dataSource={data}
               className="tableHiddenScrollBar flex-1"
@@ -115,7 +125,9 @@ export const EquipmentType = () => {
             <div className="flex justify-between items-center py-[1rem]">
               <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
                 共{" "}
-                <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
+                <span className="text-[#2853E3] font-light">
+                  {totalListCount}
+                </span>{" "}
                 條
               </div>
               <div>
@@ -123,10 +135,12 @@ export const EquipmentType = () => {
                   current={1}
                   pageSize={5}
                   pageSizeOptions={[5, 10, 20]}
-                  total={data.length}
+                  total={totalListCount}
                   showQuickJumper
                   showSizeChanger
-                  onChange={() => {}}
+                  onChange={(pageSize, pageIndex) => {
+                    setPageDto({ PageIndex: pageIndex, PageSize: pageSize });
+                  }}
                   className="flex flex-wrap justify-center"
                 />
               </div>
@@ -138,14 +152,14 @@ export const EquipmentType = () => {
       <CustomModal
         title={<div> {t(KEYS.ADD_TYPE, { ns: "equipmentType" })}</div>}
         onCancle={() => setIsAddTypeOpen(false)}
-        onConfirm={() => setIsAddTypeOpen(false)}
+        onConfirm={() => onIsAddSubmit(true)}
         open={isAddTypeOpen}
         className={"customDeviceModal"}
         modalWidth={"42.5rem"}
       >
-        <Form colon={false}>
+        <Form colon={false} onFinish={() => onIsAddSubmit(true)} form={form}>
           <FormItem
-            name="deviceId"
+            name="typeName"
             label={t(KEYS.DEVICE_TYPE, { ns: "equipmentType" })}
             rules={[{ required: true }]}
             labelCol={{ span: 4 }}
@@ -155,10 +169,14 @@ export const EquipmentType = () => {
               placeholder={t(KEYS.PLEASE_ENTER_DEVICE_TYPE, {
                 ns: "equipmentType",
               })}
+              value={typeName}
+              onChange={(e) => {
+                setTypeName(e.target.value);
+              }}
             />
           </FormItem>
           <FormItem
-            name="deviceType"
+            name="description"
             label={t(KEYS.INSTRUCTION_MANUAL, { ns: "equipmentType" })}
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
@@ -168,21 +186,27 @@ export const EquipmentType = () => {
               placeholder={t(KEYS.PLEASE_ENTER_INSTRUCTION_MANUAL, {
                 ns: "equipmentType",
               })}
+              value={description}
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
             />
           </FormItem>
         </Form>
       </CustomModal>
+
+      {/* 添加類型 */}
       <CustomModal
         title={<div> {t(KEYS.MODIFICATION_TYPE, { ns: "equipmentType" })}</div>}
         onCancle={() => setIsModifyOpen(false)}
-        onConfirm={() => setIsModifyOpen(false)}
+        onConfirm={() => onIsAddSubmit(false)}
         open={isModifyOpen}
         className={"customDeviceModal"}
         modalWidth={"42.5rem"}
       >
-        <Form colon={false}>
+        <Form colon={false} onFinish={() => onIsAddSubmit(false)} form={form}>
           <FormItem
-            name="deviceId"
+            name="typeName"
             label={t(KEYS.DEVICE_TYPE, { ns: "equipmentType" })}
             rules={[{ required: true }]}
             labelCol={{ span: 4 }}
@@ -195,7 +219,7 @@ export const EquipmentType = () => {
             />
           </FormItem>
           <FormItem
-            name="deviceType"
+            name="description"
             label={t(KEYS.INSTRUCTION_MANUAL, { ns: "equipmentType" })}
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
@@ -209,6 +233,7 @@ export const EquipmentType = () => {
           </FormItem>
         </Form>
       </CustomModal>
+
       <CustomModal
         title={
           <div>

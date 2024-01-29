@@ -1,11 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
 
-import { IDataType, IDeviceDataType } from "./props";
+import { IDeviceDataType, IOptionDto } from "./props";
+import { IEquipmentList, IPageDto } from "@/services/dtos/equipment/list";
+import {
+  GetEquipmentPage,
+  PostCreateEquipment,
+  PostDeleteEquipment,
+  PostUpdateEquipment,
+} from "@/services/api/equipment/list";
+import { Form, message } from "antd";
+import { GetEquipmentTypePage } from "@/services/api/equipment/type";
+import { useBoolean } from "ahooks";
 
 export const useAction = () => {
   const { t } = useAuth();
+  const [form] = Form.useForm();
 
   const [isUnbindOpen, setIsUnbindOpen] = useState<boolean>(false);
 
@@ -17,98 +28,22 @@ export const useAction = () => {
 
   const [isUnbindIndex, setIsUnbindIndex] = useState<number>(0);
 
-  const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
+  const [isDeleteId, setIsDeleteId] = useState<string>("");
 
-  const [data, setData] = useState<IDataType[]>([
-    {
-      deviceId: "1",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: false,
-      operate: "New York No. 1 Lake Park",
-    },
-    {
-      deviceId: "2",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: false,
-      operate: "New York No. 1 Lake Park",
-    },
-    {
-      deviceId: "3",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: false,
-      operate: "New York No. 1 Lake Park",
-    },
-    {
-      deviceId: "4",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "New York No. 1 Lake Park",
-    },
-    {
-      deviceId: "5",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "New York No. 1 Lake Park",
-    },
-    {
-      deviceId: "6",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "New York No. 1 Lake Park",
-    },
-    {
-      deviceId: "7",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "New York No. 1 Lake Park",
-    },
-    {
-      deviceId: "8",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "New York No. 1 Lake Park",
-    },
-    {
-      deviceId: "9",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "New York No. 1 Lake Park",
-    },
-    {
-      deviceId: "10",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "New York No. 1 Lake Park",
-    },
-    {
-      deviceId: "11",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "New York No. 1 Lake Park",
-    },
-  ]);
+  const [isAddOrEdit, setIsAddOrEdit] = useState<boolean>(false);
+
+  const [clickEditId, setClickEditId] = useState<number>(0);
+
+  const [pageDto, setPageDto] = useState<IPageDto>({
+    PageSize: 10,
+    PageIndex: 1,
+  });
+
+  const [data, setData] = useState<IEquipmentList[]>([]);
+
+  const [dataTotalCount, setDataTotalCount] = useState<number>(0);
+
+  const [checkedId, setCheckedId] = useState<string>("");
 
   const [deviceData, setDeviceData] = useState<IDeviceDataType[]>([
     {
@@ -197,6 +132,100 @@ export const useAction = () => {
     },
   ]);
 
+  const [isSearchOnline, setIsSearchOnline] = useState<boolean | undefined>(
+    undefined
+  );
+
+  const [isSearchBind, setIsSearchBind] = useState<boolean | undefined>(
+    undefined
+  );
+
+  const [searchKey, setSearchKey] = useState<string>("");
+
+  const [equipmentId, setEquipmentId] = useState<string>("");
+
+  const [equipmentType, setEquipmentType] = useState<number | undefined>(
+    undefined
+  );
+
+  const [equipmentName, setEquipmentName] = useState<string>("");
+
+  const [equipmentTypesOption, setEquipmentTypesOption] =
+    useState<IOptionDto[]>();
+
+  const [loading, loadingAction] = useBoolean(false);
+
+  const onAddSubmit = (isAdd: boolean) => {
+    form.validateFields(["deviceId"]);
+    form.validateFields(["deviceName"]);
+    form.validateFields(["deviceType"]);
+
+    if (equipmentId && equipmentName && equipmentType) {
+      isAdd
+        ? PostCreateEquipment({
+            equipment: {
+              equipmentCode: equipmentId,
+              equipmentName: equipmentName,
+              equipmentTypeId: equipmentType,
+            },
+          })
+            .then(() => initGetEquipmentList())
+            .catch(() => message.error("創建失敗"))
+        : PostUpdateEquipment({
+            equipment: {
+              equipmentCode: equipmentId,
+              equipmentName: equipmentName,
+              equipmentTypeId: equipmentType,
+              id: clickEditId,
+            },
+          })
+            .then(() => initGetEquipmentList())
+            .catch(() => message.error("更新失敗"));
+      setIsAddDeviceOpen(false);
+    }
+  };
+
+  const initGetEquipmentList = () => {
+    loadingAction.setTrue();
+    GetEquipmentPage(pageDto)
+      .then((res) => {
+        setData(res.equipments);
+        setDataTotalCount(res.count);
+      })
+      .catch((error) => {
+        setData([]);
+        setDataTotalCount(0);
+        message.error(error);
+      })
+      .finally(() => loadingAction.setFalse());
+  };
+
+  const onDelete = () => {
+    PostDeleteEquipment(isDeleteId)
+      .then(() => {
+        initGetEquipmentList();
+        setIsDeleteDeviceOpen(false);
+      })
+      .catch((error) => message.error(error));
+  };
+
+  useEffect(() => {
+    initGetEquipmentList();
+  }, [pageDto]);
+
+  useEffect(() => {
+    GetEquipmentTypePage({ PageIndex: 1, PageSize: 2147483647 })
+      .then((res) => {
+        const list = res.equipmentTypes.map((item) => {
+          return { label: item.name, value: item.id };
+        });
+        setEquipmentTypesOption(list);
+      })
+      .catch(() => {
+        setEquipmentTypesOption([]);
+      });
+  }, []);
+
   return {
     isUnbindOpen,
     setIsUnbindOpen,
@@ -208,12 +237,36 @@ export const useAction = () => {
     setIsAddDeviceOpen,
     isUnbindIndex,
     setIsUnbindIndex,
-    isDeleteIndex,
-    setIsDeleteIndex,
+    setIsDeleteId,
     data,
     setData,
     deviceData,
     setDeviceData,
     t,
+    setPageDto,
+    searchKey,
+    setSearchKey,
+    isSearchOnline,
+    setIsSearchOnline,
+    isSearchBind,
+    setIsSearchBind,
+    equipmentId,
+    setEquipmentId,
+    equipmentType,
+    setEquipmentType,
+    equipmentName,
+    setEquipmentName,
+    onAddSubmit,
+    form,
+    equipmentTypesOption,
+    dataTotalCount,
+    loading,
+    checkedId,
+    setCheckedId,
+    onDelete,
+    isAddOrEdit,
+    setIsAddOrEdit,
+    clickEditId,
+    setClickEditId,
   };
 };

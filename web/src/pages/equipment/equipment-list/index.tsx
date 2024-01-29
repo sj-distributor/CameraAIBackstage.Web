@@ -21,7 +21,8 @@ import KEYS from "@/i18n/language/keys/equipment-list-keys";
 import downArrow from "../../../assets/public/down-arrow.png";
 import search from "../../../assets/public/search.png";
 import { useAction } from "./hook";
-import { IDataType, IDeviceDataType } from "./props";
+import { IDeviceDataType } from "./props";
+import { IEquipmentList } from "@/services/dtos/equipment/list";
 
 export const EquipmentList = () => {
   const {
@@ -35,17 +36,43 @@ export const EquipmentList = () => {
     setIsAddDeviceOpen,
     isUnbindIndex,
     setIsUnbindIndex,
-    setIsDeleteIndex,
+    setIsDeleteId,
     data,
     setData,
     deviceData,
+    setDeviceData,
     t,
+    setPageDto,
+    searchKey,
+    setSearchKey,
+    isSearchOnline,
+    setIsSearchOnline,
+    isSearchBind,
+    setIsSearchBind,
+    equipmentId,
+    setEquipmentId,
+    equipmentType,
+    setEquipmentType,
+    equipmentName,
+    setEquipmentName,
+    onAddSubmit,
+    form,
+    equipmentTypesOption,
+    dataTotalCount,
+    loading,
+    checkedId,
+    setCheckedId,
+    onDelete,
+    isAddOrEdit,
+    setIsAddOrEdit,
+    // clickEditId,
+    setClickEditId,
   } = useAction();
 
-  const columns: ColumnsType<IDataType> = [
+  const columns: ColumnsType<IEquipmentList> = [
     {
       title: t(KEYS.DEVICE_ID, { ns: "equipmentList" }),
-      dataIndex: "deviceId",
+      dataIndex: "id",
       width: "16.6%",
     },
     {
@@ -72,7 +99,7 @@ export const EquipmentList = () => {
     },
     {
       title: t(KEYS.DEVICE_TYPE, { ns: "equipmentList" }),
-      dataIndex: "deviceType",
+      dataIndex: "equipmentType",
       width: "16.6%",
     },
     {
@@ -82,7 +109,7 @@ export const EquipmentList = () => {
     },
     {
       title: t(KEYS.IS_BLIND, { ns: "equipmentList" }),
-      dataIndex: "whetherToBind",
+      dataIndex: "isBind",
       width: "16.6%",
       render: (_, record, index) => {
         return (
@@ -95,17 +122,18 @@ export const EquipmentList = () => {
             <Switch
               checkedChildren={t(KEYS.BINDING, { ns: "equipmentList" })}
               unCheckedChildren=""
-              value={record.whetherToBind}
+              value={record.isBind}
               onChange={(value) => {
                 const newList = clone(data);
+                setIsUnbindIndex(index);
 
-                if (newList[index].whetherToBind && !value) {
+                if (newList[index].isBind && !value) {
                   setIsUnbindOpen(true);
-                  setIsUnbindIndex(index);
-
                   return;
+                } else {
+                  setIsBindingOpen(true);
                 }
-                newList[index].whetherToBind = value;
+                newList[index].isBind = value;
                 setData(newList);
               }}
               className="w-[3.125rem] text-[.625rem] customSwitch"
@@ -118,12 +146,15 @@ export const EquipmentList = () => {
       title: t(KEYS.OPERATE, { ns: "equipmentList" }),
       dataIndex: "operate",
       width: "16.6%",
-      render: (_, __, index) => (
+      render: (_, record) => (
         <div>
           <Button
             type="link"
             className="w-[6rem]"
-            onClick={() => setIsBindingOpen(true)}
+            onClick={() => {
+              setIsAddOrEdit(false);
+              setClickEditId(record.id);
+            }}
           >
             {t(KEYS.EDIT, { ns: "equipmentList" })}
           </Button>
@@ -131,7 +162,7 @@ export const EquipmentList = () => {
             type="link"
             className="w-[6rem]"
             onClick={() => {
-              setIsDeleteIndex(index);
+              setIsDeleteId(record.equipmentCode);
               setIsDeleteDeviceOpen(true);
             }}
           >
@@ -147,7 +178,17 @@ export const EquipmentList = () => {
       title: "",
       dataIndex: "radio",
       width: "3.625rem",
-      render: () => <Radio />,
+      render: (_, record) => {
+        return (
+          <Radio
+            value={record.radio}
+            onChange={() => {
+              setCheckedId(record.areaId);
+            }}
+            checked={checkedId === record.areaId}
+          />
+        );
+      },
     },
     {
       title: t(KEYS.AREA_ID, { ns: "equipmentList" }),
@@ -205,24 +246,32 @@ export const EquipmentList = () => {
                 placeholder={t(KEYS.SEARCH_DEVICE_ID_DEVICE_TYPE_DEVICE_NAME, {
                   ns: "equipmentList",
                 })}
+                value={searchKey}
+                onChange={(e) => {
+                  setSearchKey(e.target.value);
+                }}
               />
               <Select
                 className="mx-[1rem] w-[13.5rem]"
                 placeholder={t(KEYS.IS_ONLINE, {
                   ns: "equipmentList",
                 })}
+                value={isSearchOnline}
+                onChange={(value) => {
+                  setIsSearchOnline(value !== null ? value : undefined);
+                }}
                 defaultActiveFirstOption
                 options={[
                   {
-                    value: "是否在線",
+                    value: null,
                     label: t(KEYS.IS_ONLINE, { ns: "equipmentList" }),
                   },
                   {
-                    value: "在線",
+                    value: true,
                     label: t(KEYS.ONLINE, { ns: "equipmentList" }),
                   },
                   {
-                    value: "離線",
+                    value: false,
                     label: t(KEYS.OFFLINE, { ns: "equipmentList" }),
                   },
                 ]}
@@ -234,17 +283,21 @@ export const EquipmentList = () => {
                   ns: "equipmentList",
                 })}
                 defaultActiveFirstOption
+                value={isSearchBind}
+                onChange={(value) => {
+                  setIsSearchBind(value !== null ? value : undefined);
+                }}
                 options={[
                   {
-                    value: "是否確定",
+                    value: null,
                     label: t(KEYS.IS_CONFIRM, { ns: "equipmentList" }),
                   },
                   {
-                    value: "已綁定",
+                    value: true,
                     label: t(KEYS.BOUND, { ns: "equipmentList" }),
                   },
                   {
-                    value: "未綁定",
+                    value: false,
                     label: t(KEYS.NOT_BOUND, { ns: "equipmentList" }),
                   },
                 ]}
@@ -253,8 +306,11 @@ export const EquipmentList = () => {
             </div>
             <Button
               type="primary"
-              className="h-[2.75rem] w-[7.25rem]"
-              onClick={() => setIsAddDeviceOpen(true)}
+              className="h-[2.75rem]"
+              onClick={() => {
+                setIsAddOrEdit(true);
+                setIsAddDeviceOpen(true);
+              }}
             >
               <PlusOutlined className="pr-[.5rem]" />
               {t(KEYS.ADD_DEVICE, {
@@ -264,7 +320,8 @@ export const EquipmentList = () => {
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
             <Table
-              rowKey={(record) => record.deviceId}
+              loading={loading}
+              rowKey={(record) => record.id}
               columns={columns}
               dataSource={data}
               className="tableHiddenScrollBar flex-1"
@@ -274,7 +331,9 @@ export const EquipmentList = () => {
             <div className="flex justify-between items-center py-[1rem]">
               <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
                 共{" "}
-                <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
+                <span className="text-[#2853E3] font-light">
+                  {dataTotalCount}
+                </span>{" "}
                 條
               </div>
               <div>
@@ -282,10 +341,12 @@ export const EquipmentList = () => {
                   current={1}
                   pageSize={5}
                   pageSizeOptions={[5, 10, 20]}
-                  total={data.length}
+                  total={dataTotalCount}
                   showQuickJumper
                   showSizeChanger
-                  onChange={() => {}}
+                  onChange={(page, pageSize) => {
+                    setPageDto({ PageIndex: page, PageSize: pageSize });
+                  }}
                   className="flex flex-wrap justify-center"
                 />
               </div>
@@ -307,7 +368,7 @@ export const EquipmentList = () => {
         onConfirm={() => {
           const newList = clone(data);
 
-          newList[isUnbindIndex].whetherToBind = false;
+          newList[isUnbindIndex].isBind = false;
           setData(newList);
           setIsUnbindOpen(false);
         }}
@@ -331,9 +392,7 @@ export const EquipmentList = () => {
           </div>
         }
         onCancle={() => setIsDeleteDeviceOpen(false)}
-        onConfirm={() => {
-          setIsDeleteDeviceOpen(false);
-        }}
+        onConfirm={onDelete}
         open={isDeleteDeviceOpen}
         className={"customModal"}
       >
@@ -344,6 +403,7 @@ export const EquipmentList = () => {
         </span>
       </CustomModal>
 
+      {/* 選擇設備綁定 */}
       <CustomModal
         title={
           <div>
@@ -368,21 +428,26 @@ export const EquipmentList = () => {
         />
       </CustomModal>
 
+      {/* 添加設備 */}
       <CustomModal
         title={
           <div>
-            {t(KEYS.ADD_DEVICE, {
-              ns: "equipmentList",
-            })}
+            {isAddOrEdit
+              ? t(KEYS.ADD_DEVICE, {
+                  ns: "equipmentList",
+                })
+              : t(KEYS.Edit_DEVICE, {
+                  ns: "equipmentList",
+                })}
           </div>
         }
         onCancle={() => setIsAddDeviceOpen(false)}
-        onConfirm={() => setIsAddDeviceOpen(false)}
+        onConfirm={() => onAddSubmit(isAddOrEdit)}
         open={isAddDeviceOpen}
         className={"customDeviceModal"}
         modalWidth={"42.5rem"}
       >
-        <Form colon={false}>
+        <Form colon={false} onFinish={onAddSubmit} form={form}>
           <FormItem
             name="deviceId"
             label={t(KEYS.DEVICE_ID, {
@@ -396,6 +461,10 @@ export const EquipmentList = () => {
               placeholder={t(KEYS.PLEASE_INPUT, {
                 ns: "equipmentList",
               })}
+              value={equipmentId}
+              onChange={(e) => {
+                setEquipmentId(e.target.value);
+              }}
             />
           </FormItem>
           <FormItem
@@ -412,21 +481,12 @@ export const EquipmentList = () => {
               placeholder={t(KEYS.PLEASE_SELECT, {
                 ns: "equipmentList",
               })}
+              value={equipmentType}
+              onChange={(value) => {
+                setEquipmentType(value);
+              }}
               defaultActiveFirstOption
-              options={[
-                {
-                  value: "請選擇",
-                  label: t(KEYS.PLEASE_SELECT, { ns: "equipmentList" }),
-                },
-                {
-                  value: "攝像頭",
-                  label: t(KEYS.CAMERA, { ns: "equipmentList" }),
-                },
-                {
-                  value: "大聲公",
-                  label: t(KEYS.LOUD_SPEAKER, { ns: "equipmentList" }),
-                },
-              ]}
+              options={equipmentTypesOption}
             />
           </FormItem>
           <FormItem
@@ -443,6 +503,10 @@ export const EquipmentList = () => {
               placeholder={t(KEYS.PLEASE_INPUT, {
                 ns: "equipmentList",
               })}
+              value={equipmentName}
+              onChange={(e) => {
+                setEquipmentName(e.target.value);
+              }}
             />
           </FormItem>
         </Form>
