@@ -14,24 +14,27 @@ import { Form, message } from "antd";
 
 export const useAction = () => {
   const { t } = useAuth();
+
   const [form] = Form.useForm();
 
-  const [isDeleteDeviceOpen, setIsDeleteDeviceOpen] = useState<boolean>(false);
+  const source = { ns: "equipmentType" };
 
-  const [isAddOrModifyOpen, setIsAddOrModifyOpen] = useState<boolean>(false);
+  const [data, setData] = useState<IEquipmentTypeList[]>([]);
 
-  const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
+  const [totalListCount, setTotalListCount] = useState<number>(0);
+
+  const [loading, loadingAction] = useBoolean(false);
 
   const [pageDto, setPageDto] = useState<IPageDto>({
     PageSize: 10,
     PageIndex: 1,
   });
 
-  const [totalListCount, setTotalListCount] = useState<number>(0);
+  const [isDeleteDeviceOpen, setIsDeleteDeviceOpen] = useState<boolean>(false);
 
-  const [data, setData] = useState<IEquipmentTypeList[]>([]);
+  const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
 
-  const [loading, loadingAction] = useBoolean(false);
+  const [isAddOrModifyOpen, setIsAddOrModifyOpen] = useState<boolean>(false);
 
   const [typeName, setTypeName] = useState<string>("");
 
@@ -94,6 +97,7 @@ export const useAction = () => {
   }, [pageDto]);
 
   return {
+    source,
     isDeleteDeviceOpen,
     setIsDeleteDeviceOpen,
     isAddOrModifyOpen,

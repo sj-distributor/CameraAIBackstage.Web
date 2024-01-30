@@ -16,34 +16,21 @@ import { useBoolean } from "ahooks";
 
 export const useAction = () => {
   const { t } = useAuth();
+
   const [form] = Form.useForm();
 
-  const [isUnbindOpen, setIsUnbindOpen] = useState<boolean>(false);
+  const source = { ns: "equipmentList" };
 
-  const [isDeleteDeviceOpen, setIsDeleteDeviceOpen] = useState<boolean>(false);
+  const [data, setData] = useState<IEquipmentList[]>([]);
 
-  const [isBindingOpen, setIsBindingOpen] = useState<boolean>(false);
-
-  const [isAddDeviceOpen, setIsAddDeviceOpen] = useState<boolean>(false);
-
-  const [isUnbindIndex, setIsUnbindIndex] = useState<number>(0);
-
-  const [isDeleteId, setIsDeleteId] = useState<string>("");
-
-  const [isAddOrEdit, setIsAddOrEdit] = useState<boolean>(false); //true:添加 false:編輯
-
-  const [clickEditId, setClickEditId] = useState<number>(0);
+  const [dataTotalCount, setDataTotalCount] = useState<number>(0);
 
   const [pageDto, setPageDto] = useState<IPageDto>({
     PageSize: 10,
     PageIndex: 1,
   });
 
-  const [data, setData] = useState<IEquipmentList[]>([]);
-
-  const [dataTotalCount, setDataTotalCount] = useState<number>(0);
-
-  const [checkedId, setCheckedId] = useState<string>("");
+  const [loading, loadingAction] = useBoolean(false);
 
   const [deviceData, setDeviceData] = useState<IDeviceDataType[]>([
     {
@@ -53,84 +40,25 @@ export const useAction = () => {
       areaAddress: "",
       person: "",
     },
-    {
-      radio: true,
-      areaId: "2",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "3",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "4",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "5",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "6",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "7",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "8",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "9",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "10",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "11",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "12",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
   ]);
+
+  const [isUnbindOpen, setIsUnbindOpen] = useState<boolean>(false);
+
+  const [isDeleteDeviceOpen, setIsDeleteDeviceOpen] = useState<boolean>(false);
+
+  const [isBindingOpen, setIsBindingOpen] = useState<boolean>(false);
+
+  const [isAddOrUpdateOpen, setIsAddOrUpdateOpen] = useState<boolean>(false);
+
+  const [isUnbindIndex, setIsUnbindIndex] = useState<number>(0);
+
+  const [isDeleteId, setIsDeleteId] = useState<string>("");
+
+  const [isAddOrEdit, setIsAddOrEdit] = useState<boolean>(false); //true:添加 false:編輯
+
+  const [clickEditId, setClickEditId] = useState<number>(0);
+
+  const [checkedId, setCheckedId] = useState<string>("");
 
   const [isSearchOnline, setIsSearchOnline] = useState<boolean | undefined>(
     undefined
@@ -150,10 +78,9 @@ export const useAction = () => {
 
   const [equipmentName, setEquipmentName] = useState<string>("");
 
-  const [equipmentTypesOption, setEquipmentTypesOption] =
-    useState<IOptionDto[]>();
-
-  const [loading, loadingAction] = useBoolean(false);
+  const [equipmentTypesOption, setEquipmentTypesOption] = useState<
+    IOptionDto[]
+  >([]);
 
   const onAddSubmit = (isAdd: boolean) => {
     form.validateFields(["deviceId"]);
@@ -169,8 +96,11 @@ export const useAction = () => {
               equipmentTypeId: equipmentType,
             },
           })
-            .then(() => initGetEquipmentList())
-            .catch((err) => message.error(`創建失敗:${err}`))
+            .then(() => {
+              setIsAddOrUpdateOpen(false);
+              initGetEquipmentList();
+            })
+            .catch((err) => message.error(`創建失敗：${err}`))
         : PostUpdateEquipment({
             equipment: {
               equipmentCode: equipmentId,
@@ -179,9 +109,11 @@ export const useAction = () => {
               id: clickEditId,
             },
           })
-            .then(() => initGetEquipmentList())
-            .catch((err) => message.error(`更新失敗:${err}`));
-      setIsAddDeviceOpen(false);
+            .then(() => {
+              setIsAddOrUpdateOpen(false);
+              initGetEquipmentList();
+            })
+            .catch((err) => message.error(`更新失敗：${err}`));
     }
   };
 
@@ -206,7 +138,7 @@ export const useAction = () => {
         initGetEquipmentList();
         setIsDeleteDeviceOpen(false);
       })
-      .catch((error) => message.error(error));
+      .catch((error) => message.error(`刪除失敗：${error}`));
   };
 
   useEffect(() => {
@@ -227,14 +159,15 @@ export const useAction = () => {
   }, []);
 
   return {
+    source,
     isUnbindOpen,
     setIsUnbindOpen,
     isDeleteDeviceOpen,
     setIsDeleteDeviceOpen,
     isBindingOpen,
     setIsBindingOpen,
-    isAddDeviceOpen,
-    setIsAddDeviceOpen,
+    isAddOrUpdateOpen,
+    setIsAddOrUpdateOpen,
     isUnbindIndex,
     setIsUnbindIndex,
     setIsDeleteId,

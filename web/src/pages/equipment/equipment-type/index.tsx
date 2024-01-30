@@ -12,6 +12,7 @@ import { IEquipmentTypeList } from "@/services/dtos/equipment/type";
 
 export const EquipmentType = () => {
   const {
+    source,
     isDeleteDeviceOpen,
     setIsDeleteDeviceOpen,
     isAddOrModifyOpen,
@@ -35,22 +36,22 @@ export const EquipmentType = () => {
 
   const columns: ColumnsType<IEquipmentTypeList> = [
     {
-      title: t(KEYS.DEVICE_TYPE_ID, { ns: "equipmentType" }),
+      title: t(KEYS.DEVICE_TYPE_ID, source),
       dataIndex: "id",
       width: "14.875rem",
     },
     {
-      title: t(KEYS.DEVICE_TYPE, { ns: "equipmentType" }),
+      title: t(KEYS.DEVICE_TYPE, source),
       dataIndex: "name",
       width: "15.125rem",
     },
     {
-      title: t(KEYS.REMARKS, { ns: "equipmentType" }),
+      title: t(KEYS.REMARKS, source),
       dataIndex: "description",
       width: "49.4375rem",
     },
     {
-      title: t(KEYS.OPERATE, { ns: "equipmentType" }),
+      title: t(KEYS.OPERATE, source),
       dataIndex: "operate",
       width: "21.5625rem",
       render: (_, record, index) => (
@@ -64,7 +65,7 @@ export const EquipmentType = () => {
               setClickEditId(record.id);
             }}
           >
-            {t(KEYS.EDIT, { ns: "equipmentType" })}
+            {t(KEYS.EDIT, source)}
           </Button>
           <Button
             type="link"
@@ -74,7 +75,7 @@ export const EquipmentType = () => {
               setIsDeleteDeviceOpen(true);
             }}
           >
-            {t(KEYS.DELETE, { ns: "equipmentType" })}
+            {t(KEYS.DELETE, source)}
           </Button>
         </div>
       ),
@@ -105,7 +106,7 @@ export const EquipmentType = () => {
       <div>
         <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            {t(KEYS.DEVICE_TYPE, { ns: "equipmentType" })}
+            {t(KEYS.DEVICE_TYPE, source)}
           </span>
           <div className="flex flex-row pt-[1.625rem] justify-end">
             <Button
@@ -117,7 +118,7 @@ export const EquipmentType = () => {
               }}
             >
               <PlusOutlined className="pr-[.5rem]" />
-              {t(KEYS.ADD_TYPE, { ns: "equipmentType" })}
+              {t(KEYS.ADD_TYPE, source)}
             </Button>
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
@@ -157,13 +158,13 @@ export const EquipmentType = () => {
         </div>
       </div>
 
-      {/* 編輯類型 */}
+      {/* 添加/編輯類型 */}
       <CustomModal
         title={
           <div>
             {isAddOrUpdate
-              ? t(KEYS.ADD_TYPE, { ns: "equipmentType" })
-              : t(KEYS.MODIFICATION_TYPE, { ns: "equipmentType" })}
+              ? t(KEYS.ADD_TYPE, source)
+              : t(KEYS.MODIFICATION_TYPE, source)}
           </div>
         }
         onCancle={() => setIsAddOrModifyOpen(false)}
@@ -179,15 +180,13 @@ export const EquipmentType = () => {
         >
           <FormItem
             name="typeName"
-            label={t(KEYS.DEVICE_TYPE, { ns: "equipmentType" })}
+            label={t(KEYS.DEVICE_TYPE, source)}
             rules={[{ required: true }]}
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
           >
             <Input
-              placeholder={t(KEYS.PLEASE_ENTER_DEVICE_TYPE, {
-                ns: "equipmentType",
-              })}
+              placeholder={t(KEYS.PLEASE_ENTER_DEVICE_TYPE, source)}
               value={typeName}
               onChange={(e) => {
                 setTypeName(e.target.value);
@@ -196,15 +195,13 @@ export const EquipmentType = () => {
           </FormItem>
           <FormItem
             name="description"
-            label={t(KEYS.INSTRUCTION_MANUAL, { ns: "equipmentType" })}
+            label={t(KEYS.INSTRUCTION_MANUAL, source)}
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
             style={{ marginBottom: 0 }}
           >
             <TextArea
-              placeholder={t(KEYS.PLEASE_ENTER_INSTRUCTION_MANUAL, {
-                ns: "equipmentType",
-              })}
+              placeholder={t(KEYS.PLEASE_ENTER_INSTRUCTION_MANUAL, source)}
               value={description}
               onChange={(e) => {
                 setDescription(e.target.value);
@@ -214,13 +211,12 @@ export const EquipmentType = () => {
         </Form>
       </CustomModal>
 
+      {/* 確認刪除 */}
       <CustomModal
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            {t(KEYS.OPERATION_CONFIRMATION, {
-              ns: "equipmentType",
-            })}
+            {t(KEYS.OPERATION_CONFIRMATION, source)}
           </div>
         }
         onCancle={() => setIsDeleteDeviceOpen(false)}
@@ -231,9 +227,7 @@ export const EquipmentType = () => {
         className={"customModal"}
       >
         <span className="pl-[2rem]">
-          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, {
-            ns: "equipmentType",
-          })}
+          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, source)}
         </span>
       </CustomModal>
     </ConfigProvider>

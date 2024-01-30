@@ -26,14 +26,15 @@ import { IEquipmentList } from "@/services/dtos/equipment/list";
 
 export const EquipmentList = () => {
   const {
+    source,
     isUnbindOpen,
     setIsUnbindOpen,
     isDeleteDeviceOpen,
     setIsDeleteDeviceOpen,
     isBindingOpen,
     setIsBindingOpen,
-    isAddDeviceOpen,
-    setIsAddDeviceOpen,
+    isAddOrUpdateOpen,
+    setIsAddOrUpdateOpen,
     isUnbindIndex,
     setIsUnbindIndex,
     setIsDeleteId,
@@ -69,12 +70,12 @@ export const EquipmentList = () => {
 
   const columns: ColumnsType<IEquipmentList> = [
     {
-      title: t(KEYS.DEVICE_ID, { ns: "equipmentList" }),
+      title: t(KEYS.DEVICE_ID, source),
       dataIndex: "id",
       width: "16.6%",
     },
     {
-      title: t(KEYS.IS_ONLINE, { ns: "equipmentList" }),
+      title: t(KEYS.IS_ONLINE, source),
       dataIndex: "isOnline",
       width: "16.6%",
       render: (record: boolean) => (
@@ -82,13 +83,13 @@ export const EquipmentList = () => {
           {record ? (
             <div className="flex flex-row items-center">
               <div className="bg-[#34A46E] w-[.375rem] h-[.375rem] rounded-full mr-[.5rem]" />
-              <span>{t(KEYS.ONLINE, { ns: "equipmentList" })}</span>
+              <span>{t(KEYS.ONLINE, source)}</span>
             </div>
           ) : (
             <div className="flex flex-row items-center">
               <div className="bg-[#F04E4E] min-w-[.375rem] max-w-[.375rem] h-[.375rem] rounded-full mr-[.5rem]" />
               <span className="whitespace-nowrap">
-                {t(KEYS.OFFLINE, { ns: "equipmentList" })}
+                {t(KEYS.OFFLINE, source)}
               </span>
             </div>
           )}
@@ -96,29 +97,30 @@ export const EquipmentList = () => {
       ),
     },
     {
-      title: t(KEYS.DEVICE_TYPE, { ns: "equipmentList" }),
+      title: t(KEYS.DEVICE_TYPE, source),
       dataIndex: "equipmentType",
       width: "16.6%",
     },
     {
-      title: t(KEYS.DEVICE_NAME, { ns: "equipmentList" }),
+      title: t(KEYS.DEVICE_NAME, source),
       dataIndex: "equipmentName",
       width: "16.6%",
     },
     {
-      title: t(KEYS.IS_BLIND, { ns: "equipmentList" }),
+      title: t(KEYS.IS_BLIND, source),
       dataIndex: "isBind",
       width: "16.6%",
       render: (_, record, index) => {
         return (
           <Tooltip
             placement="topLeft"
-            title={t(record ? KEYS.CLICK_TO_UNBIND : KEYS.CLICK_TO_BIND, {
-              ns: "equipmentList",
-            })}
+            title={t(
+              record ? KEYS.CLICK_TO_UNBIND : KEYS.CLICK_TO_BIND,
+              source
+            )}
           >
             <Switch
-              checkedChildren={t(KEYS.BINDING, { ns: "equipmentList" })}
+              checkedChildren={t(KEYS.BINDING, source)}
               unCheckedChildren=""
               value={record.isBind}
               onChange={(value) => {
@@ -141,7 +143,7 @@ export const EquipmentList = () => {
       },
     },
     {
-      title: t(KEYS.OPERATE, { ns: "equipmentList" }),
+      title: t(KEYS.OPERATE, source),
       dataIndex: "operate",
       width: "16.6%",
       render: (_, record) => (
@@ -152,10 +154,10 @@ export const EquipmentList = () => {
             onClick={() => {
               setIsAddOrEdit(false);
               setClickEditId(record.id);
-              setIsAddDeviceOpen(true);
+              setIsAddOrUpdateOpen(true);
             }}
           >
-            {t(KEYS.EDIT, { ns: "equipmentList" })}
+            {t(KEYS.EDIT, source)}
           </Button>
           <Button
             type="link"
@@ -165,7 +167,7 @@ export const EquipmentList = () => {
               setIsDeleteDeviceOpen(true);
             }}
           >
-            {t(KEYS.DELETE, { ns: "equipmentList" })}
+            {t(KEYS.DELETE, source)}
           </Button>
         </div>
       ),
@@ -190,22 +192,22 @@ export const EquipmentList = () => {
       },
     },
     {
-      title: t(KEYS.AREA_ID, { ns: "equipmentList" }),
+      title: t(KEYS.AREA_ID, source),
       dataIndex: "areaId",
       width: "9.5rem",
     },
     {
-      title: t(KEYS.AREA_NAME, { ns: "equipmentList" }),
+      title: t(KEYS.AREA_NAME, source),
       dataIndex: "areaName",
       width: "9.5rem",
     },
     {
-      title: t(KEYS.AREA_ADDRESS, { ns: "equipmentList" }),
+      title: t(KEYS.AREA_ADDRESS, source),
       dataIndex: "areaAddress",
       width: "24.875rem",
     },
     {
-      title: t(KEYS.PRINCIPAL, { ns: "equipmentList" }),
+      title: t(KEYS.PRINCIPAL, source),
       dataIndex: "person",
       width: "9.5rem",
     },
@@ -235,16 +237,17 @@ export const EquipmentList = () => {
       <div>
         <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            {t(KEYS.DEVICE_LIST, { ns: "equipmentList" })}
+            {t(KEYS.DEVICE_LIST, source)}
           </span>
           <div className="flex flex-row pt-[1.625rem] justify-between">
             <div>
               <Input
                 className="w-[17.5rem]"
                 suffix={<img src={search} />}
-                placeholder={t(KEYS.SEARCH_DEVICE_ID_DEVICE_TYPE_DEVICE_NAME, {
-                  ns: "equipmentList",
-                })}
+                placeholder={t(
+                  KEYS.SEARCH_DEVICE_ID_DEVICE_TYPE_DEVICE_NAME,
+                  source
+                )}
                 value={searchKey}
                 onChange={(e) => {
                   setSearchKey(e.target.value);
@@ -252,9 +255,7 @@ export const EquipmentList = () => {
               />
               <Select
                 className="mx-[1rem] w-[13.5rem]"
-                placeholder={t(KEYS.IS_ONLINE, {
-                  ns: "equipmentList",
-                })}
+                placeholder={t(KEYS.IS_ONLINE, source)}
                 value={isSearchOnline}
                 onChange={(value) => {
                   setIsSearchOnline(value !== null ? value : undefined);
@@ -263,24 +264,22 @@ export const EquipmentList = () => {
                 options={[
                   {
                     value: null,
-                    label: t(KEYS.IS_ONLINE, { ns: "equipmentList" }),
+                    label: t(KEYS.IS_ONLINE, source),
                   },
                   {
                     value: true,
-                    label: t(KEYS.ONLINE, { ns: "equipmentList" }),
+                    label: t(KEYS.ONLINE, source),
                   },
                   {
                     value: false,
-                    label: t(KEYS.OFFLINE, { ns: "equipmentList" }),
+                    label: t(KEYS.OFFLINE, source),
                   },
                 ]}
                 suffixIcon={<img src={downArrow} />}
               />
               <Select
                 className="w-[13.5rem]"
-                placeholder={t(KEYS.IS_CONFIRM, {
-                  ns: "equipmentList",
-                })}
+                placeholder={t(KEYS.IS_CONFIRM, source)}
                 defaultActiveFirstOption
                 value={isSearchBind}
                 onChange={(value) => {
@@ -289,15 +288,15 @@ export const EquipmentList = () => {
                 options={[
                   {
                     value: null,
-                    label: t(KEYS.IS_CONFIRM, { ns: "equipmentList" }),
+                    label: t(KEYS.IS_CONFIRM, source),
                   },
                   {
                     value: true,
-                    label: t(KEYS.BOUND, { ns: "equipmentList" }),
+                    label: t(KEYS.BOUND, source),
                   },
                   {
                     value: false,
-                    label: t(KEYS.NOT_BOUND, { ns: "equipmentList" }),
+                    label: t(KEYS.NOT_BOUND, source),
                   },
                 ]}
                 suffixIcon={<img src={downArrow} />}
@@ -308,13 +307,11 @@ export const EquipmentList = () => {
               className="h-[2.75rem]"
               onClick={() => {
                 setIsAddOrEdit(true);
-                setIsAddDeviceOpen(true);
+                setIsAddOrUpdateOpen(true);
               }}
             >
               <PlusOutlined className="pr-[.5rem]" />
-              {t(KEYS.ADD_DEVICE, {
-                ns: "equipmentList",
-              })}
+              {t(KEYS.ADD_DEVICE, source)}
             </Button>
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
@@ -354,13 +351,12 @@ export const EquipmentList = () => {
         </div>
       </div>
 
+      {/* 確認解綁 */}
       <CustomModal
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            {t(KEYS.OPERATION_CONFIRMATION, {
-              ns: "equipmentList",
-            })}
+            {t(KEYS.OPERATION_CONFIRMATION, source)}
           </div>
         }
         onCancle={() => setIsUnbindOpen(false)}
@@ -375,19 +371,16 @@ export const EquipmentList = () => {
         className={"customModal"}
       >
         <span className="pl-[2rem]">
-          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_UNBIND, {
-            ns: "equipmentList",
-          })}
+          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_UNBIND, source)}
         </span>
       </CustomModal>
 
+      {/* 確認刪除 */}
       <CustomModal
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            {t(KEYS.OPERATION_CONFIRMATION, {
-              ns: "equipmentList",
-            })}
+            {t(KEYS.OPERATION_CONFIRMATION, source)}
           </div>
         }
         onCancle={() => setIsDeleteDeviceOpen(false)}
@@ -396,21 +389,13 @@ export const EquipmentList = () => {
         className={"customModal"}
       >
         <span className="pl-[2rem]">
-          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, {
-            ns: "equipmentList",
-          })}
+          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, source)}
         </span>
       </CustomModal>
 
       {/* 選擇設備綁定 */}
       <CustomModal
-        title={
-          <div>
-            {t(KEYS.DEVICE_BINDING, {
-              ns: "equipmentList",
-            })}
-          </div>
-        }
+        title={<div>{t(KEYS.DEVICE_BINDING, source)}</div>}
         onCancle={() => setIsBindingOpen(false)}
         onConfirm={() => setIsBindingOpen(false)}
         open={isBindingOpen}
@@ -432,34 +417,26 @@ export const EquipmentList = () => {
         title={
           <div>
             {isAddOrEdit
-              ? t(KEYS.ADD_DEVICE, {
-                  ns: "equipmentList",
-                })
-              : t(KEYS.EDIT_DEVICE, {
-                  ns: "equipmentList",
-                })}
+              ? t(KEYS.ADD_DEVICE, source)
+              : t(KEYS.EDIT_DEVICE, source)}
           </div>
         }
-        onCancle={() => setIsAddDeviceOpen(false)}
+        onCancle={() => setIsAddOrUpdateOpen(false)}
         onConfirm={() => onAddSubmit(isAddOrEdit)}
-        open={isAddDeviceOpen}
+        open={isAddOrUpdateOpen}
         className={"customDeviceModal"}
         modalWidth={"42.5rem"}
       >
         <Form colon={false} onFinish={onAddSubmit} form={form}>
           <FormItem
             name="deviceId"
-            label={t(KEYS.DEVICE_ID, {
-              ns: "equipmentList",
-            })}
+            label={t(KEYS.DEVICE_ID, source)}
             rules={[{ required: true }]}
             labelCol={{ span: 3 }}
             wrapperCol={{ span: 15 }}
           >
             <Input
-              placeholder={t(KEYS.PLEASE_INPUT, {
-                ns: "equipmentList",
-              })}
+              placeholder={t(KEYS.PLEASE_INPUT, source)}
               value={equipmentId}
               onChange={(e) => {
                 setEquipmentId(e.target.value);
@@ -468,18 +445,14 @@ export const EquipmentList = () => {
           </FormItem>
           <FormItem
             name="deviceType"
-            label={t(KEYS.DEVICE_TYPE, {
-              ns: "equipmentList",
-            })}
+            label={t(KEYS.DEVICE_TYPE, source)}
             rules={[{ required: true }]}
             labelCol={{ span: 3 }}
             wrapperCol={{ span: 15 }}
           >
             <Select
               suffixIcon={<img src={downArrow} />}
-              placeholder={t(KEYS.PLEASE_SELECT, {
-                ns: "equipmentList",
-              })}
+              placeholder={t(KEYS.PLEASE_SELECT, source)}
               value={equipmentType}
               onChange={(value) => {
                 setEquipmentType(value);
@@ -490,18 +463,14 @@ export const EquipmentList = () => {
           </FormItem>
           <FormItem
             name="deviceName"
-            label={t(KEYS.DEVICE_NAME, {
-              ns: "equipmentList",
-            })}
+            label={t(KEYS.DEVICE_NAME, source)}
             rules={[{ required: true }]}
             labelCol={{ span: 3 }}
             wrapperCol={{ span: 15 }}
             style={{ marginBottom: 0 }}
           >
             <Input
-              placeholder={t(KEYS.PLEASE_INPUT, {
-                ns: "equipmentList",
-              })}
+              placeholder={t(KEYS.PLEASE_INPUT, source)}
               value={equipmentName}
               onChange={(e) => {
                 setEquipmentName(e.target.value);
