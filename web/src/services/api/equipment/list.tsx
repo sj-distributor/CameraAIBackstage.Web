@@ -12,7 +12,6 @@ export const GetEquipmentPage = async (data: IEquipmentPageRequest) => {
       params: data,
     }
   );
-  console.log(response.data);
 
   return response.data;
 };

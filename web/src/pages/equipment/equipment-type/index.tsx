@@ -157,53 +157,6 @@ export const EquipmentType = () => {
         </div>
       </div>
 
-      {/* 添加 */}
-      {/* <CustomModal
-        title={<div> {t(KEYS.ADD_TYPE, { ns: "equipmentType" })}</div>}
-        onCancle={() => setIsAddTypeOpen(false)}
-        onConfirm={() => onIsAddSubmit(true)}
-        open={isAddTypeOpen}
-        className={"customDeviceModal"}
-        modalWidth={"42.5rem"}
-      >
-        <Form colon={false} onFinish={() => onIsAddSubmit(true)} form={form}>
-          <FormItem
-            name="typeName"
-            label={t(KEYS.DEVICE_TYPE, { ns: "equipmentType" })}
-            rules={[{ required: true }]}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
-          >
-            <Input
-              placeholder={t(KEYS.PLEASE_ENTER_DEVICE_TYPE, {
-                ns: "equipmentType",
-              })}
-              value={typeName}
-              onChange={(e) => {
-                setTypeName(e.target.value);
-              }}
-            />
-          </FormItem>
-          <FormItem
-            name="description"
-            label={t(KEYS.INSTRUCTION_MANUAL, { ns: "equipmentType" })}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
-            style={{ marginBottom: 0 }}
-          >
-            <TextArea
-              placeholder={t(KEYS.PLEASE_ENTER_INSTRUCTION_MANUAL, {
-                ns: "equipmentType",
-              })}
-              value={description}
-              onChange={(e) => {
-                setDescription(e.target.value);
-              }}
-            />
-          </FormItem>
-        </Form>
-      </CustomModal> */}
-
       {/* 編輯類型 */}
       <CustomModal
         title={

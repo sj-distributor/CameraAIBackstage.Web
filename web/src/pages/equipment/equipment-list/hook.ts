@@ -170,7 +170,7 @@ export const useAction = () => {
             },
           })
             .then(() => initGetEquipmentList())
-            .catch(() => message.error("創建失敗"))
+            .catch((err) => message.error(`創建失敗:${err}`))
         : PostUpdateEquipment({
             equipment: {
               equipmentCode: equipmentId,
@@ -180,7 +180,7 @@ export const useAction = () => {
             },
           })
             .then(() => initGetEquipmentList())
-            .catch(() => message.error("更新失敗"));
+            .catch((err) => message.error(`更新失敗:${err}`));
       setIsAddDeviceOpen(false);
     }
   };
@@ -193,9 +193,9 @@ export const useAction = () => {
         setDataTotalCount(res.count);
       })
       .catch((error) => {
+        message.error(error);
         setData([]);
         setDataTotalCount(0);
-        message.error(error);
       })
       .finally(() => loadingAction.setFalse());
   };

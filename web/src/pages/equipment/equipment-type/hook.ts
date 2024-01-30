@@ -26,6 +26,7 @@ export const useAction = () => {
     PageSize: 10,
     PageIndex: 1,
   });
+
   const [totalListCount, setTotalListCount] = useState<number>(0);
 
   const [data, setData] = useState<IEquipmentTypeList[]>([]);
@@ -46,6 +47,11 @@ export const useAction = () => {
       .then((res) => {
         setData(res.equipmentTypes);
         setTotalListCount(res.count);
+      })
+      .catch((err) => {
+        message.error(err);
+        setData([]);
+        setTotalListCount(0);
       })
       .finally(() => loadingAction.setFalse());
   };
