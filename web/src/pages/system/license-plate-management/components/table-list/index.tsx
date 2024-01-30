@@ -98,17 +98,12 @@ export const LicensePlateManagementTable = (props: {
       width: "26.6%",
       render: (_, record) => (
         <div>
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => setIsRegisterOpen(true)}
-          >
+          <Button type="link" onClick={() => setIsRegisterOpen(true)}>
             {t(isRegisteredVehicle ? KEYS.EDIT : KEYS.REGISTER, source)}
           </Button>
           {!isRegisteredVehicle && (
             <Button
               type="link"
-              className="w-[6rem]"
               onClick={() => setShowWarningDetails(record.deviceId)}
             >
               {t(KEYS.VIEW_DETAILS, source)}
@@ -116,7 +111,6 @@ export const LicensePlateManagementTable = (props: {
           )}
           <Button
             type="link"
-            className="w-[6rem]"
             onClick={() => {
               setIsShowLicensePlateOpen(true);
             }}
@@ -127,7 +121,6 @@ export const LicensePlateManagementTable = (props: {
           {isRegisteredVehicle && (
             <Button
               type="link"
-              className="w-[6rem]"
               onClick={() => {
                 setIsShowLicensePlateOpen(true);
               }}
