@@ -10,17 +10,15 @@ import {
 } from "@/services/api/equipment/type";
 import { IEquipmentTypeList } from "@/services/dtos/equipment/type";
 import { useBoolean } from "ahooks";
-import { Form } from "antd";
+import { Form, message } from "antd";
 
 export const useAction = () => {
   const { t } = useAuth();
   const [form] = Form.useForm();
 
-  const [isAddTypeOpen, setIsAddTypeOpen] = useState<boolean>(false);
-
   const [isDeleteDeviceOpen, setIsDeleteDeviceOpen] = useState<boolean>(false);
 
-  const [isModifyOpen, setIsModifyOpen] = useState<boolean>(false);
+  const [isAddOrModifyOpen, setIsAddOrModifyOpen] = useState<boolean>(false);
 
   const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
 
@@ -38,6 +36,10 @@ export const useAction = () => {
 
   const [description, setDescription] = useState<string>("");
 
+  const [isAddOrUpdate, setIsAddOrUpdate] = useState<boolean>(false); // true:添加，false：編輯
+
+  const [clickEditId, setClickEditId] = useState<number>(0);
+
   const initGetEquipmentTypeList = () => {
     loadingAction.setTrue();
     GetEquipmentTypePage(pageDto)
@@ -50,40 +52,46 @@ export const useAction = () => {
 
   const onIsAddSubmit = (isAdd: boolean) => {
     form.validateFields(["typeName"]).then(() => {
-      // isAdd
-      //   ?
-      PostCreateEquipmentType({
-        equipmentType: {
-          name: typeName,
-          description: description,
-        },
-      }).then(() => {
-        initGetEquipmentTypeList();
-        setIsAddTypeOpen(false);
-      });
-      // : PostUpdateEquipmentType({
-      //     equipmentType: {
-      //       name: typeName,
-      //       description: description,
-      //     },
-      //   }).then(() => {
-      //     initGetEquipmentTypeList();
-      //     setIsAddTypeOpen(false);
-      //   });
+      isAdd
+        ? PostCreateEquipmentType({
+            equipmentType: {
+              name: typeName,
+              description: description,
+            },
+          })
+            .then(() => {
+              initGetEquipmentTypeList();
+              setIsAddOrModifyOpen(false);
+            })
+            .catch((err) => {
+              message.error(`新增失敗:${err}`);
+            })
+        : PostUpdateEquipmentType({
+            equipmentType: {
+              name: typeName,
+              description: description,
+              id: clickEditId,
+            },
+          })
+            .then(() => {
+              initGetEquipmentTypeList();
+              setIsAddOrModifyOpen(false);
+            })
+            .catch((err) => {
+              message.error(`新增失敗:${err}`);
+            });
     });
   };
 
   useEffect(() => {
     initGetEquipmentTypeList();
-  }, []);
+  }, [pageDto]);
 
   return {
-    isAddTypeOpen,
-    setIsAddTypeOpen,
     isDeleteDeviceOpen,
     setIsDeleteDeviceOpen,
-    isModifyOpen,
-    setIsModifyOpen,
+    isAddOrModifyOpen,
+    setIsAddOrModifyOpen,
     isDeleteIndex,
     setIsDeleteIndex,
     data,
@@ -98,5 +106,9 @@ export const useAction = () => {
     totalListCount,
     onIsAddSubmit,
     form,
+    isAddOrUpdate,
+    setIsAddOrUpdate,
+    clickEditId,
+    setClickEditId,
   };
 };

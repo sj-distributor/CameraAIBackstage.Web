@@ -5,6 +5,7 @@ export default {
   DEVICE_NAME: "DeviceName",
   BINDING: "Binding",
   ADD_DEVICE: "AddDevice",
+  EDIT_DEVICE: "EditDevice",
   SEARCH_DEVICE_ID_DEVICE_TYPE_DEVICE_NAME:
     "SearchDeviceIDDeviceTypeDeviceName",
   OPERATE: "Operate",

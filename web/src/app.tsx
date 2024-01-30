@@ -14,10 +14,7 @@ function App() {
   // }, [localStorage.getItem((window as any).appSettings?.tokenKey)]);
 
   useEffect(() => {
-    localStorage.setItem(
-      (window as any).appSettings?.tokenKey,
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmFtZWlkIjoiMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2F1dGhlbnRpY2F0aW9uIjoiU2VsZiIsInJvbGUiOiJBZG1pbmlzdHJhdG9yIiwibmJmIjoxNjk2MjExMTQzLCJleHAiOjE2OTYyMTQ3NDMsImlhdCI6MTY5NjIxMTE0M30.W4JNUv_stGwpNfd49oxj4Kgrcs-dzntcviLDkHPsG7I"
-    );
+    localStorage.setItem((window as any).appSettings?.tokenKey, "");
   });
 
   useEffect(() => {

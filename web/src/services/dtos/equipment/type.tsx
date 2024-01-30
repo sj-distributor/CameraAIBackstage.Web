@@ -17,4 +17,5 @@ export interface IEquipmentTypeCreateOrUpdateRequest {
 export interface IEquipmentTypeCreateOrUpdateDto {
   name: string;
   description: string;
+  id?: number;
 }

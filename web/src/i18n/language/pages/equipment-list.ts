@@ -9,6 +9,7 @@ export default {
     [KEYS.DEVICE_NAME]: "Device Name",
     [KEYS.BINDING]: "Binding",
     [KEYS.ADD_DEVICE]: "Add Device",
+    [KEYS.EDIT_DEVICE]: "Edit Device",
     [KEYS.SEARCH_DEVICE_ID_DEVICE_TYPE_DEVICE_NAME]:
       "Search device ID, device type, device name",
     [KEYS.OPERATE]: "Operate",
@@ -47,6 +48,7 @@ export default {
     [KEYS.DEVICE_NAME]: "設備名稱",
     [KEYS.BINDING]: "綁定",
     [KEYS.ADD_DEVICE]: "添加設備",
+    [KEYS.EDIT_DEVICE]: "編輯設備",
     [KEYS.SEARCH_DEVICE_ID_DEVICE_TYPE_DEVICE_NAME]:
       "搜索設備ID、設備類型、設備名稱",
     [KEYS.OPERATE]: "操作",

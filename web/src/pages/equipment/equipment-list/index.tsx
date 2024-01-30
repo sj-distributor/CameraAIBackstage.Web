@@ -40,7 +40,6 @@ export const EquipmentList = () => {
     data,
     setData,
     deviceData,
-    setDeviceData,
     t,
     setPageDto,
     searchKey,
@@ -65,7 +64,6 @@ export const EquipmentList = () => {
     onDelete,
     isAddOrEdit,
     setIsAddOrEdit,
-    // clickEditId,
     setClickEditId,
   } = useAction();
 
@@ -154,6 +152,7 @@ export const EquipmentList = () => {
             onClick={() => {
               setIsAddOrEdit(false);
               setClickEditId(record.id);
+              setIsAddDeviceOpen(true);
             }}
           >
             {t(KEYS.EDIT, { ns: "equipmentList" })}
@@ -428,7 +427,7 @@ export const EquipmentList = () => {
         />
       </CustomModal>
 
-      {/* 添加設備 */}
+      {/* 添加/編輯設備 */}
       <CustomModal
         title={
           <div>
@@ -436,7 +435,7 @@ export const EquipmentList = () => {
               ? t(KEYS.ADD_DEVICE, {
                   ns: "equipmentList",
                 })
-              : t(KEYS.Edit_DEVICE, {
+              : t(KEYS.EDIT_DEVICE, {
                   ns: "equipmentList",
                 })}
           </div>

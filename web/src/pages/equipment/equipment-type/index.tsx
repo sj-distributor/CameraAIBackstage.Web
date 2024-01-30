@@ -12,12 +12,10 @@ import { IEquipmentTypeList } from "@/services/dtos/equipment/type";
 
 export const EquipmentType = () => {
   const {
-    isAddTypeOpen,
-    setIsAddTypeOpen,
     isDeleteDeviceOpen,
     setIsDeleteDeviceOpen,
-    isModifyOpen,
-    setIsModifyOpen,
+    isAddOrModifyOpen,
+    setIsAddOrModifyOpen,
     setIsDeleteIndex,
     data,
     t,
@@ -30,6 +28,9 @@ export const EquipmentType = () => {
     totalListCount,
     onIsAddSubmit,
     form,
+    isAddOrUpdate,
+    setIsAddOrUpdate,
+    setClickEditId,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentTypeList> = [
@@ -52,12 +53,16 @@ export const EquipmentType = () => {
       title: t(KEYS.OPERATE, { ns: "equipmentType" }),
       dataIndex: "operate",
       width: "21.5625rem",
-      render: (_, _record, index) => (
+      render: (_, record, index) => (
         <div>
           <Button
             type="link"
             className="w-[6rem]"
-            onClick={() => setIsModifyOpen(true)}
+            onClick={() => {
+              setIsAddOrModifyOpen(true);
+              setIsAddOrUpdate(false);
+              setClickEditId(record.id);
+            }}
           >
             {t(KEYS.EDIT, { ns: "equipmentType" })}
           </Button>
@@ -106,7 +111,10 @@ export const EquipmentType = () => {
             <Button
               type="primary"
               className="h-[2.75rem]"
-              onClick={() => setIsAddTypeOpen(true)}
+              onClick={() => {
+                setIsAddOrModifyOpen(true);
+                setIsAddOrUpdate(true);
+              }}
             >
               <PlusOutlined className="pr-[.5rem]" />
               {t(KEYS.ADD_TYPE, { ns: "equipmentType" })}
@@ -149,7 +157,8 @@ export const EquipmentType = () => {
         </div>
       </div>
 
-      <CustomModal
+      {/* 添加 */}
+      {/* <CustomModal
         title={<div> {t(KEYS.ADD_TYPE, { ns: "equipmentType" })}</div>}
         onCancle={() => setIsAddTypeOpen(false)}
         onConfirm={() => onIsAddSubmit(true)}
@@ -193,18 +202,28 @@ export const EquipmentType = () => {
             />
           </FormItem>
         </Form>
-      </CustomModal>
+      </CustomModal> */}
 
-      {/* 添加類型 */}
+      {/* 編輯類型 */}
       <CustomModal
-        title={<div> {t(KEYS.MODIFICATION_TYPE, { ns: "equipmentType" })}</div>}
-        onCancle={() => setIsModifyOpen(false)}
-        onConfirm={() => onIsAddSubmit(false)}
-        open={isModifyOpen}
+        title={
+          <div>
+            {isAddOrUpdate
+              ? t(KEYS.ADD_TYPE, { ns: "equipmentType" })
+              : t(KEYS.MODIFICATION_TYPE, { ns: "equipmentType" })}
+          </div>
+        }
+        onCancle={() => setIsAddOrModifyOpen(false)}
+        onConfirm={() => onIsAddSubmit(isAddOrUpdate)}
+        open={isAddOrModifyOpen}
         className={"customDeviceModal"}
         modalWidth={"42.5rem"}
       >
-        <Form colon={false} onFinish={() => onIsAddSubmit(false)} form={form}>
+        <Form
+          colon={false}
+          onFinish={() => onIsAddSubmit(isAddOrUpdate)}
+          form={form}
+        >
           <FormItem
             name="typeName"
             label={t(KEYS.DEVICE_TYPE, { ns: "equipmentType" })}
@@ -216,6 +235,10 @@ export const EquipmentType = () => {
               placeholder={t(KEYS.PLEASE_ENTER_DEVICE_TYPE, {
                 ns: "equipmentType",
               })}
+              value={typeName}
+              onChange={(e) => {
+                setTypeName(e.target.value);
+              }}
             />
           </FormItem>
           <FormItem
@@ -229,6 +252,10 @@ export const EquipmentType = () => {
               placeholder={t(KEYS.PLEASE_ENTER_INSTRUCTION_MANUAL, {
                 ns: "equipmentType",
               })}
+              value={description}
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
             />
           </FormItem>
         </Form>

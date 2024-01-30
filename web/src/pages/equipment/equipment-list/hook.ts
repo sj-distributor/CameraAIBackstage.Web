@@ -30,7 +30,7 @@ export const useAction = () => {
 
   const [isDeleteId, setIsDeleteId] = useState<string>("");
 
-  const [isAddOrEdit, setIsAddOrEdit] = useState<boolean>(false);
+  const [isAddOrEdit, setIsAddOrEdit] = useState<boolean>(false); //true:添加 false:編輯
 
   const [clickEditId, setClickEditId] = useState<number>(0);
 
@@ -241,7 +241,6 @@ export const useAction = () => {
     data,
     setData,
     deviceData,
-    setDeviceData,
     t,
     setPageDto,
     searchKey,
@@ -266,7 +265,6 @@ export const useAction = () => {
     onDelete,
     isAddOrEdit,
     setIsAddOrEdit,
-    clickEditId,
     setClickEditId,
   };
 };
