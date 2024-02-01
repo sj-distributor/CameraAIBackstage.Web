@@ -70,7 +70,6 @@ export const EquipmentList = () => {
     editLoding,
     setEquipmentTypeId,
     language,
-    run,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -257,7 +256,6 @@ export const EquipmentList = () => {
                 value={searchKey}
                 onChange={(e) => {
                   setSearchKey(e.target.value);
-                  run;
                 }}
               />
               <Select

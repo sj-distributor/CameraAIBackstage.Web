@@ -240,6 +240,5 @@ export const useAction = () => {
     editLoding,
     setEquipmentTypeId,
     language,
-    run,
   };
 };
