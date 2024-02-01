@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
 
-import { IDeviceDataType, IOptionDto } from "./props";
+import { IOptionDto } from "./props";
 import {
   IEquipmentCreateOrUpdateDto,
   IEquipmentList,
@@ -17,15 +17,21 @@ import {
   PostDeleteEquipment,
   PostUpdateEquipment,
 } from "@/services/api/equipment/list";
-import { Form, message } from "antd";
+import { App, Form } from "antd";
 import { GetEquipmentTypePage } from "@/services/api/equipment/type";
-import { useBoolean, useDebounce, useUpdateEffect } from "ahooks";
-import { clone } from "ramda";
+import {
+  useBoolean,
+  useDebounce,
+  useDebounceFn,
+  useUpdateEffect,
+} from "ahooks";
 
 export const useAction = () => {
   const { t, language } = useAuth();
 
   const [form] = Form.useForm();
+
+  const { message } = App.useApp();
 
   const source = { ns: "equipmentList" };
 
@@ -39,16 +45,6 @@ export const useAction = () => {
   });
 
   const [loading, loadingAction] = useBoolean(false);
-
-  const [deviceData, setDeviceData] = useState<IDeviceDataType[]>([
-    {
-      radio: true,
-      areaId: "1",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-  ]);
 
   const [isUnbindOpen, setIsUnbindOpen] = useState<boolean>(false);
 
@@ -86,7 +82,7 @@ export const useAction = () => {
 
   const [equipmentName, setEquipmentName] = useState<string>("");
 
-  const [equipmentTypeId, setEquipmentTypeId] = useState<number | null>(null); //接口要传的
+  const [equipmentTypeId, setEquipmentTypeId] = useState<number | null>(null);
 
   const [equipmentTypesOption, setEquipmentTypesOption] = useState<
     IOptionDto[]
@@ -98,6 +94,8 @@ export const useAction = () => {
 
   const [regionLoading, setRegionLoading] = useState<boolean>(false);
 
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
+
   const handleUpdate = () => {
     const data: IEquipmentCreateOrUpdateDto = {
       equipmentCode: equipmentId,
@@ -105,7 +103,7 @@ export const useAction = () => {
       equipmentTypeId: equipmentTypeId,
       id: clickEditId,
     };
-
+    setConfirmLoading(true);
     PostUpdateEquipment({
       equipment: data,
     })
@@ -113,11 +111,22 @@ export const useAction = () => {
         setIsAddOrUpdateOpen(false);
         initGetEquipmentList();
         setIsBindingOpen(false);
+        setEquipmentId("");
+        setEquipmentName("");
+        setEquipmentType("");
+        setEquipmentTypeId(null);
+        form.setFieldsValue({
+          deviceId: "",
+          deviceName: "",
+          deviceType: "",
+        });
       })
-      .catch((err) => message.error(`更新失敗：${err}`));
+      .catch((err) => message.error(`更新失敗：${err}`))
+      .finally(() => setConfirmLoading(false));
   };
 
   const handleCreate = () => {
+    setConfirmLoading(true);
     PostCreateEquipment({
       equipment: {
         equipmentCode: equipmentId,
@@ -132,8 +141,14 @@ export const useAction = () => {
         setEquipmentName("");
         setEquipmentType("");
         setEquipmentTypeId(null);
+        form.setFieldsValue({
+          deviceId: "",
+          deviceName: "",
+          deviceType: "",
+        });
       })
-      .catch((err) => message.error(`創建失敗：${err}`));
+      .catch((err) => message.error(`創建失敗：${err}`))
+      .finally(() => setConfirmLoading(false));
   };
 
   const onAddSubmit = (isAdd: boolean) => {
@@ -145,6 +160,11 @@ export const useAction = () => {
       isAdd ? handleCreate() : handleUpdate();
     }
   };
+
+  const { run: handleAddOrUpdate } = useDebounceFn(
+    (isAdd: boolean) => onAddSubmit(isAdd),
+    { wait: 300 }
+  );
 
   const initGetEquipmentList = () => {
     loadingAction.setTrue();
@@ -169,13 +189,17 @@ export const useAction = () => {
 
   const onDelete = () => {
     if (isDeleteId === null) return;
+    setConfirmLoading(true);
     PostDeleteEquipment({ EquipmentId: isDeleteId })
       .then(() => {
         initGetEquipmentList();
         setIsDeleteDeviceOpen(false);
       })
-      .catch((error) => message.error(`刪除失敗：${error}`));
+      .catch((error) => message.error(`刪除失敗：${error}`))
+      .finally(() => setConfirmLoading(false));
   };
+
+  const { run: handleDelete } = useDebounceFn(onDelete, { wait: 300 });
 
   const onGetEquipmentInformationById = async (id: number) => {
     setEditLoading(true);
@@ -271,7 +295,6 @@ export const useAction = () => {
     setIsDeleteId,
     data,
     setData,
-    deviceData,
     t,
     setPageDto,
     searchKey,
@@ -286,14 +309,14 @@ export const useAction = () => {
     setEquipmentType,
     equipmentName,
     setEquipmentName,
-    onAddSubmit,
+    handleAddOrUpdate,
     form,
     equipmentTypesOption,
     dataTotalCount,
     loading,
     checkedId,
     setCheckedId,
-    onDelete,
+    handleDelete,
     isAddOrEdit,
     setIsAddOrEdit,
     onGetEquipmentInformationById,
@@ -304,5 +327,6 @@ export const useAction = () => {
     regionLoading,
     regionData,
     onConfirmBind,
+    confirmLoading,
   };
 };

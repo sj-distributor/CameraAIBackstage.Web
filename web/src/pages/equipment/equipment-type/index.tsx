@@ -35,12 +35,14 @@ export const EquipmentType = () => {
     description,
     setDescription,
     totalListCount,
-    onIsAddSubmit,
+    handleAddOrUpdate,
     form,
     isAddOrUpdate,
     setIsAddOrUpdate,
     onGetEquipmentInformationById,
     isEditLoading,
+    handleDelete,
+    confirmLoading,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentTypeList> = [
@@ -186,11 +188,12 @@ export const EquipmentType = () => {
           setDescription("");
         }}
         onConfirm={() => {
-          onIsAddSubmit(isAddOrUpdate);
+          handleAddOrUpdate(isAddOrUpdate);
         }}
         open={isAddOrModifyOpen}
         className={"customDeviceModal"}
         modalWidth={"42.5rem"}
+        confirmLoading={confirmLoading}
       >
         {isEditLoading && !isAddOrUpdate ? (
           <Spin className="flex justify-center" spinning={isEditLoading} />
@@ -198,7 +201,7 @@ export const EquipmentType = () => {
           <Form
             colon={false}
             onFinish={() => {
-              onIsAddSubmit(isAddOrUpdate);
+              handleAddOrUpdate(isAddOrUpdate);
             }}
             form={form}
           >
@@ -250,9 +253,11 @@ export const EquipmentType = () => {
         onCancle={() => setIsDeleteDeviceOpen(false)}
         onConfirm={() => {
           setIsDeleteDeviceOpen(false);
+          handleDelete();
         }}
         open={isDeleteDeviceOpen}
         className={"customModal"}
+        confirmLoading={confirmLoading}
       >
         <span className="pl-[2rem]">
           {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, source)}

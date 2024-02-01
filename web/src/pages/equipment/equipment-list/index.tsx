@@ -22,7 +22,7 @@ import KEYS from "@/i18n/language/keys/equipment-list-keys";
 import downArrow from "../../../assets/public/down-arrow.png";
 import search from "../../../assets/public/search.png";
 import { useAction } from "./hook";
-import { IDeviceDataType, IOptionDto } from "./props";
+import { IOptionDto } from "./props";
 import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
 
 export const EquipmentList = () => {
@@ -41,7 +41,6 @@ export const EquipmentList = () => {
     setIsDeleteId,
     data,
     setData,
-    deviceData,
     t,
     setPageDto,
     searchKey,
@@ -56,14 +55,14 @@ export const EquipmentList = () => {
     setEquipmentType,
     equipmentName,
     setEquipmentName,
-    onAddSubmit,
+    handleAddOrUpdate,
     form,
     equipmentTypesOption,
     dataTotalCount,
     loading,
     checkedId,
     setCheckedId,
-    onDelete,
+    handleDelete,
     isAddOrEdit,
     setIsAddOrEdit,
     onGetEquipmentInformationById,
@@ -74,6 +73,7 @@ export const EquipmentList = () => {
     regionLoading,
     regionData,
     onConfirmBind,
+    confirmLoading,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -375,6 +375,7 @@ export const EquipmentList = () => {
         }}
         open={isUnbindOpen}
         className={"customModal"}
+        confirmLoading={confirmLoading}
       >
         <span className="pl-[2rem]">
           {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_UNBIND, source)}
@@ -390,9 +391,10 @@ export const EquipmentList = () => {
           </div>
         }
         onCancle={() => setIsDeleteDeviceOpen(false)}
-        onConfirm={onDelete}
+        onConfirm={handleDelete}
         open={isDeleteDeviceOpen}
         className={"customModal"}
+        confirmLoading={confirmLoading}
       >
         <span className="pl-[2rem]">
           {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, source)}
@@ -409,6 +411,7 @@ export const EquipmentList = () => {
         open={isBindingOpen}
         className={"customDeviceModal"}
         modalWidth={"60rem"}
+        confirmLoading={confirmLoading}
       >
         <Table
           loading={regionLoading}
@@ -443,11 +446,12 @@ export const EquipmentList = () => {
           });
         }}
         onConfirm={() => {
-          onAddSubmit(isAddOrEdit);
+          handleAddOrUpdate(isAddOrEdit);
         }}
         open={isAddOrUpdateOpen}
         className={"customDeviceModal"}
         modalWidth={"42.5rem"}
+        confirmLoading={confirmLoading}
       >
         {editLoding && !isAddOrEdit ? (
           <Spin spinning={editLoding} className="flex justify-center" />
@@ -455,7 +459,7 @@ export const EquipmentList = () => {
           <Form
             colon={false}
             onFinish={() => {
-              onAddSubmit(isAddOrEdit);
+              handleAddOrUpdate(isAddOrEdit);
             }}
             form={form}
           >
@@ -482,6 +486,7 @@ export const EquipmentList = () => {
               wrapperCol={{ span: 15 }}
             >
               <Select
+                listHeight={200}
                 suffixIcon={<img src={downArrow} />}
                 placeholder={t(KEYS.PLEASE_SELECT, source)}
                 value={equipmentType}

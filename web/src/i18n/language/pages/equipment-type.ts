@@ -3,11 +3,11 @@ import KEYS from "../keys/equipment-type-keys";
 
 export default {
   en: {
-    [KEYS.DEVICE_TYPE_ID]: "Device Type ID",
+    [KEYS.DEVICE_TYPE_ID]: "Device ID",
     [KEYS.DEVICE_TYPE]: "Device Type",
-    [KEYS.REMARKS]: "Remarks",
+    [KEYS.REMARKS]: "Remark",
     [KEYS.ADD_TYPE]: "Add Type",
-    [KEYS.INSTRUCTION_MANUAL]: "Remarks",
+    [KEYS.INSTRUCTION_MANUAL]: "Remarks Content",
     [KEYS.PLEASE_ENTER_DEVICE_TYPE]: "Please enter device type name",
     [KEYS.PLEASE_ENTER_INSTRUCTION_MANUAL]:
       "Please enter the device type remarks",

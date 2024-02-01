@@ -9,6 +9,7 @@ export const CustomModal = ({
   className,
   modalWidth,
   footer,
+  confirmLoading,
 }: {
   title: JSX.Element;
   onCancle: () => void;
@@ -18,7 +19,10 @@ export const CustomModal = ({
   className?: string;
   modalWidth?: string;
   footer?: JSX.Element;
+  confirmLoading?: boolean;
 }) => {
+  console.log(confirmLoading);
+
   return (
     <Modal
       className={className ?? ""}
@@ -41,6 +45,7 @@ export const CustomModal = ({
               type="primary"
               className="w-[6rem] h-[2.75rem] mr-[1rem] bg-[#2853E3]"
               onClick={onConfirm}
+              loading={confirmLoading}
             >
               確定
             </Button>

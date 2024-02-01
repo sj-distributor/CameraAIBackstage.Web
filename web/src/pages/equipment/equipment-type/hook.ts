@@ -7,16 +7,19 @@ import {
   GetEquipmentTypeInfoById,
   GetEquipmentTypePage,
   PostCreateEquipmentType,
+  PostDeleteEquipmentType,
   PostUpdateEquipmentType,
 } from "@/services/api/equipment/type";
 import { IEquipmentTypeList } from "@/services/dtos/equipment/type";
-import { useBoolean } from "ahooks";
-import { Form, message } from "antd";
+import { useBoolean, useDebounceFn } from "ahooks";
+import { App, Form } from "antd";
 
 export const useAction = () => {
   const { t } = useAuth();
 
   const [form] = Form.useForm();
+
+  const { message } = App.useApp();
 
   const source = { ns: "equipmentType" };
 
@@ -47,6 +50,10 @@ export const useAction = () => {
 
   const [isEditLoading, setIsEditLoading] = useState<boolean>(false);
 
+  const [isDeleteId, setIsDeleteId] = useState<number | null>(null);
+
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
+
   const initGetEquipmentTypeList = () => {
     loadingAction.setTrue();
     GetEquipmentTypePage(pageDto)
@@ -64,6 +71,7 @@ export const useAction = () => {
 
   const onIsAddSubmit = (isAdd: boolean) => {
     form.validateFields(["typeName"]).then(() => {
+      setConfirmLoading(true);
       isAdd
         ? PostCreateEquipmentType({
             equipmentType: {
@@ -84,6 +92,9 @@ export const useAction = () => {
             .catch((err) => {
               message.error(`新增失敗:${err}`);
             })
+            .finally(() => {
+              setConfirmLoading(false);
+            })
         : PostUpdateEquipmentType({
             equipmentType: {
               name: typeName,
@@ -97,9 +108,16 @@ export const useAction = () => {
             })
             .catch((err) => {
               message.error(`新增失敗:${err}`);
+            })
+            .finally(() => {
+              setConfirmLoading(false);
             });
     });
   };
+  const { run: handleAddOrUpdate } = useDebounceFn(
+    (isAdd: boolean) => onIsAddSubmit(isAdd),
+    { wait: 300 }
+  );
 
   const onGetEquipmentInformationById = (id: number) => {
     setIsEditLoading(true);
@@ -120,6 +138,20 @@ export const useAction = () => {
       .finally(() => setIsEditLoading(false));
     setClickEditId(id);
   };
+
+  const onDelete = () => {
+    if (isDeleteId === null) return;
+    setConfirmLoading(true);
+    PostDeleteEquipmentType({ EquipmentTypeId: isDeleteId })
+      .then(() => {
+        initGetEquipmentTypeList();
+      })
+      .catch((err) => {
+        message.error(`删除失败：${err}`);
+      })
+      .finally(() => setConfirmLoading(false));
+  };
+  const { run: handleDelete } = useDebounceFn(onDelete, { wait: 300 });
 
   useEffect(() => {
     initGetEquipmentTypeList();
@@ -143,12 +175,15 @@ export const useAction = () => {
     description,
     setDescription,
     totalListCount,
-    onIsAddSubmit,
+    handleAddOrUpdate,
     form,
     isAddOrUpdate,
     setIsAddOrUpdate,
     clickEditId,
     onGetEquipmentInformationById,
     isEditLoading,
+    setIsDeleteId,
+    handleDelete,
+    confirmLoading,
   };
 };
