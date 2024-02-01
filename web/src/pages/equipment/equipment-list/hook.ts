@@ -3,17 +3,24 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 
 import { IDeviceDataType, IOptionDto } from "./props";
-import { IEquipmentList, IPageDto } from "@/services/dtos/equipment/list";
+import {
+  IEquipmentCreateOrUpdateDto,
+  IEquipmentList,
+  IPageDto,
+  IRegionDto,
+} from "@/services/dtos/equipment/list";
 import {
   GetEquipmentInfoById,
   GetEquipmentPage,
+  GetRegionPage,
   PostCreateEquipment,
   PostDeleteEquipment,
   PostUpdateEquipment,
 } from "@/services/api/equipment/list";
 import { Form, message } from "antd";
 import { GetEquipmentTypePage } from "@/services/api/equipment/type";
-import { useBoolean, useDebounce, useDebounceFn } from "ahooks";
+import { useBoolean, useDebounce, useUpdateEffect } from "ahooks";
+import { clone } from "ramda";
 
 export const useAction = () => {
   const { t, language } = useAuth();
@@ -59,7 +66,7 @@ export const useAction = () => {
 
   const [clickEditId, setClickEditId] = useState<number>(0);
 
-  const [checkedId, setCheckedId] = useState<string>("");
+  const [checkedId, setCheckedId] = useState<number | null>(null);
 
   const [isSearchOnline, setIsSearchOnline] = useState<boolean | undefined>(
     undefined
@@ -71,12 +78,7 @@ export const useAction = () => {
 
   const [searchKey, setSearchKey] = useState<string>("");
 
-  // name 防抖
   const debouncedValue = useDebounce(searchKey, { wait: 800 });
-
-  useEffect(() => {
-    initGetEquipmentList();
-  }, [debouncedValue]);
 
   const [equipmentId, setEquipmentId] = useState<string>("");
 
@@ -92,38 +94,55 @@ export const useAction = () => {
 
   const [editLoding, setEditLoading] = useState<boolean>(false);
 
+  const [regionData, setRegionData] = useState<IRegionDto[]>([]);
+
+  const [regionLoading, setRegionLoading] = useState<boolean>(false);
+
+  const handleUpdate = () => {
+    const data: IEquipmentCreateOrUpdateDto = {
+      equipmentCode: equipmentId,
+      equipmentName: equipmentName,
+      equipmentTypeId: equipmentTypeId,
+      id: clickEditId,
+    };
+
+    PostUpdateEquipment({
+      equipment: data,
+    })
+      .then(() => {
+        setIsAddOrUpdateOpen(false);
+        initGetEquipmentList();
+        setIsBindingOpen(false);
+      })
+      .catch((err) => message.error(`更新失敗：${err}`));
+  };
+
+  const handleCreate = () => {
+    PostCreateEquipment({
+      equipment: {
+        equipmentCode: equipmentId,
+        equipmentName: equipmentName,
+        equipmentTypeId: equipmentTypeId,
+      },
+    })
+      .then(() => {
+        setIsAddOrUpdateOpen(false);
+        initGetEquipmentList();
+        setEquipmentId("");
+        setEquipmentName("");
+        setEquipmentType("");
+        setEquipmentTypeId(null);
+      })
+      .catch((err) => message.error(`創建失敗：${err}`));
+  };
+
   const onAddSubmit = (isAdd: boolean) => {
     form.validateFields(["deviceId"]);
     form.validateFields(["deviceName"]);
     form.validateFields(["deviceType"]);
 
     if (equipmentId && equipmentName && equipmentType) {
-      isAdd
-        ? PostCreateEquipment({
-            equipment: {
-              equipmentCode: equipmentId,
-              equipmentName: equipmentName,
-              equipmentTypeId: equipmentTypeId,
-            },
-          })
-            .then(() => {
-              setIsAddOrUpdateOpen(false);
-              initGetEquipmentList();
-            })
-            .catch((err) => message.error(`創建失敗：${err}`))
-        : PostUpdateEquipment({
-            equipment: {
-              equipmentCode: equipmentId,
-              equipmentName: equipmentName,
-              equipmentTypeId: equipmentTypeId,
-              id: clickEditId,
-            },
-          })
-            .then(() => {
-              setIsAddOrUpdateOpen(false);
-              initGetEquipmentList();
-            })
-            .catch((err) => message.error(`更新失敗：${err}`));
+      isAdd ? handleCreate() : handleUpdate();
     }
   };
 
@@ -133,6 +152,8 @@ export const useAction = () => {
       PageIndex: pageDto.PageIndex,
       PageSize: pageDto.PageSize,
       Keyword: searchKey,
+      IsOnline: isSearchOnline,
+      IsBind: isSearchBind,
     })
       .then((res) => {
         setData(res.equipments);
@@ -157,26 +178,53 @@ export const useAction = () => {
   };
 
   const onGetEquipmentInformationById = async (id: number) => {
-    console.log(id);
     setEditLoading(true);
     await GetEquipmentInfoById({ EquipmentId: id })
       .then((res) => {
-        setEquipmentId(res.equipmentCode);
-        setEquipmentName(res.equipmentName);
+        setEquipmentId(res.equipmentCode ?? "");
+        setEquipmentName(res.equipmentName ?? "");
         setEquipmentType(res.equipmentType);
-        setEquipmentTypeId(res.equipmentTypeId);
+        setEquipmentTypeId(res.equipmentTypeId ?? null);
+        form.setFieldsValue({
+          deviceId: res.equipmentCode,
+          deviceName: res.equipmentName,
+          deviceType: res.equipmentType,
+        });
       })
       .catch((err) => {
         setEquipmentId("");
         setEquipmentName("");
         setEquipmentType("");
         setEquipmentTypeId(null);
+        form.setFieldsValue({
+          deviceId: "",
+          deviceName: "",
+          deviceType: "",
+        });
         message.error(`获取信息失败：${err}`);
       })
       .finally(() => {
         setEditLoading(false);
       });
     setClickEditId(id);
+  };
+
+  const onOpenBind = () => {
+    setRegionLoading(true);
+    GetRegionPage({})
+      .then((res) => {
+        const newList = res.regions.map((item) => {
+          return { ...item, radio: false };
+        });
+        setRegionData(newList);
+      })
+      .catch((err) => {
+        message.error(`获取数据失败：${err}`);
+        setRegionData([]);
+      })
+      .finally(() => {
+        setRegionLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -195,6 +243,18 @@ export const useAction = () => {
         setEquipmentTypesOption([]);
       });
   }, []);
+
+  const onConfirmBind = () => {
+    if (checkedId === null) {
+      message.error("请至少选一个设备");
+      return;
+    }
+    // handleUpdate(checkedId);
+  };
+
+  useUpdateEffect(() => {
+    initGetEquipmentList();
+  }, [debouncedValue, isSearchOnline, isSearchBind]);
 
   return {
     source,
@@ -240,5 +300,9 @@ export const useAction = () => {
     editLoding,
     setEquipmentTypeId,
     language,
+    onOpenBind,
+    regionLoading,
+    regionData,
+    onConfirmBind,
   };
 };

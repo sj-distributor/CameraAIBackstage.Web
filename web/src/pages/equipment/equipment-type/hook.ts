@@ -74,6 +74,12 @@ export const useAction = () => {
             .then(() => {
               initGetEquipmentTypeList();
               setIsAddOrModifyOpen(false);
+              form.setFieldsValue({
+                typeName: "",
+                description: "",
+              });
+              setTypeName("");
+              setDescription("");
             })
             .catch((err) => {
               message.error(`新增失敗:${err}`);
@@ -101,6 +107,10 @@ export const useAction = () => {
       .then((res) => {
         setTypeName(res.name);
         setDescription(res.description);
+        form.setFieldsValue({
+          typeName: res.name,
+          description: res.description,
+        });
       })
       .catch((err) => {
         setTypeName("");

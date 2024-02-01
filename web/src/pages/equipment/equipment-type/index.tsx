@@ -178,13 +178,15 @@ export const EquipmentType = () => {
         }
         onCancle={() => {
           setIsAddOrModifyOpen(false);
+          form.setFieldsValue({
+            typeName: "",
+            description: "",
+          });
           setTypeName("");
           setDescription("");
         }}
         onConfirm={() => {
           onIsAddSubmit(isAddOrUpdate);
-          setTypeName("");
-          setDescription("");
         }}
         open={isAddOrModifyOpen}
         className={"customDeviceModal"}
@@ -195,7 +197,9 @@ export const EquipmentType = () => {
         ) : (
           <Form
             colon={false}
-            onFinish={() => onIsAddSubmit(isAddOrUpdate)}
+            onFinish={() => {
+              onIsAddSubmit(isAddOrUpdate);
+            }}
             form={form}
           >
             <FormItem

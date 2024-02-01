@@ -10,10 +10,6 @@ function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    localStorage.setItem((window as any).appSettings?.tokenKey, "");
-  }, [localStorage.getItem((window as any).appSettings?.tokenKey)]);
-
-  useEffect(() => {
     InitialAppSetting().then(() => setIsLoaded(true));
   }, []);
 

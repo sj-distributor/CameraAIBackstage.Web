@@ -23,7 +23,7 @@ import downArrow from "../../../assets/public/down-arrow.png";
 import search from "../../../assets/public/search.png";
 import { useAction } from "./hook";
 import { IDeviceDataType, IOptionDto } from "./props";
-import { IEquipmentList } from "@/services/dtos/equipment/list";
+import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
 
 export const EquipmentList = () => {
   const {
@@ -70,6 +70,10 @@ export const EquipmentList = () => {
     editLoding,
     setEquipmentTypeId,
     language,
+    onOpenBind,
+    regionLoading,
+    regionData,
+    onConfirmBind,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -127,17 +131,14 @@ export const EquipmentList = () => {
               checkedChildren={t(KEYS.BINDING, source)}
               value={record.isBind}
               onChange={(value) => {
-                const newList = clone(data);
                 setIsUnbindIndex(index);
 
-                if (newList[index].isBind && !value) {
+                if (data[index].isBind && !value) {
                   setIsUnbindOpen(true);
-                  return;
                 } else {
                   setIsBindingOpen(true);
+                  onOpenBind();
                 }
-                newList[index].isBind = value;
-                setData(newList);
               }}
               className={`${
                 language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
@@ -179,7 +180,7 @@ export const EquipmentList = () => {
     },
   ];
 
-  const deviceColumns: ColumnsType<IDeviceDataType> = [
+  const deviceColumns: ColumnsType<IRegionDto> = [
     {
       title: "",
       dataIndex: "radio",
@@ -208,12 +209,12 @@ export const EquipmentList = () => {
     },
     {
       title: t(KEYS.AREA_ADDRESS, source),
-      dataIndex: "areaAddress",
+      dataIndex: "regionAddress",
       width: "24.875rem",
     },
     {
       title: t(KEYS.PRINCIPAL, source),
-      dataIndex: "person",
+      dataIndex: "principal",
       width: "9.5rem",
     },
   ];
@@ -402,15 +403,18 @@ export const EquipmentList = () => {
       <CustomModal
         title={<div>{t(KEYS.DEVICE_BINDING, source)}</div>}
         onCancle={() => setIsBindingOpen(false)}
-        onConfirm={() => setIsBindingOpen(false)}
+        onConfirm={() => {
+          onConfirmBind();
+        }}
         open={isBindingOpen}
         className={"customDeviceModal"}
         modalWidth={"60rem"}
       >
         <Table
+          loading={regionLoading}
           rowKey={(record) => record.areaId}
           columns={deviceColumns}
-          dataSource={deviceData}
+          dataSource={regionData}
           className="tableHiddenScrollBar"
           scroll={{ y: 450 }}
           pagination={false}
@@ -427,17 +431,18 @@ export const EquipmentList = () => {
           </div>
         }
         onCancle={() => {
+          setIsAddOrUpdateOpen(false);
           setEquipmentId("");
           setEquipmentName("");
           setEquipmentType("");
           setEquipmentTypeId(null);
-          setIsAddOrUpdateOpen(false);
+          form.setFieldsValue({
+            deviceId: "",
+            deviceName: "",
+            deviceType: "",
+          });
         }}
         onConfirm={() => {
-          setEquipmentId("");
-          setEquipmentName("");
-          setEquipmentType("");
-          setEquipmentTypeId(null);
           onAddSubmit(isAddOrEdit);
         }}
         open={isAddOrUpdateOpen}
@@ -447,18 +452,22 @@ export const EquipmentList = () => {
         {editLoding && !isAddOrEdit ? (
           <Spin spinning={editLoding} className="flex justify-center" />
         ) : (
-          <Form colon={false} onFinish={onAddSubmit} form={form}>
+          <Form
+            colon={false}
+            onFinish={() => {
+              onAddSubmit(isAddOrEdit);
+            }}
+            form={form}
+          >
             <FormItem
               name="deviceId"
               label={t(KEYS.DEVICE_ID, source)}
               rules={[{ required: true }]}
               labelCol={{ span: language === "ch" ? 3 : 4 }}
               wrapperCol={{ span: 15 }}
-              initialValue={equipmentId}
             >
               <Input
                 placeholder={t(KEYS.PLEASE_INPUT, source)}
-                defaultValue={equipmentId}
                 value={equipmentId}
                 onChange={(e) => {
                   setEquipmentId(e.target.value);
@@ -471,12 +480,10 @@ export const EquipmentList = () => {
               rules={[{ required: true }]}
               labelCol={{ span: language === "ch" ? 3 : 4 }}
               wrapperCol={{ span: 15 }}
-              initialValue={equipmentType}
             >
               <Select
                 suffixIcon={<img src={downArrow} />}
                 placeholder={t(KEYS.PLEASE_SELECT, source)}
-                defaultValue={equipmentType}
                 value={equipmentType}
                 onChange={(_, option) => {
                   setEquipmentType((option as IOptionDto).label);
@@ -493,11 +500,9 @@ export const EquipmentList = () => {
               labelCol={{ span: language === "ch" ? 3 : 4 }}
               wrapperCol={{ span: 15 }}
               style={{ marginBottom: 0 }}
-              initialValue={equipmentName}
             >
               <Input
                 placeholder={t(KEYS.PLEASE_INPUT, source)}
-                defaultValue={equipmentName}
                 value={equipmentName}
                 onChange={(e) => {
                   setEquipmentName(e.target.value);

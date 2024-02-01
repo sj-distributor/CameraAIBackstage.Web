@@ -5,8 +5,8 @@ export interface IEquipmentPageRequest extends IPageDto {
 }
 
 export interface IPageDto {
-  PageSize: number;
-  PageIndex: number;
+  PageSize?: number;
+  PageIndex?: number;
 }
 
 export interface IEquipmentPageResponse {
@@ -15,7 +15,6 @@ export interface IEquipmentPageResponse {
 }
 
 export interface IEquipmentList extends IEquipmentCreateOrUpdateDto {
-  areaId: number;
   createdTime: string;
   equipmentType: string;
   id: number;
@@ -30,8 +29,31 @@ export interface IEquipmentCreateOrUpdateRequest {
 }
 
 export interface IEquipmentCreateOrUpdateDto {
-  equipmentCode: string;
-  equipmentName: string;
-  equipmentTypeId: number | null;
+  equipmentCode?: string;
+  equipmentName?: string;
+  equipmentTypeId?: number | null;
   id?: number;
+  areaId?: number;
+}
+
+export interface IRegionPageRequest extends IPageDto {
+  RegionId?: number;
+  RegionAddress?: string;
+  Keyword?: string;
+}
+
+export interface IRegionPageResponse {
+  count: number;
+  regions: IRegionDto[];
+}
+
+export interface IRegionDto {
+  id: number;
+  areaId: number;
+  areaName: string;
+  regionAddress: string;
+  regionAreaNames: string[];
+  principal: string;
+  createdTime: string;
+  radio?: boolean; //自定义
 }
