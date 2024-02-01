@@ -1,4 +1,4 @@
-import { ConfigProvider } from "antd";
+import { ConfigProvider, App as AppWrapper } from "antd";
 import { useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 
@@ -10,6 +10,11 @@ function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
+    // 内部调试自行加个 token 值上去
+    localStorage.setItem((window as any).appSettings?.tokenKey, "");
+  }, [localStorage.getItem((window as any).appSettings?.tokenKey)]);
+
+  useEffect(() => {
     InitialAppSetting().then(() => setIsLoaded(true));
   }, []);
 
@@ -18,9 +23,11 @@ function App() {
       theme={{ token: { colorPrimary: "#2853E3", colorText: "#323444" } }}
     >
       <BrowserRouter>
-        <AuthProvider>
-          <Router />
-        </AuthProvider>
+        <AppWrapper>
+          <AuthProvider>
+            <Router />
+          </AuthProvider>
+        </AppWrapper>
       </BrowserRouter>
     </ConfigProvider>
   ) : (
