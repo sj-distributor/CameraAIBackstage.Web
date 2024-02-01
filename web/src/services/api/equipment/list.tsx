@@ -1,5 +1,6 @@
 import {
   IEquipmentCreateOrUpdateRequest,
+  IEquipmentList,
   IEquipmentPageRequest,
   IEquipmentPageResponse,
 } from "@/services/dtos/equipment/list";
@@ -27,16 +28,21 @@ export const PostCreateEquipment = async (
 export const PostUpdateEquipment = async (
   data: IEquipmentCreateOrUpdateRequest
 ) => {
-  const response = await api.post("/api/CameraAi/equipment/create", data);
+  const response = await api.post("/api/CameraAi/equipment/update", data);
 
   return response.data;
 };
 
-export const PostDeleteEquipment = async (EquipmentId: string) => {
-  const response = await api.post(
-    "/api/CameraAi/equipment/delete",
-    EquipmentId
-  );
+export const PostDeleteEquipment = async (data: { EquipmentId: number }) => {
+  const response = await api.post("/api/CameraAi/equipment/delete", data);
+
+  return response.data;
+};
+
+export const GetEquipmentInfoById = async (data: { EquipmentId: number }) => {
+  const response = await api.get<IEquipmentList>("/api/CameraAi/equipment", {
+    params: data,
+  });
 
   return response.data;
 };

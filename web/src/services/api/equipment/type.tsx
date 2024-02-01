@@ -1,6 +1,7 @@
 import { IPageDto } from "@/services/dtos/equipment/list";
 import {
   IEquipmentTypeCreateOrUpdateRequest,
+  IEquipmentTypeList,
   IEquipmentTypeRequest,
 } from "@/services/dtos/equipment/type";
 import { api } from "../http-client";
@@ -27,15 +28,27 @@ export const PostCreateEquipmentType = async (
 export const PostUpdateEquipmentType = async (
   data: IEquipmentTypeCreateOrUpdateRequest
 ) => {
-  const response = await api.post("/api/CameraAi/equipment/type/create", data);
+  const response = await api.post("/api/CameraAi/equipment/type/update", data);
 
   return response.data;
 };
 
-export const PostDeleteEquipmentType = async (EquipmentTypeId: string) => {
-  const response = await api.post(
-    "/api/CameraAi/equipment/type/delete",
-    EquipmentTypeId
+export const PostDeleteEquipmentType = async (data: {
+  EquipmentTypeId: number;
+}) => {
+  const response = await api.post("/api/CameraAi/equipment/type/delete", data);
+
+  return response.data;
+};
+
+export const GetEquipmentTypeInfoById = async (data: {
+  EquipmentTypeId: number;
+}) => {
+  const response = await api.get<IEquipmentTypeList>(
+    "/api/CameraAi/equipment/type",
+    {
+      params: data,
+    }
   );
 
   return response.data;

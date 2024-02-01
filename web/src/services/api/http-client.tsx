@@ -31,14 +31,14 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
-      // localStorage.removeItem((window as any).appSettings?.tokenKey);
-      // message.error(
-      //   error.response.data.msg ?? "登录已过期，请重新登录",
-      //   1,
-      //   () => {
-      //     window.location.href = "";
-      //   }
-      // );
+      localStorage.removeItem((window as any).appSettings?.tokenKey);
+      message.error(
+        error.response.data.msg ?? "登录已过期，请重新登录",
+        1,
+        () => {
+          window.location.href = "";
+        }
+      );
     } else {
       return Promise.reject(error.response.data.msg ?? "Unknown error");
     }

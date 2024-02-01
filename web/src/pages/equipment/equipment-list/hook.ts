@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { IDeviceDataType, IOptionDto } from "./props";
 import { IEquipmentList, IPageDto } from "@/services/dtos/equipment/list";
 import {
+  GetEquipmentInfoById,
   GetEquipmentPage,
   PostCreateEquipment,
   PostDeleteEquipment,
@@ -12,10 +13,10 @@ import {
 } from "@/services/api/equipment/list";
 import { Form, message } from "antd";
 import { GetEquipmentTypePage } from "@/services/api/equipment/type";
-import { useBoolean } from "ahooks";
+import { useBoolean, useDebounce, useDebounceFn } from "ahooks";
 
 export const useAction = () => {
-  const { t } = useAuth();
+  const { t, language } = useAuth();
 
   const [form] = Form.useForm();
 
@@ -52,7 +53,7 @@ export const useAction = () => {
 
   const [isUnbindIndex, setIsUnbindIndex] = useState<number>(0);
 
-  const [isDeleteId, setIsDeleteId] = useState<string>("");
+  const [isDeleteId, setIsDeleteId] = useState<number | null>(null);
 
   const [isAddOrEdit, setIsAddOrEdit] = useState<boolean>(false); //true:添加 false:編輯
 
@@ -70,17 +71,26 @@ export const useAction = () => {
 
   const [searchKey, setSearchKey] = useState<string>("");
 
+  // name 防抖
+  const debouncedValue = useDebounce(searchKey, { wait: 800 });
+
+  useEffect(() => {
+    initGetEquipmentList();
+  }, [debouncedValue]);
+
   const [equipmentId, setEquipmentId] = useState<string>("");
 
-  const [equipmentType, setEquipmentType] = useState<number | undefined>(
-    undefined
-  );
+  const [equipmentType, setEquipmentType] = useState<string | null>(null);
 
   const [equipmentName, setEquipmentName] = useState<string>("");
+
+  const [equipmentTypeId, setEquipmentTypeId] = useState<number | null>(null); //接口要传的
 
   const [equipmentTypesOption, setEquipmentTypesOption] = useState<
     IOptionDto[]
   >([]);
+
+  const [editLoding, setEditLoading] = useState<boolean>(false);
 
   const onAddSubmit = (isAdd: boolean) => {
     form.validateFields(["deviceId"]);
@@ -93,7 +103,7 @@ export const useAction = () => {
             equipment: {
               equipmentCode: equipmentId,
               equipmentName: equipmentName,
-              equipmentTypeId: equipmentType,
+              equipmentTypeId: equipmentTypeId,
             },
           })
             .then(() => {
@@ -105,7 +115,7 @@ export const useAction = () => {
             equipment: {
               equipmentCode: equipmentId,
               equipmentName: equipmentName,
-              equipmentTypeId: equipmentType,
+              equipmentTypeId: equipmentTypeId,
               id: clickEditId,
             },
           })
@@ -119,7 +129,11 @@ export const useAction = () => {
 
   const initGetEquipmentList = () => {
     loadingAction.setTrue();
-    GetEquipmentPage(pageDto)
+    GetEquipmentPage({
+      PageIndex: pageDto.PageIndex,
+      PageSize: pageDto.PageSize,
+      Keyword: searchKey,
+    })
       .then((res) => {
         setData(res.equipments);
         setDataTotalCount(res.count);
@@ -133,12 +147,36 @@ export const useAction = () => {
   };
 
   const onDelete = () => {
-    PostDeleteEquipment(isDeleteId)
+    if (isDeleteId === null) return;
+    PostDeleteEquipment({ EquipmentId: isDeleteId })
       .then(() => {
         initGetEquipmentList();
         setIsDeleteDeviceOpen(false);
       })
       .catch((error) => message.error(`刪除失敗：${error}`));
+  };
+
+  const onGetEquipmentInformationById = async (id: number) => {
+    console.log(id);
+    setEditLoading(true);
+    await GetEquipmentInfoById({ EquipmentId: id })
+      .then((res) => {
+        setEquipmentId(res.equipmentCode);
+        setEquipmentName(res.equipmentName);
+        setEquipmentType(res.equipmentType);
+        setEquipmentTypeId(res.equipmentTypeId);
+      })
+      .catch((err) => {
+        setEquipmentId("");
+        setEquipmentName("");
+        setEquipmentType("");
+        setEquipmentTypeId(null);
+        message.error(`获取信息失败：${err}`);
+      })
+      .finally(() => {
+        setEditLoading(false);
+      });
+    setClickEditId(id);
   };
 
   useEffect(() => {
@@ -198,6 +236,10 @@ export const useAction = () => {
     onDelete,
     isAddOrEdit,
     setIsAddOrEdit,
-    setClickEditId,
+    onGetEquipmentInformationById,
+    editLoding,
+    setEquipmentTypeId,
+    language,
+    run,
   };
 };

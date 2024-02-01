@@ -1,7 +1,7 @@
 export interface IEquipmentPageRequest extends IPageDto {
   IsOnline?: boolean;
   IsBind?: boolean;
-  SearchKey?: string; //未定
+  Keyword?: string;
 }
 
 export interface IPageDto {
@@ -32,6 +32,6 @@ export interface IEquipmentCreateOrUpdateRequest {
 export interface IEquipmentCreateOrUpdateDto {
   equipmentCode: string;
   equipmentName: string;
-  equipmentTypeId: number;
+  equipmentTypeId: number | null;
   id?: number;
 }

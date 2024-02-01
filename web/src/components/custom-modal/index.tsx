@@ -27,6 +27,7 @@ export const CustomModal = ({
       open={open}
       centered
       closeIcon={null}
+      destroyOnClose={true}
       footer={
         footer ?? (
           <div className="h-[4.75rem] bg-[#F6F8FC] rounded-b-md items-center flex justify-end">

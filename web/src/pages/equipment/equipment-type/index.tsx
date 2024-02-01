@@ -1,5 +1,13 @@
 import { PlusOutlined, WarningFilled } from "@ant-design/icons";
-import { Button, ConfigProvider, Form, Input, Pagination, Table } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  Form,
+  Input,
+  Pagination,
+  Spin,
+  Table,
+} from "antd";
 import FormItem from "antd/es/form/FormItem";
 import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
@@ -31,7 +39,8 @@ export const EquipmentType = () => {
     form,
     isAddOrUpdate,
     setIsAddOrUpdate,
-    setClickEditId,
+    onGetEquipmentInformationById,
+    isEditLoading,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentTypeList> = [
@@ -62,7 +71,7 @@ export const EquipmentType = () => {
             onClick={() => {
               setIsAddOrModifyOpen(true);
               setIsAddOrUpdate(false);
-              setClickEditId(record.id);
+              onGetEquipmentInformationById(record.id);
             }}
           >
             {t(KEYS.EDIT, source)}
@@ -167,48 +176,63 @@ export const EquipmentType = () => {
               : t(KEYS.MODIFICATION_TYPE, source)}
           </div>
         }
-        onCancle={() => setIsAddOrModifyOpen(false)}
-        onConfirm={() => onIsAddSubmit(isAddOrUpdate)}
+        onCancle={() => {
+          setIsAddOrModifyOpen(false);
+          setTypeName("");
+          setDescription("");
+        }}
+        onConfirm={() => {
+          onIsAddSubmit(isAddOrUpdate);
+          setTypeName("");
+          setDescription("");
+        }}
         open={isAddOrModifyOpen}
         className={"customDeviceModal"}
         modalWidth={"42.5rem"}
       >
-        <Form
-          colon={false}
-          onFinish={() => onIsAddSubmit(isAddOrUpdate)}
-          form={form}
-        >
-          <FormItem
-            name="typeName"
-            label={t(KEYS.DEVICE_TYPE, source)}
-            rules={[{ required: true }]}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
+        {isEditLoading && !isAddOrUpdate ? (
+          <Spin className="flex justify-center" spinning={isEditLoading} />
+        ) : (
+          <Form
+            colon={false}
+            onFinish={() => onIsAddSubmit(isAddOrUpdate)}
+            form={form}
           >
-            <Input
-              placeholder={t(KEYS.PLEASE_ENTER_DEVICE_TYPE, source)}
-              value={typeName}
-              onChange={(e) => {
-                setTypeName(e.target.value);
-              }}
-            />
-          </FormItem>
-          <FormItem
-            name="description"
-            label={t(KEYS.INSTRUCTION_MANUAL, source)}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
-            style={{ marginBottom: 0 }}
-          >
-            <TextArea
-              placeholder={t(KEYS.PLEASE_ENTER_INSTRUCTION_MANUAL, source)}
-              value={description}
-              onChange={(e) => {
-                setDescription(e.target.value);
-              }}
-            />
-          </FormItem>
-        </Form>
+            <FormItem
+              name="typeName"
+              label={t(KEYS.DEVICE_TYPE, source)}
+              rules={[{ required: true }]}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              initialValue={typeName}
+            >
+              <Input
+                placeholder={t(KEYS.PLEASE_ENTER_DEVICE_TYPE, source)}
+                defaultValue={typeName}
+                value={typeName}
+                onChange={(e) => {
+                  setTypeName(e.target.value);
+                }}
+              />
+            </FormItem>
+            <FormItem
+              name="description"
+              label={t(KEYS.INSTRUCTION_MANUAL, source)}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              style={{ marginBottom: 0 }}
+            >
+              <TextArea
+                placeholder={t(KEYS.PLEASE_ENTER_INSTRUCTION_MANUAL, source)}
+                defaultValue={description}
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                }}
+              />
+            </FormItem>
+          </Form>
+        )}
       </CustomModal>
 
       {/* 確認刪除 */}

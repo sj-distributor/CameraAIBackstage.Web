@@ -7,6 +7,7 @@ import {
   Pagination,
   Radio,
   Select,
+  Spin,
   Switch,
   Table,
   Tooltip,
@@ -21,7 +22,7 @@ import KEYS from "@/i18n/language/keys/equipment-list-keys";
 import downArrow from "../../../assets/public/down-arrow.png";
 import search from "../../../assets/public/search.png";
 import { useAction } from "./hook";
-import { IDeviceDataType } from "./props";
+import { IDeviceDataType, IOptionDto } from "./props";
 import { IEquipmentList } from "@/services/dtos/equipment/list";
 
 export const EquipmentList = () => {
@@ -65,7 +66,11 @@ export const EquipmentList = () => {
     onDelete,
     isAddOrEdit,
     setIsAddOrEdit,
-    setClickEditId,
+    onGetEquipmentInformationById,
+    editLoding,
+    setEquipmentTypeId,
+    language,
+    run,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -121,7 +126,6 @@ export const EquipmentList = () => {
           >
             <Switch
               checkedChildren={t(KEYS.BINDING, source)}
-              unCheckedChildren=""
               value={record.isBind}
               onChange={(value) => {
                 const newList = clone(data);
@@ -136,7 +140,9 @@ export const EquipmentList = () => {
                 newList[index].isBind = value;
                 setData(newList);
               }}
-              className="w-[3.125rem] text-[.625rem] customSwitch"
+              className={`${
+                language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
+              } text-[.625rem] customSwitch`}
             />
           </Tooltip>
         );
@@ -152,8 +158,8 @@ export const EquipmentList = () => {
             type="link"
             className="w-[6rem]"
             onClick={() => {
+              onGetEquipmentInformationById(record.id);
               setIsAddOrEdit(false);
-              setClickEditId(record.id);
               setIsAddOrUpdateOpen(true);
             }}
           >
@@ -163,7 +169,7 @@ export const EquipmentList = () => {
             type="link"
             className="w-[6rem]"
             onClick={() => {
-              setIsDeleteId(record.equipmentCode);
+              setIsDeleteId(record.id);
               setIsDeleteDeviceOpen(true);
             }}
           >
@@ -251,6 +257,7 @@ export const EquipmentList = () => {
                 value={searchKey}
                 onChange={(e) => {
                   setSearchKey(e.target.value);
+                  run;
                 }}
               />
               <Select
@@ -421,63 +428,86 @@ export const EquipmentList = () => {
               : t(KEYS.EDIT_DEVICE, source)}
           </div>
         }
-        onCancle={() => setIsAddOrUpdateOpen(false)}
-        onConfirm={() => onAddSubmit(isAddOrEdit)}
+        onCancle={() => {
+          setEquipmentId("");
+          setEquipmentName("");
+          setEquipmentType("");
+          setEquipmentTypeId(null);
+          setIsAddOrUpdateOpen(false);
+        }}
+        onConfirm={() => {
+          setEquipmentId("");
+          setEquipmentName("");
+          setEquipmentType("");
+          setEquipmentTypeId(null);
+          onAddSubmit(isAddOrEdit);
+        }}
         open={isAddOrUpdateOpen}
         className={"customDeviceModal"}
         modalWidth={"42.5rem"}
       >
-        <Form colon={false} onFinish={onAddSubmit} form={form}>
-          <FormItem
-            name="deviceId"
-            label={t(KEYS.DEVICE_ID, source)}
-            rules={[{ required: true }]}
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 15 }}
-          >
-            <Input
-              placeholder={t(KEYS.PLEASE_INPUT, source)}
-              value={equipmentId}
-              onChange={(e) => {
-                setEquipmentId(e.target.value);
-              }}
-            />
-          </FormItem>
-          <FormItem
-            name="deviceType"
-            label={t(KEYS.DEVICE_TYPE, source)}
-            rules={[{ required: true }]}
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 15 }}
-          >
-            <Select
-              suffixIcon={<img src={downArrow} />}
-              placeholder={t(KEYS.PLEASE_SELECT, source)}
-              value={equipmentType}
-              onChange={(value) => {
-                setEquipmentType(value);
-              }}
-              defaultActiveFirstOption
-              options={equipmentTypesOption}
-            />
-          </FormItem>
-          <FormItem
-            name="deviceName"
-            label={t(KEYS.DEVICE_NAME, source)}
-            rules={[{ required: true }]}
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 15 }}
-            style={{ marginBottom: 0 }}
-          >
-            <Input
-              placeholder={t(KEYS.PLEASE_INPUT, source)}
-              value={equipmentName}
-              onChange={(e) => {
-                setEquipmentName(e.target.value);
-              }}
-            />
-          </FormItem>
-        </Form>
+        {editLoding && !isAddOrEdit ? (
+          <Spin spinning={editLoding} className="flex justify-center" />
+        ) : (
+          <Form colon={false} onFinish={onAddSubmit} form={form}>
+            <FormItem
+              name="deviceId"
+              label={t(KEYS.DEVICE_ID, source)}
+              rules={[{ required: true }]}
+              labelCol={{ span: language === "ch" ? 3 : 4 }}
+              wrapperCol={{ span: 15 }}
+              initialValue={equipmentId}
+            >
+              <Input
+                placeholder={t(KEYS.PLEASE_INPUT, source)}
+                defaultValue={equipmentId}
+                value={equipmentId}
+                onChange={(e) => {
+                  setEquipmentId(e.target.value);
+                }}
+              />
+            </FormItem>
+            <FormItem
+              name="deviceType"
+              label={t(KEYS.DEVICE_TYPE, source)}
+              rules={[{ required: true }]}
+              labelCol={{ span: language === "ch" ? 3 : 4 }}
+              wrapperCol={{ span: 15 }}
+              initialValue={equipmentType}
+            >
+              <Select
+                suffixIcon={<img src={downArrow} />}
+                placeholder={t(KEYS.PLEASE_SELECT, source)}
+                defaultValue={equipmentType}
+                value={equipmentType}
+                onChange={(_, option) => {
+                  setEquipmentType((option as IOptionDto).label);
+                  setEquipmentTypeId((option as IOptionDto).value);
+                }}
+                defaultActiveFirstOption
+                options={equipmentTypesOption}
+              />
+            </FormItem>
+            <FormItem
+              name="deviceName"
+              label={t(KEYS.DEVICE_NAME, source)}
+              rules={[{ required: true }]}
+              labelCol={{ span: language === "ch" ? 3 : 4 }}
+              wrapperCol={{ span: 15 }}
+              style={{ marginBottom: 0 }}
+              initialValue={equipmentName}
+            >
+              <Input
+                placeholder={t(KEYS.PLEASE_INPUT, source)}
+                defaultValue={equipmentName}
+                value={equipmentName}
+                onChange={(e) => {
+                  setEquipmentName(e.target.value);
+                }}
+              />
+            </FormItem>
+          </Form>
+        )}
       </CustomModal>
     </ConfigProvider>
   );
