@@ -15,6 +15,8 @@ import {
   GetRegionPage,
   PostCreateEquipment,
   PostDeleteEquipment,
+  PostEquipmentBind,
+  PostEquipmentUnBind,
   PostUpdateEquipment,
 } from "@/services/api/equipment/list";
 import { App, Form } from "antd";
@@ -54,7 +56,7 @@ export const useAction = () => {
 
   const [isAddOrUpdateOpen, setIsAddOrUpdateOpen] = useState<boolean>(false);
 
-  const [isUnbindIndex, setIsUnbindIndex] = useState<number>(0);
+  const [bindId, setBindId] = useState<number>(0);
 
   const [isDeleteId, setIsDeleteId] = useState<number | null>(null);
 
@@ -62,7 +64,7 @@ export const useAction = () => {
 
   const [clickEditId, setClickEditId] = useState<number>(0);
 
-  const [checkedId, setCheckedId] = useState<number | null>(null);
+  const [bindAreaId, setBindAreaId] = useState<number | null>(null);
 
   const [isSearchOnline, setIsSearchOnline] = useState<boolean | undefined>(
     undefined
@@ -251,6 +253,41 @@ export const useAction = () => {
       });
   };
 
+  const onBind = (equipmentId: number, areaId: number) => {
+    PostEquipmentBind({
+      binding: {
+        equipmentId,
+        areaId,
+      },
+    })
+      .then(() => {
+        initGetEquipmentList();
+        setIsBindingOpen(false);
+      })
+      .catch((err) => message.error(`绑定失败：${err}`));
+  };
+
+  const onUnBind = (equipmentId: number) => {
+    PostEquipmentUnBind({
+      binding: {
+        equipmentId,
+      },
+    })
+      .then(() => {
+        initGetEquipmentList();
+        setIsUnbindOpen(false);
+      })
+      .catch((err) => message.error(`解绑失败：${err}`));
+  };
+
+  const onConfirmBind = () => {
+    if (bindAreaId === null) {
+      message.error("请至少选一个设备");
+      return;
+    }
+    onBind(bindId, bindAreaId);
+  };
+
   useEffect(() => {
     initGetEquipmentList();
   }, [pageDto]);
@@ -268,14 +305,6 @@ export const useAction = () => {
       });
   }, []);
 
-  const onConfirmBind = () => {
-    if (checkedId === null) {
-      message.error("请至少选一个设备");
-      return;
-    }
-    // handleUpdate(checkedId);
-  };
-
   useUpdateEffect(() => {
     initGetEquipmentList();
   }, [debouncedValue, isSearchOnline, isSearchBind]);
@@ -290,11 +319,10 @@ export const useAction = () => {
     setIsBindingOpen,
     isAddOrUpdateOpen,
     setIsAddOrUpdateOpen,
-    isUnbindIndex,
-    setIsUnbindIndex,
+    bindId,
+    setBindId,
     setIsDeleteId,
     data,
-    setData,
     t,
     setPageDto,
     searchKey,
@@ -314,8 +342,8 @@ export const useAction = () => {
     equipmentTypesOption,
     dataTotalCount,
     loading,
-    checkedId,
-    setCheckedId,
+    bindAreaId,
+    setBindAreaId,
     handleDelete,
     isAddOrEdit,
     setIsAddOrEdit,
@@ -328,5 +356,7 @@ export const useAction = () => {
     regionData,
     onConfirmBind,
     confirmLoading,
+    pageDto,
+    onUnBind,
   };
 };

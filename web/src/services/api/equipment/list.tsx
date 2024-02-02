@@ -1,4 +1,5 @@
 import {
+  IEquipmentBindDto,
   IEquipmentCreateOrUpdateRequest,
   IEquipmentList,
   IEquipmentPageRequest,
@@ -55,6 +56,24 @@ export const GetRegionPage = async (data: IRegionPageRequest) => {
     {
       params: data,
     }
+  );
+
+  return response.data;
+};
+
+export const PostEquipmentBind = async (data: IEquipmentBindDto) => {
+  const response = await api.post<IEquipmentList>(
+    "/api/CameraAi/equipment/bind",
+    data
+  );
+
+  return response.data;
+};
+
+export const PostEquipmentUnBind = async (data: IEquipmentBindDto) => {
+  const response = await api.post<IEquipmentList>(
+    "/api/CameraAi/equipment/unbind",
+    data
   );
 
   return response.data;

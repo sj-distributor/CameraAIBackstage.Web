@@ -14,7 +14,6 @@ import {
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
-import { clone } from "ramda";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-list-keys";
@@ -36,11 +35,10 @@ export const EquipmentList = () => {
     setIsBindingOpen,
     isAddOrUpdateOpen,
     setIsAddOrUpdateOpen,
-    isUnbindIndex,
-    setIsUnbindIndex,
+    bindId,
+    setBindId,
     setIsDeleteId,
     data,
-    setData,
     t,
     setPageDto,
     searchKey,
@@ -60,8 +58,8 @@ export const EquipmentList = () => {
     equipmentTypesOption,
     dataTotalCount,
     loading,
-    checkedId,
-    setCheckedId,
+    bindAreaId,
+    setBindAreaId,
     handleDelete,
     isAddOrEdit,
     setIsAddOrEdit,
@@ -74,6 +72,8 @@ export const EquipmentList = () => {
     regionData,
     onConfirmBind,
     confirmLoading,
+    pageDto,
+    onUnBind,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -131,7 +131,7 @@ export const EquipmentList = () => {
               checkedChildren={t(KEYS.BINDING, source)}
               value={record.isBind}
               onChange={(value) => {
-                setIsUnbindIndex(index);
+                setBindId(record.id);
 
                 if (data[index].isBind && !value) {
                   setIsUnbindOpen(true);
@@ -190,9 +190,9 @@ export const EquipmentList = () => {
           <Radio
             value={record.radio}
             onChange={() => {
-              setCheckedId(record.areaId);
+              setBindAreaId(record.areaId);
             }}
-            checked={checkedId === record.areaId}
+            checked={bindAreaId === record.areaId}
           />
         );
       },
@@ -285,7 +285,7 @@ export const EquipmentList = () => {
               />
               <Select
                 className="w-[13.5rem]"
-                placeholder={t(KEYS.IS_CONFIRM, source)}
+                placeholder={t(KEYS.IS_BLIND, source)}
                 defaultActiveFirstOption
                 value={isSearchBind}
                 onChange={(value) => {
@@ -294,7 +294,7 @@ export const EquipmentList = () => {
                 options={[
                   {
                     value: null,
-                    label: t(KEYS.IS_CONFIRM, source),
+                    label: t(KEYS.IS_BLIND, source),
                   },
                   {
                     value: true,
@@ -340,8 +340,8 @@ export const EquipmentList = () => {
               </div>
               <div>
                 <Pagination
-                  current={1}
-                  pageSize={5}
+                  current={pageDto.PageIndex}
+                  pageSize={pageDto.PageSize}
                   pageSizeOptions={[5, 10, 20]}
                   total={dataTotalCount}
                   showQuickJumper
@@ -367,11 +367,7 @@ export const EquipmentList = () => {
         }
         onCancle={() => setIsUnbindOpen(false)}
         onConfirm={() => {
-          const newList = clone(data);
-
-          newList[isUnbindIndex].isBind = false;
-          setData(newList);
-          setIsUnbindOpen(false);
+          onUnBind(bindId);
         }}
         open={isUnbindOpen}
         className={"customModal"}
@@ -379,25 +375,6 @@ export const EquipmentList = () => {
       >
         <span className="pl-[2rem]">
           {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_UNBIND, source)}
-        </span>
-      </CustomModal>
-
-      {/* 確認刪除 */}
-      <CustomModal
-        title={
-          <div>
-            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            {t(KEYS.OPERATION_CONFIRMATION, source)}
-          </div>
-        }
-        onCancle={() => setIsDeleteDeviceOpen(false)}
-        onConfirm={handleDelete}
-        open={isDeleteDeviceOpen}
-        className={"customModal"}
-        confirmLoading={confirmLoading}
-      >
-        <span className="pl-[2rem]">
-          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, source)}
         </span>
       </CustomModal>
 
@@ -516,6 +493,25 @@ export const EquipmentList = () => {
             </FormItem>
           </Form>
         )}
+      </CustomModal>
+
+      {/* 確認刪除 */}
+      <CustomModal
+        title={
+          <div>
+            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
+            {t(KEYS.OPERATION_CONFIRMATION, source)}
+          </div>
+        }
+        onCancle={() => setIsDeleteDeviceOpen(false)}
+        onConfirm={handleDelete}
+        open={isDeleteDeviceOpen}
+        className={"customModal"}
+        confirmLoading={confirmLoading}
+      >
+        <span className="pl-[2rem]">
+          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, source)}
+        </span>
       </CustomModal>
     </ConfigProvider>
   );

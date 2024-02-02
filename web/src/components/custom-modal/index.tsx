@@ -21,8 +21,6 @@ export const CustomModal = ({
   footer?: JSX.Element;
   confirmLoading?: boolean;
 }) => {
-  console.log(confirmLoading);
-
   return (
     <Modal
       className={className ?? ""}

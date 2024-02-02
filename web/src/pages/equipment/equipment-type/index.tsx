@@ -43,6 +43,8 @@ export const EquipmentType = () => {
     isEditLoading,
     handleDelete,
     confirmLoading,
+    language,
+    pageDto,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentTypeList> = [
@@ -152,14 +154,14 @@ export const EquipmentType = () => {
               </div>
               <div>
                 <Pagination
-                  current={1}
-                  pageSize={5}
+                  current={pageDto.PageIndex}
+                  pageSize={pageDto.PageSize}
                   pageSizeOptions={[5, 10, 20]}
                   total={totalListCount}
                   showQuickJumper
                   showSizeChanger
-                  onChange={(pageSize, pageIndex) => {
-                    setPageDto({ PageIndex: pageIndex, PageSize: pageSize });
+                  onChange={(page, pageSize) => {
+                    setPageDto({ PageIndex: page, PageSize: pageSize });
                   }}
                   className="flex flex-wrap justify-center"
                 />
@@ -209,7 +211,7 @@ export const EquipmentType = () => {
               name="typeName"
               label={t(KEYS.DEVICE_TYPE, source)}
               rules={[{ required: true }]}
-              labelCol={{ span: 4 }}
+              labelCol={{ span: language === "ch" ? 4 : 5 }}
               wrapperCol={{ span: 20 }}
               initialValue={typeName}
             >
@@ -225,7 +227,7 @@ export const EquipmentType = () => {
             <FormItem
               name="description"
               label={t(KEYS.INSTRUCTION_MANUAL, source)}
-              labelCol={{ span: 4 }}
+              labelCol={{ span: language === "ch" ? 4 : 5 }}
               wrapperCol={{ span: 20 }}
               style={{ marginBottom: 0 }}
             >

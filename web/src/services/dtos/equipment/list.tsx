@@ -57,3 +57,12 @@ export interface IRegionDto {
   createdTime: string;
   radio?: boolean; //自定义
 }
+
+export interface IEquipmentBindDto {
+  binding: IBindDto;
+}
+
+export interface IBindDto {
+  equipmentId: number;
+  areaId?: number; // 绑定的时候传，解绑不传
+}

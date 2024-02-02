@@ -15,7 +15,7 @@ import { useBoolean, useDebounceFn } from "ahooks";
 import { App, Form } from "antd";
 
 export const useAction = () => {
-  const { t } = useAuth();
+  const { t, language } = useAuth();
 
   const [form] = Form.useForm();
 
@@ -185,5 +185,7 @@ export const useAction = () => {
     setIsDeleteId,
     handleDelete,
     confirmLoading,
+    language,
+    pageDto,
   };
 };
