@@ -33,7 +33,8 @@ export const useAction = (record: IRegionsDto) => {
       .then((res) => {
         const updatedRegionDataItem = {
           ...res,
-          regionAreaNames: res.regionAreaNames || [""],
+          regionAreaNames:
+            res?.regionAreaNames ?? regionDataItem.regionAreaNames,
         };
 
         setRegionDataItem(updatedRegionDataItem);
