@@ -23,9 +23,9 @@ export interface IUpdateRegionRequest {
 }
 
 export interface IRegionsDto {
-  id: number;
-  areaId: number;
-  areaName: string;
+  id?: number;
+  areaId?: number;
+  areaName?: string;
   regionAddress: string;
   regionAreaNames: string[];
   principal: string;

@@ -4,36 +4,27 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import {
   GetAreaManagementPage,
-  GetAreaManagementRegion,
-  PostCreateRegion,
   PostDeleteAreaId,
-  PostUpdateRegion,
 } from "@/services/api/area-management";
 import { IRegionsDto } from "@/services/dtos/area-management";
+
+import { IModifyModalDto } from "./props";
 
 export const useAction = () => {
   const { t } = useAuth();
 
   const initialRegionDataItem = {
-    id: 0,
-    areaId: 0,
-    areaName: "",
     regionAddress: "",
     regionAreaNames: [""],
     principal: "",
-    createdTime: "",
   };
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
 
   const [isRegionListLoading, setIsRegionListLoading] =
     useState<boolean>(false);
 
-  const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
-
   const [searchValue, setSearchValue] = useState<string>("");
-
-  const [record, setRecord] = useState<IRegionsDto>(initialRegionDataItem);
 
   const [searchIconValue, setSearchIconValue] = useState<string>("");
 
@@ -43,8 +34,6 @@ export const useAction = () => {
 
   const [regionDataList, setRegionDataList] = useState<IRegionsDto[]>([]);
 
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-
   const [pageDto, setPageDto] = useState<{
     pageIndex: number;
     pageSize: number;
@@ -52,6 +41,14 @@ export const useAction = () => {
     pageIndex: 1,
     pageSize: 5,
   });
+
+  const [operateModalParams, setOperateModalParams] = useState<IModifyModalDto>(
+    {
+      isOpen: false,
+      isEdit: false,
+      recordItem: initialRegionDataItem,
+    }
+  );
 
   const initGetRegionList = () => {
     setIsRegionListLoading(true);
@@ -70,21 +67,6 @@ export const useAction = () => {
       .finally(() => setIsRegionListLoading(false));
   };
 
-  const initGetRegionItem = () => {
-    setIsLoading(true);
-    GetAreaManagementRegion({
-      RegionId: record.id,
-      AreaId: record.areaId,
-    })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        message.error(err);
-      })
-      .finally(() => setIsLoading(false));
-  };
-
   const handleDeleteById = (areaId: number) => {
     PostDeleteAreaId({
       AreaId: areaId,
@@ -96,83 +78,25 @@ export const useAction = () => {
       .finally(() => setIsLoading(false));
   };
 
-  const handleCreateRegionDataItem = () => {
-    PostCreateRegion({
-      regionAndArea: {
-        regionAddress: "areaAddressValue",
-        regionAreaNames: ["regionDataItem.regionAreaNames"],
-        principal: "selectPrincipalValue",
-      },
-    })
-      .then(() => initGetRegionList())
-      .catch((err) => {
-        message.error(err);
-      })
-      .finally(() => setIsLoading(false));
-  };
-
-  const handleUpdateRegionDataItem = () => {
-    PostUpdateRegion({
-      regionAndArea: {
-        id: record.id,
-        areaId: record.areaId,
-        regionAddress: "areaAddressValue",
-        regionAreaNames: ["regionDataItem.regionAreaNames"],
-        principal: "selectPrincipalValue",
-        areaName: record.areaName,
-      },
-    })
-      .then(() => initGetRegionList())
-      .catch((err) => {
-        message.error(err);
-      })
-      .finally(() => setIsLoading(false));
-  };
-
-  const [inputFields, setInputFields] = useState<{ id: number }[]>([{ id: 1 }]);
-
-  const handleAddInput = () => {
-    setInputFields([...inputFields, { id: inputFields.length + 1 }]);
-  };
-
-  const handleRemoveInput = (id: number) => {
-    setInputFields(inputFields.filter((field) => field.id !== id));
-  };
-
   useEffect(() => {
     initGetRegionList();
   }, [searchIconValue, pageDto.pageSize, pageDto.pageIndex]);
 
-  useEffect(() => {
-    initGetRegionItem();
-  }, []);
-
   return {
-    isModalOpen,
-    setIsModalOpen,
-    isDeleteIndex,
-    setIsDeleteIndex,
     searchValue,
-    isLoading,
     pageDto,
     setSearchValue,
     setPageDto,
-    setIsLoading,
-    handleAddInput,
-    handleRemoveInput,
-    inputFields,
     t,
     isRegionListLoading,
     regionListCount,
     regionDataList,
     setSearchIconValue,
-    setRecord,
-    record,
-    setIsEdit,
-    isEdit,
-    initialRegionDataItem,
+    setIsDeleteOpen,
+    isDeleteOpen,
+    initGetRegionList,
     handleDeleteById,
-    handleCreateRegionDataItem,
-    handleUpdateRegionDataItem,
+    setOperateModalParams,
+    operateModalParams,
   };
 };

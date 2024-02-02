@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 import { IRegionsDto } from "@/services/dtos/area-management";
 
 export interface IAreaManagementData {
@@ -8,6 +10,13 @@ export interface IAreaManagementData {
 }
 
 export interface IAddAreaModalProps {
-  record: IRegionsDto;
+  setOperateModalParams: Dispatch<SetStateAction<IModifyModalDto>>;
+  operateModalParams: IModifyModalDto;
+  initGetRegionList: () => void;
+}
+
+export interface IModifyModalDto {
+  isOpen: boolean;
   isEdit: boolean;
+  recordItem?: IRegionsDto;
 }

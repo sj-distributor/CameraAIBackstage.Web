@@ -1,4 +1,4 @@
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, WarningFilled } from "@ant-design/icons";
 import { Button, Input, Pagination, Table, TableColumnsType } from "antd";
 
 import { CustomModal } from "@/components/custom-modal";
@@ -10,25 +10,21 @@ import { useAction } from "./hook";
 
 export const AreaManagement = () => {
   const {
-    setIsModalOpen,
     searchValue,
     pageDto,
     setSearchValue,
     setPageDto,
-    isModalOpen,
     t,
     isRegionListLoading,
     regionListCount,
     regionDataList,
     setSearchIconValue,
-    setRecord,
-    record,
-    setIsEdit,
-    isEdit,
-    initialRegionDataItem,
+    setIsDeleteOpen,
+    isDeleteOpen,
+    initGetRegionList,
     handleDeleteById,
-    handleCreateRegionDataItem,
-    handleUpdateRegionDataItem,
+    setOperateModalParams,
+    operateModalParams,
   } = useAction();
 
   const columns: TableColumnsType<IRegionsDto> = [
@@ -62,9 +58,11 @@ export const AreaManagement = () => {
             type="link"
             className="w-[6rem]"
             onClick={() => {
-              setIsModalOpen(true);
-              setRecord(record);
-              setIsEdit(true);
+              setOperateModalParams({
+                isOpen: true,
+                isEdit: true,
+                recordItem: record,
+              });
             }}
           >
             {t(KEYS.EDIT, { ns: "areaManagement" })}
@@ -73,7 +71,11 @@ export const AreaManagement = () => {
             type="link"
             className="w-[6rem]"
             onClick={() => {
-              handleDeleteById(record.areaId);
+              setIsDeleteOpen(true);
+              setOperateModalParams((preValue) => ({
+                ...preValue,
+                recordItem: record,
+              }));
             }}
           >
             {t(KEYS.DELETE, { ns: "areaManagement" })}
@@ -112,8 +114,10 @@ export const AreaManagement = () => {
             type="primary"
             className="w-[5.5rem] h-[2.2rem] text-center"
             onClick={() => {
-              setIsModalOpen(true);
-              setIsEdit(false);
+              setOperateModalParams({
+                isOpen: true,
+                isEdit: false,
+              });
             }}
           >
             + {t(KEYS.ADD, { ns: "areaManagement" })}
@@ -152,26 +156,28 @@ export const AreaManagement = () => {
           </div>
         </div>
       </div>
+
+      <AddAreaModal
+        setOperateModalParams={setOperateModalParams}
+        operateModalParams={operateModalParams}
+        initGetRegionList={initGetRegionList}
+      />
       <CustomModal
         title={
-          <div className="text-[1.25rem] font-semibold tracking-tight leading-[1.875rem]">
-            {t(KEYS.ADD_AREA, { ns: "areaManagement" })}
+          <div>
+            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
+            操作确认
           </div>
         }
-        onCancle={() => setIsModalOpen(false)}
+        onCancle={() => setIsDeleteOpen(false)}
         onConfirm={() => {
-          isEdit ? handleUpdateRegionDataItem() : handleCreateRegionDataItem();
-          setIsModalOpen(false);
+          handleDeleteById(operateModalParams?.recordItem?.areaId ?? 0);
+          setIsDeleteOpen(false);
         }}
-        open={isModalOpen}
-        className={"customDeviceModal"}
-        modalWidth="42.5rem"
-        destroyOnClose={true}
+        open={isDeleteOpen}
+        className={"customModal"}
       >
-        <AddAreaModal
-          record={isEdit ? record : initialRegionDataItem}
-          isEdit={isEdit}
-        />
+        <span className="pl-[2rem]">请确认是否删除该区域</span>
       </CustomModal>
     </>
   );
