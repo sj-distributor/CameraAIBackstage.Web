@@ -51,22 +51,22 @@ export const EquipmentType = () => {
     {
       title: t(KEYS.DEVICE_TYPE_ID, source),
       dataIndex: "id",
-      width: "14.875rem",
+      width: "15%",
     },
     {
       title: t(KEYS.DEVICE_TYPE, source),
       dataIndex: "name",
-      width: "15.125rem",
+      width: "15%",
     },
     {
       title: t(KEYS.REMARKS, source),
       dataIndex: "description",
-      width: "49.4375rem",
+      width: "50%",
     },
     {
       title: t(KEYS.OPERATE, source),
       dataIndex: "operate",
-      width: "21.5625rem",
+      width: "20%",
       render: (_, record, index) => (
         <div>
           <Button
