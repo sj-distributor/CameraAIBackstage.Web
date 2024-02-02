@@ -21,6 +21,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
     initialRegionDataItem,
     setIsValueExist,
     isValueExist,
+    isLoading,
   } = useAction(operateModalParams, initGetRegionList);
 
   return (
@@ -42,13 +43,18 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
       }}
       onConfirm={() => {
         if (
-          regionDataItem.regionAreaNames.some((name) => name.trim() === "") ||
-          regionDataItem.regionAddress.trim() === ""
+          regionDataItem?.regionAddress?.trim() === "" ||
+          (operateModalParams.isEdit
+            ? regionDataItem?.areaName?.trim() === ""
+            : regionDataItem?.regionAreaNames?.some(
+                (name) => name.trim() === ""
+              ))
         ) {
           setIsValueExist(true);
 
           return;
         }
+
         handleCreateOrUpdateRegionItem();
         setOperateModalParams({
           isOpen: false,
@@ -62,6 +68,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
       modalWidth="42.5rem"
       destroyOnClose={true}
       forceRender={true}
+      confirmLoading={isLoading}
     >
       <>
         <div className={`flex ${!isValueExist && "mb-[1.5rem]"}`}>
@@ -81,7 +88,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
         </div>
         {isValueExist && (
           <div className="ml-[4.7rem] text-red-500 mb-[0.8rem]">
-            请输入区域地址
+            请输入必填项
           </div>
         )}
         <div className="flex ml-6 mb-[1.5rem]">
@@ -106,22 +113,26 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
           />
         </div>
         {operateModalParams.isEdit ? (
-          <div className="flex mb-[1.5rem]">
-            <div className="text-red-500 mr-1 mt-[0.5rem]">*</div>
-            <div className="mr-2 mt-[0.4rem] whitespace-nowrap">
-              {t(KEYS.MODAL_AREA_NAME, { ns: "areaManagement" })}
+          <>
+            <div className="flex">
+              <div className="text-red-500 mr-1 mt-[0.5rem]">*</div>
+              <div className="mr-2 mt-[0.4rem] whitespace-nowrap">
+                {t(KEYS.MODAL_AREA_NAME, { ns: "areaManagement" })}
+              </div>
+              <Input
+                placeholder={t(KEYS.ZONE_NAME, { ns: "areaManagement" })}
+                className="w-[24.9375rem] h-[2.0625rem]"
+                onChange={(e) =>
+                  handleUpdateDataChange("areaName", e.target.value)
+                }
+                value={regionDataItem.areaName}
+                status={isValueExist ? "error" : undefined}
+              />
             </div>
-            <Input
-              placeholder={t(KEYS.ZONE_NAME, { ns: "areaManagement" })}
-              className="w-[24.9375rem] h-[2.0625rem]"
-              onChange={(e) =>
-                handleUpdateDataChange("areaName", e.target.value)
-              }
-              value={regionDataItem.areaName}
-              status={isValueExist ? "error" : undefined}
-            />
-            {isValueExist && <div className="text-red-500">请输入区域名称</div>}
-          </div>
+            {isValueExist && (
+              <div className="ml-[4.7rem] text-red-500"> 请输入必填项</div>
+            )}
+          </>
         ) : (
           <div className="flex">
             <div className="text-red-500 mr-1 mt-[0.5rem]">*</div>
@@ -178,7 +189,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
                     />
                   </div>
                   {isValueExist && (
-                    <div className=" text-red-500">请输入区域名称</div>
+                    <div className=" text-red-500">请输入必填项</div>
                   )}
                 </div>
               ))}

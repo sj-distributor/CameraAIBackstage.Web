@@ -34,27 +34,6 @@ export const useAction = (
     operateModalParams?.recordItem ?? initialRegionDataItem
   );
 
-  // const initGetRegionItem = () => {
-  //   setIsLoading(true);
-  //   GetAreaManagementRegion({
-  //     RegionId: record?.id ?? 0,
-  //     AreaId: record?.areaId ?? 0,
-  //   })
-  //     .then((res) => {
-  //       const updatedRegionDataItem = {
-  //         ...res,
-  //         regionAreaNames:
-  //           res?.regionAreaNames ?? regionDataItem.regionAreaNames,
-  //       };
-
-  //       setRegionDataItem(updatedRegionDataItem);
-  //     })
-  //     .catch((err) => {
-  //       message.error(err);
-  //     })
-  //     .finally(() => setIsLoading(false));
-  // };
-
   const handleRemoveInput = (indexToRemove: number) => {
     const updatedRegionAreaNames = [...regionDataItem.regionAreaNames];
 
@@ -89,6 +68,7 @@ export const useAction = (
   };
 
   const handleCreateOrUpdateRegionItem = () => {
+    setIsLoading(true);
     (operateModalParams.isEdit ? PostUpdateRegion : PostCreateRegion)({
       regionAndArea: operateModalParams.isEdit
         ? regionDataItem
@@ -105,10 +85,6 @@ export const useAction = (
       .finally(() => setIsLoading(false));
   };
 
-  // useEffect(() => {
-  //   initGetRegionItem();
-  // }, []);
-
   useEffect(() => {
     setRegionDataItem(operateModalParams?.recordItem ?? initialRegionDataItem);
   }, [operateModalParams?.recordItem]);
@@ -123,5 +99,6 @@ export const useAction = (
     initialRegionDataItem,
     setIsValueExist,
     isValueExist,
+    isLoading,
   };
 };

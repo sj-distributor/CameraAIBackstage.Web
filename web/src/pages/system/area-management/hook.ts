@@ -98,5 +98,6 @@ export const useAction = () => {
     handleDeleteById,
     setOperateModalParams,
     operateModalParams,
+    isLoading,
   };
 };

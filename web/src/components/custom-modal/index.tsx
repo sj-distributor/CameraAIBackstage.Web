@@ -11,6 +11,7 @@ export const CustomModal = ({
   footer,
   destroyOnClose,
   forceRender,
+  confirmLoading,
 }: {
   title: JSX.Element;
   onCancle: () => void;
@@ -22,6 +23,7 @@ export const CustomModal = ({
   footer?: JSX.Element;
   destroyOnClose?: boolean;
   forceRender?: boolean;
+  confirmLoading?: boolean;
 }) => {
   return (
     <Modal
@@ -46,6 +48,7 @@ export const CustomModal = ({
               type="primary"
               className="w-[6rem] h-[2.75rem] mr-[1rem] bg-[#2853E3]"
               onClick={onConfirm}
+              loading={confirmLoading}
             >
               確定
             </Button>

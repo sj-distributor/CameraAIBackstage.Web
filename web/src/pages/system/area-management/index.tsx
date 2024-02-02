@@ -25,6 +25,7 @@ export const AreaManagement = () => {
     handleDeleteById,
     setOperateModalParams,
     operateModalParams,
+    isLoading,
   } = useAction();
 
   const columns: TableColumnsType<IRegionsDto> = [
@@ -176,6 +177,7 @@ export const AreaManagement = () => {
         }}
         open={isDeleteOpen}
         className={"customModal"}
+        confirmLoading={isLoading}
       >
         <span className="pl-[2rem]">请确认是否删除该区域</span>
       </CustomModal>
