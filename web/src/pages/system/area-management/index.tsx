@@ -3,29 +3,33 @@ import { Button, Input, Pagination, Table, TableColumnsType } from "antd";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/area-management-keys";
+import { IRegionsDto } from "@/services/dtos/area-management";
 
 import { AddAreaModal } from "./conponents/add-area-model";
 import { useAction } from "./hook";
-import { IAreaManagementData } from "./props";
 
 export const AreaManagement = () => {
   const {
-    data,
     setIsModalOpen,
-    setIsDeleteIndex,
     searchValue,
-    isTableLoading,
     pageDto,
     setSearchValue,
     setPageDto,
     isModalOpen,
-    handleAddInput,
-    handleRemoveInput,
-    inputFields,
     t,
+    isRegionListLoading,
+    regionListCount,
+    regionDataList,
+    setSearchIconValue,
+    setRecord,
+    record,
+    setIsEdit,
+    isEdit,
+    initialRegionDataItem,
+    handleDeleteById,
   } = useAction();
 
-  const columns: TableColumnsType<IAreaManagementData> = [
+  const columns: TableColumnsType<IRegionsDto> = [
     {
       title: t(KEYS.AREA_ID, { ns: "areaManagement" }),
       dataIndex: "areaId",
@@ -38,24 +42,28 @@ export const AreaManagement = () => {
     },
     {
       title: t(KEYS.AREA_ADDRESS, { ns: "areaManagement" }),
-      dataIndex: "areaAddress",
+      dataIndex: "regionAddress",
       width: "50%",
     },
     {
       title: t(KEYS.PRINCIPAL, { ns: "areaManagement" }),
-      dataIndex: "person",
+      dataIndex: "principal",
       width: "10%",
     },
     {
       title: t(KEYS.OPERATE, { ns: "areaManagement" }),
       dataIndex: "operate",
       width: "20%",
-      render: (_, __, index) => (
+      render: (_, record) => (
         <div className="h-[1.375rem]">
           <Button
             type="link"
             className="w-[6rem]"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setIsModalOpen(true);
+              setRecord(record);
+              setIsEdit(true);
+            }}
           >
             {t(KEYS.EDIT, { ns: "areaManagement" })}
           </Button>
@@ -63,7 +71,7 @@ export const AreaManagement = () => {
             type="link"
             className="w-[6rem]"
             onClick={() => {
-              setIsDeleteIndex(index);
+              handleDeleteById(record.areaId);
             }}
           >
             {t(KEYS.DELETE, { ns: "areaManagement" })}
@@ -92,6 +100,7 @@ export const AreaManagement = () => {
                   fontSize: "1.1rem",
                   fontWeight: "700",
                 }}
+                onClick={() => setSearchIconValue(searchValue)}
               />
             }
             value={searchValue}
@@ -100,7 +109,10 @@ export const AreaManagement = () => {
           <Button
             type="primary"
             className="w-[5.5rem] h-[2.2rem] text-center"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setIsModalOpen(true);
+              setIsEdit(false);
+            }}
           >
             + {t(KEYS.ADD, { ns: "areaManagement" })}
           </Button>
@@ -109,10 +121,10 @@ export const AreaManagement = () => {
           <div className="h-full overflow-auto no-scrollbar pb-[1.125rem]">
             <Table
               columns={columns}
-              dataSource={data}
+              dataSource={regionDataList}
               pagination={false}
               rowKey="areaId"
-              loading={isTableLoading}
+              loading={isRegionListLoading}
               sticky={true}
             />
           </div>
@@ -120,7 +132,7 @@ export const AreaManagement = () => {
             <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
               共
               <span className="text-[#2853E3] font-light mx-1">
-                {data.length}
+                {regionListCount}
               </span>
               條
             </div>
@@ -128,7 +140,7 @@ export const AreaManagement = () => {
               current={pageDto.pageIndex}
               pageSize={pageDto.pageSize}
               pageSizeOptions={[5, 10, 20]}
-              total={data.length}
+              total={regionDataList.length}
               showQuickJumper
               showSizeChanger
               onChange={(page, pageSize) =>
@@ -151,11 +163,11 @@ export const AreaManagement = () => {
         open={isModalOpen}
         className={"customDeviceModal"}
         modalWidth="42.5rem"
+        destroyOnClose={true}
       >
         <AddAreaModal
-          handleAddInput={handleAddInput}
-          handleRemoveInput={handleRemoveInput}
-          inputFields={inputFields}
+          record={isEdit ? record : initialRegionDataItem}
+          isEdit={isEdit}
         />
       </CustomModal>
     </>

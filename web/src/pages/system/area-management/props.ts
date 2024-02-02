@@ -1,3 +1,5 @@
+import { IRegionsDto } from "@/services/dtos/area-management";
+
 export interface IAreaManagementData {
   areaId: number;
   areaName: string;
@@ -6,7 +8,6 @@ export interface IAreaManagementData {
 }
 
 export interface IAddAreaModalProps {
-  handleAddInput: () => void;
-  handleRemoveInput: (value: number) => void;
-  inputFields: { id: number }[];
+  record: IRegionsDto;
+  isEdit: boolean;
 }
