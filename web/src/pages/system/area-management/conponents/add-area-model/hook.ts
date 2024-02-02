@@ -18,6 +18,8 @@ export const useAction = (
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const [isValueExist, setIsValueExist] = useState<boolean>(false);
+
   const initialRegionDataItem = {
     id: 0,
     areaId: 0,
@@ -119,5 +121,7 @@ export const useAction = (
     handleUpdateDataChange,
     setRegionDataItem,
     initialRegionDataItem,
+    setIsValueExist,
+    isValueExist,
   };
 };

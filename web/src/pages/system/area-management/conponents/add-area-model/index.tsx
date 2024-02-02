@@ -19,6 +19,8 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
     handleUpdateDataChange,
     setRegionDataItem,
     initialRegionDataItem,
+    setIsValueExist,
+    isValueExist,
   } = useAction(operateModalParams, initGetRegionList);
 
   return (
@@ -36,14 +38,24 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
           isEdit: false,
           recordItem: initialRegionDataItem,
         });
+        setIsValueExist(false);
       }}
       onConfirm={() => {
+        if (
+          regionDataItem.regionAreaNames.some((name) => name.trim() === "") ||
+          regionDataItem.regionAddress.trim() === ""
+        ) {
+          setIsValueExist(true);
+
+          return;
+        }
         handleCreateOrUpdateRegionItem();
         setOperateModalParams({
           isOpen: false,
           isEdit: false,
           recordItem: initialRegionDataItem,
         });
+        setIsValueExist(false);
       }}
       open={operateModalParams.isOpen}
       className={"customDeviceModal"}
@@ -52,7 +64,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
       forceRender={true}
     >
       <>
-        <div className="flex mb-[1.5rem]">
+        <div className={`flex ${!isValueExist && "mb-[1.5rem]"}`}>
           <div className="text-red-500 mr-1 mt-[0.5rem]">*</div>
           <div className="mr-2 mt-[0.4rem] whitespace-nowrap">
             {t(KEYS.AREA_ADDRESS, { ns: "areaManagement" })}
@@ -64,8 +76,14 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
               handleUpdateDataChange("regionAddress", e.target.value)
             }
             value={regionDataItem.regionAddress}
+            status={isValueExist ? "error" : undefined}
           />
         </div>
+        {isValueExist && (
+          <div className="ml-[4.7rem] text-red-500 mb-[0.8rem]">
+            请输入区域地址
+          </div>
+        )}
         <div className="flex ml-6 mb-[1.5rem]">
           <div className="mr-2 mt-[0.4rem] whitespace-nowrap">
             {t(KEYS.PRINCIPAL, { ns: "areaManagement" })}
@@ -100,20 +118,29 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
                 handleUpdateDataChange("areaName", e.target.value)
               }
               value={regionDataItem.areaName}
+              status={isValueExist ? "error" : undefined}
             />
+            {isValueExist && <div className="text-red-500">请输入区域名称</div>}
           </div>
         ) : (
-          <div className="flex mb-[1.5rem]">
+          <div className="flex">
             <div className="text-red-500 mr-1 mt-[0.5rem]">*</div>
             <div className="mr-2 mt-[0.4rem] whitespace-nowrap">
               {t(KEYS.MODAL_AREA_NAME, { ns: "areaManagement" })}
             </div>
             <div>
               {regionDataItem?.regionAreaNames?.map((field, index) => (
-                <div className="flex mb-[1.25rem]" key={index}>
+                <div
+                  className={` ${index !== 0 && "mt-[1.5rem]"} ${
+                    index !== 0 && isValueExist && "mt-[0.8rem]"
+                  }`}
+                  key={index}
+                >
                   <div className="text-[.875rem] mr-[.625rem]">
                     <Input
-                      placeholder={t(KEYS.ZONE_NAME, { ns: "areaManagement" })}
+                      placeholder={t(KEYS.ZONE_NAME, {
+                        ns: "areaManagement",
+                      })}
                       className="w-[24.9375rem] h-[2.0625rem]"
                       value={field}
                       onChange={(e) =>
@@ -123,27 +150,36 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
                           index
                         )
                       }
+                      status={isValueExist ? "error" : undefined}
+                    />
+                    {index !== 0 && (
+                      <MinusCircleFilled
+                        style={{ color: "#F04E4E", fontSize: "1.1rem" }}
+                        className="ml-[.625rem]"
+                        onClick={() => {
+                          handleRemoveInput(index);
+                          setIsValueExist(false);
+                        }}
+                      />
+                    )}
+                    <PlusCircleFilled
+                      className="ml-[.625rem]"
+                      style={{ color: "#2853E4", fontSize: "1.1rem" }}
+                      onClick={() => {
+                        setRegionDataItem({
+                          ...regionDataItem,
+                          regionAreaNames: [
+                            ...regionDataItem.regionAreaNames,
+                            "",
+                          ],
+                        });
+                        setIsValueExist(false);
+                      }}
                     />
                   </div>
-                  {index !== 0 && (
-                    <MinusCircleFilled
-                      style={{ color: "#F04E4E", fontSize: "1.1rem" }}
-                      className="mr-[.625rem]"
-                      onClick={() => handleRemoveInput(index)}
-                    />
+                  {isValueExist && (
+                    <div className=" text-red-500">请输入区域名称</div>
                   )}
-                  <PlusCircleFilled
-                    style={{ color: "#2853E4", fontSize: "1.1rem" }}
-                    onClick={() =>
-                      setRegionDataItem({
-                        ...regionDataItem,
-                        regionAreaNames: [
-                          ...regionDataItem.regionAreaNames,
-                          "",
-                        ],
-                      })
-                    }
-                  />
                 </div>
               ))}
             </div>
