@@ -35,7 +35,6 @@ export const EquipmentList = () => {
     setIsBindingOpen,
     isAddOrUpdateOpen,
     setIsAddOrUpdateOpen,
-
     setBindId,
     setIsDeleteId,
     data,
