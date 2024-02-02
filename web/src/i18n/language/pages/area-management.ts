@@ -18,6 +18,11 @@ export default {
     [KEYS.ADD_AREA]: "Add Area",
     [KEYS.PLEASE_INPUT]: "Please Input",
     [KEYS.PLEASE_SELECT]: "Please Select",
+    [KEYS.PAGINATION]: "",
+    [KEYS.DELETE_TIPS]: "Please confirm whether to delete this area.",
+    [KEYS.OPERATION_CONFIRM]: "Operation Confirmation",
+    [KEYS.EDIT_AREA]: "Edit Area",
+    [KEYS.REQUIRED_FIELDS]: "Please enter required fields.",
   },
   ch: {
     [KEYS.AREA_MANAGEMENT]: "區域管理",
@@ -35,5 +40,10 @@ export default {
     [KEYS.ADD_AREA]: "新增區域",
     [KEYS.PLEASE_INPUT]: "請輸入",
     [KEYS.PLEASE_SELECT]: "請選擇",
+    [KEYS.PAGINATION]: "共 <span>{{count}}</span> 條",
+    [KEYS.DELETE_TIPS]: "請確認是否刪除該區域",
+    [KEYS.OPERATION_CONFIRM]: "操作確認",
+    [KEYS.EDIT_AREA]: "編輯區域",
+    [KEYS.REQUIRED_FIELDS]: "請輸入必填項",
   },
 };

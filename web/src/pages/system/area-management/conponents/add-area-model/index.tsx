@@ -28,9 +28,9 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
     <CustomModal
       title={
         <div className="text-[1.25rem] font-semibold tracking-tight leading-[1.875rem]">
-          {operateModalParams.isEdit
-            ? "编辑区域"
-            : t(KEYS.ADD_AREA, { ns: "areaManagement" })}
+          {t(operateModalParams.isEdit ? KEYS.EDIT_AREA : KEYS.ADD_AREA, {
+            ns: "areaManagement",
+          })}
         </div>
       }
       onCancle={() => {
@@ -88,7 +88,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
         </div>
         {isValueExist && (
           <div className="ml-[4.7rem] text-red-500 mb-[0.8rem]">
-            请输入必填项
+            {t(KEYS.REQUIRED_FIELDS, { ns: "areaManagement" })}
           </div>
         )}
         <div className="flex ml-6 mb-[1.5rem]">
@@ -130,7 +130,9 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
               />
             </div>
             {isValueExist && (
-              <div className="ml-[4.7rem] text-red-500"> 请输入必填项</div>
+              <div className="ml-[4.7rem] text-red-500">
+                {t(KEYS.REQUIRED_FIELDS, { ns: "areaManagement" })}
+              </div>
             )}
           </>
         ) : (
@@ -189,7 +191,9 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
                     />
                   </div>
                   {isValueExist && (
-                    <div className=" text-red-500">请输入必填项</div>
+                    <div className=" text-red-500">
+                      {t(KEYS.REQUIRED_FIELDS, { ns: "areaManagement" })}
+                    </div>
                   )}
                 </div>
               ))}

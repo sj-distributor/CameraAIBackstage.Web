@@ -1,5 +1,6 @@
 import { SearchOutlined, WarningFilled } from "@ant-design/icons";
 import { Button, Input, Pagination, Table, TableColumnsType } from "antd";
+import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/area-management-keys";
@@ -137,11 +138,14 @@ export const AreaManagement = () => {
           </div>
           <div className="flex justify-between items-center pt-[1rem]">
             <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
-              共
-              <span className="text-[#2853E3] font-light mx-1">
-                {regionListCount}
-              </span>
-              條
+              <Trans
+                i18nKey={KEYS.PAGINATION}
+                ns="portraitList"
+                values={{ count: regionListCount }}
+                components={{
+                  span: <span className="text-[#2853E3] font-light mx-1" />,
+                }}
+              />
             </div>
             <Pagination
               current={pageDto.pageIndex}
@@ -165,9 +169,9 @@ export const AreaManagement = () => {
       />
       <CustomModal
         title={
-          <div>
+          <div className="text-[1.25rem] font-semibold leading-[1.875rem]">
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            操作确认
+            {t(KEYS.OPERATION_CONFIRM, { ns: "areaManagement" })}
           </div>
         }
         onCancle={() => setIsDeleteOpen(false)}
@@ -179,7 +183,9 @@ export const AreaManagement = () => {
         className={"customModal"}
         confirmLoading={isLoading}
       >
-        <span className="pl-[2rem]">请确认是否删除该区域</span>
+        <span className="pl-[2rem] text-[1rem]">
+          {t(KEYS.DELETE_TIPS, { ns: "areaManagement" })}
+        </span>
       </CustomModal>
     </>
   );
