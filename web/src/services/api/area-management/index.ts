@@ -39,7 +39,7 @@ export const PostCreateRegion = async (data: ICreateRegionRequest) => {
 };
 
 export const PostUpdateRegion = async (data: IUpdateRegionRequest) => {
-  const response = await api.post("/api/CameraAi/region/create", data);
+  const response = await api.post("/api/CameraAi/region/update", data);
 
   return response.data;
 };

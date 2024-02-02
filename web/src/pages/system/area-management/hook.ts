@@ -5,7 +5,9 @@ import { useAuth } from "@/hooks/use-auth";
 import {
   GetAreaManagementPage,
   GetAreaManagementRegion,
+  PostCreateRegion,
   PostDeleteAreaId,
+  PostUpdateRegion,
 } from "@/services/api/area-management";
 import { IRegionsDto } from "@/services/dtos/area-management";
 
@@ -94,6 +96,39 @@ export const useAction = () => {
       .finally(() => setIsLoading(false));
   };
 
+  const handleCreateRegionDataItem = () => {
+    PostCreateRegion({
+      regionAndArea: {
+        regionAddress: "areaAddressValue",
+        regionAreaNames: ["regionDataItem.regionAreaNames"],
+        principal: "selectPrincipalValue",
+      },
+    })
+      .then(() => initGetRegionList())
+      .catch((err) => {
+        message.error(err);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const handleUpdateRegionDataItem = () => {
+    PostUpdateRegion({
+      regionAndArea: {
+        id: record.id,
+        areaId: record.areaId,
+        regionAddress: "areaAddressValue",
+        regionAreaNames: ["regionDataItem.regionAreaNames"],
+        principal: "selectPrincipalValue",
+        areaName: record.areaName,
+      },
+    })
+      .then(() => initGetRegionList())
+      .catch((err) => {
+        message.error(err);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
   const [inputFields, setInputFields] = useState<{ id: number }[]>([{ id: 1 }]);
 
   const handleAddInput = () => {
@@ -103,8 +138,6 @@ export const useAction = () => {
   const handleRemoveInput = (id: number) => {
     setInputFields(inputFields.filter((field) => field.id !== id));
   };
-
-  console.log(record);
 
   useEffect(() => {
     initGetRegionList();
@@ -139,5 +172,7 @@ export const useAction = () => {
     isEdit,
     initialRegionDataItem,
     handleDeleteById,
+    handleCreateRegionDataItem,
+    handleUpdateRegionDataItem,
   };
 };

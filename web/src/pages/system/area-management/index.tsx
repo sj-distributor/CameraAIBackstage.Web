@@ -27,6 +27,8 @@ export const AreaManagement = () => {
     isEdit,
     initialRegionDataItem,
     handleDeleteById,
+    handleCreateRegionDataItem,
+    handleUpdateRegionDataItem,
   } = useAction();
 
   const columns: TableColumnsType<IRegionsDto> = [
@@ -140,7 +142,7 @@ export const AreaManagement = () => {
               current={pageDto.pageIndex}
               pageSize={pageDto.pageSize}
               pageSizeOptions={[5, 10, 20]}
-              total={regionDataList.length}
+              total={regionListCount}
               showQuickJumper
               showSizeChanger
               onChange={(page, pageSize) =>
@@ -158,6 +160,7 @@ export const AreaManagement = () => {
         }
         onCancle={() => setIsModalOpen(false)}
         onConfirm={() => {
+          isEdit ? handleUpdateRegionDataItem() : handleCreateRegionDataItem();
           setIsModalOpen(false);
         }}
         open={isModalOpen}
