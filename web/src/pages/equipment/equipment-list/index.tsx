@@ -21,7 +21,7 @@ import KEYS from "@/i18n/language/keys/equipment-list-keys";
 import downArrow from "../../../assets/public/down-arrow.png";
 import search from "../../../assets/public/search.png";
 import { useAction } from "./hook";
-import { IOptionDto } from "./props";
+import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
 import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
 
 export const EquipmentList = () => {
@@ -264,20 +264,22 @@ export const EquipmentList = () => {
                 placeholder={t(KEYS.IS_ONLINE, source)}
                 value={isSearchOnline}
                 onChange={(value) => {
-                  setIsSearchOnline(value !== null ? value : undefined);
+                  setIsSearchOnline(
+                    value !== IOnlineOrNot.All ? value : undefined
+                  );
                 }}
                 defaultActiveFirstOption
                 options={[
                   {
-                    value: null,
+                    value: IOnlineOrNot.All,
                     label: t(KEYS.IS_ONLINE, source),
                   },
                   {
-                    value: true,
+                    value: IOnlineOrNot.Online,
                     label: t(KEYS.ONLINE, source),
                   },
                   {
-                    value: false,
+                    value: IOnlineOrNot.OffOnline,
                     label: t(KEYS.OFFLINE, source),
                   },
                 ]}
@@ -289,19 +291,19 @@ export const EquipmentList = () => {
                 defaultActiveFirstOption
                 value={isSearchBind}
                 onChange={(value) => {
-                  setIsSearchBind(value !== null ? value : undefined);
+                  setIsSearchBind(value !== IBondOrNot.All ? value : undefined);
                 }}
                 options={[
                   {
-                    value: null,
+                    value: IBondOrNot.All,
                     label: t(KEYS.IS_BLIND, source),
                   },
                   {
-                    value: true,
+                    value: IBondOrNot.Bond,
                     label: t(KEYS.BOUND, source),
                   },
                   {
-                    value: false,
+                    value: IBondOrNot.NotBond,
                     label: t(KEYS.NOT_BOUND, source),
                   },
                 ]}

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
 
-import { IOptionDto } from "./props";
+import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
 import {
   IEquipmentCreateOrUpdateDto,
   IEquipmentList,
@@ -67,17 +67,17 @@ export const useAction = () => {
 
   const debouncedValue = useDebounce(searchKey, { wait: 800 });
 
-  const [isSearchOnline, setIsSearchOnline] = useState<boolean | undefined>(
-    undefined
-  );
+  const [isSearchOnline, setIsSearchOnline] = useState<
+    IOnlineOrNot | undefined
+  >(undefined);
 
-  const [isSearchBind, setIsSearchBind] = useState<boolean | undefined>(
+  const [isSearchBind, setIsSearchBind] = useState<IBondOrNot | undefined>(
     undefined
   );
 
   const [equipmentId, setEquipmentId] = useState<string>("");
 
-  const [equipmentType, setEquipmentType] = useState<string | null>(null);
+  const [equipmentType, setEquipmentType] = useState<string>("");
 
   const [equipmentName, setEquipmentName] = useState<string>("");
 
@@ -99,8 +99,8 @@ export const useAction = () => {
       PageIndex: pageDto.PageIndex,
       PageSize: pageDto.PageSize,
       Keyword: searchKey,
-      IsOnline: isSearchOnline,
-      IsBind: isSearchBind,
+      IsOnline: Boolean(isSearchOnline),
+      IsBind: Boolean(isSearchBind),
     })
       .then((res) => {
         setData(res.equipments);

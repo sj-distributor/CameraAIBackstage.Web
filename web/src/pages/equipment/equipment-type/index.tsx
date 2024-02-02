@@ -217,7 +217,6 @@ export const EquipmentType = () => {
             >
               <Input
                 placeholder={t(KEYS.PLEASE_ENTER_DEVICE_TYPE, source)}
-                defaultValue={typeName}
                 value={typeName}
                 onChange={(e) => {
                   setTypeName(e.target.value);
@@ -230,10 +229,10 @@ export const EquipmentType = () => {
               labelCol={{ span: language === "ch" ? 4 : 5 }}
               wrapperCol={{ span: 20 }}
               style={{ marginBottom: 0 }}
+              initialValue={description}
             >
               <TextArea
                 placeholder={t(KEYS.PLEASE_ENTER_INSTRUCTION_MANUAL, source)}
-                defaultValue={description}
                 value={description}
                 onChange={(e) => {
                   setDescription(e.target.value);
