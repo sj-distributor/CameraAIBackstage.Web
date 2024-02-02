@@ -35,7 +35,7 @@ export const EquipmentList = () => {
     setIsBindingOpen,
     isAddOrUpdateOpen,
     setIsAddOrUpdateOpen,
-    bindId,
+
     setBindId,
     setIsDeleteId,
     data,
@@ -53,14 +53,14 @@ export const EquipmentList = () => {
     setEquipmentType,
     equipmentName,
     setEquipmentName,
-    handleAddOrUpdate,
+    onAddOrUpdateSubmit,
     form,
     equipmentTypesOption,
     dataTotalCount,
     loading,
     bindAreaId,
     setBindAreaId,
-    handleDelete,
+    onDelete,
     isAddOrEdit,
     setIsAddOrEdit,
     onGetEquipmentInformationById,
@@ -73,7 +73,7 @@ export const EquipmentList = () => {
     onConfirmBind,
     confirmLoading,
     pageDto,
-    onUnBind,
+    onConfirmUnBind,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -366,9 +366,7 @@ export const EquipmentList = () => {
           </div>
         }
         onCancle={() => setIsUnbindOpen(false)}
-        onConfirm={() => {
-          onUnBind(bindId);
-        }}
+        onConfirm={onConfirmUnBind}
         open={isUnbindOpen}
         className={"customModal"}
         confirmLoading={confirmLoading}
@@ -382,9 +380,7 @@ export const EquipmentList = () => {
       <CustomModal
         title={<div>{t(KEYS.DEVICE_BINDING, source)}</div>}
         onCancle={() => setIsBindingOpen(false)}
-        onConfirm={() => {
-          onConfirmBind();
-        }}
+        onConfirm={onConfirmBind}
         open={isBindingOpen}
         className={"customDeviceModal"}
         modalWidth={"60rem"}
@@ -423,7 +419,7 @@ export const EquipmentList = () => {
           });
         }}
         onConfirm={() => {
-          handleAddOrUpdate(isAddOrEdit);
+          onAddOrUpdateSubmit(isAddOrEdit);
         }}
         open={isAddOrUpdateOpen}
         className={"customDeviceModal"}
@@ -436,7 +432,7 @@ export const EquipmentList = () => {
           <Form
             colon={false}
             onFinish={() => {
-              handleAddOrUpdate(isAddOrEdit);
+              onAddOrUpdateSubmit(isAddOrEdit);
             }}
             form={form}
           >
@@ -504,7 +500,7 @@ export const EquipmentList = () => {
           </div>
         }
         onCancle={() => setIsDeleteDeviceOpen(false)}
-        onConfirm={handleDelete}
+        onConfirm={onDelete}
         open={isDeleteDeviceOpen}
         className={"customModal"}
         confirmLoading={confirmLoading}

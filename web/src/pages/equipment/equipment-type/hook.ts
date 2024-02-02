@@ -11,7 +11,7 @@ import {
   PostUpdateEquipmentType,
 } from "@/services/api/equipment/type";
 import { IEquipmentTypeList } from "@/services/dtos/equipment/type";
-import { useBoolean, useDebounceFn } from "ahooks";
+import { useBoolean } from "ahooks";
 import { App, Form } from "antd";
 
 export const useAction = () => {
@@ -34,15 +34,7 @@ export const useAction = () => {
     PageIndex: 1,
   });
 
-  const [isDeleteDeviceOpen, setIsDeleteDeviceOpen] = useState<boolean>(false);
-
-  const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
-
   const [isAddOrModifyOpen, setIsAddOrModifyOpen] = useState<boolean>(false);
-
-  const [typeName, setTypeName] = useState<string>("");
-
-  const [description, setDescription] = useState<string>("");
 
   const [isAddOrUpdate, setIsAddOrUpdate] = useState<boolean>(false); // true:添加，false：編輯
 
@@ -50,7 +42,13 @@ export const useAction = () => {
 
   const [isEditLoading, setIsEditLoading] = useState<boolean>(false);
 
+  const [isDeleteDeviceOpen, setIsDeleteDeviceOpen] = useState<boolean>(false);
+
   const [isDeleteId, setIsDeleteId] = useState<number | null>(null);
+
+  const [typeName, setTypeName] = useState<string>("");
+
+  const [description, setDescription] = useState<string>("");
 
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
 
@@ -69,57 +67,7 @@ export const useAction = () => {
       .finally(() => loadingAction.setFalse());
   };
 
-  const onIsAddSubmit = (isAdd: boolean) => {
-    form.validateFields(["typeName"]).then(() => {
-      setConfirmLoading(true);
-      isAdd
-        ? PostCreateEquipmentType({
-            equipmentType: {
-              name: typeName,
-              description: description,
-            },
-          })
-            .then(() => {
-              initGetEquipmentTypeList();
-              setIsAddOrModifyOpen(false);
-              form.setFieldsValue({
-                typeName: "",
-                description: "",
-              });
-              setTypeName("");
-              setDescription("");
-            })
-            .catch((err) => {
-              message.error(`新增失敗:${err}`);
-            })
-            .finally(() => {
-              setConfirmLoading(false);
-            })
-        : PostUpdateEquipmentType({
-            equipmentType: {
-              name: typeName,
-              description: description,
-              id: clickEditId,
-            },
-          })
-            .then(() => {
-              initGetEquipmentTypeList();
-              setIsAddOrModifyOpen(false);
-            })
-            .catch((err) => {
-              message.error(`新增失敗:${err}`);
-            })
-            .finally(() => {
-              setConfirmLoading(false);
-            });
-    });
-  };
-  const { run: handleAddOrUpdate } = useDebounceFn(
-    (isAdd: boolean) => onIsAddSubmit(isAdd),
-    { wait: 300 }
-  );
-
-  const onGetEquipmentInformationById = (id: number) => {
+  const onGetEquipmentTypeInfoById = (id: number) => {
     setIsEditLoading(true);
     GetEquipmentTypeInfoById({ EquipmentTypeId: id })
       .then((res) => {
@@ -139,6 +87,64 @@ export const useAction = () => {
     setClickEditId(id);
   };
 
+  const handleCreate = () => {
+    PostCreateEquipmentType({
+      equipmentType: {
+        name: typeName,
+        description: description,
+      },
+    })
+      .then(() => {
+        setIsAddOrModifyOpen(false);
+        form.setFieldsValue({
+          typeName: "",
+          description: "",
+        });
+        setTypeName("");
+        setDescription("");
+        initGetEquipmentTypeList();
+      })
+      .catch((err) => {
+        message.error(`新增失敗:${err}`);
+      })
+      .finally(() => {
+        setConfirmLoading(false);
+      });
+  };
+
+  const handleUpdate = () => {
+    PostUpdateEquipmentType({
+      equipmentType: {
+        name: typeName,
+        description: description,
+        id: clickEditId,
+      },
+    })
+      .then(() => {
+        setIsAddOrModifyOpen(false);
+        form.setFieldsValue({
+          typeName: "",
+          description: "",
+        });
+        setTypeName("");
+        setDescription("");
+        initGetEquipmentTypeList();
+      })
+      .catch((err) => {
+        message.error(`新增失敗:${err}`);
+      })
+      .finally(() => {
+        setConfirmLoading(false);
+      });
+  };
+
+  const onAddOrUpdateSubmit = (isAdd: boolean) => {
+    form.validateFields(["typeName"]).then(() => {
+      setConfirmLoading(true);
+      isAdd ? handleCreate() : handleUpdate();
+    });
+  };
+
   const onDelete = () => {
     if (isDeleteId === null) return;
     setConfirmLoading(true);
@@ -151,7 +157,6 @@ export const useAction = () => {
       })
       .finally(() => setConfirmLoading(false));
   };
-  const { run: handleDelete } = useDebounceFn(onDelete, { wait: 300 });
 
   useEffect(() => {
     initGetEquipmentTypeList();
@@ -163,8 +168,6 @@ export const useAction = () => {
     setIsDeleteDeviceOpen,
     isAddOrModifyOpen,
     setIsAddOrModifyOpen,
-    isDeleteIndex,
-    setIsDeleteIndex,
     data,
     setData,
     t,
@@ -175,15 +178,15 @@ export const useAction = () => {
     description,
     setDescription,
     totalListCount,
-    handleAddOrUpdate,
+    onAddOrUpdateSubmit,
     form,
     isAddOrUpdate,
     setIsAddOrUpdate,
     clickEditId,
-    onGetEquipmentInformationById,
+    onGetEquipmentTypeInfoById,
     isEditLoading,
     setIsDeleteId,
-    handleDelete,
+    onDelete,
     confirmLoading,
     language,
     pageDto,

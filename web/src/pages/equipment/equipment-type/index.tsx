@@ -25,7 +25,6 @@ export const EquipmentType = () => {
     setIsDeleteDeviceOpen,
     isAddOrModifyOpen,
     setIsAddOrModifyOpen,
-    setIsDeleteIndex,
     data,
     t,
     setPageDto,
@@ -35,16 +34,17 @@ export const EquipmentType = () => {
     description,
     setDescription,
     totalListCount,
-    handleAddOrUpdate,
+    onAddOrUpdateSubmit,
     form,
     isAddOrUpdate,
     setIsAddOrUpdate,
-    onGetEquipmentInformationById,
+    onGetEquipmentTypeInfoById,
     isEditLoading,
-    handleDelete,
+    onDelete,
     confirmLoading,
     language,
     pageDto,
+    setIsDeleteId,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentTypeList> = [
@@ -75,7 +75,7 @@ export const EquipmentType = () => {
             onClick={() => {
               setIsAddOrModifyOpen(true);
               setIsAddOrUpdate(false);
-              onGetEquipmentInformationById(record.id);
+              onGetEquipmentTypeInfoById(record.id);
             }}
           >
             {t(KEYS.EDIT, source)}
@@ -84,7 +84,7 @@ export const EquipmentType = () => {
             type="link"
             className="w-[6rem]"
             onClick={() => {
-              setIsDeleteIndex(index);
+              setIsDeleteId(record.id);
               setIsDeleteDeviceOpen(true);
             }}
           >
@@ -190,7 +190,7 @@ export const EquipmentType = () => {
           setDescription("");
         }}
         onConfirm={() => {
-          handleAddOrUpdate(isAddOrUpdate);
+          onAddOrUpdateSubmit(isAddOrUpdate);
         }}
         open={isAddOrModifyOpen}
         className={"customDeviceModal"}
@@ -203,7 +203,7 @@ export const EquipmentType = () => {
           <Form
             colon={false}
             onFinish={() => {
-              handleAddOrUpdate(isAddOrUpdate);
+              onAddOrUpdateSubmit(isAddOrUpdate);
             }}
             form={form}
           >
@@ -255,7 +255,7 @@ export const EquipmentType = () => {
         onCancle={() => setIsDeleteDeviceOpen(false)}
         onConfirm={() => {
           setIsDeleteDeviceOpen(false);
-          handleDelete();
+          onDelete();
         }}
         open={isDeleteDeviceOpen}
         className={"customModal"}

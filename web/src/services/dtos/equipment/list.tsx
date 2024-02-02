@@ -36,12 +36,6 @@ export interface IEquipmentCreateOrUpdateDto {
   areaId?: number;
 }
 
-export interface IRegionPageRequest extends IPageDto {
-  RegionId?: number;
-  RegionAddress?: string;
-  Keyword?: string;
-}
-
 export interface IRegionPageResponse {
   count: number;
   regions: IRegionDto[];
