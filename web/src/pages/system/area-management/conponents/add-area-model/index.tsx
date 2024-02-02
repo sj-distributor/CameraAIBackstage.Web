@@ -49,7 +49,16 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
         <Select
           placeholder={t(KEYS.PLEASE_SELECT, { ns: "areaManagement" })}
           className="!w-[24.9375rem] h-[2.0625rem]"
-          // defaultValue={regionDataItem?.principal}
+          options={[
+            {
+              value: "tttt",
+              label: "tttt",
+            },
+            {
+              value: "cath",
+              label: "cath",
+            },
+          ]}
         />
       </Form.Item>
 
@@ -58,7 +67,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
         name="regionAreaNames"
         rules={[{ required: true, message: "Please input!" }]}
       >
-        {regionDataItem?.regionAreaNames.map((field, index) => (
+        {regionDataItem?.regionAreaNames?.map((field, index) => (
           <div className="flex mb-[1.25rem]" key={index}>
             <div className="text-[.875rem] mr-[.625rem]">
               <Input
