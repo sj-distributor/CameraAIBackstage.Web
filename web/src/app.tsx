@@ -1,4 +1,4 @@
-import { ConfigProvider, App as AppWrapper } from "antd";
+import { App as AppWrapper, ConfigProvider } from "antd";
 import { useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 

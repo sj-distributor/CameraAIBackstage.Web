@@ -14,4 +14,9 @@ export default {
   ADD_AREA: "AddArea",
   PLEASE_INPUT: "PleaseInput",
   PLEASE_SELECT: "PleaseSelect",
+  PAGINATION: "Pagination",
+  DELETE_TIPS: "DeleteTips",
+  OPERATION_CONFIRM: "OperationConfirm",
+  EDIT_AREA: "EditArea",
+  REQUIRED_FIELDS: "RequiredFields",
 };
