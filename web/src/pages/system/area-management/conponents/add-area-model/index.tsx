@@ -142,7 +142,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
             <div>
               {regionDataItem?.regionAreaNames?.map((field, index) => (
                 <div
-                  className={` ${index !== 0 ? "mt-[1.5rem]" : ""} ${
+                  className={`${index !== 0 ? "mt-[1.5rem]" : ""} ${
                     index !== 0 && isValueExist ? "mt-[0.8rem]" : ""
                   }`}
                   key={index}
