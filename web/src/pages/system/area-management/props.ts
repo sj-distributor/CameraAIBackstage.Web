@@ -18,5 +18,5 @@ export interface IAddAreaModalProps {
 export interface IModifyModalDto {
   isOpen: boolean;
   isEdit: boolean;
-  recordItem?: IRegionsDto;
+  recordItem: IRegionsDto;
 }

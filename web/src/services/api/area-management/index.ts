@@ -2,9 +2,8 @@ import {
   IAreaManagementPageRequest,
   IAreaManagementPageResponse,
   IAreaManagementRegionRequest,
-  ICreateRegionRequest,
+  ICreateOrUpdateRegionRequest,
   IRegionsDto,
-  IUpdateRegionRequest,
 } from "@/services/dtos/area-management";
 
 import { api } from "../http-client";
@@ -32,13 +31,13 @@ export const GetAreaManagementPage = async (
   return response.data;
 };
 
-export const PostCreateRegion = async (data: ICreateRegionRequest) => {
+export const PostCreateRegion = async (data: ICreateOrUpdateRegionRequest) => {
   const response = await api.post("/api/CameraAi/region/create", data);
 
   return response.data;
 };
 
-export const PostUpdateRegion = async (data: IUpdateRegionRequest) => {
+export const PostUpdateRegion = async (data: ICreateOrUpdateRegionRequest) => {
   const response = await api.post("/api/CameraAi/region/update", data);
 
   return response.data;

@@ -13,6 +13,8 @@ import { IModifyModalDto } from "./props";
 export const useAction = () => {
   const { t } = useAuth();
 
+  const source = { ns: "areaManagement" };
+
   const initialRegionDataItem = {
     regionAddress: "",
     regionAreaNames: [""],
@@ -99,5 +101,7 @@ export const useAction = () => {
     setOperateModalParams,
     operateModalParams,
     isLoading,
+    source,
+    initialRegionDataItem,
   };
 };

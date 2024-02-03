@@ -14,11 +14,7 @@ export interface IAreaManagementPageResponse {
   regions: IRegionsDto[];
 }
 
-export interface ICreateRegionRequest {
-  regionAndArea: ICreateRegionDto;
-}
-
-export interface IUpdateRegionRequest {
+export interface ICreateOrUpdateRegionRequest {
   regionAndArea: IRegionsDto;
 }
 
@@ -27,14 +23,7 @@ export interface IRegionsDto {
   areaId?: number;
   areaName?: string;
   regionAddress: string;
-  regionAreaNames: string[];
-  principal: string;
-  createdTime?: string;
-}
-
-export interface ICreateRegionDto {
-  regionAddress: string;
-  regionAreaNames: string[];
+  regionAreaNames?: string[];
   principal: string;
   createdTime?: string;
 }

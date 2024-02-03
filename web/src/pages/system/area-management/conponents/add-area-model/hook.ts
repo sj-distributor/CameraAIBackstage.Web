@@ -14,28 +14,20 @@ export const useAction = (
   operateModalParams: IModifyModalDto,
   initGetRegionList: () => void
 ) => {
-  const { t } = useAuth();
+  const { t, language } = useAuth();
+
+  const source = { ns: "areaManagement" };
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [isValueExist, setIsValueExist] = useState<boolean>(false);
 
-  const initialRegionDataItem = {
-    id: 0,
-    areaId: 0,
-    areaName: "",
-    regionAddress: "",
-    regionAreaNames: [""],
-    principal: "",
-    createdTime: "",
-  };
-
   const [regionDataItem, setRegionDataItem] = useState<IRegionsDto>(
-    operateModalParams?.recordItem ?? initialRegionDataItem
+    operateModalParams.recordItem
   );
 
   const handleRemoveInput = (indexToRemove: number) => {
-    const updatedRegionAreaNames = [...regionDataItem.regionAreaNames];
+    const updatedRegionAreaNames = [...regionDataItem.regionAreaNames!];
 
     updatedRegionAreaNames.splice(indexToRemove, 1);
 
@@ -51,7 +43,7 @@ export const useAction = (
     index?: number
   ) => {
     if (index !== undefined) {
-      const updatedRegionAreaNames = [...regionDataItem.regionAreaNames];
+      const updatedRegionAreaNames = [...regionDataItem.regionAreaNames!];
 
       updatedRegionAreaNames[index] = value;
 
@@ -70,13 +62,7 @@ export const useAction = (
   const handleCreateOrUpdateRegionItem = () => {
     setIsLoading(true);
     (operateModalParams.isEdit ? PostUpdateRegion : PostCreateRegion)({
-      regionAndArea: operateModalParams.isEdit
-        ? regionDataItem
-        : {
-            regionAddress: regionDataItem?.regionAddress,
-            regionAreaNames: regionDataItem?.regionAreaNames,
-            principal: regionDataItem?.principal,
-          },
+      regionAndArea: regionDataItem,
     })
       .then(() => initGetRegionList())
       .catch((err) => {
@@ -86,7 +72,7 @@ export const useAction = (
   };
 
   useEffect(() => {
-    setRegionDataItem(operateModalParams?.recordItem ?? initialRegionDataItem);
+    setRegionDataItem(operateModalParams.recordItem);
   }, [operateModalParams?.recordItem]);
 
   return {
@@ -96,9 +82,10 @@ export const useAction = (
     handleCreateOrUpdateRegionItem,
     handleUpdateDataChange,
     setRegionDataItem,
-    initialRegionDataItem,
     setIsValueExist,
     isValueExist,
     isLoading,
+    source,
+    language,
   };
 };

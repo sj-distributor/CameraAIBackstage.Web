@@ -18,27 +18,38 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
     handleCreateOrUpdateRegionItem,
     handleUpdateDataChange,
     setRegionDataItem,
-    initialRegionDataItem,
     setIsValueExist,
     isValueExist,
     isLoading,
+    language,
+    source,
   } = useAction(operateModalParams, initGetRegionList);
+
+  const renderRequiredLabel = (translationKey: string) => {
+    return (
+      <div
+        className={`mr-2 mt-[0.4rem] whitespace-nowrap flex ${
+          language === "en" ? "w-[9.5rem] justify-end" : ""
+        }`}
+      >
+        <div className="text-red-500 mr-1 mt-[0.1rem]">*</div>
+        {t(translationKey, source)}
+      </div>
+    );
+  };
 
   return (
     <CustomModal
       title={
         <div className="text-[1.25rem] font-semibold tracking-tight leading-[1.875rem]">
-          {t(operateModalParams.isEdit ? KEYS.EDIT_AREA : KEYS.ADD_AREA, {
-            ns: "areaManagement",
-          })}
+          {t(
+            operateModalParams.isEdit ? KEYS.EDIT_AREA : KEYS.ADD_AREA,
+            source
+          )}
         </div>
       }
       onCancle={() => {
-        setOperateModalParams({
-          isOpen: false,
-          isEdit: false,
-          recordItem: initialRegionDataItem,
-        });
+        setOperateModalParams({ ...operateModalParams, isOpen: false });
         setIsValueExist(false);
       }}
       onConfirm={() => {
@@ -56,28 +67,21 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
         }
 
         handleCreateOrUpdateRegionItem();
-        setOperateModalParams({
-          isOpen: false,
-          isEdit: false,
-          recordItem: initialRegionDataItem,
-        });
+        setOperateModalParams({ ...operateModalParams, isOpen: false });
         setIsValueExist(false);
       }}
       open={operateModalParams.isOpen}
-      className={"customDeviceModal"}
+      className="customDeviceModal"
       modalWidth="42.5rem"
       destroyOnClose={true}
       forceRender={true}
       confirmLoading={isLoading}
     >
       <>
-        <div className={`flex ${!isValueExist && "mb-[1.5rem]"}`}>
-          <div className="text-red-500 mr-1 mt-[0.5rem]">*</div>
-          <div className="mr-2 mt-[0.4rem] whitespace-nowrap">
-            {t(KEYS.AREA_ADDRESS, { ns: "areaManagement" })}
-          </div>
+        <div className={`flex ${!isValueExist ? "mb-[1.5rem]" : ""}`}>
+          {renderRequiredLabel(KEYS.AREA_ADDRESS)}
           <Input
-            placeholder={t(KEYS.PLEASE_INPUT, { ns: "areaManagement" })}
+            placeholder={t(KEYS.PLEASE_INPUT, source)}
             className="w-[24.9375rem] h-[2.0625rem]"
             onChange={(e) =>
               handleUpdateDataChange("regionAddress", e.target.value)
@@ -88,15 +92,15 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
         </div>
         {isValueExist && (
           <div className="ml-[4.7rem] text-red-500 mb-[0.8rem]">
-            {t(KEYS.REQUIRED_FIELDS, { ns: "areaManagement" })}
+            {t(KEYS.REQUIRED_FIELDS, source)}
           </div>
         )}
         <div className="flex ml-6 mb-[1.5rem]">
           <div className="mr-2 mt-[0.4rem] whitespace-nowrap">
-            {t(KEYS.PRINCIPAL, { ns: "areaManagement" })}
+            {t(KEYS.PRINCIPAL, source)}
           </div>
           <Select
-            placeholder={t(KEYS.PLEASE_SELECT, { ns: "areaManagement" })}
+            placeholder={t(KEYS.PLEASE_SELECT, source)}
             className="!w-[24.9375rem] h-[2.0625rem]"
             value={regionDataItem.principal}
             options={[
@@ -115,12 +119,9 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
         {operateModalParams.isEdit ? (
           <>
             <div className="flex">
-              <div className="text-red-500 mr-1 mt-[0.5rem]">*</div>
-              <div className="mr-2 mt-[0.4rem] whitespace-nowrap">
-                {t(KEYS.MODAL_AREA_NAME, { ns: "areaManagement" })}
-              </div>
+              {renderRequiredLabel(KEYS.MODAL_AREA_NAME)}
               <Input
-                placeholder={t(KEYS.ZONE_NAME, { ns: "areaManagement" })}
+                placeholder={t(KEYS.ZONE_NAME, source)}
                 className="w-[24.9375rem] h-[2.0625rem]"
                 onChange={(e) =>
                   handleUpdateDataChange("areaName", e.target.value)
@@ -131,21 +132,18 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
             </div>
             {isValueExist && (
               <div className="ml-[4.7rem] text-red-500">
-                {t(KEYS.REQUIRED_FIELDS, { ns: "areaManagement" })}
+                {t(KEYS.REQUIRED_FIELDS, source)}
               </div>
             )}
           </>
         ) : (
           <div className="flex">
-            <div className="text-red-500 mr-1 mt-[0.5rem]">*</div>
-            <div className="mr-2 mt-[0.4rem] whitespace-nowrap">
-              {t(KEYS.MODAL_AREA_NAME, { ns: "areaManagement" })}
-            </div>
+            {renderRequiredLabel(KEYS.MODAL_AREA_NAME)}
             <div>
               {regionDataItem?.regionAreaNames?.map((field, index) => (
                 <div
-                  className={` ${index !== 0 && "mt-[1.5rem]"} ${
-                    index !== 0 && isValueExist && "mt-[0.8rem]"
+                  className={` ${index !== 0 ? "mt-[1.5rem]" : ""} ${
+                    index !== 0 && isValueExist ? "mt-[0.8rem]" : ""
                   }`}
                   key={index}
                 >
@@ -182,7 +180,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
                         setRegionDataItem({
                           ...regionDataItem,
                           regionAreaNames: [
-                            ...regionDataItem.regionAreaNames,
+                            ...regionDataItem.regionAreaNames!,
                             "",
                           ],
                         });
@@ -192,7 +190,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
                   </div>
                   {isValueExist && (
                     <div className=" text-red-500">
-                      {t(KEYS.REQUIRED_FIELDS, { ns: "areaManagement" })}
+                      {t(KEYS.REQUIRED_FIELDS, source)}
                     </div>
                   )}
                 </div>

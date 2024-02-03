@@ -27,31 +27,33 @@ export const AreaManagement = () => {
     setOperateModalParams,
     operateModalParams,
     isLoading,
+    source,
+    initialRegionDataItem,
   } = useAction();
 
   const columns: TableColumnsType<IRegionsDto> = [
     {
-      title: t(KEYS.AREA_ID, { ns: "areaManagement" }),
+      title: t(KEYS.AREA_ID, source),
       dataIndex: "areaId",
       width: "10%",
     },
     {
-      title: t(KEYS.AREA_NAME, { ns: "areaManagement" }),
+      title: t(KEYS.AREA_NAME, source),
       dataIndex: "areaName",
       width: "10%",
     },
     {
-      title: t(KEYS.AREA_ADDRESS, { ns: "areaManagement" }),
+      title: t(KEYS.AREA_ADDRESS, source),
       dataIndex: "regionAddress",
       width: "50%",
     },
     {
-      title: t(KEYS.PRINCIPAL, { ns: "areaManagement" }),
+      title: t(KEYS.PRINCIPAL, source),
       dataIndex: "principal",
       width: "10%",
     },
     {
-      title: t(KEYS.OPERATE, { ns: "areaManagement" }),
+      title: t(KEYS.OPERATE, source),
       dataIndex: "operate",
       width: "20%",
       render: (_, record) => (
@@ -67,7 +69,7 @@ export const AreaManagement = () => {
               });
             }}
           >
-            {t(KEYS.EDIT, { ns: "areaManagement" })}
+            {t(KEYS.EDIT, source)}
           </Button>
           <Button
             type="link"
@@ -80,7 +82,7 @@ export const AreaManagement = () => {
               }));
             }}
           >
-            {t(KEYS.DELETE, { ns: "areaManagement" })}
+            {t(KEYS.DELETE, source)}
           </Button>
         </div>
       ),
@@ -91,7 +93,7 @@ export const AreaManagement = () => {
     <>
       <div className="bg-white h-full w-full flex-col p-[1.5rem]">
         <span className="text-[1.125rem] font-semibold tracking-tight">
-          {t(KEYS.AREA_MANAGEMENT, { ns: "areaManagement" })}
+          {t(KEYS.AREA_MANAGEMENT, source)}
         </span>
         <div className="mt-[1.5rem] mb-[1.125rem] h-[2.5rem] flex justify-between">
           <Input
@@ -119,10 +121,11 @@ export const AreaManagement = () => {
               setOperateModalParams({
                 isOpen: true,
                 isEdit: false,
+                recordItem: initialRegionDataItem,
               });
             }}
           >
-            + {t(KEYS.ADD, { ns: "areaManagement" })}
+            + {t(KEYS.ADD, source)}
           </Button>
         </div>
         <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">
@@ -171,7 +174,7 @@ export const AreaManagement = () => {
         title={
           <div className="text-[1.25rem] font-semibold leading-[1.875rem]">
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            {t(KEYS.OPERATION_CONFIRM, { ns: "areaManagement" })}
+            {t(KEYS.OPERATION_CONFIRM, source)}
           </div>
         }
         onCancle={() => setIsDeleteOpen(false)}
@@ -184,7 +187,7 @@ export const AreaManagement = () => {
         confirmLoading={isLoading}
       >
         <span className="pl-[2rem] text-[1rem]">
-          {t(KEYS.DELETE_TIPS, { ns: "areaManagement" })}
+          {t(KEYS.DELETE_TIPS, source)}
         </span>
       </CustomModal>
     </>
