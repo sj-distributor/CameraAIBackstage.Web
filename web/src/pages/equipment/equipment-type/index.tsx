@@ -196,6 +196,7 @@ export const EquipmentType = () => {
         className={"customDeviceModal"}
         modalWidth={"42.5rem"}
         confirmLoading={confirmLoading}
+        destroyOnClose={true}
       >
         {isEditLoading && !isAddOrUpdate ? (
           <Spin className="flex justify-center" spinning={isEditLoading} />
