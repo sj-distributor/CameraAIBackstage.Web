@@ -6,6 +6,7 @@ import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
 import {
   IEquipmentCreateOrUpdateDto,
   IEquipmentList,
+  IEquipmentPageRequest,
   IPageDto,
   IRegionDto,
 } from "@/services/dtos/equipment/list";
@@ -94,14 +95,20 @@ export const useAction = () => {
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
 
   const initGetEquipmentList = () => {
-    loadingAction.setTrue();
-    GetEquipmentPage({
+    const data: IEquipmentPageRequest = {
       PageIndex: pageDto.PageIndex,
       PageSize: pageDto.PageSize,
       Keyword: searchKey,
-      IsOnline: Boolean(isSearchOnline),
-      IsBind: Boolean(isSearchBind),
-    })
+    };
+    if (isSearchOnline !== undefined && isSearchOnline !== IOnlineOrNot.All) {
+      data.IsOnline = Boolean(isSearchOnline);
+    }
+    if (isSearchBind !== undefined && isSearchBind !== IBondOrNot.All) {
+      data.IsBind = Boolean(isSearchBind);
+    }
+
+    loadingAction.setTrue();
+    GetEquipmentPage(data)
       .then((res) => {
         setData(res.equipments);
         setDataTotalCount(res.count);
