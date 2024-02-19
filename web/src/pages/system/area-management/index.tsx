@@ -1,72 +1,88 @@
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, WarningFilled } from "@ant-design/icons";
 import { Button, Input, Pagination, Table, TableColumnsType } from "antd";
+import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/area-management-keys";
+import { IRegionsDto } from "@/services/dtos/area-management";
 
 import { AddAreaModal } from "./conponents/add-area-model";
 import { useAction } from "./hook";
-import { IAreaManagementData } from "./props";
 
 export const AreaManagement = () => {
   const {
-    data,
-    setIsModalOpen,
-    setIsDeleteIndex,
     searchValue,
-    isTableLoading,
     pageDto,
     setSearchValue,
     setPageDto,
-    isModalOpen,
-    handleAddInput,
-    handleRemoveInput,
-    inputFields,
     t,
+    isRegionListLoading,
+    regionListCount,
+    regionDataList,
+    setSearchIconValue,
+    setIsDeleteOpen,
+    isDeleteOpen,
+    initGetRegionList,
+    handleDeleteById,
+    setOperateModalParams,
+    operateModalParams,
+    isLoading,
+    source,
+    initialRegionDataItem,
   } = useAction();
 
-  const columns: TableColumnsType<IAreaManagementData> = [
+  const columns: TableColumnsType<IRegionsDto> = [
     {
-      title: t(KEYS.AREA_ID, { ns: "areaManagement" }),
+      title: t(KEYS.AREA_ID, source),
       dataIndex: "areaId",
       width: "10%",
     },
     {
-      title: t(KEYS.AREA_NAME, { ns: "areaManagement" }),
+      title: t(KEYS.AREA_NAME, source),
       dataIndex: "areaName",
       width: "10%",
     },
     {
-      title: t(KEYS.AREA_ADDRESS, { ns: "areaManagement" }),
-      dataIndex: "areaAddress",
+      title: t(KEYS.AREA_ADDRESS, source),
+      dataIndex: "regionAddress",
       width: "50%",
     },
     {
-      title: t(KEYS.PRINCIPAL, { ns: "areaManagement" }),
-      dataIndex: "person",
+      title: t(KEYS.PRINCIPAL, source),
+      dataIndex: "principal",
       width: "10%",
     },
     {
-      title: t(KEYS.OPERATE, { ns: "areaManagement" }),
+      title: t(KEYS.OPERATE, source),
       dataIndex: "operate",
       width: "20%",
-      render: (_, __, index) => (
+      render: (_, record) => (
         <div className="h-[1.375rem]">
           <Button
             type="link"
             className="w-[6rem]"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setOperateModalParams({
+                isOpen: true,
+                isEdit: true,
+                recordItem: record,
+              });
+            }}
           >
-            {t(KEYS.EDIT, { ns: "areaManagement" })}
+            {t(KEYS.EDIT, source)}
           </Button>
           <Button
             type="link"
             className="w-[6rem]"
             onClick={() => {
-              setIsDeleteIndex(index);
+              setIsDeleteOpen(true);
+              setOperateModalParams((preValue) => ({
+                ...preValue,
+                recordItem: record,
+              }));
             }}
           >
-            {t(KEYS.DELETE, { ns: "areaManagement" })}
+            {t(KEYS.DELETE, source)}
           </Button>
         </div>
       ),
@@ -77,7 +93,7 @@ export const AreaManagement = () => {
     <>
       <div className="bg-white h-full w-full flex-col p-[1.5rem]">
         <span className="text-[1.125rem] font-semibold tracking-tight">
-          {t(KEYS.AREA_MANAGEMENT, { ns: "areaManagement" })}
+          {t(KEYS.AREA_MANAGEMENT, source)}
         </span>
         <div className="mt-[1.5rem] mb-[1.125rem] h-[2.5rem] flex justify-between">
           <Input
@@ -92,6 +108,7 @@ export const AreaManagement = () => {
                   fontSize: "1.1rem",
                   fontWeight: "700",
                 }}
+                onClick={() => setSearchIconValue(searchValue)}
               />
             }
             value={searchValue}
@@ -100,35 +117,44 @@ export const AreaManagement = () => {
           <Button
             type="primary"
             className="w-[5.5rem] h-[2.2rem] text-center"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setOperateModalParams({
+                isOpen: true,
+                isEdit: false,
+                recordItem: initialRegionDataItem,
+              });
+            }}
           >
-            + {t(KEYS.ADD, { ns: "areaManagement" })}
+            + {t(KEYS.ADD, source)}
           </Button>
         </div>
         <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">
           <div className="h-full overflow-auto no-scrollbar pb-[1.125rem]">
             <Table
               columns={columns}
-              dataSource={data}
+              dataSource={regionDataList}
               pagination={false}
               rowKey="areaId"
-              loading={isTableLoading}
+              loading={isRegionListLoading}
               sticky={true}
             />
           </div>
           <div className="flex justify-between items-center pt-[1rem]">
             <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
-              共
-              <span className="text-[#2853E3] font-light mx-1">
-                {data.length}
-              </span>
-              條
+              <Trans
+                i18nKey={KEYS.PAGINATION}
+                ns="portraitList"
+                values={{ count: regionListCount }}
+                components={{
+                  span: <span className="text-[#2853E3] font-light mx-1" />,
+                }}
+              />
             </div>
             <Pagination
               current={pageDto.pageIndex}
               pageSize={pageDto.pageSize}
               pageSizeOptions={[5, 10, 20]}
-              total={data.length}
+              total={regionListCount}
               showQuickJumper
               showSizeChanger
               onChange={(page, pageSize) =>
@@ -138,25 +164,31 @@ export const AreaManagement = () => {
           </div>
         </div>
       </div>
+
+      <AddAreaModal
+        setOperateModalParams={setOperateModalParams}
+        operateModalParams={operateModalParams}
+        initGetRegionList={initGetRegionList}
+      />
       <CustomModal
         title={
-          <div className="text-[1.25rem] font-semibold tracking-tight leading-[1.875rem]">
-            {t(KEYS.ADD_AREA, { ns: "areaManagement" })}
+          <div className="text-[1.25rem] font-semibold leading-[1.875rem]">
+            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
+            {t(KEYS.OPERATION_CONFIRM, source)}
           </div>
         }
-        onCancle={() => setIsModalOpen(false)}
+        onCancle={() => setIsDeleteOpen(false)}
         onConfirm={() => {
-          setIsModalOpen(false);
+          handleDeleteById(operateModalParams?.recordItem?.areaId ?? 0);
+          setIsDeleteOpen(false);
         }}
-        open={isModalOpen}
-        className={"customDeviceModal"}
-        modalWidth="42.5rem"
+        open={isDeleteOpen}
+        className={"customModal"}
+        confirmLoading={isLoading}
       >
-        <AddAreaModal
-          handleAddInput={handleAddInput}
-          handleRemoveInput={handleRemoveInput}
-          inputFields={inputFields}
-        />
+        <span className="pl-[2rem] text-[1rem]">
+          {t(KEYS.DELETE_TIPS, source)}
+        </span>
       </CustomModal>
     </>
   );

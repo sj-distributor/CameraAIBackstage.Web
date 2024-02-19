@@ -9,6 +9,9 @@ export const CustomModal = ({
   className,
   modalWidth,
   footer,
+  destroyOnClose,
+  forceRender,
+  confirmLoading,
 }: {
   title: JSX.Element;
   onCancle: () => void;
@@ -18,6 +21,9 @@ export const CustomModal = ({
   className?: string;
   modalWidth?: string;
   footer?: JSX.Element;
+  destroyOnClose?: boolean;
+  forceRender?: boolean;
+  confirmLoading?: boolean;
 }) => {
   return (
     <Modal
@@ -27,6 +33,8 @@ export const CustomModal = ({
       open={open}
       centered
       closeIcon={null}
+      destroyOnClose={destroyOnClose}
+      forceRender={forceRender}
       footer={
         footer ?? (
           <div className="h-[4.75rem] bg-[#F6F8FC] rounded-b-md items-center flex justify-end">
@@ -40,6 +48,7 @@ export const CustomModal = ({
               type="primary"
               className="w-[6rem] h-[2.75rem] mr-[1rem] bg-[#2853E3]"
               onClick={onConfirm}
+              loading={confirmLoading}
             >
               確定
             </Button>
