@@ -75,6 +75,22 @@ code {
   border-left: none;
 }
 
+.customScollbar::-webkit-scrollbar-thumb {
+  border-radius: 0.625rem;
+  background-color: #d7d7e2;
+}
+
+.customScollbar::-webkit-scrollbar {
+  width: 0.75rem;
+  background-color: #fafafb;
+  border-radius: 0.625rem;
+}
+
+.customScollbar::-webkit-scrollbar-track {
+  border-radius: 0.625rem;
+  background-color: #fafafb;
+}
+
 .resettingModalPadding .ant-modal-content {
   position: relative;
   padding: 0;
