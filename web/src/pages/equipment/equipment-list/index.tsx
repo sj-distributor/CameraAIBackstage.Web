@@ -7,13 +7,13 @@ import {
   Pagination,
   Radio,
   Select,
+  Spin,
   Switch,
   Table,
   Tooltip,
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
-import { clone } from "ramda";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-list-keys";
@@ -21,35 +21,68 @@ import KEYS from "@/i18n/language/keys/equipment-list-keys";
 import downArrow from "../../../assets/public/down-arrow.png";
 import search from "../../../assets/public/search.png";
 import { useAction } from "./hook";
-import { IDataType, IDeviceDataType } from "./props";
+import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
+import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
 
 export const EquipmentList = () => {
   const {
+    source,
     isUnbindOpen,
     setIsUnbindOpen,
     isDeleteDeviceOpen,
     setIsDeleteDeviceOpen,
     isBindingOpen,
     setIsBindingOpen,
-    isAddDeviceOpen,
-    setIsAddDeviceOpen,
-    isUnbindIndex,
-    setIsUnbindIndex,
-    setIsDeleteIndex,
+    isAddOrUpdateOpen,
+    setIsAddOrUpdateOpen,
+    setBindId,
+    setIsDeleteId,
     data,
-    setData,
-    deviceData,
     t,
+    setPageDto,
+    searchKey,
+    setSearchKey,
+    isSearchOnline,
+    setIsSearchOnline,
+    isSearchBind,
+    setIsSearchBind,
+    equipmentId,
+    setEquipmentId,
+    equipmentType,
+    setEquipmentType,
+    equipmentName,
+    setEquipmentName,
+    onAddOrUpdateSubmit,
+    form,
+    equipmentTypesOption,
+    dataTotalCount,
+    loading,
+    bindAreaId,
+    setBindAreaId,
+    onDelete,
+    isAddOrEdit,
+    setIsAddOrEdit,
+    onGetEquipmentInformationById,
+    editLoding,
+    setEquipmentTypeId,
+    language,
+    onOpenBind,
+    regionLoading,
+    regionData,
+    onConfirmBind,
+    confirmLoading,
+    pageDto,
+    onConfirmUnBind,
   } = useAction();
 
-  const columns: ColumnsType<IDataType> = [
+  const columns: ColumnsType<IEquipmentList> = [
     {
-      title: t(KEYS.DEVICE_ID, { ns: "equipmentList" }),
-      dataIndex: "deviceId",
+      title: t(KEYS.DEVICE_ID, source),
+      dataIndex: "id",
       width: "16.6%",
     },
     {
-      title: t(KEYS.IS_ONLINE, { ns: "equipmentList" }),
+      title: t(KEYS.IS_ONLINE, source),
       dataIndex: "isOnline",
       width: "16.6%",
       render: (record: boolean) => (
@@ -57,13 +90,13 @@ export const EquipmentList = () => {
           {record ? (
             <div className="flex flex-row items-center">
               <div className="bg-[#34A46E] w-[.375rem] h-[.375rem] rounded-full mr-[.5rem]" />
-              <span>{t(KEYS.ONLINE, { ns: "equipmentList" })}</span>
+              <span>{t(KEYS.ONLINE, source)}</span>
             </div>
           ) : (
             <div className="flex flex-row items-center">
               <div className="bg-[#F04E4E] min-w-[.375rem] max-w-[.375rem] h-[.375rem] rounded-full mr-[.5rem]" />
               <span className="whitespace-nowrap">
-                {t(KEYS.OFFLINE, { ns: "equipmentList" })}
+                {t(KEYS.OFFLINE, source)}
               </span>
             </div>
           )}
@@ -71,102 +104,116 @@ export const EquipmentList = () => {
       ),
     },
     {
-      title: t(KEYS.DEVICE_TYPE, { ns: "equipmentList" }),
-      dataIndex: "deviceType",
+      title: t(KEYS.DEVICE_TYPE, source),
+      dataIndex: "equipmentType",
       width: "16.6%",
     },
     {
-      title: t(KEYS.DEVICE_NAME, { ns: "equipmentList" }),
+      title: t(KEYS.DEVICE_NAME, source),
       dataIndex: "equipmentName",
       width: "16.6%",
     },
     {
-      title: t(KEYS.IS_BLIND, { ns: "equipmentList" }),
-      dataIndex: "whetherToBind",
+      title: t(KEYS.IS_BLIND, source),
+      dataIndex: "isBind",
       width: "16.6%",
       render: (_, record, index) => {
         return (
           <Tooltip
             placement="topLeft"
-            title={t(record ? KEYS.CLICK_TO_UNBIND : KEYS.CLICK_TO_BIND, {
-              ns: "equipmentList",
-            })}
+            title={t(
+              record ? KEYS.CLICK_TO_UNBIND : KEYS.CLICK_TO_BIND,
+              source
+            )}
           >
             <Switch
-              checkedChildren={t(KEYS.BINDING, { ns: "equipmentList" })}
-              unCheckedChildren=""
-              value={record.whetherToBind}
+              checkedChildren={t(KEYS.BINDING, source)}
+              value={record.isBind}
               onChange={(value) => {
-                const newList = clone(data);
+                setBindId(record.id);
 
-                if (newList[index].whetherToBind && !value) {
+                if (data[index].isBind && !value) {
                   setIsUnbindOpen(true);
-                  setIsUnbindIndex(index);
-
-                  return;
+                } else {
+                  setIsBindingOpen(true);
+                  onOpenBind();
                 }
-                newList[index].whetherToBind = value;
-                setData(newList);
               }}
-              className="w-[3.125rem] text-[.625rem] customSwitch"
+              className={`${
+                language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
+              } text-[.625rem] customSwitch`}
             />
           </Tooltip>
         );
       },
     },
     {
-      title: t(KEYS.OPERATE, { ns: "equipmentList" }),
+      title: t(KEYS.OPERATE, source),
       dataIndex: "operate",
       width: "16.6%",
-      render: (_, __, index) => (
+      render: (_, record) => (
         <div>
           <Button
             type="link"
             className="w-[6rem]"
-            onClick={() => setIsBindingOpen(true)}
+            onClick={() => {
+              onGetEquipmentInformationById(record.id);
+              setIsAddOrEdit(false);
+              setIsAddOrUpdateOpen(true);
+            }}
           >
-            {t(KEYS.EDIT, { ns: "equipmentList" })}
+            {t(KEYS.EDIT, source)}
           </Button>
           <Button
             type="link"
             className="w-[6rem]"
             onClick={() => {
-              setIsDeleteIndex(index);
+              setIsDeleteId(record.id);
               setIsDeleteDeviceOpen(true);
             }}
           >
-            {t(KEYS.DELETE, { ns: "equipmentList" })}
+            {t(KEYS.DELETE, source)}
           </Button>
         </div>
       ),
     },
   ];
 
-  const deviceColumns: ColumnsType<IDeviceDataType> = [
+  const deviceColumns: ColumnsType<IRegionDto> = [
     {
       title: "",
       dataIndex: "radio",
       width: "3.625rem",
-      render: () => <Radio />,
+      render: (_, record) => {
+        return (
+          <Radio
+            value={record.radio}
+            onChange={() => {
+              setBindAreaId(record.areaId);
+            }}
+            checked={bindAreaId === record.areaId}
+          />
+        );
+      },
     },
     {
-      title: t(KEYS.AREA_ID, { ns: "equipmentList" }),
+      title: t(KEYS.AREA_ID, source),
       dataIndex: "areaId",
       width: "9.5rem",
     },
     {
-      title: t(KEYS.AREA_NAME, { ns: "equipmentList" }),
+      title: t(KEYS.AREA_NAME, source),
       dataIndex: "areaName",
       width: "9.5rem",
     },
     {
-      title: t(KEYS.AREA_ADDRESS, { ns: "equipmentList" }),
-      dataIndex: "areaAddress",
+      title: t(KEYS.AREA_ADDRESS, source),
+      dataIndex: "regionAddress",
       width: "24.875rem",
     },
     {
-      title: t(KEYS.PRINCIPAL, { ns: "equipmentList" }),
-      dataIndex: "person",
+      title: t(KEYS.PRINCIPAL, source),
+      dataIndex: "principal",
       width: "9.5rem",
     },
   ];
@@ -195,57 +242,68 @@ export const EquipmentList = () => {
       <div>
         <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            {t(KEYS.DEVICE_LIST, { ns: "equipmentList" })}
+            {t(KEYS.DEVICE_LIST, source)}
           </span>
           <div className="flex flex-row pt-[1.625rem] justify-between">
             <div>
               <Input
                 className="w-[17.5rem]"
                 suffix={<img src={search} />}
-                placeholder={t(KEYS.SEARCH_DEVICE_ID_DEVICE_TYPE_DEVICE_NAME, {
-                  ns: "equipmentList",
-                })}
+                placeholder={t(
+                  KEYS.SEARCH_DEVICE_ID_DEVICE_TYPE_DEVICE_NAME,
+                  source
+                )}
+                value={searchKey}
+                onChange={(e) => {
+                  setSearchKey(e.target.value);
+                }}
               />
               <Select
                 className="mx-[1rem] w-[13.5rem]"
-                placeholder={t(KEYS.IS_ONLINE, {
-                  ns: "equipmentList",
-                })}
+                placeholder={t(KEYS.IS_ONLINE, source)}
+                value={isSearchOnline}
+                onChange={(value) => {
+                  setIsSearchOnline(
+                    value !== IOnlineOrNot.All ? value : undefined
+                  );
+                }}
                 defaultActiveFirstOption
                 options={[
                   {
-                    value: "是否在線",
-                    label: t(KEYS.IS_ONLINE, { ns: "equipmentList" }),
+                    value: IOnlineOrNot.All,
+                    label: t(KEYS.IS_ONLINE, source),
                   },
                   {
-                    value: "在線",
-                    label: t(KEYS.ONLINE, { ns: "equipmentList" }),
+                    value: IOnlineOrNot.Online,
+                    label: t(KEYS.ONLINE, source),
                   },
                   {
-                    value: "離線",
-                    label: t(KEYS.OFFLINE, { ns: "equipmentList" }),
+                    value: IOnlineOrNot.OffOnline,
+                    label: t(KEYS.OFFLINE, source),
                   },
                 ]}
                 suffixIcon={<img src={downArrow} />}
               />
               <Select
                 className="w-[13.5rem]"
-                placeholder={t(KEYS.IS_CONFIRM, {
-                  ns: "equipmentList",
-                })}
+                placeholder={t(KEYS.IS_BLIND, source)}
                 defaultActiveFirstOption
+                value={isSearchBind}
+                onChange={(value) => {
+                  setIsSearchBind(value !== IBondOrNot.All ? value : undefined);
+                }}
                 options={[
                   {
-                    value: "是否確定",
-                    label: t(KEYS.IS_CONFIRM, { ns: "equipmentList" }),
+                    value: IBondOrNot.All,
+                    label: t(KEYS.IS_BLIND, source),
                   },
                   {
-                    value: "已綁定",
-                    label: t(KEYS.BOUND, { ns: "equipmentList" }),
+                    value: IBondOrNot.Bond,
+                    label: t(KEYS.BOUND, source),
                   },
                   {
-                    value: "未綁定",
-                    label: t(KEYS.NOT_BOUND, { ns: "equipmentList" }),
+                    value: IBondOrNot.NotBond,
+                    label: t(KEYS.NOT_BOUND, source),
                   },
                 ]}
                 suffixIcon={<img src={downArrow} />}
@@ -253,18 +311,20 @@ export const EquipmentList = () => {
             </div>
             <Button
               type="primary"
-              className="h-[2.75rem] w-[7.25rem]"
-              onClick={() => setIsAddDeviceOpen(true)}
+              className="h-[2.75rem]"
+              onClick={() => {
+                setIsAddOrEdit(true);
+                setIsAddOrUpdateOpen(true);
+              }}
             >
               <PlusOutlined className="pr-[.5rem]" />
-              {t(KEYS.ADD_DEVICE, {
-                ns: "equipmentList",
-              })}
+              {t(KEYS.ADD_DEVICE, source)}
             </Button>
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
             <Table
-              rowKey={(record) => record.deviceId}
+              loading={loading}
+              rowKey={(record) => record.id}
               columns={columns}
               dataSource={data}
               className="tableHiddenScrollBar flex-1"
@@ -274,18 +334,22 @@ export const EquipmentList = () => {
             <div className="flex justify-between items-center py-[1rem]">
               <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
                 共{" "}
-                <span className="text-[#2853E3] font-light">{data.length}</span>{" "}
+                <span className="text-[#2853E3] font-light">
+                  {dataTotalCount}
+                </span>{" "}
                 條
               </div>
               <div>
                 <Pagination
-                  current={1}
-                  pageSize={5}
+                  current={pageDto.PageIndex}
+                  pageSize={pageDto.PageSize}
                   pageSizeOptions={[5, 10, 20]}
-                  total={data.length}
+                  total={dataTotalCount}
                   showQuickJumper
                   showSizeChanger
-                  onChange={() => {}}
+                  onChange={(page, pageSize) => {
+                    setPageDto({ PageIndex: page, PageSize: pageSize });
+                  }}
                   className="flex flex-wrap justify-center"
                 />
               </div>
@@ -294,158 +358,158 @@ export const EquipmentList = () => {
         </div>
       </div>
 
+      {/* 確認解綁 */}
       <CustomModal
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            {t(KEYS.OPERATION_CONFIRMATION, {
-              ns: "equipmentList",
-            })}
+            {t(KEYS.OPERATION_CONFIRMATION, source)}
           </div>
         }
         onCancle={() => setIsUnbindOpen(false)}
-        onConfirm={() => {
-          const newList = clone(data);
-
-          newList[isUnbindIndex].whetherToBind = false;
-          setData(newList);
-          setIsUnbindOpen(false);
-        }}
+        onConfirm={onConfirmUnBind}
         open={isUnbindOpen}
         className={"customModal"}
+        confirmLoading={confirmLoading}
       >
         <span className="pl-[2rem]">
-          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_UNBIND, {
-            ns: "equipmentList",
-          })}
+          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_UNBIND, source)}
         </span>
       </CustomModal>
 
+      {/* 選擇設備綁定 */}
       <CustomModal
-        title={
-          <div>
-            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            {t(KEYS.OPERATION_CONFIRMATION, {
-              ns: "equipmentList",
-            })}
-          </div>
-        }
-        onCancle={() => setIsDeleteDeviceOpen(false)}
-        onConfirm={() => {
-          setIsDeleteDeviceOpen(false);
-        }}
-        open={isDeleteDeviceOpen}
-        className={"customModal"}
-      >
-        <span className="pl-[2rem]">
-          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, {
-            ns: "equipmentList",
-          })}
-        </span>
-      </CustomModal>
-
-      <CustomModal
-        title={
-          <div>
-            {t(KEYS.DEVICE_BINDING, {
-              ns: "equipmentList",
-            })}
-          </div>
-        }
+        title={<div>{t(KEYS.DEVICE_BINDING, source)}</div>}
         onCancle={() => setIsBindingOpen(false)}
-        onConfirm={() => setIsBindingOpen(false)}
+        onConfirm={onConfirmBind}
         open={isBindingOpen}
         className={"customDeviceModal"}
         modalWidth={"60rem"}
+        confirmLoading={confirmLoading}
       >
         <Table
+          loading={regionLoading}
           rowKey={(record) => record.areaId}
           columns={deviceColumns}
-          dataSource={deviceData}
+          dataSource={regionData}
           className="tableHiddenScrollBar"
           scroll={{ y: 450 }}
           pagination={false}
         />
       </CustomModal>
 
+      {/* 添加/編輯設備 */}
       <CustomModal
         title={
           <div>
-            {t(KEYS.ADD_DEVICE, {
-              ns: "equipmentList",
-            })}
+            {isAddOrEdit
+              ? t(KEYS.ADD_DEVICE, source)
+              : t(KEYS.EDIT_DEVICE, source)}
           </div>
         }
-        onCancle={() => setIsAddDeviceOpen(false)}
-        onConfirm={() => setIsAddDeviceOpen(false)}
-        open={isAddDeviceOpen}
+        onCancle={() => {
+          setIsAddOrUpdateOpen(false);
+          setEquipmentId("");
+          setEquipmentName("");
+          setEquipmentType("");
+          setEquipmentTypeId(null);
+          form.setFieldsValue({
+            deviceId: "",
+            deviceName: "",
+            deviceType: "",
+          });
+        }}
+        onConfirm={() => {
+          onAddOrUpdateSubmit(isAddOrEdit);
+        }}
+        open={isAddOrUpdateOpen}
         className={"customDeviceModal"}
         modalWidth={"42.5rem"}
+        confirmLoading={confirmLoading}
+        destroyOnClose={true}
       >
-        <Form colon={false}>
-          <FormItem
-            name="deviceId"
-            label={t(KEYS.DEVICE_ID, {
-              ns: "equipmentList",
-            })}
-            rules={[{ required: true }]}
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 15 }}
+        {editLoding && !isAddOrEdit ? (
+          <Spin spinning={editLoding} className="flex justify-center" />
+        ) : (
+          <Form
+            colon={false}
+            onFinish={() => {
+              onAddOrUpdateSubmit(isAddOrEdit);
+            }}
+            form={form}
           >
-            <Input
-              placeholder={t(KEYS.PLEASE_INPUT, {
-                ns: "equipmentList",
-              })}
-            />
-          </FormItem>
-          <FormItem
-            name="deviceType"
-            label={t(KEYS.DEVICE_TYPE, {
-              ns: "equipmentList",
-            })}
-            rules={[{ required: true }]}
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 15 }}
-          >
-            <Select
-              suffixIcon={<img src={downArrow} />}
-              placeholder={t(KEYS.PLEASE_SELECT, {
-                ns: "equipmentList",
-              })}
-              defaultActiveFirstOption
-              options={[
-                {
-                  value: "請選擇",
-                  label: t(KEYS.PLEASE_SELECT, { ns: "equipmentList" }),
-                },
-                {
-                  value: "攝像頭",
-                  label: t(KEYS.CAMERA, { ns: "equipmentList" }),
-                },
-                {
-                  value: "大聲公",
-                  label: t(KEYS.LOUD_SPEAKER, { ns: "equipmentList" }),
-                },
-              ]}
-            />
-          </FormItem>
-          <FormItem
-            name="deviceName"
-            label={t(KEYS.DEVICE_NAME, {
-              ns: "equipmentList",
-            })}
-            rules={[{ required: true }]}
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 15 }}
-            style={{ marginBottom: 0 }}
-          >
-            <Input
-              placeholder={t(KEYS.PLEASE_INPUT, {
-                ns: "equipmentList",
-              })}
-            />
-          </FormItem>
-        </Form>
+            <FormItem
+              name="deviceId"
+              label={t(KEYS.DEVICE_ID, source)}
+              rules={[{ required: true }]}
+              labelCol={{ span: language === "ch" ? 3 : 4 }}
+              wrapperCol={{ span: 15 }}
+            >
+              <Input
+                placeholder={t(KEYS.PLEASE_INPUT, source)}
+                value={equipmentId}
+                onChange={(e) => {
+                  setEquipmentId(e.target.value);
+                }}
+              />
+            </FormItem>
+            <FormItem
+              name="deviceType"
+              label={t(KEYS.DEVICE_TYPE, source)}
+              rules={[{ required: true }]}
+              labelCol={{ span: language === "ch" ? 3 : 4 }}
+              wrapperCol={{ span: 15 }}
+            >
+              <Select
+                listHeight={200}
+                suffixIcon={<img src={downArrow} />}
+                placeholder={t(KEYS.PLEASE_SELECT, source)}
+                value={equipmentType}
+                onChange={(_, option) => {
+                  setEquipmentType((option as IOptionDto).label);
+                  setEquipmentTypeId((option as IOptionDto).value);
+                }}
+                defaultActiveFirstOption
+                options={equipmentTypesOption}
+              />
+            </FormItem>
+            <FormItem
+              name="deviceName"
+              label={t(KEYS.DEVICE_NAME, source)}
+              rules={[{ required: true }]}
+              labelCol={{ span: language === "ch" ? 3 : 4 }}
+              wrapperCol={{ span: 15 }}
+              style={{ marginBottom: 0 }}
+            >
+              <Input
+                placeholder={t(KEYS.PLEASE_INPUT, source)}
+                value={equipmentName}
+                onChange={(e) => {
+                  setEquipmentName(e.target.value);
+                }}
+              />
+            </FormItem>
+          </Form>
+        )}
+      </CustomModal>
+
+      {/* 確認刪除 */}
+      <CustomModal
+        title={
+          <div>
+            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
+            {t(KEYS.OPERATION_CONFIRMATION, source)}
+          </div>
+        }
+        onCancle={() => setIsDeleteDeviceOpen(false)}
+        onConfirm={onDelete}
+        open={isDeleteDeviceOpen}
+        className={"customModal"}
+        confirmLoading={confirmLoading}
+      >
+        <span className="pl-[2rem]">
+          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, source)}
+        </span>
       </CustomModal>
     </ConfigProvider>
   );

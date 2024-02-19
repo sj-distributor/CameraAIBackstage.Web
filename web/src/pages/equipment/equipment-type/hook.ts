@@ -1,40 +1,194 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
 
-import { IDeviceTypeDataType } from "./props";
+import { IPageDto } from "@/services/dtos/equipment/list";
+import {
+  GetEquipmentTypeInfoById,
+  GetEquipmentTypePage,
+  PostCreateEquipmentType,
+  PostDeleteEquipmentType,
+  PostUpdateEquipmentType,
+} from "@/services/api/equipment/type";
+import { IEquipmentTypeList } from "@/services/dtos/equipment/type";
+import { useBoolean } from "ahooks";
+import { App, Form } from "antd";
 
 export const useAction = () => {
-  const { t } = useAuth();
+  const { t, language } = useAuth();
 
-  const [isAddTypeOpen, setIsAddTypeOpen] = useState<boolean>(false);
+  const [form] = Form.useForm();
+
+  const { message } = App.useApp();
+
+  const source = { ns: "equipmentType" };
+
+  const [data, setData] = useState<IEquipmentTypeList[]>([]);
+
+  const [totalListCount, setTotalListCount] = useState<number>(0);
+
+  const [loading, loadingAction] = useBoolean(false);
+
+  const [pageDto, setPageDto] = useState<IPageDto>({
+    PageSize: 10,
+    PageIndex: 1,
+  });
+
+  const [isAddOrModifyOpen, setIsAddOrModifyOpen] = useState<boolean>(false);
+
+  const [isAddOrUpdate, setIsAddOrUpdate] = useState<boolean>(false); // true:添加，false：編輯
+
+  const [clickEditId, setClickEditId] = useState<number>(0);
+
+  const [isEditLoading, setIsEditLoading] = useState<boolean>(false);
 
   const [isDeleteDeviceOpen, setIsDeleteDeviceOpen] = useState<boolean>(false);
 
-  const [isModifyOpen, setIsModifyOpen] = useState<boolean>(false);
+  const [isDeleteId, setIsDeleteId] = useState<number | null>(null);
 
-  const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
+  const [typeName, setTypeName] = useState<string>("");
 
-  const [data, setData] = useState<IDeviceTypeDataType[]>([
-    {
-      deviceTypeId: "11232131",
-      deviceType: " 攝像頭",
-      deviceInformation: "用於人面識別和車輛識別",
-      operate: "",
-    },
-  ]);
+  const [description, setDescription] = useState<string>("");
+
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
+
+  const initGetEquipmentTypeList = () => {
+    loadingAction.setTrue();
+    GetEquipmentTypePage(pageDto)
+      .then((res) => {
+        setData(res.equipmentTypes);
+        setTotalListCount(res.count);
+      })
+      .catch((err) => {
+        message.error(err);
+        setData([]);
+        setTotalListCount(0);
+      })
+      .finally(() => loadingAction.setFalse());
+  };
+
+  const onGetEquipmentTypeInfoById = (id: number) => {
+    setIsEditLoading(true);
+    GetEquipmentTypeInfoById({ EquipmentTypeId: id })
+      .then((res) => {
+        setTypeName(res.name);
+        setDescription(res.description);
+        form.setFieldsValue({
+          typeName: res.name,
+          description: res.description,
+        });
+      })
+      .catch((err) => {
+        setTypeName("");
+        setDescription("");
+        message.error(`获取信息失败：${err}`);
+      })
+      .finally(() => setIsEditLoading(false));
+    setClickEditId(id);
+  };
+
+  const handleCreate = () => {
+    PostCreateEquipmentType({
+      equipmentType: {
+        name: typeName,
+        description: description,
+      },
+    })
+      .then(() => {
+        setIsAddOrModifyOpen(false);
+        form.setFieldsValue({
+          typeName: "",
+          description: "",
+        });
+        setTypeName("");
+        setDescription("");
+        initGetEquipmentTypeList();
+      })
+      .catch((err) => {
+        message.error(`新增失敗:${err}`);
+      })
+      .finally(() => {
+        setConfirmLoading(false);
+      });
+  };
+
+  const handleUpdate = () => {
+    PostUpdateEquipmentType({
+      equipmentType: {
+        name: typeName,
+        description: description,
+        id: clickEditId,
+      },
+    })
+      .then(() => {
+        setIsAddOrModifyOpen(false);
+        form.setFieldsValue({
+          typeName: "",
+          description: "",
+        });
+        setTypeName("");
+        setDescription("");
+        initGetEquipmentTypeList();
+      })
+      .catch((err) => {
+        message.error(`新增失敗:${err}`);
+      })
+      .finally(() => {
+        setConfirmLoading(false);
+      });
+  };
+
+  const onAddOrUpdateSubmit = (isAdd: boolean) => {
+    form.validateFields(["typeName"]).then(() => {
+      setConfirmLoading(true);
+      isAdd ? handleCreate() : handleUpdate();
+    });
+  };
+
+  const onDelete = () => {
+    if (isDeleteId === null) return;
+    setConfirmLoading(true);
+    PostDeleteEquipmentType({ EquipmentTypeId: isDeleteId })
+      .then(() => {
+        initGetEquipmentTypeList();
+      })
+      .catch((err) => {
+        message.error(`删除失败：${err}`);
+      })
+      .finally(() => setConfirmLoading(false));
+  };
+
+  useEffect(() => {
+    initGetEquipmentTypeList();
+  }, [pageDto]);
 
   return {
-    isAddTypeOpen,
-    setIsAddTypeOpen,
+    source,
     isDeleteDeviceOpen,
     setIsDeleteDeviceOpen,
-    isModifyOpen,
-    setIsModifyOpen,
-    isDeleteIndex,
-    setIsDeleteIndex,
+    isAddOrModifyOpen,
+    setIsAddOrModifyOpen,
     data,
     setData,
     t,
+    setPageDto,
+    loading,
+    typeName,
+    setTypeName,
+    description,
+    setDescription,
+    totalListCount,
+    onAddOrUpdateSubmit,
+    form,
+    isAddOrUpdate,
+    setIsAddOrUpdate,
+    clickEditId,
+    onGetEquipmentTypeInfoById,
+    isEditLoading,
+    setIsDeleteId,
+    onDelete,
+    confirmLoading,
+    language,
+    pageDto,
   };
 };
