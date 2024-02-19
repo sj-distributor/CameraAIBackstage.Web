@@ -10,5 +10,6 @@ export const InitialAppSetting = async () => {
     .then((res) => res.json())
     .then((res: IAppSettings) => {
       (window as any).appSettings = res;
-    });
+    })
+    .catch(() => {});
 };

@@ -7,6 +7,8 @@ import equipmentType from "./language/pages/equipment-type";
 import homeMenu from "./language/pages/home-menu";
 import licensePlateManagement from "./language/pages/license-plate-management";
 import monitor from "./language/pages/monitor";
+import monitorAdd from "./language/pages/monitor-add";
+import monitorConfiguration from "./language/pages/monitor-configuration";
 import operationLog from "./language/pages/operation-log";
 import portraitList from "./language/pages/portrait-list";
 import userList from "./language/pages/user-list";
@@ -35,6 +37,12 @@ i18n.use(initReactI18next).init({
       },
       monitor: {
         ...monitor.en,
+      },
+      monitorAdd: {
+        ...monitorAdd.en,
+      },
+      monitorConfiguration: {
+        ...monitorConfiguration.en,
       },
       portraitList: {
         ...portraitList.en,
@@ -67,6 +75,12 @@ i18n.use(initReactI18next).init({
       },
       monitor: {
         ...monitor.ch,
+      },
+      monitorAdd: {
+        ...monitorAdd.ch,
+      },
+      monitorConfiguration: {
+        ...monitorConfiguration.ch,
       },
       portraitList: {
         ...portraitList.ch,

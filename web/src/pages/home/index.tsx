@@ -24,6 +24,7 @@ const headerStyle: React.CSSProperties = {
 const siderStyle: React.CSSProperties = {
   backgroundColor: "white",
   justifyContent: "center",
+  zIndex: 10,
 };
 
 const layoutStyle = {
@@ -62,7 +63,7 @@ export const Home = () => {
           icon: item.icon,
         };
 
-        if (item.children) {
+        if (item.children && !item.path.includes("/monitor")) {
           (menuItem as SubMenuType).children = item.children
             .filter((child) => child.path !== "")
             .map((child) => ({
