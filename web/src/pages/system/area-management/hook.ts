@@ -1,46 +1,40 @@
-import { useState } from "react";
+import { message } from "antd";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
+import {
+  GetAreaManagementPage,
+  PostDeleteAreaId,
+} from "@/services/api/area-management";
+import { IRegionsDto } from "@/services/dtos/area-management";
 
-import { IAreaManagementData } from "./props";
+import { IModifyModalDto } from "./props";
 
 export const useAction = () => {
   const { t } = useAuth();
 
-  const data: IAreaManagementData[] = [
-    {
-      areaId: 1,
-      areaName: "Jim Green",
-      areaAddress: "Janny创建了角色经理",
-      person: "Jim Green",
-    },
-    {
-      areaId: 2,
-      areaName: "Jim Green",
-      areaAddress: "Janny创建了角色经理",
-      person: "Jim Green",
-    },
-    {
-      areaId: 3,
-      areaName: "Jim Green",
-      areaAddress: "Janny创建了角色经理",
-      person: "Jim Green",
-    },
-    {
-      areaId: 4,
-      areaName: "Jim Green",
-      areaAddress: "Janny创建了角色经理",
-      person: "Jim Green",
-    },
-  ];
+  const source = { ns: "areaManagement" };
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const initialRegionDataItem = {
+    regionAddress: "",
+    regionAreaNames: [""],
+    principal: "",
+  };
 
-  const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+
+  const [isRegionListLoading, setIsRegionListLoading] =
+    useState<boolean>(false);
 
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const [isTableLoading, setIsTableLoading] = useState<boolean>(false);
+  const [searchIconValue, setSearchIconValue] = useState<string>("");
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const [regionListCount, setRegionListCount] = useState<number>(0);
+
+  const [regionDataList, setRegionDataList] = useState<IRegionsDto[]>([]);
 
   const [pageDto, setPageDto] = useState<{
     pageIndex: number;
@@ -50,31 +44,64 @@ export const useAction = () => {
     pageSize: 5,
   });
 
-  const [inputFields, setInputFields] = useState<{ id: number }[]>([{ id: 1 }]);
+  const [operateModalParams, setOperateModalParams] = useState<IModifyModalDto>(
+    {
+      isOpen: false,
+      isEdit: false,
+      recordItem: initialRegionDataItem,
+    }
+  );
 
-  const handleAddInput = () => {
-    setInputFields([...inputFields, { id: inputFields.length + 1 }]);
+  const initGetRegionList = () => {
+    setIsRegionListLoading(true);
+    GetAreaManagementPage({
+      PageIndex: pageDto.pageIndex,
+      PageSize: pageDto.pageSize,
+      Keyword: searchIconValue,
+    })
+      .then((res) => {
+        setRegionDataList(res.regions);
+        setRegionListCount(res.count);
+      })
+      .catch((err) => {
+        message.error(err);
+      })
+      .finally(() => setIsRegionListLoading(false));
   };
 
-  const handleRemoveInput = (id: number) => {
-    setInputFields(inputFields.filter((field) => field.id !== id));
+  const handleDeleteById = (areaId: number) => {
+    PostDeleteAreaId({
+      AreaId: areaId,
+    })
+      .then(() => initGetRegionList())
+      .catch((err) => {
+        message.error(err);
+      })
+      .finally(() => setIsLoading(false));
   };
+
+  useEffect(() => {
+    initGetRegionList();
+  }, [searchIconValue, pageDto.pageSize, pageDto.pageIndex]);
 
   return {
-    data,
-    isModalOpen,
-    setIsModalOpen,
-    isDeleteIndex,
-    setIsDeleteIndex,
     searchValue,
-    isTableLoading,
     pageDto,
     setSearchValue,
     setPageDto,
-    setIsTableLoading,
-    handleAddInput,
-    handleRemoveInput,
-    inputFields,
     t,
+    isRegionListLoading,
+    regionListCount,
+    regionDataList,
+    setSearchIconValue,
+    setIsDeleteOpen,
+    isDeleteOpen,
+    initGetRegionList,
+    handleDeleteById,
+    setOperateModalParams,
+    operateModalParams,
+    isLoading,
+    source,
+    initialRegionDataItem,
   };
 };
