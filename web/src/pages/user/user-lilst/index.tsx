@@ -16,8 +16,8 @@ import { useAction } from "./hook";
 
 export const UserList = () => {
   const {
-    isAddNewUser,
-    setIsAddNewUser,
+    isAddUser,
+    setIsAddUser,
     isDeleteUser,
     setIsDeleteUser,
     setIsClosed,
@@ -70,7 +70,7 @@ export const UserList = () => {
       render: () => {
         return (
           <Switch
-            checkedChildren="啟用"
+            checkedChildren="开启"
             unCheckedChildren=""
             defaultChecked
             className="w-[0.7rem] h-[1.3rem]"
@@ -204,13 +204,6 @@ export const UserList = () => {
   ];
 
   const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-    },
     getCheckboxProps: (record: { deviceId: string; name: string }) => ({
       disabled: record.name === "Disabled User",
 
@@ -248,7 +241,7 @@ export const UserList = () => {
             <Button
               type="primary"
               className="h-[2.5rem] w-[7.25rem]"
-              onClick={() => setIsAddNewUser(true)}
+              onClick={() => setIsAddUser(true)}
             >
               <PlusOutlined /> 添加用戶
             </Button>
@@ -287,9 +280,9 @@ export const UserList = () => {
             <CloseOutlined onClick={() => setIsClosed} className="mr-[1rem]" />
           </div>
         }
-        onCancle={() => setIsAddNewUser(false)}
-        onConfirm={() => setIsAddNewUser(false)}
-        open={isAddNewUser}
+        onCancle={() => setIsAddUser(false)}
+        onConfirm={() => setIsAddUser(false)}
+        open={isAddUser}
         className={"customDeviceModal"}
       >
         <Transfer
@@ -336,7 +329,7 @@ export const UserList = () => {
 
       <CustomModal
         title={
-          <div className="flex flex-row justify-between ">
+          <div className="flex flex-row justify-between">
             <div>修改密码</div>
             <CloseOutlined
               onClick={() => setIsClosed(true)}
@@ -354,13 +347,12 @@ export const UserList = () => {
           <div className="flex flex-col-reverse">
             <div className="flex justify-start items-center">
               <span className="text-[0.8rem]">當前密碼</span>
-
               <Input
                 placeholder="請輸入"
                 className="h-[1.6rem] rounded w-[24.9rem] ml-[0.5rem]"
               />
             </div>
-            <div className="flex justify-start mb-[1rem]  ml-[1rem] items-center">
+            <div className="flex justify-start mb-[1rem] ml-[1rem] items-center">
               <span className="text-[0.8rem]">新密碼</span>
               <Select
                 className="h-[1.6rem] rounded w-[24.9rem] ml-[0.5rem]"

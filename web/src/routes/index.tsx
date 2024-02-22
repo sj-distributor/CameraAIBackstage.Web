@@ -25,7 +25,6 @@ export const Router = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="*" element={<Navigate to={"/user/list"} />} />
-
       <Route element={<Home />}>
         {routerList.map((item, index) => (
           <Route
@@ -34,17 +33,6 @@ export const Router = () => {
             element={<AuthStatus>{item.element}</AuthStatus>}
           >
             {item.children && AuthRoutes(item.children)}
-            {/* {item.children &&
-              item.children.length > 0 &&
-              item.children.map((childrenItem, childrenIndex) => {
-                return (
-                  <Route
-                    key={childrenIndex}
-                    path={childrenItem.path}
-                    element={childrenItem.element}
-                  />
-                );
-              })} */}
           </Route>
         ))}
       </Route>

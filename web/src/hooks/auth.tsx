@@ -18,7 +18,7 @@ import { OperationLog } from "@/pages/system/operation-log";
 import { PortraitList } from "@/pages/system/portrait-list";
 import { UserList } from "@/pages/user/user-lilst";
 import { PermissionsList } from "@/pages/user/user-permissions";
-import { UserEditList } from "@/pages/user/user-permissions/editlist";
+import { UserDistribute } from "@/pages/user/user-permissions/distribute";
 import { UserPermissions } from "@/pages/user/user-permissions/permission-list";
 import { AddNewPermissions } from "@/pages/user/user-permissions/user-newpermissions";
 import { IRouterList } from "@/services/dtos/routes";
@@ -70,11 +70,11 @@ export default ({ children }: { children: React.ReactNode }) => {
             },
             {
               path: "/user/permissions/permissionslist",
-              element: <PermissionsList />,
+              element: <UserPermissions />,
             },
             {
-              path: "/user/permissions/editlist",
-              element: <UserEditList />,
+              path: "/user/permissions/distribute",
+              element: <UserDistribute />,
             },
           ],
         },
@@ -144,7 +144,7 @@ export default ({ children }: { children: React.ReactNode }) => {
     i18n.changeLanguage(language);
     setLocal(language === "en" ? enUS : zhCN);
     localStorage.setItem("language", language);
-  }, [language]);
+  }, [i18n, language]);
 
   useEffect(() => {
     localStorage.getItem("language")

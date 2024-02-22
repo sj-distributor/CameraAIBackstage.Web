@@ -6,10 +6,10 @@ import { useNavigate } from "react-router-dom";
 
 import { CustomModal } from "@/components/custom-modal";
 
-export const UserEditList = () => {
+export const UserDistribute = () => {
   const [deletePermissions, setDeletePermissions] = useState<boolean>(false);
 
-  const [batchDeleteUser, setBatchDeleteUser] = useState<boolean>(false);
+  const [, setBatchDeleteUser] = useState<boolean>(false);
 
   const [isAddNewRole, setIsAddNewRole] = useState<boolean>(false);
 
@@ -18,13 +18,6 @@ export const UserEditList = () => {
   const navigate = useNavigate();
 
   const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-    },
     getCheckboxProps: (record: { deviceId: string; name: string }) => ({
       disabled: record.name === "Disabled User",
     }),
@@ -137,7 +130,7 @@ export const UserEditList = () => {
           />
           <div className="flex justify-between items-center py-[1rem]">
             <div className="text-[#929292] text-[0.785rem]">
-              共 <span className="text-[#2853E3] font-light">200</span>條
+              共 <span className="text-[#2853E3] font-light">200</span> 條
             </div>
             <div>
               <Pagination

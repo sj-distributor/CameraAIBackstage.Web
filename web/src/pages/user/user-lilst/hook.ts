@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export const useAction = () => {
-  const [isAddNewUser, setIsAddNewUser] = useState<boolean>(false);
+  const [isAddUser, setIsAddUser] = useState<boolean>(false);
 
   const [isDeleteUser, setIsDeleteUser] = useState<boolean>(false);
 
@@ -12,8 +12,8 @@ export const useAction = () => {
   const [resetPassword, setResetPassword] = useState<boolean>(false);
 
   return {
-    isAddNewUser,
-    setIsAddNewUser,
+    isAddUser,
+    setIsAddUser,
     isDeleteUser,
     setIsDeleteUser,
     isClosed,

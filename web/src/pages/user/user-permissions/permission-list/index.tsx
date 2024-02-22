@@ -14,13 +14,6 @@ export const UserPermissions = () => {
   const navigate = useNavigate();
 
   const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-    },
     getCheckboxProps: (record: { deviceId: string; name: string }) => ({
       disabled: record.name === "Disabled User",
     }),
