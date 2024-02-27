@@ -36,7 +36,11 @@ api.interceptors.response.use(
         error.response.data.msg ?? "登录已过期，请重新登录",
         1,
         () => {
-          window.location.href = "";
+          window.location.href = `${
+            window.location.href.includes("http://localhost:3000")
+              ? "http://localhost:3000"
+              : (window as any).appSettings.serverUrl
+          }/notFound`;
         }
       );
     } else {
