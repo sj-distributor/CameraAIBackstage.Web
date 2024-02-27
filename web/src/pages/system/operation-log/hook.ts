@@ -30,11 +30,7 @@ export const useAction = () => {
   const [operateLogsList, setOperateLogsList] = useState<ILogsDto[]>([]);
 
   const onRangeChange = (dates: null | (Dayjs | null)[]) => {
-    if (dates) {
-      setDateRange([dates[0], dates[1]]);
-    } else {
-      setDateRange([null, null]);
-    }
+    dates ? setDateRange([dates[0], dates[1]]) : setDateRange([null, null]);
   };
 
   const rangePresets: TimeRangePickerProps["presets"] = [
