@@ -4,7 +4,7 @@ import zhCN from "antd/es/locale/zh_CN";
 import { TFunction } from "i18next";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import { MonitorIcon, SystemIcon } from "@/assets/sider";
 import KEYS from "@/i18n/language/keys/home-menu-keys";
@@ -35,11 +35,17 @@ export const AuthContext = React.createContext<IAuthContextType>(null!);
 export default ({ children }: { children: React.ReactNode }) => {
   const { i18n, t } = useTranslation();
 
+  const navigate = useNavigate();
+
   const [locale, setLocal] = React.useState<Locale>(enUS);
 
   const localStorageLanguage = localStorage.getItem("language") ?? "";
 
   const [language, setLanguage] = React.useState<string>(localStorageLanguage);
+
+  const appSettings = (window as any).appSettings;
+
+  const authorizeToken = localStorage.getItem(appSettings.tokenKey);
 
   const routerList: IRouterList[] = [
     {
@@ -142,6 +148,8 @@ export default ({ children }: { children: React.ReactNode }) => {
     localStorage.getItem("language")
       ? setLanguage(localStorage.getItem("language") as string)
       : setLanguage("ch");
+
+    authorizeToken && navigate("/user/list");
   }, []);
 
   const value = { language, t, locale, changeLanguage, routerList };
