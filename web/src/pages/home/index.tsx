@@ -95,10 +95,7 @@ export const Home = () => {
     },
     {
       label: (
-        <div
-          className="flex items-center hover:text-[#2853e3]"
-          onClick={() => navigate("login")}
-        >
+        <div className="flex items-center hover:text-[#2853e3]">
           <span className="iconfont icon-sign_out" />
           <div className="ml-[.5rem]">
             {t(KEYS.SIGN_OUT, { ns: "homeMenu" })}
