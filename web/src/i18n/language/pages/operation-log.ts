@@ -11,6 +11,7 @@ export default {
     [KEYS.USER_NAME]: "User Name",
     [KEYS.OPERATING_CONTENT]: "Operating Content",
     [KEYS.OPERATING_TIME]: "Operating Time",
+    [KEYS.PAGINATION]: "",
   },
   ch: {
     [KEYS.OPERATION_LOG]: "操作日誌",
@@ -21,5 +22,6 @@ export default {
     [KEYS.USER_NAME]: "用戶名",
     [KEYS.OPERATING_CONTENT]: "操作內容",
     [KEYS.OPERATING_TIME]: "操作時間",
+    [KEYS.PAGINATION]: "共 <span>{{count}}</span> 條",
   },
 };

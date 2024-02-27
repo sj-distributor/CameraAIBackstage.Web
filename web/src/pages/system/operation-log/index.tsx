@@ -5,17 +5,17 @@ import {
 } from "@ant-design/icons";
 import { DatePicker, Input, Pagination, Table, TableColumnsType } from "antd";
 import { Dayjs } from "dayjs";
+import { Trans } from "react-i18next";
 
 import KEYS from "@/i18n/language/keys/operation-log-keys";
+import { ILogsDto } from "@/services/dtos/operate-log";
 
 import { useAction } from "./hook";
-import { IOperationLogData } from "./props";
 
 const { RangePicker } = DatePicker;
 
 export const OperationLog = () => {
   const {
-    data,
     searchValue,
     isTableLoading,
     pageDto,
@@ -23,12 +23,15 @@ export const OperationLog = () => {
     setPageDto,
     rangePresets,
     onRangeChange,
-    startDate,
-    endDate,
+
     t,
+    operateLogsCount,
+    operateLogsList,
+    setSearchKeywordValue,
+    dateRange,
   } = useAction();
 
-  const columns: TableColumnsType<IOperationLogData> = [
+  const columns: TableColumnsType<ILogsDto> = [
     {
       title: t(KEYS.SERIAL_NUMBER, { ns: "operationLog" }),
       dataIndex: "id",
@@ -37,17 +40,17 @@ export const OperationLog = () => {
     },
     {
       title: t(KEYS.USER_NAME, { ns: "operationLog" }),
-      dataIndex: "userName",
+      dataIndex: "actionUser",
       width: "11%",
     },
     {
       title: t(KEYS.OPERATING_CONTENT, { ns: "operationLog" }),
-      dataIndex: "operateContent",
+      dataIndex: "actionContent",
       width: "51%",
     },
     {
       title: t(KEYS.OPERATING_TIME, { ns: "operationLog" }),
-      dataIndex: "operateTime",
+      dataIndex: "createdTime",
       width: "25%",
     },
   ];
@@ -83,6 +86,7 @@ export const OperationLog = () => {
                 fontSize: "1.1rem",
                 fontWeight: "700",
               }}
+              onClick={() => setSearchKeywordValue(searchValue)}
             />
           }
           value={searchValue}
@@ -94,10 +98,11 @@ export const OperationLog = () => {
           onChange={onRangeChange}
           renderExtraFooter={() => (
             <div className="flex justify-between">
-              {renderDateAndTime(startDate)}
-              {renderDateAndTime(endDate)}
+              {renderDateAndTime(dateRange[0])}
+              {renderDateAndTime(dateRange[1])}
             </div>
           )}
+          allowClear
           placeholder={[
             t(KEYS.START_DATE, { ns: "operationLog" }),
             t(KEYS.END_DATE, { ns: "operationLog" }),
@@ -108,7 +113,7 @@ export const OperationLog = () => {
         <div className="h-full overflow-auto no-scrollbar pb-[1.125rem]">
           <Table
             columns={columns}
-            dataSource={data}
+            dataSource={operateLogsList}
             pagination={false}
             rowKey="id"
             loading={isTableLoading}
@@ -117,17 +122,20 @@ export const OperationLog = () => {
         </div>
         <div className="flex justify-between items-center pt-[1rem]">
           <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
-            共
-            <span className="text-[#2853E3] font-light mx-1">
-              {data.length}
-            </span>
-            條
+            <Trans
+              i18nKey={KEYS.PAGINATION}
+              ns="operationLog"
+              values={{ count: operateLogsCount }}
+              components={{
+                span: <span className="text-[#2853E3] font-light mx-1" />,
+              }}
+            />
           </div>
           <Pagination
             current={pageDto.pageIndex}
             pageSize={pageDto.pageSize}
             pageSizeOptions={[5, 10, 20]}
-            total={data.length}
+            total={operateLogsCount}
             showQuickJumper
             showSizeChanger
             onChange={(page, pageSize) =>
