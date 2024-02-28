@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
 import { GetOperateLogsPage } from "@/services/api/operate-log";
-import { ILogsDto } from "@/services/dtos/operate-log";
+import { IOperateLogsPageResponse } from "@/services/dtos/operate-log";
 
 export const useAction = () => {
   const { t } = useAuth();
+
+  const initOperateLogsDto = { count: 0, logs: [] };
 
   const [searchValue, setSearchValue] = useState<string>("");
 
@@ -25,11 +27,10 @@ export const useAction = () => {
 
   const [dateRange, setDateRange] = useState<(Dayjs | null)[]>([null, null]);
 
-  const [operateLogsCount, setOperateLogsCount] = useState<number>(0);
+  const [operateLogsDto, setOperateLogsDto] =
+    useState<IOperateLogsPageResponse>(initOperateLogsDto);
 
-  const [operateLogsList, setOperateLogsList] = useState<ILogsDto[]>([]);
-
-  const onRangeChange = (dates: (Dayjs | null)[]) => {
+  const onRangeChange = (dates: null | (Dayjs | null)[]) => {
     dates ? setDateRange([dates[0], dates[1]]) : setDateRange([null, null]);
   };
 
@@ -52,10 +53,10 @@ export const useAction = () => {
       Keyword: searchKeywordValue,
     })
       .then((res) => {
-        setOperateLogsList(res.logs);
-        setOperateLogsCount(res.count);
+        if (res) setOperateLogsDto({ count: res.count, logs: res.logs });
       })
       .catch((err) => {
+        setOperateLogsDto(initOperateLogsDto);
         message.error(err);
       })
       .finally(() => setIsTableLoading(false));
@@ -85,9 +86,8 @@ export const useAction = () => {
     rangePresets,
     onRangeChange,
     t,
-    operateLogsCount,
-    operateLogsList,
     setSearchKeywordValue,
     dateRange,
+    operateLogsDto,
   };
 };

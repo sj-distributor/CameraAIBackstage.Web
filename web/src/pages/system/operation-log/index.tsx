@@ -25,10 +25,9 @@ export const OperationLog = () => {
     onRangeChange,
 
     t,
-    operateLogsCount,
-    operateLogsList,
     setSearchKeywordValue,
     dateRange,
+    operateLogsDto,
   } = useAction();
 
   const columns: TableColumnsType<ILogsDto> = [
@@ -113,7 +112,7 @@ export const OperationLog = () => {
         <div className="h-full overflow-auto no-scrollbar pb-[1.125rem]">
           <Table
             columns={columns}
-            dataSource={operateLogsList}
+            dataSource={operateLogsDto.logs}
             pagination={false}
             rowKey="id"
             loading={isTableLoading}
@@ -125,7 +124,7 @@ export const OperationLog = () => {
             <Trans
               i18nKey={KEYS.PAGINATION}
               ns="operationLog"
-              values={{ count: operateLogsCount }}
+              values={{ count: operateLogsDto.count }}
               components={{
                 span: <span className="text-[#2853E3] font-light mx-1" />,
               }}
@@ -135,7 +134,7 @@ export const OperationLog = () => {
             current={pageDto.pageIndex}
             pageSize={pageDto.pageSize}
             pageSizeOptions={[5, 10, 20]}
-            total={operateLogsCount}
+            total={operateLogsDto.count}
             showQuickJumper
             showSizeChanger
             onChange={(page, pageSize) =>
