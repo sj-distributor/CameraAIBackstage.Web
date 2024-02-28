@@ -81,6 +81,10 @@ export const useAction = () => {
   };
 
   useEffect(() => {
+    if (searchValue === "") setSearchIconValue("");
+  }, [searchValue]);
+
+  useEffect(() => {
     initGetRegionList();
   }, [searchIconValue, pageDto.pageSize, pageDto.pageIndex]);
 

@@ -62,8 +62,18 @@ export const useAction = () => {
   };
 
   useEffect(() => {
+    if (searchValue === "") setSearchKeywordValue("");
+  }, [searchValue]);
+
+  useEffect(() => {
     initGetLogsList();
-  }, [pageDto.pageSize, pageDto.pageIndex, dateRange[0], dateRange[1]]);
+  }, [
+    pageDto.pageSize,
+    pageDto.pageIndex,
+    dateRange[0],
+    dateRange[1],
+    searchKeywordValue,
+  ]);
 
   return {
     searchValue,
