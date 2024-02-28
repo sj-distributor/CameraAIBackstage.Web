@@ -29,7 +29,7 @@ export const useAction = () => {
 
   const [operateLogsList, setOperateLogsList] = useState<ILogsDto[]>([]);
 
-  const onRangeChange = (dates: null | (Dayjs | null)[]) => {
+  const onRangeChange = (dates: (Dayjs | null)[]) => {
     dates ? setDateRange([dates[0], dates[1]]) : setDateRange([null, null]);
   };
 
