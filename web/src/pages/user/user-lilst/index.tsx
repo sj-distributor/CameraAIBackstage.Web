@@ -2,17 +2,18 @@ import { CloseOutlined, WarningFilled } from "@ant-design/icons";
 import PlusOutlined from "@ant-design/icons/lib/icons/PlusOutlined";
 import {
   Button,
+  Checkbox,
   Input,
   Pagination,
   Select,
   Switch,
   Table,
-  Transfer,
 } from "antd";
 
 import { CustomModal } from "@/components/custom-modal";
 
 import { useAction } from "./hook";
+import Search from "antd/es/input/Search";
 
 export const UserList = () => {
   const {
@@ -21,10 +22,12 @@ export const UserList = () => {
     isDeleteUser,
     setIsDeleteUser,
     setIsClosed,
-    removeUser,
-    setRemoveUser,
-    resetPassword,
-    setResetPassword,
+    isRemoveUser,
+    setIsRemoveUser,
+    isResetPassword,
+    setIsResetPassword,
+    isSelectList,
+    setIsSelectList,
   } = useAction();
 
   const columns = [
@@ -70,10 +73,9 @@ export const UserList = () => {
       render: () => {
         return (
           <Switch
-            checkedChildren="开启"
+            checkedChildren="啟用"
             unCheckedChildren=""
-            defaultChecked
-            className="w-[0.7rem] h-[1.3rem]"
+            className="h-[1.35rem]"
           />
         );
       },
@@ -86,7 +88,7 @@ export const UserList = () => {
           <Button
             type="link"
             className="w-[3.6rem] text-[0.8rem]"
-            onClick={() => setResetPassword(true)}
+            onClick={() => setIsResetPassword(true)}
           >
             重置密碼
           </Button>
@@ -94,14 +96,14 @@ export const UserList = () => {
       },
     },
     {
-      title: " ",
+      title: "",
       dataIndex: "remove",
       render: () => {
         return (
           <Button
             type="link"
             className="text-[0.8rem]"
-            onClick={() => setRemoveUser(true)}
+            onClick={() => setIsRemoveUser(true)}
           >
             移除
           </Button>
@@ -212,13 +214,13 @@ export const UserList = () => {
   };
 
   return (
-    <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-[calc(100vh-7rem)] ">
-      <div className="bg-whitew-full flex-col justify-start pt-[1.5rem] overflow-scroll  no-scrollbar">
-        <span className="text-[1.125rem] font-semibold tracking-tight ">
+    <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-[calc(100vh-7rem)]">
+      <div className="bg-whitew-full flex-col justify-start pt-[1.5rem] overflow-scroll no-scrollbar">
+        <span className="text-[1.125rem] font-semibold tracking-tight">
           用戶列表
         </span>
         <br />
-        <div className="flex flex-row  justify-between  ">
+        <div className="flex flex-row justify-between">
           <div>
             <Input className="w-[17.5rem]" placeholder="搜索用戶名，部門" />
             <Select
@@ -248,7 +250,7 @@ export const UserList = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col  justify-between ">
+      <div className="flex flex-col justify-between">
         <Table
           rowKey={(record) => record.deviceId}
           columns={columns}
@@ -257,7 +259,7 @@ export const UserList = () => {
           pagination={false}
         />
         <div className="flex justify-between items-center py-[1rem]">
-          <div className="text-[#929292] text-[0.785rem] ">
+          <div className="text-[#929292] text-[0.785rem]">
             共 <span className="text-[#2853E3] font-light">{data.length}</span>
             條
           </div>
@@ -275,9 +277,9 @@ export const UserList = () => {
       </div>
       <CustomModal
         title={
-          <div className="flex flex-row justify-between ">
+          <div className="flex flex-row justify-between">
             <div>添加用戶</div>
-            <CloseOutlined onClick={() => setIsClosed} className="mr-[1rem]" />
+            <CloseOutlined onClick={() => setIsClosed} />
           </div>
         }
         onCancle={() => setIsAddUser(false)}
@@ -285,18 +287,51 @@ export const UserList = () => {
         open={isAddUser}
         className={"customDeviceModal"}
       >
-        <Transfer
-          dataSource={data}
-          showSearch
-          render={(data) => data.userName}
-          titles={["标题"]}
-          listStyle={{
-            width: 280,
-            height: 250,
-          }}
-        />
+        <div className="flex justify-between">
+          <div className="border-solid border border-gray-400 w-[16rem] rounded">
+            <div className="mb-[0.5rem] ml-[0.5rem] mt-[0.5rem]">標題</div>
+            <Search
+              placeholder="搜索用戶名，部門"
+              style={{
+                width: 230,
+              }}
+              className="mb-[0.5rem] ml-[0.5rem]"
+            />
+            <div className="ml-[1rem] mb-[0.5rem] scroll-auto h-[11rem]">
+              {data.map((data) => (
+                <div>
+                  <Checkbox
+                    className="mb-[0.5rem]"
+                    onClick={() => setIsSelectList(true)}
+                  >
+                    {data.userName}
+                  </Checkbox>
+                  <br />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="border-solid border border-gray-400 w-[16rem] rounded">
+            <div className="mb-[0.5rem] ml-[0.5rem] mt-[0.5rem]">
+              已选
+              <span>{data.length}</span>
+              個用戶
+            </div>
+            <Search
+              placeholder="搜索用戶名，部門"
+              style={{
+                width: 240,
+              }}
+              className="mb-[0.5rem] ml-[0.5rem]"
+            />
+            <div className="ml-[1rem] mb-[0.5rem] scroll-auto h-[11rem] flex justify-between">
+              <div onChange={() => setIsSelectList(true)}>
+                <CloseOutlined onClick={() => setIsClosed} />
+              </div>
+            </div>
+          </div>
+        </div>
       </CustomModal>
-
       <CustomModal
         title={
           <div>
@@ -311,7 +346,6 @@ export const UserList = () => {
       >
         <span className="pl-[2rem]">請確認是否批量删除？</span>
       </CustomModal>
-
       <CustomModal
         title={
           <div>
@@ -319,55 +353,51 @@ export const UserList = () => {
             操作確認
           </div>
         }
-        onCancle={() => setRemoveUser(false)}
-        onConfirm={() => setRemoveUser(false)}
-        open={removeUser}
+        onCancle={() => setIsRemoveUser(false)}
+        onConfirm={() => setIsRemoveUser(false)}
+        open={isRemoveUser}
         className={"customModal"}
       >
         <span className="pl-[2rem]">請確認是否批量删除？</span>
       </CustomModal>
-
       <CustomModal
         title={
           <div className="flex flex-row justify-between">
             <div>修改密码</div>
-            <CloseOutlined
-              onClick={() => setIsClosed(true)}
-              className="mr-[1rem]"
-            />
+            <CloseOutlined onClick={() => setIsClosed(true)} />
           </div>
         }
-        onCancle={() => setResetPassword(false)}
-        onConfirm={() => setResetPassword(false)}
-        open={resetPassword}
-        modalWidth={"42rem"}
+        onCancle={() => setIsResetPassword(false)}
+        onConfirm={() => setIsResetPassword(false)}
+        open={isResetPassword}
+        modalWidth={"38rem"}
         className={"customDeviceModal h-[13.1rem]"}
       >
         <div>
           <div className="flex flex-col-reverse">
-            <div className="flex justify-start items-center">
+            <div className="flex justify-start items-center mb-[1rem]">
               <span className="text-[0.8rem]">當前密碼</span>
               <Input
                 placeholder="請輸入"
-                className="h-[1.6rem] rounded w-[24.9rem] ml-[0.5rem]"
+                className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
               />
             </div>
-            <div className="flex justify-start mb-[1rem] ml-[1rem] items-center">
-              <span className="text-[0.8rem]">新密碼</span>
-              <Select
-                className="h-[1.6rem] rounded w-[24.9rem] ml-[0.5rem]"
-                mode="tags"
-                placeholder="請選擇"
-                defaultActiveFirstOption
-              />
-            </div>
-            <div className="flex justify-start mb-[1rem] items-center">
-              <span className="text-[0.8rem]">確認密碼</span>
-              <Input
-                placeholder="請輸入"
-                className="h-[1.6rem] rounded w-[24.9rem] ml-[0.5rem]"
-              />
-            </div>
+          </div>
+          <div className="flex justify-start mb-[1rem] ml-[1rem] items-center">
+            <span className="text-[0.8rem]">新密碼</span>
+            <Select
+              className="h-[1.7rem] w-[23rem] ml-[0.5rem]"
+              mode="tags"
+              placeholder="請選擇"
+              defaultActiveFirstOption
+            />
+          </div>
+          <div className="flex justify-start items-center">
+            <span className="text-[0.8rem]">確認密碼</span>
+            <Input
+              placeholder="請輸入"
+              className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
+            />
           </div>
         </div>
       </CustomModal>

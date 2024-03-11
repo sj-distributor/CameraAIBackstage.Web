@@ -7,9 +7,11 @@ export const useAction = () => {
 
   const [isClosed, setIsClosed] = useState<boolean>(false);
 
-  const [removeUser, setRemoveUser] = useState<boolean>(false);
+  const [isRemoveUser, setIsRemoveUser] = useState<boolean>(false);
 
-  const [resetPassword, setResetPassword] = useState<boolean>(false);
+  const [isResetPassword, setIsResetPassword] = useState<boolean>(false);
+
+  const [isSelectList, setIsSelectList] = useState<boolean>(false);
 
   return {
     isAddUser,
@@ -18,9 +20,11 @@ export const useAction = () => {
     setIsDeleteUser,
     isClosed,
     setIsClosed,
-    removeUser,
-    setRemoveUser,
-    resetPassword,
-    setResetPassword,
+    isRemoveUser,
+    setIsRemoveUser,
+    isResetPassword,
+    setIsResetPassword,
+    isSelectList,
+    setIsSelectList,
   };
 };

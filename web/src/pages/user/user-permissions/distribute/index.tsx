@@ -9,7 +9,7 @@ import { CustomModal } from "@/components/custom-modal";
 export const UserDistribute = () => {
   const [deletePermissions, setDeletePermissions] = useState<boolean>(false);
 
-  const [, setBatchDeleteUser] = useState<boolean>(false);
+  const [batchDeletUser, setBatchDeleteUser] = useState<boolean>(false);
 
   const [isAddNewRole, setIsAddNewRole] = useState<boolean>(false);
 
@@ -95,7 +95,6 @@ export const UserDistribute = () => {
           <Button type="text">
             <span className="text-[1rem] font-semibold">角色列表</span>
           </Button>
-
           <br />
           <div className="flex flex-row  justify-between mt-[1rem] mb-[0.5rem]">
             <div>
@@ -119,7 +118,6 @@ export const UserDistribute = () => {
             </div>
           </div>
         </div>
-
         <div className="flex flex-col  justify-between ">
           <Table
             rowKey={(record) => record.deviceId}
@@ -145,7 +143,6 @@ export const UserDistribute = () => {
           </div>
         </div>
       </div>
-
       <div>
         <CustomModal
           title={
@@ -177,7 +174,6 @@ export const UserDistribute = () => {
           </div>
         </CustomModal>
       </div>
-
       <CustomModal
         title={
           <div>
@@ -192,7 +188,6 @@ export const UserDistribute = () => {
       >
         <span className="pl-[2rem]">請確認是否刪除角色？</span>
       </CustomModal>
-
       <CustomModal
         title={
           <div className="flex flex-row justify-between ">

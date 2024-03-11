@@ -5,27 +5,16 @@ import { useAction } from "./hook";
 
 export const AddNewPermissions = () => {
   const {
-    onChange,
+    AddRoleName,
     handleCheckBox,
-    homePageList,
-    monitor,
-    videoPlayback,
-    alertList,
-    feedbackList,
-    userList,
-    permissionsList,
-    deviceList,
-    equipmentType,
-    monitorSet,
-    portraitSet,
-    licensePlateSet,
-    areaSet,
+    frontendOptionsList,
+    backendOptionsList,
   } = useAction();
 
   return (
     <div>
       <Outlet />
-      <div className="h-[20rem] w-[107rem] bg-white rounded-b-md ">
+      <div className="h-[20rem] w-[107rem] bg-white rounded-b-md">
         <div className="bg-white w-full pr-[1rem] pl-[1.5rem] h-[calc(100vh-10rem)] overflow-auto">
           <div className="font-semibold tracking-tight pt-[0.5rem]">
             <Button type="text">
@@ -50,12 +39,12 @@ export const AddNewPermissions = () => {
                   ]}
                   className="h-[2rem] w-[48rem]"
                 >
-                  <AutoComplete onChange={onChange} placeholder="請輸入">
+                  <AutoComplete onChange={AddRoleName} placeholder="請輸入">
                     <Input />
                   </AutoComplete>
                 </Form.Item>
               </div>
-              <div className="flex justify-center items-center mb-[2rem] pl-[5.3rem] ">
+              <div className="flex justify-center items-center mb-[2rem] pl-[5.3rem]">
                 <Form.Item
                   name="角色描述"
                   label="角色描述"
@@ -81,66 +70,20 @@ export const AddNewPermissions = () => {
                   <span className="font-medium">功能權限</span>
                 </div>
                 <div className="flex flex-col">
-                  <div className="flex flex-row mb-[0.8rem]">
-                    {homePageList.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                  <div className="flex flex-row mb-[0.8rem]">
-                    {monitor.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                  <div className="flex flex-row mb-[0.8rem]">
-                    {videoPlayback.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                  <div className="flex flex-row mb-[0.8rem]">
-                    {alertList.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                  <div className="flex flex-row">
-                    {feedbackList.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
+                  {frontendOptionsList.map((item, index) => (
+                    <div className="flex flex-row mb-[0.8rem]" key={index}>
+                      {item.option.map((option) => (
+                        <Checkbox
+                          className="w-[8rem]"
+                          key={index}
+                          value={item.option}
+                          onChange={handleCheckBox}
+                        >
+                          {option.label}
+                        </Checkbox>
+                      ))}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -154,102 +97,20 @@ export const AddNewPermissions = () => {
                   <span className="font-medium">功能權限</span>
                 </div>
                 <div className="flex flex-col">
-                  <div className="flex flex-row mb-[0.8rem]">
-                    {userList.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                  <div className="flex flex-row mb-[0.8rem] ">
-                    {permissionsList.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                  <div className="flex flex-row mb-[0.8rem]">
-                    {deviceList.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                  <div className="flex flex-row mb-[0.8rem]">
-                    {equipmentType.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                  <div className="flex flex-row mb-[0.8rem]">
-                    {monitorSet.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                  <div className="flex flex-row mb-[0.8rem]">
-                    {portraitSet.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                  <div className="flex flex-row mb-[0.8rem]">
-                    {licensePlateSet.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                  <div className="flex flex-row">
-                    {areaSet.map((option) => (
-                      <Checkbox
-                        className="w-[8rem]"
-                        key={option.value}
-                        value={option.value}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
+                  {backendOptionsList.map((items, indexs) => (
+                    <div className="flex flex-row mb-[0.8rem]" key={indexs}>
+                      {items.option.map((option) => (
+                        <Checkbox
+                          className="w-[8rem]"
+                          key={indexs}
+                          value={items.option}
+                          onChange={handleCheckBox}
+                        >
+                          {option.label}
+                        </Checkbox>
+                      ))}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

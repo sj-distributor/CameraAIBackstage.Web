@@ -144,7 +144,7 @@ export default ({ children }: { children: React.ReactNode }) => {
     i18n.changeLanguage(language);
     setLocal(language === "en" ? enUS : zhCN);
     localStorage.setItem("language", language);
-  }, [i18n, language]);
+  }, [language]);
 
   useEffect(() => {
     localStorage.getItem("language")

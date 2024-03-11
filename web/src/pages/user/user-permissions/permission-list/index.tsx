@@ -7,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { CustomModal } from "@/components/custom-modal";
 
 export const UserPermissions = () => {
-  const [deletePermissions, setDeletePermissions] = useState<boolean>(false);
+  const [isDeletePermissions, setISDeletePermissions] =
+    useState<boolean>(false);
 
   const [isAddNewRole, setIsAddNewRole] = useState<boolean>(false);
 
@@ -51,7 +52,7 @@ export const UserPermissions = () => {
             <Button
               type="text"
               className="text-[0.8rem] text-blue-400 h-[1.5rem] w-[5rem] ml-[0.5rem] rounded-none"
-              onClick={() => setDeletePermissions(true)}
+              onClick={() => setISDeletePermissions(true)}
             >
               刪除
             </Button>
@@ -112,13 +113,13 @@ export const UserPermissions = () => {
 
   return (
     <div>
-      <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-[calc(100vh-7rem)] ">
-        <div className="bg-whitew-full flex-col justify-start pt-[1.5rem] overflow-scroll  no-scrollbar">
-          <span className="text-[1rem] font-semibold tracking-tight ">
+      <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-[calc(100vh-7rem)]">
+        <div className="bg-whitew-full flex-col justify-start pt-[1.5rem] overflow-scroll no-scrollbar">
+          <span className="text-[1rem] font-semibold tracking-tight">
             角色列表
           </span>
           <br />
-          <div className="flex flex-row  justify-between mt-[1rem] mb-[0.5rem]">
+          <div className="flex flex-row justify-between mt-[1rem] mb-[0.5rem]">
             <div>
               <Input className="w-[17.5rem]" placeholder="搜索角色名稱" />
             </div>
@@ -132,8 +133,7 @@ export const UserPermissions = () => {
             </Button>
           </div>
         </div>
-
-        <div className="flex flex-col  justify-between ">
+        <div className="flex flex-col justify-between">
           <Table
             rowKey={(record) => record.deviceId}
             columns={columns}
@@ -158,11 +158,10 @@ export const UserPermissions = () => {
           </div>
         </div>
       </div>
-
       <div>
         <CustomModal
           title={
-            <div className="flex flex-row justify-content ">
+            <div className="flex flex-row justify-content">
               <div className="text-gray-300 mr-[0.5rem]">角色列表 /</div>
               <span>新增角色</span>
             </div>
@@ -177,7 +176,7 @@ export const UserPermissions = () => {
             <div>
               <div>角色信息</div>
               <div className="w-[71.25rem] rounded h-[14rem]">
-                <div className="flex justify-start w-[71.25rem] rounded ">
+                <div className="flex justify-start w-[71.25rem] rounded">
                   <span>角色名稱</span>
                   <Input placeholder="請輸入" className="h-[2rem] rounded" />
                 </div>
@@ -190,7 +189,6 @@ export const UserPermissions = () => {
           </div>
         </CustomModal>
       </div>
-
       <CustomModal
         title={
           <div>
@@ -198,9 +196,9 @@ export const UserPermissions = () => {
             操作確認
           </div>
         }
-        onCancle={() => setDeletePermissions(false)}
-        onConfirm={() => setDeletePermissions(false)}
-        open={deletePermissions}
+        onCancle={() => setISDeletePermissions(false)}
+        onConfirm={() => setISDeletePermissions(false)}
+        open={isDeletePermissions}
         className={"customModal"}
       >
         <span className="pl-[2rem]">請確認是否刪除角色？</span>
