@@ -20,7 +20,7 @@ import { UserList } from "@/pages/user/user-lilst";
 import { PermissionsList } from "@/pages/user/user-permissions";
 import { UserDistribute } from "@/pages/user/user-permissions/distribute";
 import { UserPermissions } from "@/pages/user/user-permissions/permission-list";
-import { AddNewPermissions } from "@/pages/user/user-permissions/user-newpermissions";
+import { NewOrUpdatePermissions } from "@/pages/user/user-permissions/user-newpermissions";
 import { IRouterList } from "@/services/dtos/routes";
 
 interface IAuthContextType {
@@ -65,11 +65,11 @@ export default ({ children }: { children: React.ReactNode }) => {
               element: <UserPermissions />,
             },
             {
-              path: "/user/permissions/newpermissions",
-              element: <AddNewPermissions />,
+              path: "/user/permissions/newOrUpdate",
+              element: <NewOrUpdatePermissions />,
             },
             {
-              path: "/user/permissions/permissionslist",
+              path: "/user/permissions/list",
               element: <UserPermissions />,
             },
             {

@@ -7,7 +7,7 @@ export const useAction = () => {
     console.log(e);
   };
 
-  const handleCheckBox = (checkedBox: void | any) => {
+  const handleCheckBox = (checkedBox: any) => {
     setCheckList(checkedBox);
   };
 

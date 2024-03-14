@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { CustomModal } from "@/components/custom-modal";
+import search from "../../../../assets/public/search.png";
 
 export const UserPermissions = () => {
   const [isDeletePermissions, setISDeletePermissions] =
@@ -24,34 +25,37 @@ export const UserPermissions = () => {
     {
       title: "角色名稱",
       dataIndex: "characterName",
+      className: "w-[16rem]",
     },
     {
       title: "角色描述",
       dataIndex: "roleDescription",
+      className: "w-[62rem]",
     },
     {
       title: "操作",
       dataIndex: "operate",
+      className: "flex flex-items-center",
       render: () => {
         return (
           <div className="flex justify-center items-center">
             <Button
               type="text"
-              className="text-[0.8rem] text-blue-400 h-[1.5rem] w-[5rem]"
-              onClick={() => navigate("/user/permissions/editlist")}
+              className="text-[0.8rem] text-blue-600 h-[1.5rem] w-[5rem]"
+              onClick={() => navigate("/user/permissions/distribute")}
             >
               分配
             </Button>
             <Button
               type="text"
-              className="text-[0.8rem] text-blue-400 h-[1.5rem] w-[5rem] ml-[0.5rem]"
-              onClick={() => navigate("/user/permissions/editlist")}
+              className="text-[0.8rem] text-blue-600 h-[1.5rem] w-[5rem] ml-[0.5rem]"
+              onClick={() => navigate("/user/permissions/newOrUpdate")}
             >
               編輯
             </Button>
             <Button
               type="text"
-              className="text-[0.8rem] text-blue-400 h-[1.5rem] w-[5rem] ml-[0.5rem] rounded-none"
+              className="text-[0.8rem] text-blue-600 h-[1.5rem] w-[5rem] ml-[0.5rem] rounded-none"
               onClick={() => setISDeletePermissions(true)}
             >
               刪除
@@ -121,12 +125,16 @@ export const UserPermissions = () => {
           <br />
           <div className="flex flex-row justify-between mt-[1rem] mb-[0.5rem]">
             <div>
-              <Input className="w-[17.5rem]" placeholder="搜索角色名稱" />
+              <Input
+                className="w-[17.5rem]"
+                placeholder="搜索角色名稱"
+                suffix={<img src={search} />}
+              />
             </div>
             <Button
               type="primary"
               className="h-[2.75rem] w-[7.25rem]"
-              onClick={() => navigate("/user/permissions/newpermissions")}
+              onClick={() => navigate("/user/permissions/newOrUpdate")}
             >
               <PlusOutlined />
               新增角色
@@ -158,37 +166,33 @@ export const UserPermissions = () => {
           </div>
         </div>
       </div>
-      <div>
-        <CustomModal
-          title={
-            <div className="flex flex-row justify-content">
-              <div className="text-gray-300 mr-[0.5rem]">角色列表 /</div>
-              <span>新增角色</span>
+      <CustomModal
+        title={
+          <div className="flex flex-row justify-content">
+            <div className="text-gray-300 mr-[0.5rem]">角色列表 /</div>
+            <span>新增角色</span>
+          </div>
+        }
+        onCancle={() => setIsAddNewRole(false)}
+        onConfirm={() => setIsAddNewRole(false)}
+        open={isAddNewRole}
+        className={"customDeviceModal"}
+        modalWidth="105.375rem"
+      >
+        <div>
+          <div>角色信息</div>
+          <div className="w-[71.25rem] rounded h-[14rem]">
+            <div className="flex justify-start w-[71.25rem] rounded">
+              <span>角色名稱</span>
+              <Input placeholder="請輸入" className="h-[2rem] rounded" />
             </div>
-          }
-          onCancle={() => setIsAddNewRole(false)}
-          onConfirm={() => setIsAddNewRole(false)}
-          open={isAddNewRole}
-          className={"customDeviceModal"}
-          modalWidth="105.375rem"
-        >
-          <div>
-            <div>
-              <div>角色信息</div>
-              <div className="w-[71.25rem] rounded h-[14rem]">
-                <div className="flex justify-start w-[71.25rem] rounded">
-                  <span>角色名稱</span>
-                  <Input placeholder="請輸入" className="h-[2rem] rounded" />
-                </div>
-                <div className="flex justify-start">
-                  <span>角色描述</span>
-                  <TextArea placeholder="請輸入" />
-                </div>
-              </div>
+            <div className="flex justify-start">
+              <span>角色描述</span>
+              <TextArea placeholder="請輸入" />
             </div>
           </div>
-        </CustomModal>
-      </div>
+        </div>
+      </CustomModal>
       <CustomModal
         title={
           <div>

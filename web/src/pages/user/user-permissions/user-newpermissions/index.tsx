@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 import { useAction } from "./hook";
 
-export const AddNewPermissions = () => {
+export const NewOrUpdatePermissions = () => {
   const {
     AddRoleName,
     handleCheckBox,
@@ -15,13 +15,13 @@ export const AddNewPermissions = () => {
     <div>
       <Outlet />
       <div className="h-[20rem] w-[107rem] bg-white rounded-b-md">
-        <div className="bg-white w-full pr-[1rem] pl-[1.5rem] h-[calc(100vh-10rem)] overflow-auto">
+        <div className="bg-white w-full h-[calc(100vh-10rem)] overflow-auto">
           <div className="font-semibold tracking-tight pt-[0.5rem]">
-            <Button type="text">
+            <Button type="text" className="pr-[0.2rem] text-gray-500">
               <span className="text-[1rem]">角色列表</span>
             </Button>
-            <span className="text-[1rem]">/</span>
-            <Button type="text">
+            <span className="text-[1rem] text-gray-500">/</span>
+            <Button type="text" className="pl-[0.3rem]">
               <span className="text-[1rem] font-semibold">新增角色</span>
             </Button>
           </div>

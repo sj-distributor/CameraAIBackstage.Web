@@ -1,19 +1,17 @@
-import { CloseOutlined, WarningFilled } from "@ant-design/icons";
-import PlusOutlined from "@ant-design/icons/lib/icons/PlusOutlined";
 import {
-  Button,
-  Checkbox,
-  Input,
-  Pagination,
-  Select,
-  Switch,
-  Table,
-} from "antd";
+  CloseOutlined,
+  LeftOutlined,
+  RightOutlined,
+  WarningFilled,
+} from "@ant-design/icons";
+import PlusOutlined from "@ant-design/icons/lib/icons/PlusOutlined";
+import { Button, Input, Pagination, Select, Switch, Table } from "antd";
 
 import { CustomModal } from "@/components/custom-modal";
 
 import { useAction } from "./hook";
-import Search from "antd/es/input/Search";
+import search from "../../../assets/public/search.png";
+import Tree from "antd/es/tree/Tree";
 
 export const UserList = () => {
   const {
@@ -26,8 +24,12 @@ export const UserList = () => {
     setIsRemoveUser,
     isResetPassword,
     setIsResetPassword,
-    isSelectList,
     setIsSelectList,
+    rowSelection,
+    expandedKeys,
+    checkedKeys,
+    selectedKeys,
+    autoExpandParent,
   } = useAction();
 
   const columns = [
@@ -205,14 +207,6 @@ export const UserList = () => {
     },
   ];
 
-  const rowSelection = {
-    getCheckboxProps: (record: { deviceId: string; name: string }) => ({
-      disabled: record.name === "Disabled User",
-
-      name: record.name,
-    }),
-  };
-
   return (
     <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-[calc(100vh-7rem)]">
       <div className="bg-whitew-full flex-col justify-start pt-[1.5rem] overflow-scroll no-scrollbar">
@@ -222,7 +216,11 @@ export const UserList = () => {
         <br />
         <div className="flex flex-row justify-between">
           <div>
-            <Input className="w-[17.5rem]" placeholder="搜索用戶名，部門" />
+            <Input
+              className="w-[17.5rem]"
+              suffix={<img src={search} />}
+              placeholder="搜索用戶名，部門"
+            />
             <Select
               className="mx-[1rem] w-[13.5rem] mt-[1.7rem]"
               placeholder="狀態"
@@ -276,10 +274,11 @@ export const UserList = () => {
         </div>
       </div>
       <CustomModal
+        modalWidth={"36rem"}
         title={
           <div className="flex flex-row justify-between">
             <div>添加用戶</div>
-            <CloseOutlined onClick={() => setIsClosed} />
+            <CloseOutlined onClick={() => setIsClosed(true)} />
           </div>
         }
         onCancle={() => setIsAddUser(false)}
@@ -287,48 +286,51 @@ export const UserList = () => {
         open={isAddUser}
         className={"customDeviceModal"}
       >
-        <div className="flex justify-between">
-          <div className="border-solid border border-gray-400 w-[16rem] rounded">
-            <div className="mb-[0.5rem] ml-[0.5rem] mt-[0.5rem]">標題</div>
-            <Search
+        <div className="flex flex-nowrap">
+          <div className="border-solid border border-gray-200 w-[16rem] rounded">
+            <div className="mb-[0.5rem] ml-[1rem] mt-[0.5rem] text-[0.8rem] text-slate-600">
+              標題
+            </div>
+            <Input
+              className="ml-[0.5rem] mb-[0.5rem] w-[14rem] h-[1.65rem] text-[0.8rem] rounded"
+              suffix={<img src={search} className="size-[1rem]" />}
               placeholder="搜索用戶名，部門"
-              style={{
-                width: 230,
-              }}
-              className="mb-[0.5rem] ml-[0.5rem]"
             />
-            <div className="ml-[1rem] mb-[0.5rem] scroll-auto h-[11rem]">
-              {data.map((data) => (
-                <div>
-                  <Checkbox
-                    className="mb-[0.5rem]"
-                    onClick={() => setIsSelectList(true)}
-                  >
-                    {data.userName}
-                  </Checkbox>
-                  <br />
-                </div>
-              ))}
+            <Tree
+              checkable
+              treeData={data}
+              expandedKeys={expandedKeys}
+              autoExpandParent={autoExpandParent}
+              checkedKeys={checkedKeys}
+              selectedKeys={selectedKeys}
+            />
+          </div>
+          <div className="mt-[6rem]">
+            <div
+              onClick={() => setIsSelectList(true)}
+              className="border-solid border border-gray-200 w-[1rem] h-[1rem] m-[0.5rem] flex justify-items-center"
+            >
+              <RightOutlined className="text-[0.7rem] ml-[0.15rem]" />
+            </div>
+            <div
+              onChange={() => setIsSelectList(true)}
+              className="border-solid border border-gray-200 w-[1rem] h-[1rem] m-[0.5rem] flex justify-items-center"
+            >
+              <LeftOutlined className="text-[0.7rem] ml-[0.15rem]" />
             </div>
           </div>
-          <div className="border-solid border border-gray-400 w-[16rem] rounded">
-            <div className="mb-[0.5rem] ml-[0.5rem] mt-[0.5rem]">
-              已选
+          <div className="border-solid border border-gray-200 w-[16rem] rounded">
+            <div className="mb-[0.5rem] ml-[1rem] mt-[0.5rem] text-[0.8rem]">
+              已選
               <span>{data.length}</span>
               個用戶
             </div>
-            <Search
+            <Input
+              className="ml-[0.5rem] mb-[0.5rem] w-[14rem] h-[1.65rem] text-[0.8rem] rounded"
+              suffix={<img src={search} className="size-[1rem]" />}
               placeholder="搜索用戶名，部門"
-              style={{
-                width: 240,
-              }}
-              className="mb-[0.5rem] ml-[0.5rem]"
             />
-            <div className="ml-[1rem] mb-[0.5rem] scroll-auto h-[11rem] flex justify-between">
-              <div onChange={() => setIsSelectList(true)}>
-                <CloseOutlined onClick={() => setIsClosed} />
-              </div>
-            </div>
+            <div className="ml-[1rem] mb-[0.5rem] scroll-auto h-[11rem] flex justify-between"></div>
           </div>
         </div>
       </CustomModal>

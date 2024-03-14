@@ -13,6 +13,21 @@ export const useAction = () => {
 
   const [isSelectList, setIsSelectList] = useState<boolean>(false);
 
+  const [expandedKeys, setExpandedKeys] = useState(["Janny"]);
+
+  const [checkedKeys, setCheckedKeys] = useState(["Janny"]);
+
+  const [selectedKeys, setSelectedKeys] = useState([]);
+
+  const [autoExpandParent, setAutoExpandParent] = useState(true);
+
+  const rowSelection = {
+    getCheckboxProps: (record: { deviceId: string; name: string }) => ({
+      disabled: record.name === "Disabled User",
+      name: record.name,
+    }),
+  };
+
   return {
     isAddUser,
     setIsAddUser,
@@ -26,5 +41,14 @@ export const useAction = () => {
     setIsResetPassword,
     isSelectList,
     setIsSelectList,
+    rowSelection,
+    expandedKeys,
+    setExpandedKeys,
+    checkedKeys,
+    setCheckedKeys,
+    selectedKeys,
+    setSelectedKeys,
+    autoExpandParent,
+    setAutoExpandParent,
   };
 };
