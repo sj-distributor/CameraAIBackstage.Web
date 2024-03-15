@@ -75,7 +75,7 @@ export const NewOrUpdatePermissions = () => {
                       {item.option.map((option) => (
                         <Checkbox
                           className="w-[8rem]"
-                          key={index}
+                          key={item.optionName}
                           value={item.option}
                           onChange={handleCheckBox}
                         >

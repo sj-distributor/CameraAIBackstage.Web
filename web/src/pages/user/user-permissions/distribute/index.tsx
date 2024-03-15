@@ -30,6 +30,8 @@ export const UserDistribute = () => {
 
   const [isAddNewUser, setIsAddNewUser] = useState<boolean>(false);
 
+  const [isClosed, setIsClosed] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
   const rowSelection = {
@@ -261,7 +263,7 @@ export const UserDistribute = () => {
         title={
           <div className="flex flex-row justify-between">
             <div>添加用戶</div>
-            <CloseOutlined onClick={() => setClose(true)} />
+            <CloseOutlined onClick={() => setIsClosed(true)} />
           </div>
         }
         onCancle={() => setIsAddNewUser(false)}

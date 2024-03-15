@@ -1,4 +1,5 @@
-import { SetStateAction, useState } from "react";
+import { CheckboxProps } from "antd/es/checkbox";
+import { useState } from "react";
 
 export const useAction = () => {
   const [checkList, setCheckList] = useState([]);
@@ -7,8 +8,8 @@ export const useAction = () => {
     console.log(e);
   };
 
-  const handleCheckBox = (checkedBox: SetStateAction<never[]>) => {
-    setCheckList(checkedBox);
+  const handleCheckBox: CheckboxProps["onChange"] = (e) => {
+    console.log(`checked = ${e.target.checked}`);
   };
 
   const frontendOptionsList = [
