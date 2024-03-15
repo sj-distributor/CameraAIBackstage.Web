@@ -13,9 +13,9 @@ export const useAction = () => {
 
   const [isSelectList, setIsSelectList] = useState<boolean>(false);
 
-  const [expandedKeys, setExpandedKeys] = useState(["Janny"]);
+  const [expandedKeys, setExpandedKeys] = useState<string>("Janny");
 
-  const [checkedKeys, setCheckedKeys] = useState(["Janny"]);
+  const [checkedKeys, setCheckedKeys] = useState<string>("Janny");
 
   const [selectedKeys, setSelectedKeys] = useState([]);
 

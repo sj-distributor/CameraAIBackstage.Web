@@ -1,5 +1,5 @@
 import { PlusOutlined, WarningFilled } from "@ant-design/icons";
-import { Button, Input, Pagination, Table } from "antd";
+import { Button, ConfigProvider, Input, Pagination, Table } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -38,29 +38,45 @@ export const UserPermissions = () => {
       className: "flex flex-items-center",
       render: () => {
         return (
-          <div className="flex justify-center items-center">
-            <Button
-              type="text"
-              className="text-[0.8rem] text-blue-600 h-[1.5rem] w-[5rem]"
-              onClick={() => navigate("/user/permissions/distribute")}
-            >
-              分配
-            </Button>
-            <Button
-              type="text"
-              className="text-[0.8rem] text-blue-600 h-[1.5rem] w-[5rem] ml-[0.5rem]"
-              onClick={() => navigate("/user/permissions/newOrUpdate")}
-            >
-              編輯
-            </Button>
-            <Button
-              type="text"
-              className="text-[0.8rem] text-blue-600 h-[1.5rem] w-[5rem] ml-[0.5rem] rounded-none"
-              onClick={() => setISDeletePermissions(true)}
-            >
-              刪除
-            </Button>
-          </div>
+          <ConfigProvider
+            theme={{
+              components: {
+                Button: {
+                  colorLink: "#2853E3",
+                  colorLinkHover: "#5168e3",
+                  colorPrimary: "#2853E3",
+                  colorPrimaryHover: "#5168e3",
+                  defaultBorderColor: "#2853E3",
+                  defaultColor: "#2853E3",
+                  linkHoverBg: "#F0F4FF",
+                },
+              },
+            }}
+          >
+            <div className="flex justify-center items-center">
+              <Button
+                type="link"
+                className="text-[0.8rem] text-blue-600 h-[1.5rem] w-[5rem]"
+                onClick={() => navigate("/user/permissions/distribute")}
+              >
+                分配
+              </Button>
+              <Button
+                type="link"
+                className="text-[0.8rem] text-blue-600 h-[1.5rem] w-[5rem] ml-[0.5rem]"
+                onClick={() => navigate("/user/permissions/newOrUpdate")}
+              >
+                編輯
+              </Button>
+              <Button
+                type="link"
+                className="text-[0.8rem] text-blue-600 h-[1.5rem] w-[5rem] ml-[0.5rem] rounded-none"
+                onClick={() => setISDeletePermissions(true)}
+              >
+                刪除
+              </Button>
+            </div>
+          </ConfigProvider>
         );
       },
     },

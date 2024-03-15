@@ -3,11 +3,11 @@ import { SetStateAction, useState } from "react";
 export const useAction = () => {
   const [checkList, setCheckList] = useState([]);
 
-  const AddRoleName = (e: any) => {
+  const AddRoleName = (e: []) => {
     console.log(e);
   };
 
-  const handleCheckBox = (checkedBox: any) => {
+  const handleCheckBox = (checkedBox: SetStateAction<never[]>) => {
     setCheckList(checkedBox);
   };
 

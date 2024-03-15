@@ -5,7 +5,14 @@ import {
   RightOutlined,
   WarningFilled,
 } from "@ant-design/icons";
-import { Button, Input, Pagination, Table, Transfer } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  Input,
+  Pagination,
+  Table,
+  Transfer,
+} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -45,15 +52,31 @@ export const UserDistribute = () => {
       dataIndex: "operate",
       render: () => {
         return (
-          <div>
-            <Button
-              type="text"
-              className="text-[0.8rem] text-blue-400 h-[1.5rem] w-[5rem] ml-[0.5rem] rounded-none"
-              onClick={() => setDeletePermissions(true)}
-            >
-              移除
-            </Button>
-          </div>
+          <ConfigProvider
+            theme={{
+              components: {
+                Button: {
+                  colorLink: "#2853E3",
+                  colorLinkHover: "#5168e3",
+                  colorPrimary: "#2853E3",
+                  colorPrimaryHover: "#5168e3",
+                  defaultBorderColor: "#2853E3",
+                  defaultColor: "#2853E3",
+                  linkHoverBg: "#F0F4FF",
+                },
+              },
+            }}
+          >
+            <div>
+              <Button
+                type="link"
+                className="text-[0.8rem] text-blue-400 h-[1.5rem] w-[5rem] ml-[0.5rem] rounded-none"
+                onClick={() => setDeletePermissions(true)}
+              >
+                移除
+              </Button>
+            </div>
+          </ConfigProvider>
         );
       },
     },
@@ -121,7 +144,6 @@ export const UserDistribute = () => {
                 type="primary"
                 className="h-[2.75rem] w-[7.25rem]"
                 onClick={() => setIsAddNewUser(true)}
-                // onClick={() => navigate("/user/permissions/new")}
               >
                 <PlusOutlined />
                 添加用户

@@ -5,7 +5,15 @@ import {
   WarningFilled,
 } from "@ant-design/icons";
 import PlusOutlined from "@ant-design/icons/lib/icons/PlusOutlined";
-import { Button, Input, Pagination, Select, Switch, Table } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  Input,
+  Pagination,
+  Select,
+  Switch,
+  Table,
+} from "antd";
 
 import { CustomModal } from "@/components/custom-modal";
 
@@ -87,13 +95,29 @@ export const UserList = () => {
       dataIndex: "operate",
       render: () => {
         return (
-          <Button
-            type="link"
-            className="w-[3.6rem] text-[0.8rem]"
-            onClick={() => setIsResetPassword(true)}
+          <ConfigProvider
+            theme={{
+              components: {
+                Button: {
+                  colorLink: "#2853E3",
+                  colorLinkHover: "#5168e3",
+                  colorPrimary: "#2853E3",
+                  colorPrimaryHover: "#5168e3",
+                  defaultBorderColor: "#2853E3",
+                  defaultColor: "#2853E3",
+                  linkHoverBg: "#F0F4FF",
+                },
+              },
+            }}
           >
-            重置密碼
-          </Button>
+            <Button
+              type="link"
+              // className="w-[4.5rem] text-[0.8rem]"
+              onClick={() => setIsResetPassword(true)}
+            >
+              重置密碼
+            </Button>
+          </ConfigProvider>
         );
       },
     },
@@ -102,13 +126,25 @@ export const UserList = () => {
       dataIndex: "remove",
       render: () => {
         return (
-          <Button
-            type="link"
-            className="text-[0.8rem]"
-            onClick={() => setIsRemoveUser(true)}
+          <ConfigProvider
+            theme={{
+              components: {
+                Button: {
+                  colorLink: "#2853E3",
+                  colorLinkHover: "#5168e3",
+                  colorPrimary: "#2853E3",
+                  colorPrimaryHover: "#5168e3",
+                  defaultBorderColor: "#2853E3",
+                  defaultColor: "#2853E3",
+                  linkHoverBg: "#F0F4FF",
+                },
+              },
+            }}
           >
-            移除
-          </Button>
+            <Button type="link" onClick={() => setIsRemoveUser(true)}>
+              移除
+            </Button>
+          </ConfigProvider>
         );
       },
     },
@@ -299,10 +335,10 @@ export const UserList = () => {
             <Tree
               checkable
               treeData={data}
-              expandedKeys={expandedKeys}
               autoExpandParent={autoExpandParent}
               checkedKeys={checkedKeys}
               selectedKeys={selectedKeys}
+              expandedKeys={expandedKeys}
             />
           </div>
           <div className="mt-[6rem]">
@@ -330,7 +366,7 @@ export const UserList = () => {
               suffix={<img src={search} className="size-[1rem]" />}
               placeholder="搜索用戶名，部門"
             />
-            <div className="ml-[1rem] mb-[0.5rem] scroll-auto h-[11rem] flex justify-between"></div>
+            <div className="ml-[1rem] mb-[0.5rem] scroll-auto h-[11rem] flex justify-between" />
           </div>
         </div>
       </CustomModal>
