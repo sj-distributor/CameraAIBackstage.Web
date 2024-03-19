@@ -33,7 +33,6 @@ export const OperationLog = () => {
     {
       title: t(KEYS.SERIAL_NUMBER, { ns: "operationLog" }),
       dataIndex: "id",
-      sorter: (a, b) => a.id - b.id,
       width: "13%",
     },
     {
