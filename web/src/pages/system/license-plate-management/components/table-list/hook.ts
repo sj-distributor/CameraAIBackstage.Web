@@ -1,14 +1,18 @@
 import { useRequest } from "ahooks";
+import { TimeRangePickerProps } from "antd";
+import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { useEffect, useState } from "react";
 
 import { GetVehicleMonitorRecords } from "@/services/api/license-plate-management";
 import {
   IGetVehicleMonitorRecordsRequest,
   IGetVehicleMonitorRecordsResponse,
-  IVehicleMonitorRecordsItem,
 } from "@/services/dtos/license-plate-management";
 
-import { IDataType, IDeviceDataType } from "../../props";
+import { IDeviceDataType } from "../../props";
+
+dayjs.extend(utc);
 
 export const useAction = () => {
   const [isUnbindOpen, setIsUnbindOpen] = useState<boolean>(false);
@@ -124,6 +128,39 @@ export const useAction = () => {
     },
   ]);
 
+  const [dateRange, setDateRange] = useState<(Dayjs | null)[]>([null, null]);
+
+  const rangePresets: TimeRangePickerProps["presets"] = [
+    { label: "最近一週", value: [dayjs().subtract(7, "d"), dayjs()] },
+    {
+      label: "最近一個月",
+      value: [dayjs().subtract(1, "month"), dayjs()],
+    },
+    { label: "最近三個月", value: [dayjs().subtract(3, "month"), dayjs()] },
+  ];
+
+  const onRangeChange = (dates: null | (Dayjs | null)[]) => {
+    if (dates) {
+      setDateRange([dates[0], dates[1]]);
+      setVehicleMonitorRecordsRequest((prev) => ({
+        ...prev,
+        StartTime: dates[0]
+          ? dates[0].utc().format("YYYY-MM-DDTHH:mm:ss")
+          : undefined,
+        EndTime: dates[1]
+          ? dates[1].utc().format("YYYY-MM-DDTHH:mm:ss")
+          : undefined,
+      }));
+    } else {
+      setVehicleMonitorRecordsRequest((prev) => ({
+        ...prev,
+        StartTime: undefined,
+        EndTime: undefined,
+      }));
+      setDateRange([null, null]);
+    }
+  };
+
   const { run: handelGetVehicleMonitorRecords, loading: isGetMonitorRecords } =
     useRequest(GetVehicleMonitorRecords, {
       manual: true,
@@ -137,7 +174,7 @@ export const useAction = () => {
 
   useEffect(() => {
     handelGetVehicleMonitorRecords(vehicleMonitorRecordsRequest);
-  }, []);
+  }, [vehicleMonitorRecordsRequest]);
 
   return {
     isUnbindOpen,
@@ -160,5 +197,9 @@ export const useAction = () => {
     isGetMonitorRecords,
     licensePlateImageUrl,
     setLicensePlateImageUrl,
+    dateRange,
+    rangePresets,
+    onRangeChange,
+    setVehicleMonitorRecordsRequest,
   };
 };

@@ -7,6 +7,7 @@ export interface IGetVehicleMonitorRecordsRequest {
   EndTime?: string;
   StartTime?: string;
   Status?: CameraAiMonitorRecordStatus;
+  PlateNumber?: string;
 }
 
 export interface IGetVehicleMonitorRecordsResponse {

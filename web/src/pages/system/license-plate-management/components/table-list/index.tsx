@@ -1,4 +1,6 @@
 import {
+  CalendarOutlined,
+  ClockCircleFilled,
   CloseCircleOutlined,
   CloseOutlined,
   WarningFilled,
@@ -6,16 +8,18 @@ import {
 import {
   Button,
   ConfigProvider,
+  DatePicker,
   Form,
   Input,
   Pagination,
   Select,
   Table,
+  TimeRangePickerProps,
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
-import dayjs from "dayjs";
-import { Dispatch, SetStateAction } from "react";
+import dayjs, { Dayjs } from "dayjs";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Trans } from "react-i18next";
 
 import down from "@/assets/public/down-arrow.png";
@@ -23,6 +27,7 @@ import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/license-plate-management-keys";
+import LOG_KEYS from "@/i18n/language/keys/operation-log-keys";
 import {
   CameraAiMonitorRecordStatus,
   IVehicleMonitorRecordsItem,
@@ -42,6 +47,8 @@ export const LicensePlateManagementTable = (props: {
 
   const { t, language } = useAuth();
 
+  const { RangePicker } = DatePicker;
+
   const {
     isUnbindOpen,
     setIsUnbindOpen,
@@ -51,13 +58,15 @@ export const LicensePlateManagementTable = (props: {
     setIsRegisterOpen,
     isAddDeviceOpen,
     setIsAddDeviceOpen,
-    isUnbindIndex,
     vehicleMonitorRecordsData,
-    setVehicleMonitorRecordsData,
     source,
     isGetMonitorRecords,
     licensePlateImageUrl,
     setLicensePlateImageUrl,
+    dateRange,
+    rangePresets,
+    onRangeChange,
+    setVehicleMonitorRecordsRequest,
   } = useAction();
 
   const columns: ColumnsType<IVehicleMonitorRecordsItem> = [
@@ -166,6 +175,19 @@ export const LicensePlateManagementTable = (props: {
     },
   ];
 
+  const renderDateAndTime = (date: Dayjs | null) => (
+    <>
+      <span>
+        <CalendarOutlined className="mr-2" />
+        {date?.format("YYYY-MM-DD")}
+      </span>
+      <span className="text-[#666774]">
+        <ClockCircleFilled className="mr-2" />
+        {date?.format("HH:mm:ss")}
+      </span>
+    </>
+  );
+
   return (
     <ConfigProvider
       theme={{
@@ -189,52 +211,56 @@ export const LicensePlateManagementTable = (props: {
     >
       <div className="flex flex-col flex-1">
         <div className="flex flex-row pt-[1.625rem] justify-between">
-          <div>
+          <div className="flex">
             <Input
-              className="w-[17.5rem]"
+              className="w-[17.5rem] mr-4 h-[2.5rem]"
               suffix={<img src={search} />}
               placeholder={t(KEYS.SEARCH_VEHICLE_NUMBER, source)}
+              onPressEnter={(e) => {
+                setVehicleMonitorRecordsRequest((prev) => ({
+                  ...prev,
+                  PlateNumber: e.currentTarget.value,
+                }));
+              }}
             />
-            <Select
-              className="mx-4 w-[13.5rem]"
-              placeholder={t(KEYS.LAST_WEEK, source)}
-              defaultActiveFirstOption
-              options={[
-                {
-                  value: t(KEYS.LAST_WEEK, source),
-                  label: t(KEYS.LAST_WEEK, source),
-                },
-                {
-                  value: t(KEYS.LAST_MONTH, source),
-                  label: t(KEYS.LAST_MONTH, source),
-                },
-                {
-                  value: t(KEYS.LAST_THREE_MONTHS, source),
-                  label: t(KEYS.LAST_THREE_MONTHS, source),
-                },
-                {
-                  value: t(KEYS.CUSTOM_TIME_RANGE, source),
-                  label: "自定義時間範圍",
-                },
+            <RangePicker
+              className="w-[18.75rem] mr-4 h-[2.5rem]"
+              presets={rangePresets}
+              onChange={onRangeChange}
+              renderExtraFooter={() => (
+                <div className="flex justify-between">
+                  {renderDateAndTime(dateRange[0])}
+                  {renderDateAndTime(dateRange[1])}
+                </div>
+              )}
+              allowClear
+              placeholder={[
+                t(LOG_KEYS.START_DATE, { ns: "operationLog" }),
+                t(LOG_KEYS.END_DATE, { ns: "operationLog" }),
               ]}
-              suffixIcon={<img src={down} />}
             />
             {!isRegisteredVehicle && (
               <Select
-                className="w-[13.5rem]"
+                className="w-[13.5rem] h-[2.5rem]"
                 placeholder={t(KEYS.UNREGISTERED, source)}
                 defaultActiveFirstOption
+                onChange={(status) => {
+                  setVehicleMonitorRecordsRequest((prev) => ({
+                    ...prev,
+                    Status: status,
+                  }));
+                }}
                 options={[
                   {
-                    value: t(KEYS.UNREGISTERED, source),
+                    value: CameraAiMonitorRecordStatus.Unmarked,
                     label: t(KEYS.UNREGISTERED, source),
                   },
                   {
-                    value: t(KEYS.ABNORMAL_VEHICLES, source),
+                    value: CameraAiMonitorRecordStatus.Exception,
                     label: t(KEYS.ABNORMAL_VEHICLES, source),
                   },
                   {
-                    value: t(KEYS.NORMAL_VEHICLES, source),
+                    value: CameraAiMonitorRecordStatus.Verified,
                     label: t(KEYS.NORMAL_VEHICLES, source),
                   },
                 ]}
