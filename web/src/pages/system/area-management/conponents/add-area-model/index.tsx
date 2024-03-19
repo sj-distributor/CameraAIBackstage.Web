@@ -99,21 +99,13 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
           <div className="mr-2 mt-[0.4rem] whitespace-nowrap">
             {t(KEYS.PRINCIPAL, source)}
           </div>
-          <Select
+          <Input
             placeholder={t(KEYS.PLEASE_SELECT, source)}
             className="!w-[24.9375rem] h-[2.0625rem]"
             value={regionDataItem.principal}
-            options={[
-              {
-                value: "tttt",
-                label: "tttt",
-              },
-              {
-                value: "cath",
-                label: "cath",
-              },
-            ]}
-            onChange={(value) => handleUpdateDataChange("principal", value)}
+            onChange={(e) =>
+              handleUpdateDataChange("principal", e.target.value)
+            }
           />
         </div>
         {operateModalParams.isEdit ? (
