@@ -23,7 +23,6 @@ export const OperationLog = () => {
     setPageDto,
     rangePresets,
     onRangeChange,
-
     t,
     setSearchKeywordValue,
     dateRange,
