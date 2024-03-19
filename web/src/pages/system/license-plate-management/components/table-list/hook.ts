@@ -1,4 +1,12 @@
-import { useState } from "react";
+import { useRequest } from "ahooks";
+import { useEffect, useState } from "react";
+
+import { GetVehicleMonitorRecords } from "@/services/api/license-plate-management";
+import {
+  IGetVehicleMonitorRecordsRequest,
+  IGetVehicleMonitorRecordsResponse,
+  IVehicleMonitorRecordsItem,
+} from "@/services/dtos/license-plate-management";
 
 import { IDataType, IDeviceDataType } from "../../props";
 
@@ -8,7 +16,12 @@ export const useAction = () => {
   const [isShowLicensePlateOpen, setIsShowLicensePlateOpen] =
     useState<boolean>(false);
 
+  const [licensePlateImageUrl, setLicensePlateImageUrl] = useState<string>("");
+
   const source = { ns: "licensePlateManagement" };
+
+  const [vehicleMonitorRecordsRequest, setVehicleMonitorRecordsRequest] =
+    useState<IGetVehicleMonitorRecordsRequest>({ PageIndex: 1, PageSize: 20 });
 
   const [isRegisterOpen, setIsRegisterOpen] = useState<boolean>(false);
 
@@ -18,96 +31,11 @@ export const useAction = () => {
 
   const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
 
-  const [data, setData] = useState<IDataType[]>([
-    {
-      deviceId: "1",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: false,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "2",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: false,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "3",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: false,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "4",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "5",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "6",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "7",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "8",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "9",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "10",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "11",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-  ]);
+  const [vehicleMonitorRecordsData, setVehicleMonitorRecordsData] =
+    useState<IGetVehicleMonitorRecordsResponse>({
+      count: 0,
+      records: [],
+    });
 
   const [deviceData, setDeviceData] = useState<IDeviceDataType[]>([
     {
@@ -196,6 +124,21 @@ export const useAction = () => {
     },
   ]);
 
+  const { run: handelGetVehicleMonitorRecords, loading: isGetMonitorRecords } =
+    useRequest(GetVehicleMonitorRecords, {
+      manual: true,
+      onSuccess: (res) => {
+        res && setVehicleMonitorRecordsData(res);
+      },
+      onError(error) {
+        console.log(error);
+      },
+    });
+
+  useEffect(() => {
+    handelGetVehicleMonitorRecords(vehicleMonitorRecordsRequest);
+  }, []);
+
   return {
     isUnbindOpen,
     setIsUnbindOpen,
@@ -209,10 +152,13 @@ export const useAction = () => {
     setIsUnbindIndex,
     isDeleteIndex,
     setIsDeleteIndex,
-    data,
-    setData,
+    vehicleMonitorRecordsData,
+    setVehicleMonitorRecordsData,
     deviceData,
     setDeviceData,
     source,
+    isGetMonitorRecords,
+    licensePlateImageUrl,
+    setLicensePlateImageUrl,
   };
 };

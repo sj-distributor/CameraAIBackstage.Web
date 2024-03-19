@@ -14,7 +14,7 @@ import {
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
-import { clone } from "ramda";
+import dayjs from "dayjs";
 import { Dispatch, SetStateAction } from "react";
 import { Trans } from "react-i18next";
 
@@ -23,8 +23,11 @@ import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/license-plate-management-keys";
+import {
+  CameraAiMonitorRecordStatus,
+  IVehicleMonitorRecordsItem,
+} from "@/services/dtos/license-plate-management";
 
-import { IDataType } from "../../props";
 import { useAction } from "./hook";
 
 export const LicensePlateManagementTable = (props: {
@@ -49,48 +52,77 @@ export const LicensePlateManagementTable = (props: {
     isAddDeviceOpen,
     setIsAddDeviceOpen,
     isUnbindIndex,
-    data,
-    setData,
+    vehicleMonitorRecordsData,
+    setVehicleMonitorRecordsData,
     source,
+    isGetMonitorRecords,
+    licensePlateImageUrl,
+    setLicensePlateImageUrl,
   } = useAction();
 
-  const columns: ColumnsType<IDataType> = [
+  const columns: ColumnsType<IVehicleMonitorRecordsItem> = [
     {
       title: t(KEYS.SERIAL_NUMBER, source),
-      dataIndex: "deviceId",
+      dataIndex: "id",
       width: "16.6%",
     },
     {
       title: t(KEYS.LICENSE_PLATE_NUMBER, source),
-      dataIndex: "isOnline",
+      dataIndex: "plateNumber",
       width: "16.6%",
-      render: () => <div>粵C15468</div>,
     },
     {
       title: t(KEYS.START_TIME, source),
-      dataIndex: "operate",
+      dataIndex: "occurrenceTime",
       width: "16.6%",
-      key: "startTime",
+      key: "occurrenceTime",
+      render: (occurrenceTime) => {
+        return (
+          <div>
+            {occurrenceTime
+              ? dayjs(occurrenceTime).format("YYYY-MM-DD HH:mm")
+              : ""}
+          </div>
+        );
+      },
     },
     {
       title: t(KEYS.VEHICLE_TYPE, source),
-      dataIndex: "equipmentName",
+      dataIndex: "status",
       width: "16.6%",
-      render: (record: boolean) => (
-        <div>
-          {record ? (
-            <div className="flex flex-row items-center">
-              <div className="bg-[#34A46E] w-1.5 h-1.5 rounded-full mr-2" />
-              <span>{t(KEYS.ONLINE, source)}</span>
-            </div>
-          ) : (
-            <div className="flex flex-row items-center">
-              <div className="bg-[#F04E4E] w-1.5 h-1.5 rounded-full mr-2" />
-              <span>{t(KEYS.OFFLINE, source)}</span>
-            </div>
-          )}
-        </div>
-      ),
+      render: (status: CameraAiMonitorRecordStatus) => {
+        switch (status) {
+          case CameraAiMonitorRecordStatus.Verified:
+            return (
+              <div className="flex flex-row items-center">
+                <div className="bg-[#34A46E] w-1.5 h-1.5 rounded-full mr-2" />
+                <span>{t(KEYS.ONLINE, source)}</span>
+              </div>
+            );
+          case CameraAiMonitorRecordStatus.Unmarked:
+            return (
+              <div className="flex flex-row items-center">
+                <div className="bg-[#9D9FB0] w-1.5 h-1.5 rounded-full mr-2" />
+                <span>{t(KEYS.UNREGISTERED, source)}</span>
+              </div>
+            );
+          case CameraAiMonitorRecordStatus.Exception:
+            return (
+              <div className="flex flex-row items-center">
+                <div className="bg-[#F04E4E] w-1.5 h-1.5 rounded-full mr-2" />
+                <span>{t(KEYS.ABNORMAL_VEHICLES, source)}</span>
+              </div>
+            );
+
+          default:
+            return (
+              <div className="flex flex-row items-center">
+                <div className="bg-[#F04E4E] w-1.5 h-1.5 rounded-full mr-2" />
+                <span>{t(KEYS.ABNORMAL_VEHICLES, source)}</span>
+              </div>
+            );
+        }
+      },
     },
     {
       title: t(KEYS.OPERATION, source),
@@ -104,7 +136,7 @@ export const LicensePlateManagementTable = (props: {
           {!isRegisteredVehicle && (
             <Button
               type="link"
-              onClick={() => setShowWarningDetails(record.deviceId)}
+              onClick={() => setShowWarningDetails(String(record.id))}
             >
               {t(KEYS.VIEW_DETAILS, source)}
             </Button>
@@ -123,6 +155,7 @@ export const LicensePlateManagementTable = (props: {
               type="link"
               onClick={() => {
                 setIsShowLicensePlateOpen(true);
+                setLicensePlateImageUrl(record.licensePlateImageUrl);
               }}
             >
               {t(KEYS.DELETE, source)}
@@ -154,7 +187,7 @@ export const LicensePlateManagementTable = (props: {
         },
       }}
     >
-      <div>
+      <div className="flex flex-col flex-1">
         <div className="flex flex-row pt-[1.625rem] justify-between">
           <div>
             <Input
@@ -181,7 +214,7 @@ export const LicensePlateManagementTable = (props: {
                 },
                 {
                   value: t(KEYS.CUSTOM_TIME_RANGE, source),
-                  label: t(KEYS.LAST_MONTH, source),
+                  label: "自定義時間範圍",
                 },
               ]}
               suffixIcon={<img src={down} />}
@@ -220,14 +253,15 @@ export const LicensePlateManagementTable = (props: {
           )}
         </div>
         <Table
-          rowKey={(record) => record.deviceId}
+          rowKey={(record) => record.id}
           columns={
             isRegisteredVehicle
               ? columns.filter((item) => item.key !== "startTime")
               : columns
           }
-          dataSource={data}
-          className="pt-[1.125rem] tableHiddenScrollBar"
+          dataSource={vehicleMonitorRecordsData.records}
+          loading={isGetMonitorRecords}
+          className="pt-[1.125rem] tableHiddenScrollBar flex-1"
           scroll={{ y: 580 }}
           pagination={false}
         />
@@ -236,7 +270,7 @@ export const LicensePlateManagementTable = (props: {
             <Trans
               {...source}
               i18nKey="TotalItems"
-              values={{ length: data.length.toString() }}
+              values={{ length: vehicleMonitorRecordsData.count }}
               components={{
                 span: <span className="text-[#2853E3]" />,
               }}
@@ -247,7 +281,7 @@ export const LicensePlateManagementTable = (props: {
               current={1}
               pageSize={5}
               pageSizeOptions={[5, 10, 20]}
-              total={data.length}
+              total={vehicleMonitorRecordsData.count}
               showQuickJumper
               showSizeChanger
               onChange={() => {}}
@@ -265,10 +299,10 @@ export const LicensePlateManagementTable = (props: {
         }
         onCancle={() => setIsUnbindOpen(false)}
         onConfirm={() => {
-          const newList = clone(data);
+          // const newList = clone(vehicleMonitorRecordsData);
 
-          newList[isUnbindIndex].whetherToBind = false;
-          setData(newList);
+          // newList[isUnbindIndex].whetherToBind = false;
+          // setData(newList);
           setIsUnbindOpen(false);
         }}
         open={isUnbindOpen}
@@ -299,8 +333,8 @@ export const LicensePlateManagementTable = (props: {
       >
         <div className="flex items-center justify-center bg-[#D7D2D4] rounded-2xl overflow-hidden w-[69rem] h-[38rem]">
           <img
-            src="/src/assets/logo.svg"
-            alt=""
+            src={licensePlateImageUrl}
+            alt="圖片加載異常"
             width={"100%"}
             height={"100%"}
           />
