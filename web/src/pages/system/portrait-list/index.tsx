@@ -16,18 +16,17 @@ import trash from "@/assets/portrait/trash.svg";
 import upload from "@/assets/portrait/upload.svg";
 import add from "@/assets/public/add.svg";
 import avatar from "@/assets/public/avatar.png";
-import down from "@/assets/public/down-arrow.png";
 import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/portrait-list-keys";
+import { OperationTypeEnum } from "@/services/dtos/portrait";
 
 import { useAction } from "./hook";
 
 export const PortraitList = () => {
   const {
     portraitData,
-    isOpenModal,
     imageInformation,
     fileList,
     loading,
@@ -36,11 +35,11 @@ export const PortraitList = () => {
     handleCreateOrUpdatePortrait,
     handleDeletePortrait,
     handleUploadChange,
-    setIsOpenModal,
     handleCancel,
     handleFilePreview,
     setPageData,
     setAddOrUpdatePortrait,
+    setFileList,
   } = useAction();
 
   const { t } = useAuth();
@@ -74,7 +73,9 @@ export const PortraitList = () => {
           <Button
             className="flex justify-center items-center w-[5.5rem] h-[2.75rem]"
             type="primary"
-            onClick={() => setIsOpenModal(true)}
+            onClick={() =>
+              setAddOrUpdatePortrait((pre) => ({ ...pre, isOpen: true }))
+            }
           >
             <img src={add} className="mr-[.375rem]" />
             {t(KEYS.ADD, { ns: "portraitList" })}
@@ -135,7 +136,21 @@ export const PortraitList = () => {
                       </div>
                     </Popconfirm>
                     <div
-                      onClick={() => setIsOpenModal(true)}
+                      onClick={() => {
+                        setAddOrUpdatePortrait({
+                          isOpen: true,
+                          operationType: OperationTypeEnum.Edit,
+                          item,
+                        });
+
+                        setFileList(
+                          item.faces.map((item) => ({
+                            name: "",
+                            uid: item.faceId!,
+                            url: item.imageUrl,
+                          }))
+                        );
+                      }}
                       className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#2853E3] border border-solid border-[#2853E3] cursor-pointer"
                     >
                       <img src={edit} className="mr-[.5rem]" />
@@ -160,7 +175,6 @@ export const PortraitList = () => {
           />
         </div>
         <Pagination
-          // defaultCurrent={pageData.pageIndex}
           current={pageData.pageIndex}
           total={portraitData.count}
           showQuickJumper
@@ -178,12 +192,16 @@ export const PortraitList = () => {
             <div>{t(KEYS.ADD_PORTRAIT, { ns: "portraitList" })}</div>
             <CloseOutlined
               className="text-[1rem] cursor-pointer"
-              onClick={() => setIsOpenModal(false)}
+              onClick={() =>
+                setAddOrUpdatePortrait((pre) => ({ ...pre, isOpen: false }))
+              }
             />
           </div>
         }
-        open={isOpenModal}
-        onCancle={() => setIsOpenModal(false)}
+        open={addOrUpdatePortrait.isOpen}
+        onCancle={() =>
+          setAddOrUpdatePortrait((pre) => ({ ...pre, isOpen: false }))
+        }
         onConfirm={handleCreateOrUpdatePortrait.run}
         modalWidth={"42.5rem"}
       >
@@ -272,7 +290,6 @@ export const PortraitList = () => {
           </div>
           <Modal
             open={imageInformation.previewOpen}
-            title={imageInformation.previewTitle}
             footer={null}
             onCancel={handleCancel}
           >

@@ -39,10 +39,9 @@ export interface IGetPortraitByParams {
 export interface IPreviewImageDto {
   previewOpen: boolean;
   previewImage: string;
-  previewTitle: string;
 }
 
-export enum operationTypeEnum {
+export enum OperationTypeEnum {
   Add,
   Edit,
 }

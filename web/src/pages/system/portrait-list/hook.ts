@@ -15,33 +15,37 @@ import {
   IPortraitDto,
   IPortraitResponse,
   IPreviewImageDto,
-  operationTypeEnum,
+  OperationTypeEnum,
 } from "@/services/dtos/portrait";
 
 export const useAction = () => {
+  const initialPortraitDto: IPortraitDto = {
+    name: "",
+    department: "",
+    group: "",
+    position: "",
+    phone: "",
+    isQualified: false,
+    faces: [
+      {
+        image: "",
+      },
+    ],
+  };
+
   const initialPortraitData: IPortraitResponse = {
     count: 0,
     portraits: [],
   };
 
   const [addOrUpdatePortrait, setAddOrUpdatePortrait] = useState<{
-    operationType: operationTypeEnum;
+    isOpen: boolean;
+    operationType: OperationTypeEnum;
     item: IPortraitDto;
   }>({
-    operationType: operationTypeEnum.Add,
-    item: {
-      name: "",
-      department: "",
-      group: "",
-      position: "",
-      phone: "",
-      isQualified: false,
-      faces: [
-        {
-          image: "",
-        },
-      ],
-    },
+    isOpen: false,
+    operationType: OperationTypeEnum.Add,
+    item: initialPortraitDto,
   });
 
   const [portraitData, setPortraitData] =
@@ -52,12 +56,9 @@ export const useAction = () => {
     pageSize: 12,
   });
 
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-
   const [imageInformation, setImageInformation] = useState<IPreviewImageDto>({
     previewOpen: false,
     previewImage: "",
-    previewTitle: "",
   });
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -88,8 +89,6 @@ export const useAction = () => {
     setImageInformation({
       previewOpen: true,
       previewImage: file.url || (file.preview as string),
-      previewTitle:
-        file.name || file.url!.substring(file.url!.lastIndexOf("/") + 1),
     });
   };
 
@@ -102,9 +101,7 @@ export const useAction = () => {
   const handleGetPortraitData = useRequest(() => getPortraitList(pageData), {
     debounceWait: 300,
     manual: true,
-    onBefore: () => {
-      setLoading(true);
-    },
+    onBefore: () => setLoading(true),
     onSuccess: (data) => {
       setPortraitData(() => ({
         count: data?.count ?? 0,
@@ -115,9 +112,7 @@ export const useAction = () => {
       message.error((error as Error).message);
       setPortraitData(initialPortraitData);
     },
-    onFinally: () => {
-      setLoading(false);
-    },
+    onFinally: () => setLoading(false),
   });
 
   const handleCreateOrUpdatePortrait = useRequest(
@@ -136,7 +131,7 @@ export const useAction = () => {
       const params: IPortraitDto = { ...addOrUpdatePortrait.item, faces };
 
       return (
-        addOrUpdatePortrait.operationType === operationTypeEnum.Add
+        addOrUpdatePortrait.operationType === OperationTypeEnum.Add
           ? postCreatePortrait
           : postUpdatePortrait
       )({ portrait: params });
@@ -148,15 +143,14 @@ export const useAction = () => {
         message.success("success");
         handleGetPortraitData.run();
 
+        setFileList([]);
+        setAddOrUpdatePortrait((pre) => ({ ...pre, item: initialPortraitDto }));
         setImageInformation({
           previewOpen: false,
           previewImage: "",
-          previewTitle: "",
         });
       },
-      onError: (error) => {
-        message.error((error as Error).message);
-      },
+      onError: (error) => message.error((error as Error).message),
     }
   );
 
@@ -165,18 +159,10 @@ export const useAction = () => {
     {
       debounceWait: 300,
       manual: true,
-      onBefore: () => {
-        setLoading(true);
-      },
-      onSuccess: () => {
-        message.success("success");
-      },
-      onError: (error) => {
-        message.error((error as Error).message);
-      },
-      onFinally: () => {
-        setLoading(false);
-      },
+      onBefore: () => setLoading(true),
+      onSuccess: () => message.success("success"),
+      onError: (error) => message.error((error as Error).message),
+      onFinally: () => setLoading(false),
     }
   );
 
@@ -186,7 +172,6 @@ export const useAction = () => {
 
   return {
     portraitData,
-    isOpenModal,
     imageInformation,
     fileList,
     loading,
@@ -195,10 +180,10 @@ export const useAction = () => {
     handleCreateOrUpdatePortrait,
     handleDeletePortrait,
     handleUploadChange,
-    setIsOpenModal,
     handleCancel,
     handleFilePreview,
     setPageData,
     setAddOrUpdatePortrait,
+    setFileList,
   };
 };
