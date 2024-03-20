@@ -406,7 +406,19 @@ export const LicensePlateManagementTable = (
               }
               showQuickJumper
               showSizeChanger
-              onChange={() => {}}
+              onChange={(page, pageSize) => {
+                isRegisteredVehicle
+                  ? setRegisteredVehicleRequest((prev) => ({
+                      ...prev,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    }))
+                  : setVehicleMonitorRecordsRequest((prev) => ({
+                      ...prev,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    }));
+              }}
             />
           </div>
         </div>
