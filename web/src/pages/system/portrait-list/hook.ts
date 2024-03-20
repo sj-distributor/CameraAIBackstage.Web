@@ -124,9 +124,9 @@ export const useAction = () => {
     async () => {
       const faces: IFaceDto[] = [];
 
-      for (let i = 0; i < fileList.length; i++) {
+      for (const file of fileList) {
         faces.push({
-          image: (await getBase64(fileList[i].originFileObj!)).replace(
+          image: (await getBase64(file.originFileObj!)).replace(
             "data:image/jpeg;base64,",
             ""
           ),
