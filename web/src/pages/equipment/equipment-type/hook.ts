@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
 
-import { IPageDto } from "@/services/dtos/equipment/list";
 import {
   GetEquipmentTypeInfoById,
   GetEquipmentTypePage,
@@ -13,6 +12,7 @@ import {
 import { IEquipmentTypeList } from "@/services/dtos/equipment/type";
 import { useBoolean } from "ahooks";
 import { App, Form } from "antd";
+import { IPageDto } from "@/services/dtos/public";
 
 export const useAction = () => {
   const { t, language } = useAuth();

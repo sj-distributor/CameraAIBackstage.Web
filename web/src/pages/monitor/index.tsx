@@ -17,7 +17,8 @@ import { CustomModal } from "@/components/custom-modal";
 import downArrow from "../../assets/public/down-arrow.png";
 import KEYS from "../../i18n/language/keys/monitor-keys";
 import { useAction } from "./hook";
-import { IMonitorDataType, IOpenOrStopStatus, IWarningType } from "./props";
+import { IOpenOrStopStatus, IOptionDto } from "./props";
+import { IMonitorSettingsDto } from "@/services/dtos/monitor";
 
 export const Monitor = () => {
   const {
@@ -32,10 +33,15 @@ export const Monitor = () => {
     onFilterStatus,
     onFilterType,
     filterStatus,
-    filterType,
+    pageDto,
+    setPageDto,
+    warningTypeDataList,
+    selectWarningTypeId,
+    count,
+    onDelete,
   } = useAction();
 
-  const columns: ColumnsType<IMonitorDataType> = [
+  const columns: ColumnsType<IMonitorSettingsDto> = [
     {
       title: `${t(KEYS.TITLE, source)}`,
       dataIndex: "title",
@@ -43,14 +49,14 @@ export const Monitor = () => {
     },
     {
       title: `${t(KEYS.STATUS, source)}`,
-      dataIndex: "condition",
+      dataIndex: "isActive",
       width: "16.6%",
-      render: (_, record, index) => {
+      render: (_, record) => {
         return (
           <Tooltip
             placement="topLeft"
             title={
-              record.condition
+              record.isActive
                 ? `${t(KEYS.CLICK, source)} ${t(KEYS.DEACTIVATE, source)}`
                 : `${t(KEYS.CLICK, source)} ${t(KEYS.ENABLE, source)}`
             }
@@ -58,9 +64,9 @@ export const Monitor = () => {
             <Switch
               checkedChildren={t(KEYS.ENABLE, source)}
               unCheckedChildren=""
-              value={record.condition}
+              value={record.isActive}
               onChange={(value) => {
-                onChangeStatus(index, value);
+                onChangeStatus(record.id!, value);
               }}
               className={`${
                 language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
@@ -72,26 +78,33 @@ export const Monitor = () => {
     },
     {
       title: `${t(KEYS.ALERT_TYPE, source)}`,
-      dataIndex: "warningType",
+      dataIndex: "monitorTypeName",
       width: "16.6%",
     },
     {
       title: `${t(KEYS.NOTIFICATION_OBJECT, source)}`,
-      dataIndex: "notificationObject",
+      dataIndex: "notificationContent",
       width: "16.6%",
     },
     {
       title: `${t(KEYS.OPERATE, source)}`,
       dataIndex: "operate",
       width: "16.6%",
-      render: (_, _record, index) => (
+      render: (_, record) => (
         <div className="flex-wrap flex">
           <Button
             type="link"
             className="w-[6rem]"
-            onClick={() =>
-              navigate(`/monitor/configuration/update/${index.toString()}`)
-            }
+            onClick={() => {
+              navigate(
+                `/monitor/configuration/update/${
+                  record.id && record.id.toString()
+                }`,
+                {
+                  state: { data: record },
+                }
+              );
+            }}
           >
             {t(KEYS.EDIT, source)}
           </Button>
@@ -99,7 +112,8 @@ export const Monitor = () => {
             type="link"
             className="w-[6rem]"
             onClick={() => {
-              setIsDeleteIndex(index);
+              if (!record.id) return;
+              setIsDeleteIndex(record.id);
               setIsDeleteOpen(true);
             }}
           >
@@ -141,7 +155,7 @@ export const Monitor = () => {
           <div className="flex flex-row pt-[1.625rem] justify-between flex-wrap">
             <div>
               <Select
-                className="mr-[1rem] w-[13.5rem]"
+                className="mr-[1rem] w-[13.5rem] h-[2.75rem]"
                 placeholder={t(KEYS.STATUS, source)}
                 defaultActiveFirstOption
                 value={filterStatus}
@@ -165,29 +179,18 @@ export const Monitor = () => {
                 suffixIcon={<img src={downArrow} />}
               />
               <Select
-                className="w-[13.5rem]"
+                className="w-[13.5rem] h-[2.75rem]"
                 placeholder={t(KEYS.ALERT_TYPE_FILTER, source)}
                 defaultActiveFirstOption
-                value={filterType}
-                onChange={(value) => onFilterType(value)}
-                options={[
-                  {
-                    value: IWarningType.All,
-                    label: `${t(KEYS.ALL, source)}`,
-                  },
-                  {
-                    value: IWarningType.IdentifyPersonnel,
-                    label: `${t(KEYS.IDENTIFY_PEOPLE, source)}`,
-                  },
-                  {
-                    value: IWarningType.IdentifyVehicle,
-                    label: `${t(KEYS.IDENTIFY_VEHICLES, source)}`,
-                  },
-                  {
-                    value: IWarningType.UnusualVehicle,
-                    label: `${t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source)}`,
-                  },
-                ]}
+                value={
+                  warningTypeDataList.find((x) => {
+                    x.lable === selectWarningTypeId;
+                  })?.value
+                }
+                onChange={(_, option) =>
+                  onFilterType((option as IOptionDto).lable)
+                }
+                options={warningTypeDataList}
                 suffixIcon={<img src={downArrow} />}
               />
             </div>
@@ -202,7 +205,7 @@ export const Monitor = () => {
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
             <Table
-              rowKey={(record) => record.title}
+              rowKey={(record) => record.id?.toString() ?? ""}
               columns={columns}
               dataSource={data}
               className="pt-[1.125rem] tableHiddenScrollBar"
@@ -215,7 +218,7 @@ export const Monitor = () => {
                   {...source}
                   i18nKey="Pagination"
                   ns="monitor"
-                  values={{ count: data.length.toString() }}
+                  values={{ count: count.toString() }}
                   components={{
                     span: <span className="text-[#2853E3]" />,
                   }}
@@ -223,13 +226,15 @@ export const Monitor = () => {
               </div>
               <div>
                 <Pagination
-                  current={1}
-                  pageSize={5}
+                  current={pageDto.PageIndex}
+                  pageSize={pageDto.PageSize}
                   pageSizeOptions={[5, 10, 20]}
-                  total={data.length}
+                  total={count}
                   showQuickJumper
                   showSizeChanger
-                  onChange={() => {}}
+                  onChange={(page, pageSize) => {
+                    setPageDto({ PageIndex: page, PageSize: pageSize });
+                  }}
                 />
               </div>
             </div>
@@ -246,7 +251,7 @@ export const Monitor = () => {
         }
         onCancle={() => setIsDeleteOpen(false)}
         onConfirm={() => {
-          setIsDeleteOpen(false);
+          onDelete();
         }}
         open={isDeleteOpen}
         className={"customModal"}

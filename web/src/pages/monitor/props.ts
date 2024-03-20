@@ -18,3 +18,8 @@ export enum IWarningType {
   IdentifyVehicle,
   UnusualVehicle,
 }
+
+export interface IOptionDto {
+  lable: number;
+  value: string;
+}

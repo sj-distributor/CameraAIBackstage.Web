@@ -7,7 +7,6 @@ import {
   IEquipmentCreateOrUpdateDto,
   IEquipmentList,
   IEquipmentPageRequest,
-  IPageDto,
   IRegionDto,
 } from "@/services/dtos/equipment/list";
 import {
@@ -23,6 +22,7 @@ import {
 import { App, Form } from "antd";
 import { GetEquipmentTypePage } from "@/services/api/equipment/type";
 import { useBoolean, useDebounce, useUpdateEffect } from "ahooks";
+import { IPageDto } from "@/services/dtos/public";
 
 export const useAction = () => {
   const { t, language } = useAuth();

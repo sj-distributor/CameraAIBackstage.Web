@@ -6,14 +6,14 @@ import menuIcon from "../../../../assets/monitor/menu-icon.svg";
 import { useAction } from "./hook";
 
 export const AddSelectType = () => {
-  const { text, token, navigate, KEYS, t, source } = useAction();
+  const { warningTypeData, token, navigate, KEYS, t, source } = useAction();
 
   const collapseItem: () => CollapseProps["items"] = () => [
     {
       key: "1",
       children: (
         <>
-          {text.map((item, index) => (
+          {warningTypeData.map((item, index) => (
             <div
               className="hover:bg-[#F6F8FC] py-[1.5rem] px-[1rem] rounded-lg text-[.875rem]"
               key={index}
@@ -72,7 +72,7 @@ export const AddSelectType = () => {
               <div className="border border-[#E7E8EE] border-solid rounded-lg p-[2rem_1.5rem] h-full overflow-y-auto customScollbar shadow-md">
                 <Collapse
                   bordered={false}
-                  defaultActiveKey={["1"]}
+                  activeKey={["1"]}
                   expandIcon={() => (
                     <div className="flex items-center font-semibold">
                       <img src={collapseDown} />

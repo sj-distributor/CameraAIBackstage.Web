@@ -1,5 +1,6 @@
 import { CloseOutlined } from "@ant-design/icons";
 import {
+  App,
   Button,
   Checkbox,
   ConfigProvider,
@@ -15,26 +16,25 @@ import { clone, isEmpty } from "ramda";
 import downArrow from "@/assets/public/down-arrow.png";
 
 import { useAction } from "./hook";
-import { NotificationToolType, TimeType } from "./props";
+import { IOptionsNumberDto, TimeType } from "./props";
 
 export const AddOrUpdateConfiguration = () => {
   const {
     cronList,
     setCronList,
-    userList,
+    userDisplayList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
     onSubmit,
-    selectUserList,
-    setSelectUserList,
     navigate,
     setDuration,
     duration,
     durationTimeType,
     setDurationTimeType,
-    exceptionTypeList,
-    setSelectExceptionId,
+    monitorTypeId,
+    setMonitorTypeId,
     deviceList,
+    selectDeviceId,
     setSelectDeviceId,
     timeSetting,
     setTimeSetting,
@@ -43,7 +43,20 @@ export const AddOrUpdateConfiguration = () => {
     KEYS,
     t,
     source,
+    selectUserValue,
+    notifyType,
+    selectUserData,
+    onChangeUserType,
+    title,
+    setTitle,
+    monitorType,
+    notificationContent,
+    setNotificationContent,
+    broadcastContent,
+    setBroadcastContent,
   } = useAction();
+
+  const { message } = App.useApp();
 
   return (
     <ConfigProvider
@@ -71,8 +84,8 @@ export const AddOrUpdateConfiguration = () => {
           <span className="text-[1.125rem] font-semibold tracking-tight">
             /{" "}
             {type === "add"
-              ? `${t(KEYS.EDIT, source)}`
-              : `${t(KEYS.ADD, source)}`}
+              ? `${t(KEYS.ADD, source)}`
+              : `${t(KEYS.EDIT, source)}`}
             {t(KEYS.CONFIGURATION, source)}
           </span>
           <div className="my-[1rem] h-[calc(100%-7.2rem)] flex justify-center">
@@ -90,13 +103,25 @@ export const AddOrUpdateConfiguration = () => {
                 rules={[
                   {
                     required: true,
-                    message: `${t(KEYS.TITLE_PLACEHOLDER, source)}`,
+                    validator: () => {
+                      if (!!title) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        `${t(KEYS.TITLE_PLACEHOLDER, source)}`
+                      );
+                    },
                   },
                 ]}
               >
                 <Input
                   className="h-[5.1875rem]"
                   placeholder={t(KEYS.TITLE_PLACEHOLDER, source)}
+                  defaultValue={title}
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                  }}
                 />
               </Form.Item>
 
@@ -106,7 +131,10 @@ export const AddOrUpdateConfiguration = () => {
                 rules={[
                   {
                     required: true,
-                    message: "",
+                    validator: () => {
+                      // 不做外层校验
+                      return Promise.resolve();
+                    },
                   },
                 ]}
               >
@@ -121,17 +149,24 @@ export const AddOrUpdateConfiguration = () => {
                         rules={[
                           {
                             required: true,
-                            message: `${t(
-                              KEYS.EXCEPTION_TYPE_PLACEHOLDER,
-                              source
-                            )}`,
+                            validator: () => {
+                              if (!isEmpty(monitorTypeId)) {
+                                return Promise.resolve();
+                              }
+                              return Promise.reject(
+                                `${t(KEYS.EXCEPTION_TYPE_PLACEHOLDER, source)}`
+                              );
+                            },
                           },
                         ]}
                       >
                         <Select
                           suffixIcon={<img src={downArrow} />}
-                          options={exceptionTypeList}
-                          onChange={(value) => setSelectExceptionId(value)}
+                          options={monitorType}
+                          defaultValue={Number(monitorTypeId)}
+                          onChange={(value) => {
+                            setMonitorTypeId(value);
+                          }}
                           placeholder={t(
                             KEYS.EXCEPTION_TYPE_PLACEHOLDER,
                             source
@@ -151,10 +186,17 @@ export const AddOrUpdateConfiguration = () => {
                           rules={[
                             {
                               required: true,
-                              message: `${t(
-                                KEYS.DURATION_TIME_PLACEHOLDER,
-                                source
-                              )}`,
+                              validator: () => {
+                                if (!duration) {
+                                  return Promise.reject(
+                                    `${t(
+                                      KEYS.DURATION_TIME_PLACEHOLDER,
+                                      source
+                                    )}`
+                                  );
+                                }
+                                return Promise.resolve(duration);
+                              },
                             },
                           ]}
                         >
@@ -163,7 +205,8 @@ export const AddOrUpdateConfiguration = () => {
                               KEYS.DURATION_TIME_PLACEHOLDER,
                               source
                             )}
-                            value={duration}
+                            defaultValue={duration}
+                            type="number"
                             onChange={(e) => {
                               const sanitizedValue = e.target.value.replace(
                                 /[^0-9.]/g,
@@ -223,10 +266,17 @@ export const AddOrUpdateConfiguration = () => {
                         rules={[
                           {
                             required: true,
-                            message: `${t(
-                              KEYS.SELECT_DEVICE_RULE_TIPS,
-                              source
-                            )}`,
+                            validator: () => {
+                              if (
+                                !!selectDeviceId &&
+                                !isEmpty(selectDeviceId)
+                              ) {
+                                return Promise.resolve();
+                              }
+                              return Promise.reject(
+                                `${t(KEYS.SELECT_DEVICE_RULE_TIPS, source)}`
+                              );
+                            },
                           },
                         ]}
                       >
@@ -237,6 +287,7 @@ export const AddOrUpdateConfiguration = () => {
                           )}
                           suffixIcon={<img src={downArrow} />}
                           options={deviceList}
+                          defaultValue={selectDeviceId}
                           onChange={(value) => setSelectDeviceId(value)}
                           mode="multiple"
                         />
@@ -251,10 +302,14 @@ export const AddOrUpdateConfiguration = () => {
                         rules={[
                           {
                             required: true,
-                            message: `${t(
-                              KEYS.SETTING_TIME_RULE_TIPS,
-                              source
-                            )}`,
+                            validator: () => {
+                              if (!!timeSetting && !isEmpty(timeSetting)) {
+                                return Promise.resolve();
+                              }
+                              return Promise.reject(
+                                `${t(KEYS.SETTING_TIME_RULE_TIPS, source)}`
+                              );
+                            },
                           },
                         ]}
                       >
@@ -264,10 +319,20 @@ export const AddOrUpdateConfiguration = () => {
                             `${t(KEYS.END_TIME, source)}`,
                           ]}
                           className="flex"
-                          value={timeSetting}
+                          defaultValue={timeSetting}
                           onChange={(dates) => {
-                            setTimeSetting(dates);
+                            if (
+                              dates &&
+                              dates[0]?.format("HH:mm") ===
+                                dates[1]?.format("HH:mm")
+                            ) {
+                              message.warning("不可选择相同时间的范围");
+                              return;
+                            } else {
+                              setTimeSetting(dates);
+                            }
                           }}
+                          format="HH:mm"
                         />
                       </FormItem>
                     </div>
@@ -282,15 +347,14 @@ export const AddOrUpdateConfiguration = () => {
                         rules={[
                           {
                             required: true,
-                            message: `${t(
-                              KEYS.REPEAT_EVERY_WEEK_RULE_TIPS,
-                              source
-                            )}`,
-                            validator: (_, value) => {
-                              console.log(value);
-
-                              if (isEmpty(value) || !value) {
-                                return Promise.reject();
+                            validator: () => {
+                              if (isEmpty(cronList.filter((x) => x.isActive))) {
+                                return Promise.reject(
+                                  `${t(
+                                    KEYS.REPEAT_EVERY_WEEK_RULE_TIPS,
+                                    source
+                                  )}`
+                                );
                               }
 
                               return Promise.resolve();
@@ -301,13 +365,14 @@ export const AddOrUpdateConfiguration = () => {
                         <div className="flex justify-between flex-wrap">
                           {cronList.map((item, index) => (
                             <Button
-                              type={item.value ? "primary" : "default"}
+                              type={item.isActive ? "primary" : "default"}
                               key={index}
                               className="min-w-[6rem]"
                               onClick={() => {
                                 const newList = clone(cronList);
 
-                                newList[index].value = !newList[index].value;
+                                newList[index].isActive =
+                                  !newList[index].isActive;
                                 setCronList(newList);
                               }}
                             >
@@ -335,14 +400,12 @@ export const AddOrUpdateConfiguration = () => {
                             required: true,
                             validator: () => {
                               if (
-                                !isEmpty(selectUserList) &&
-                                selectUserList.every(
-                                  (x) => !isEmpty(x.notificationTool)
+                                selectUserData.some(
+                                  (x) => !isEmpty(x.recipientIds)
                                 )
                               ) {
                                 return Promise.resolve();
                               }
-
                               return Promise.reject(
                                 `${t(KEYS.NOTIFY_USER_RULE_TIPS, source)}`
                               );
@@ -360,129 +423,61 @@ export const AddOrUpdateConfiguration = () => {
                             allowClear={false}
                             removeIcon={null}
                             suffixIcon={<img src={downArrow} />}
-                            options={userList}
-                            value={selectUserList.map((item) => item.name)}
+                            options={userDisplayList}
+                            value={selectUserValue}
                             mode="multiple"
-                            onChange={onChangeNoticeUserList}
+                            onChange={(_, option) =>
+                              onChangeNoticeUserList(
+                                option as IOptionsNumberDto[]
+                              )
+                            }
                           />
-                          {selectUserList &&
-                            selectUserList.map((item, index) => (
+                          {selectUserValue &&
+                            selectUserValue.map((item, index) => (
                               <div
                                 className="px-[1rem] my-[.375rem] border border-[#E7E8EE] border-solid rounded"
                                 key={index}
                               >
                                 <div className="flex flex-row justify-between items-center">
-                                  <div className="py-[.3125rem] flex flex-row items-center">
+                                  <div className="py-[.3125rem] flex flex-row items-center min-w-[7rem]">
                                     <span className="w-[6.75rem] text-[#2853E3]">
-                                      {item.name}
+                                      {item.label}
                                     </span>
-                                    <div className="flex flex-row items-center pr-[2.5625rem]">
-                                      <Checkbox
-                                        className="w-[1.125rem] h-[1.125rem]"
-                                        checked={item.notificationTool?.includes(
-                                          NotificationToolType.Email
-                                        )}
-                                        onChange={(value) => {
-                                          if (!value) return;
-                                          const newList = clone(selectUserList);
-
-                                          if (
-                                            !isEmpty(item.notificationTool) &&
-                                            item.notificationTool.includes(
-                                              NotificationToolType.Email
-                                            )
-                                          )
-                                            return;
-                                          newList[index].notificationTool.push(
-                                            NotificationToolType.Email
-                                          );
-                                          setSelectUserList(newList);
-                                        }}
-                                      />
-                                      <span className="pl-[.3125rem]">
-                                        {t(KEYS.EMAIL, source)}
-                                      </span>
-                                    </div>
-                                    <div className="flex flex-row items-center pr-[2.5625rem]">
-                                      <Checkbox
-                                        className="w-[1.125rem] h-[1.125rem]"
-                                        checked={item.notificationTool?.includes(
-                                          NotificationToolType.EnterpriseWeChat
-                                        )}
-                                        onChange={(value) => {
-                                          if (!value) return;
-                                          const newList = clone(selectUserList);
-
-                                          if (
-                                            !isEmpty(item.notificationTool) &&
-                                            item.notificationTool.includes(
-                                              NotificationToolType.EnterpriseWeChat
-                                            )
-                                          )
-                                            return;
-                                          newList[index].notificationTool.push(
-                                            NotificationToolType.EnterpriseWeChat
-                                          );
-                                          setSelectUserList(newList);
-                                        }}
-                                      />
-                                      <span className="pl-[.3125rem]">
-                                        {t(KEYS.ENTERPRISE_WECHAT, source)}
-                                      </span>
-                                    </div>
-                                    <div className="flex flex-row items-center pr-[2.5625rem]">
-                                      <Checkbox
-                                        className="w-[1.125rem] h-[1.125rem]"
-                                        checked={item.notificationTool?.includes(
-                                          NotificationToolType.Sms
-                                        )}
-                                        onChange={(value) => {
-                                          if (!value) return;
-                                          const newList = clone(selectUserList);
-
-                                          if (
-                                            !isEmpty(item.notificationTool) &&
-                                            item.notificationTool.includes(
-                                              NotificationToolType.Sms
-                                            )
-                                          )
-                                            return;
-                                          newList[index].notificationTool.push(
-                                            NotificationToolType.Sms
-                                          );
-                                          setSelectUserList(newList);
-                                        }}
-                                      />
-                                      <span className="pl-[.3125rem]">
-                                        {t(KEYS.SHORT_MESSAGE, source)}
-                                      </span>
-                                    </div>
-                                    <div className="flex flex-row items-center pr-[2.5625rem]">
-                                      <Checkbox
-                                        className="w-[1.125rem] h-[1.125rem]"
-                                        checked={item.notificationTool?.includes(
-                                          NotificationToolType.Telephone
-                                        )}
-                                        onChange={(value) => {
-                                          if (!value) return;
-                                          const newList = clone(selectUserList);
-
-                                          if (
-                                            !isEmpty(item.notificationTool) &&
-                                            item.notificationTool.includes(
-                                              NotificationToolType.Telephone
-                                            )
-                                          )
-                                            return;
-                                          newList[index].notificationTool.push(
-                                            NotificationToolType.Telephone
-                                          );
-                                          setSelectUserList(newList);
-                                        }}
-                                      />
-                                      <span className="pl-[.3125rem]">
-                                        {t(KEYS.TELEPHONE, source)}
-                                      </span>
+                                    <div className="flex-wrap flex flex-row">
+                                      {notifyType.map((typeItem, index) => {
+                                        return (
+                                          <div
+                                            className={`flex flex-row items-center ${
+                                              index !== notifyType.length - 1 &&
+                                              "pr-[2.5625rem]"
+                                            }`}
+                                            key={index}
+                                          >
+                                            <Checkbox
+                                              className="w-[1.125rem] h-[1.125rem]"
+                                              defaultChecked={selectUserData
+                                                .find(
+                                                  (item) =>
+                                                    item.notifyType ===
+                                                    typeItem.type
+                                                )
+                                                ?.recipientIds.includes(
+                                                  item.value
+                                                )}
+                                              onChange={(e) => {
+                                                onChangeUserType(
+                                                  typeItem.type,
+                                                  item.value,
+                                                  e.target.checked
+                                                );
+                                              }}
+                                            />
+                                            <span className="pl-[.3125rem]">
+                                              {typeItem.title}
+                                            </span>
+                                          </div>
+                                        );
+                                      })}
                                     </div>
                                   </div>
                                   <CloseOutlined
@@ -501,10 +496,17 @@ export const AddOrUpdateConfiguration = () => {
                         rules={[
                           {
                             required: true,
-                            message: `${t(
-                              KEYS.NOTIFICATION_CONTENT_PLACEHOLDER,
-                              source
-                            )}`,
+                            validator: () => {
+                              if (!!notificationContent) {
+                                return Promise.resolve();
+                              }
+                              return Promise.reject(
+                                `${t(
+                                  KEYS.NOTIFICATION_CONTENT_PLACEHOLDER,
+                                  source
+                                )}`
+                              );
+                            },
                           },
                         ]}
                         name="content"
@@ -514,6 +516,10 @@ export const AddOrUpdateConfiguration = () => {
                             KEYS.NOTIFICATION_CONTENT_PLACEHOLDER,
                             source
                           )}
+                          defaultValue={notificationContent}
+                          onChange={(e) => {
+                            setNotificationContent(e.target.value);
+                          }}
                         />
                       </Form.Item>
                     </div>
@@ -537,6 +543,10 @@ export const AddOrUpdateConfiguration = () => {
                             KEYS.BROADCAST_INFORMATION_PLACEHOLDER,
                             source
                           )}
+                          value={broadcastContent}
+                          onChange={(e) => {
+                            setBroadcastContent(e.target.value);
+                          }}
                         />
                       </Form.Item>
                     </div>

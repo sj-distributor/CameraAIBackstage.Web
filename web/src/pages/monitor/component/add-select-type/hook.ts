@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "../../../../i18n/language/keys/monitor-add-keys";
+import { useEffect, useState } from "react";
+import { GetMonitorType } from "@/services/api/monitor";
+import { IMonitorTypeResponse } from "@/services/dtos/monitor";
+import { GetEquipmentPage } from "@/services/api/equipment/list";
 
 export const useAction = () => {
   const { t } = useAuth();
@@ -13,16 +17,19 @@ export const useAction = () => {
 
   const source = { ns: "monitorAdd" };
 
-  const text = [
-    { name: "識別人員", id: 1 },
-    { name: "識別人員", id: 2 },
-    { name: "識別人員", id: 3 },
-    { name: "識別人員", id: 4 },
-    { name: "識別人員", id: 5 },
-    { name: "識別人員", id: 6 },
-    { name: "識別人員", id: 7 },
-    { name: "識別人員", id: 8 },
-  ];
+  const [warningTypeData, setWarningTypeData] = useState<
+    IMonitorTypeResponse[]
+  >([]);
 
-  return { text, token, navigate, KEYS, t, source };
+  useEffect(() => {
+    GetMonitorType()
+      .then((res) => {
+        setWarningTypeData(res);
+      })
+      .catch(() => {
+        setWarningTypeData([]);
+      });
+  }, []);
+
+  return { warningTypeData, token, navigate, KEYS, t, source };
 };

@@ -1,12 +1,9 @@
+import { IPageDto } from "../public";
+
 export interface IEquipmentPageRequest extends IPageDto {
   IsOnline?: boolean;
   IsBind?: boolean;
   Keyword?: string;
-}
-
-export interface IPageDto {
-  PageSize?: number;
-  PageIndex?: number;
 }
 
 export interface IEquipmentPageResponse {
