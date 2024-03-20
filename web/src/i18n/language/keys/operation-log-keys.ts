@@ -7,4 +7,5 @@ export default {
   USER_NAME: "UserName",
   OPERATING_CONTENT: "OperatingContent",
   OPERATING_TIME: "OperatingTime",
+  PAGINATION: "Pagination",
 };

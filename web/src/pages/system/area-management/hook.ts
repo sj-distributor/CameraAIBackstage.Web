@@ -6,7 +6,10 @@ import {
   GetAreaManagementPage,
   PostDeleteAreaId,
 } from "@/services/api/area-management";
-import { IRegionsDto } from "@/services/dtos/area-management";
+import {
+  IAreaManagementPageResponse,
+  IRegionsDto,
+} from "@/services/dtos/area-management";
 
 import { IModifyModalDto } from "./props";
 
@@ -21,6 +24,8 @@ export const useAction = () => {
     principal: "",
   };
 
+  const initialRegionListDto = { count: 0, regions: [] };
+
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
 
   const [isRegionListLoading, setIsRegionListLoading] =
@@ -32,9 +37,8 @@ export const useAction = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [regionListCount, setRegionListCount] = useState<number>(0);
-
-  const [regionDataList, setRegionDataList] = useState<IRegionsDto[]>([]);
+  const [regionListDto, setRegionListDto] =
+    useState<IAreaManagementPageResponse>(initialRegionListDto);
 
   const [pageDto, setPageDto] = useState<{
     pageIndex: number;
@@ -60,10 +64,10 @@ export const useAction = () => {
       Keyword: searchIconValue,
     })
       .then((res) => {
-        setRegionDataList(res.regions);
-        setRegionListCount(res.count);
+        if (res) setRegionListDto({ count: res.count, regions: res.regions });
       })
       .catch((err) => {
+        setRegionListDto(initialRegionListDto);
         message.error(err);
       })
       .finally(() => setIsRegionListLoading(false));
@@ -81,6 +85,10 @@ export const useAction = () => {
   };
 
   useEffect(() => {
+    if (searchValue === "") setSearchIconValue("");
+  }, [searchValue]);
+
+  useEffect(() => {
     initGetRegionList();
   }, [searchIconValue, pageDto.pageSize, pageDto.pageIndex]);
 
@@ -91,8 +99,6 @@ export const useAction = () => {
     setPageDto,
     t,
     isRegionListLoading,
-    regionListCount,
-    regionDataList,
     setSearchIconValue,
     setIsDeleteOpen,
     isDeleteOpen,
@@ -103,5 +109,6 @@ export const useAction = () => {
     isLoading,
     source,
     initialRegionDataItem,
+    regionListDto,
   };
 };
