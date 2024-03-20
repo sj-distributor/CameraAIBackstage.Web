@@ -10,8 +10,9 @@ import {
   postUpdatePortrait,
 } from "@/services/api/portrait";
 import {
-  ICreateOrUpdatePortrait,
+  IFaceDto,
   IGetPortraitByParams,
+  IPortraitDto,
   IPortraitResponse,
   IPreviewImageDto,
   operationTypeEnum,
@@ -25,7 +26,7 @@ export const useAction = () => {
 
   const [addOrUpdatePortrait, setAddOrUpdatePortrait] = useState<{
     operationType: operationTypeEnum;
-    item: ICreateOrUpdatePortrait;
+    item: IPortraitDto;
   }>({
     operationType: operationTypeEnum.Add,
     item: {
@@ -121,19 +122,24 @@ export const useAction = () => {
 
   const handleCreateOrUpdatePortrait = useRequest(
     async () => {
-      const faces = [];
+      const faces: IFaceDto[] = [];
 
       for (let i = 0; i < fileList.length; i++) {
-        faces.push({ image: await getBase64(fileList[i].originFileObj!) });
+        faces.push({
+          image: (await getBase64(fileList[i].originFileObj!)).replace(
+            "data:image/jpeg;base64,",
+            ""
+          ),
+        });
       }
 
-      const params = { ...addOrUpdatePortrait.item, faces };
+      const params: IPortraitDto = { ...addOrUpdatePortrait.item, faces };
 
       return (
         addOrUpdatePortrait.operationType === operationTypeEnum.Add
           ? postCreatePortrait
           : postUpdatePortrait
-      )(params);
+      )({ portrait: params });
     },
     {
       debounceWait: 300,
