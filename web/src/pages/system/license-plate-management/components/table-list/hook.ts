@@ -207,15 +207,25 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   };
 
   const handelSetPlateNumberKeyword = (key: string) => {
-    isRegisteredVehicle
-      ? setRegisteredVehicleRequest((prev) => ({
-          ...prev,
-          PlateNumber: key,
-        }))
-      : setVehicleMonitorRecordsRequest((prev) => ({
-          ...prev,
-          PlateNumber: key,
-        }));
+    if (isRegisteredVehicle) {
+      setRegisteredVehicleRequest((prev) => ({
+        ...prev,
+        PlateNumber: key ? key : undefined,
+      }));
+      handelGetRegisteredVehicleList({
+        ...registeredVehicleRequest,
+        PlateNumber: key,
+      });
+    } else {
+      setVehicleMonitorRecordsRequest((prev) => ({
+        ...prev,
+        PlateNumber: key ? key : undefined,
+      }));
+      handelGetVehicleMonitorRecords({
+        ...vehicleMonitorRecordsRequest,
+        PlateNumber: key,
+      });
+    }
   };
 
   const filterKeyword = useDebounce(plateNumberKeyword, { wait: 500 });
@@ -262,12 +272,30 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   useEffect(() => {
     !isRegisteredVehicle &&
       handelGetVehicleMonitorRecords(vehicleMonitorRecordsRequest);
-  }, [vehicleMonitorRecordsRequest, isRegisteredVehicle]);
+  }, [
+    vehicleMonitorRecordsRequest.EndTime,
+    vehicleMonitorRecordsRequest.StartTime,
+    vehicleMonitorRecordsRequest.EquipmentCodes,
+    vehicleMonitorRecordsRequest.EquipmentName,
+    vehicleMonitorRecordsRequest.MonitorTypeId,
+    vehicleMonitorRecordsRequest.PageIndex,
+    vehicleMonitorRecordsRequest.PageSize,
+    vehicleMonitorRecordsRequest.Status,
+    isRegisteredVehicle,
+  ]);
 
   useEffect(() => {
     isRegisteredVehicle &&
       handelGetRegisteredVehicleList(registeredVehicleRequest);
-  }, [registeredVehicleRequest, isRegisteredVehicle]);
+  }, [
+    registeredVehicleRequest.EndTime,
+    registeredVehicleRequest.StartTime,
+    registeredVehicleRequest.PageIndex,
+    registeredVehicleRequest.PageSize,
+    registeredVehicleRequest.RegisterType,
+    registeredVehicleRequest.Status,
+    isRegisteredVehicle,
+  ]);
 
   useEffect(() => {
     isRegisteredVehicle
