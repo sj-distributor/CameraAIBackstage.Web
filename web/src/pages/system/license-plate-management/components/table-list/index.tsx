@@ -14,12 +14,10 @@ import {
   Pagination,
   Select,
   Table,
-  TimeRangePickerProps,
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
 import dayjs, { Dayjs } from "dayjs";
-import { Dispatch, SetStateAction, useState } from "react";
 import { Trans } from "react-i18next";
 
 import down from "@/assets/public/down-arrow.png";
@@ -30,18 +28,19 @@ import KEYS from "@/i18n/language/keys/license-plate-management-keys";
 import LOG_KEYS from "@/i18n/language/keys/operation-log-keys";
 import {
   CameraAiMonitorRecordStatus,
+  IRegisteredVehicleListItem,
   IVehicleMonitorRecordsItem,
 } from "@/services/dtos/license-plate-management";
 
 import { useAction } from "./hook";
+import {
+  ICameraAiMonitorRecordStatusOption,
+  ILicensePlateManagementTableProps,
+} from "./props";
 
-export const LicensePlateManagementTable = (props: {
-  isRegisteredVehicle: boolean;
-  setIsRegisteredVehicle: Dispatch<SetStateAction<boolean>>;
-  setShowWarningDetails: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
-}) => {
+export const LicensePlateManagementTable = (
+  props: ILicensePlateManagementTableProps
+) => {
   const { setShowWarningDetails, setIsRegisteredVehicle, isRegisteredVehicle } =
     props;
 
@@ -50,24 +49,73 @@ export const LicensePlateManagementTable = (props: {
   const { RangePicker } = DatePicker;
 
   const {
+    plateNumberKeyword,
     isUnbindOpen,
-    setIsUnbindOpen,
     isShowLicensePlateOpen,
-    setIsShowLicensePlateOpen,
     isRegisterOpen,
-    setIsRegisterOpen,
     isAddDeviceOpen,
-    setIsAddDeviceOpen,
     vehicleMonitorRecordsData,
     source,
     isGetMonitorRecords,
-    licensePlateImageUrl,
-    setLicensePlateImageUrl,
     dateRange,
     rangePresets,
+    licensePlateImageUrl,
+    registeredVehicleData,
+    isGetRegisteredVehicleList,
+    registeredVehicleRequest,
+    vehicleMonitorRecordsRequest,
+    registerCarNumber,
+    isRegisteringCar,
+    registeringCarRequest,
+    setLicensePlateImageUrl,
     onRangeChange,
     setVehicleMonitorRecordsRequest,
-  } = useAction();
+    setRegisteredVehicleRequest,
+    setPlateNumberKeyword,
+    setIsUnbindOpen,
+    setIsShowLicensePlateOpen,
+    setIsRegisterOpen,
+    setIsAddDeviceOpen,
+    setRegisterCarNumber,
+    setRegisteringCarRequest,
+    handelRegisteringCar,
+  } = useAction(props);
+
+  const getCameraAiMonitorRecordStatusNode = (
+    status: CameraAiMonitorRecordStatus
+  ) => {
+    switch (status) {
+      case CameraAiMonitorRecordStatus.Verified:
+        return (
+          <div className="flex flex-row items-center">
+            <div className="bg-[#34A46E] w-1.5 h-1.5 rounded-full mr-2" />
+            <span>{t(KEYS.ONLINE, source)}</span>
+          </div>
+        );
+      case CameraAiMonitorRecordStatus.Unmarked:
+        return (
+          <div className="flex flex-row items-center">
+            <div className="bg-[#9D9FB0] w-1.5 h-1.5 rounded-full mr-2" />
+            <span>{t(KEYS.UNREGISTERED, source)}</span>
+          </div>
+        );
+      case CameraAiMonitorRecordStatus.Exception:
+        return (
+          <div className="flex flex-row items-center">
+            <div className="bg-[#F04E4E] w-1.5 h-1.5 rounded-full mr-2" />
+            <span>{t(KEYS.ABNORMAL_VEHICLES, source)}</span>
+          </div>
+        );
+
+      default:
+        return (
+          <div className="flex flex-row items-center">
+            <div className="bg-[#F04E4E] w-1.5 h-1.5 rounded-full mr-2" />
+            <span>{t(KEYS.ABNORMAL_VEHICLES, source)}</span>
+          </div>
+        );
+    }
+  };
 
   const columns: ColumnsType<IVehicleMonitorRecordsItem> = [
     {
@@ -84,15 +132,8 @@ export const LicensePlateManagementTable = (props: {
       title: t(KEYS.START_TIME, source),
       dataIndex: "occurrenceTime",
       width: "16.6%",
-      key: "occurrenceTime",
-      render: (occurrenceTime) => {
-        return (
-          <div>
-            {occurrenceTime
-              ? dayjs(occurrenceTime).format("YYYY-MM-DD HH:mm")
-              : ""}
-          </div>
-        );
+      render: (time) => {
+        return <div>{time ? dayjs(time).format("YYYY-MM-DD HH:mm") : ""}</div>;
       },
     },
     {
@@ -100,37 +141,7 @@ export const LicensePlateManagementTable = (props: {
       dataIndex: "status",
       width: "16.6%",
       render: (status: CameraAiMonitorRecordStatus) => {
-        switch (status) {
-          case CameraAiMonitorRecordStatus.Verified:
-            return (
-              <div className="flex flex-row items-center">
-                <div className="bg-[#34A46E] w-1.5 h-1.5 rounded-full mr-2" />
-                <span>{t(KEYS.ONLINE, source)}</span>
-              </div>
-            );
-          case CameraAiMonitorRecordStatus.Unmarked:
-            return (
-              <div className="flex flex-row items-center">
-                <div className="bg-[#9D9FB0] w-1.5 h-1.5 rounded-full mr-2" />
-                <span>{t(KEYS.UNREGISTERED, source)}</span>
-              </div>
-            );
-          case CameraAiMonitorRecordStatus.Exception:
-            return (
-              <div className="flex flex-row items-center">
-                <div className="bg-[#F04E4E] w-1.5 h-1.5 rounded-full mr-2" />
-                <span>{t(KEYS.ABNORMAL_VEHICLES, source)}</span>
-              </div>
-            );
-
-          default:
-            return (
-              <div className="flex flex-row items-center">
-                <div className="bg-[#F04E4E] w-1.5 h-1.5 rounded-full mr-2" />
-                <span>{t(KEYS.ABNORMAL_VEHICLES, source)}</span>
-              </div>
-            );
-        }
+        return getCameraAiMonitorRecordStatusNode(status);
       },
     },
     {
@@ -139,17 +150,75 @@ export const LicensePlateManagementTable = (props: {
       width: "26.6%",
       render: (_, record) => (
         <div>
-          <Button type="link" onClick={() => setIsRegisterOpen(true)}>
-            {t(isRegisteredVehicle ? KEYS.EDIT : KEYS.REGISTER, source)}
+          <Button
+            type="link"
+            onClick={() => {
+              setRegisterCarNumber(record.plateNumber);
+              setRegisteringCarRequest((prev) => ({
+                ...prev,
+                recordId: String(record.id),
+              }));
+              setIsRegisterOpen(true);
+            }}
+          >
+            {t(KEYS.REGISTER, source)}
           </Button>
-          {!isRegisteredVehicle && (
-            <Button
-              type="link"
-              onClick={() => setShowWarningDetails(String(record.id))}
-            >
-              {t(KEYS.VIEW_DETAILS, source)}
-            </Button>
-          )}
+          <Button
+            type="link"
+            onClick={() => setShowWarningDetails(String(record.id))}
+          >
+            {t(KEYS.VIEW_DETAILS, source)}
+          </Button>
+          <Button
+            type="link"
+            onClick={() => {
+              setIsShowLicensePlateOpen(true);
+              setLicensePlateImageUrl(record.licensePlateImageUrl);
+            }}
+          >
+            {t(KEYS.LICENSE_PLATE_IMAGE, source)}
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
+  const registeredColumns: ColumnsType<IRegisteredVehicleListItem> = [
+    {
+      title: t(KEYS.SERIAL_NUMBER, source),
+      dataIndex: "id",
+      width: "16.6%",
+    },
+    {
+      title: t(KEYS.LICENSE_PLATE_NUMBER, source),
+      dataIndex: "plateNumber",
+      width: "16.6%",
+    },
+    {
+      title: t(KEYS.START_TIME, source),
+      dataIndex: "createdTime",
+      width: "16.6%",
+      render: (time) => {
+        return <div>{time ? dayjs(time).format("YYYY-MM-DD HH:mm") : ""}</div>;
+      },
+    },
+    {
+      title: t(KEYS.VEHICLE_TYPE, source),
+      dataIndex: "registeredRecordStatus",
+      width: "16.6%",
+      render: (status: CameraAiMonitorRecordStatus) => {
+        return getCameraAiMonitorRecordStatusNode(status);
+      },
+    },
+    {
+      title: t(KEYS.OPERATION, source),
+      dataIndex: "operate",
+      width: "26.6%",
+      render: () => (
+        <div>
+          <Button type="link" onClick={() => setIsRegisterOpen(true)}>
+            {t(KEYS.EDIT, source)}
+          </Button>
           <Button
             type="link"
             onClick={() => {
@@ -158,20 +227,31 @@ export const LicensePlateManagementTable = (props: {
           >
             {t(KEYS.LICENSE_PLATE_IMAGE, source)}
           </Button>
-
-          {isRegisteredVehicle && (
-            <Button
-              type="link"
-              onClick={() => {
-                setIsShowLicensePlateOpen(true);
-                setLicensePlateImageUrl(record.licensePlateImageUrl);
-              }}
-            >
-              {t(KEYS.DELETE, source)}
-            </Button>
-          )}
+          <Button
+            type="link"
+            onClick={() => {
+              setIsShowLicensePlateOpen(true);
+            }}
+          >
+            {t(KEYS.DELETE, source)}
+          </Button>
         </div>
       ),
+    },
+  ];
+
+  const statusOption: ICameraAiMonitorRecordStatusOption[] = [
+    {
+      value: CameraAiMonitorRecordStatus.Unmarked,
+      label: t(KEYS.UNREGISTERED, source),
+    },
+    {
+      value: CameraAiMonitorRecordStatus.Exception,
+      label: t(KEYS.ABNORMAL_VEHICLES, source),
+    },
+    {
+      value: CameraAiMonitorRecordStatus.Verified,
+      label: t(KEYS.NORMAL_VEHICLES, source),
     },
   ];
 
@@ -216,21 +296,34 @@ export const LicensePlateManagementTable = (props: {
               className="w-[17.5rem] mr-4 h-[2.5rem]"
               suffix={<img src={search} />}
               placeholder={t(KEYS.SEARCH_VEHICLE_NUMBER, source)}
+              onChange={(e) => setPlateNumberKeyword(e.target.value)}
+              value={
+                !vehicleMonitorRecordsRequest.PlateNumber &&
+                !registeredVehicleRequest.PlateNumber
+                  ? undefined
+                  : plateNumberKeyword
+              }
               onPressEnter={(e) => {
-                setVehicleMonitorRecordsRequest((prev) => ({
-                  ...prev,
-                  PlateNumber: e.currentTarget.value,
-                }));
+                isRegisteredVehicle
+                  ? setRegisteredVehicleRequest((prev) => ({
+                      ...prev,
+                      PlateNumber: e.currentTarget.value,
+                    }))
+                  : setVehicleMonitorRecordsRequest((prev) => ({
+                      ...prev,
+                      PlateNumber: e.currentTarget.value,
+                    }));
               }}
             />
             <RangePicker
               className="w-[18.75rem] mr-4 h-[2.5rem]"
               presets={rangePresets}
+              value={dateRange}
               onChange={onRangeChange}
               renderExtraFooter={() => (
                 <div className="flex justify-between">
-                  {renderDateAndTime(dateRange[0])}
-                  {renderDateAndTime(dateRange[1])}
+                  {renderDateAndTime(dateRange ? dateRange[0] : null)}
+                  {renderDateAndTime(dateRange ? dateRange[1] : null)}
                 </div>
               )}
               allowClear
@@ -250,20 +343,7 @@ export const LicensePlateManagementTable = (props: {
                     Status: status,
                   }));
                 }}
-                options={[
-                  {
-                    value: CameraAiMonitorRecordStatus.Unmarked,
-                    label: t(KEYS.UNREGISTERED, source),
-                  },
-                  {
-                    value: CameraAiMonitorRecordStatus.Exception,
-                    label: t(KEYS.ABNORMAL_VEHICLES, source),
-                  },
-                  {
-                    value: CameraAiMonitorRecordStatus.Verified,
-                    label: t(KEYS.NORMAL_VEHICLES, source),
-                  },
-                ]}
+                options={statusOption}
                 suffixIcon={<img src={down} />}
               />
             )}
@@ -278,25 +358,37 @@ export const LicensePlateManagementTable = (props: {
             </Button>
           )}
         </div>
-        <Table
-          rowKey={(record) => record.id}
-          columns={
-            isRegisteredVehicle
-              ? columns.filter((item) => item.key !== "startTime")
-              : columns
-          }
-          dataSource={vehicleMonitorRecordsData.records}
-          loading={isGetMonitorRecords}
-          className="pt-[1.125rem] tableHiddenScrollBar flex-1"
-          scroll={{ y: 580 }}
-          pagination={false}
-        />
+        {isRegisteredVehicle ? (
+          <Table
+            rowKey={(record) => record.id}
+            columns={registeredColumns}
+            dataSource={registeredVehicleData.registers}
+            loading={isGetRegisteredVehicleList}
+            className="pt-[1.125rem] tableHiddenScrollBar flex-1"
+            scroll={{ y: 580 }}
+            pagination={false}
+          />
+        ) : (
+          <Table
+            rowKey={(record) => record.id}
+            columns={columns}
+            dataSource={vehicleMonitorRecordsData.records}
+            loading={isGetMonitorRecords}
+            className="pt-[1.125rem] tableHiddenScrollBar flex-1"
+            scroll={{ y: 580 }}
+            pagination={false}
+          />
+        )}
         <div className="flex justify-between items-center pt-[1rem]">
           <div className="text-[#929292] text-[0.875rem] font-light">
             <Trans
               {...source}
               i18nKey="TotalItems"
-              values={{ length: vehicleMonitorRecordsData.count }}
+              values={{
+                length: isRegisteredVehicle
+                  ? registeredVehicleData.count
+                  : vehicleMonitorRecordsData.count,
+              }}
               components={{
                 span: <span className="text-[#2853E3]" />,
               }}
@@ -305,9 +397,13 @@ export const LicensePlateManagementTable = (props: {
           <div>
             <Pagination
               current={1}
-              pageSize={5}
+              pageSize={20}
               pageSizeOptions={[5, 10, 20]}
-              total={vehicleMonitorRecordsData.count}
+              total={
+                isRegisteredVehicle
+                  ? registeredVehicleData.count
+                  : vehicleMonitorRecordsData.count
+              }
               showQuickJumper
               showSizeChanger
               onChange={() => {}}
@@ -390,13 +486,15 @@ export const LicensePlateManagementTable = (props: {
             >
               <span>{t(KEYS.CANCEL, source)}</span>
             </button>
-            <button
-              type="button"
-              onClick={() => setIsRegisterOpen(false)}
+            <Button
+              loading={isRegisteringCar}
+              onClick={() => {
+                handelRegisteringCar(registeringCarRequest);
+              }}
               className="ant-btn css-dev-only-do-not-override-9alsuj ant-btn-primary w-[6rem] h-[2.75rem] mr-[1.5rem] bg-[#2853E3]"
             >
               <span>{t(KEYS.CONFIRM, source)}</span>
-            </button>
+            </Button>
           </div>
         }
       >
@@ -408,7 +506,7 @@ export const LicensePlateManagementTable = (props: {
               labelCol={{ span: language === "ch" ? 3 : 6 }}
               wrapperCol={{ span: 15 }}
             >
-              <div>粵A C5635</div>
+              <div>{registerCarNumber}</div>
             </FormItem>
             <FormItem
               name="deviceType"
@@ -421,20 +519,15 @@ export const LicensePlateManagementTable = (props: {
                 suffixIcon={<img src={down} />}
                 placeholder={t(KEYS.PLEASE_SELECT, source)}
                 defaultActiveFirstOption
-                options={[
-                  {
-                    value: t(KEYS.PLEASE_SELECT, source),
-                    label: t(KEYS.PLEASE_SELECT, source),
-                  },
-                  {
-                    value: t(KEYS.CAMERA, source),
-                    label: t(KEYS.CAMERA, source),
-                  },
-                  {
-                    value: t(KEYS.SPEAKER, source),
-                    label: t(KEYS.SPEAKER, source),
-                  },
-                ]}
+                options={statusOption.filter(
+                  (item) => item.value !== CameraAiMonitorRecordStatus.Unmarked
+                )}
+                onChange={(status) =>
+                  setRegisteringCarRequest((prev) => ({
+                    ...prev,
+                    recordStatus: status,
+                  }))
+                }
               />
             </FormItem>
           </Form>
