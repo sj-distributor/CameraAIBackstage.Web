@@ -1,71 +1,55 @@
-import { UploadFile, UploadProps } from "antd";
+import { useRequest } from "ahooks";
+import { App, UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { IPreviewImageDto, IPortraitDto } from "@/services/dtos/portrait";
+import {
+  getPortraitList,
+  postCreatePortrait,
+  postDeletePortrait,
+  postUpdatePortrait,
+} from "@/services/api/portrait";
+import {
+  ICreateOrUpdatePortrait,
+  IGetPortraitByParams,
+  IPortraitResponse,
+  IPreviewImageDto,
+  operationTypeEnum,
+} from "@/services/dtos/portrait";
 
 export const useAction = () => {
-  const initialPortraitData: IPortraitDto[] = [
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
+  const initialPortraitData: IPortraitResponse = {
+    count: 0,
+    portraits: [],
+  };
+
+  const [addOrUpdatePortrait, setAddOrUpdatePortrait] = useState<{
+    operationType: operationTypeEnum;
+    item: ICreateOrUpdatePortrait;
+  }>({
+    operationType: operationTypeEnum.Add,
+    item: {
+      name: "",
+      department: "",
+      group: "",
+      position: "",
+      phone: "",
+      isQualified: false,
+      faces: [
+        {
+          image: "",
+        },
+      ],
     },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-  ];
+  });
 
   const [portraitData, setPortraitData] =
-    useState<IPortraitDto[]>(initialPortraitData);
+    useState<IPortraitResponse>(initialPortraitData);
+
+  const [pageData, setPageData] = useState<IGetPortraitByParams>({
+    pageIndex: 1,
+    pageSize: 12,
+  });
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
@@ -77,20 +61,25 @@ export const useAction = () => {
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  const getBase64 = (file: RcFile): Promise<string> =>
-    new Promise((resolve, reject) => {
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { message } = App.useApp();
+
+  const getBase64 = (file: RcFile): Promise<string> => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = (error) => reject(error);
     });
+  };
 
   const handleCancel = () => {
     setImageInformation({ ...imageInformation, previewOpen: false });
   };
 
-  const handlePreview = async (file: UploadFile) => {
+  const handleFilePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
@@ -103,19 +92,107 @@ export const useAction = () => {
     });
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+  const handleUploadChange: UploadProps["onChange"] = ({
+    fileList: newFileList,
+  }) => {
     setFileList(newFileList);
   };
+
+  const handleGetPortraitData = useRequest(() => getPortraitList(pageData), {
+    debounceWait: 300,
+    manual: true,
+    onBefore: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      setPortraitData(() => ({
+        count: data?.count ?? 0,
+        portraits: data?.portraits ?? [],
+      }));
+    },
+    onError: (error) => {
+      message.error((error as Error).message);
+      setPortraitData(initialPortraitData);
+    },
+    onFinally: () => {
+      setLoading(false);
+    },
+  });
+
+  const handleCreateOrUpdatePortrait = useRequest(
+    async () => {
+      const faces = [];
+
+      for (let i = 0; i < fileList.length; i++) {
+        faces.push({ image: await getBase64(fileList[i].originFileObj!) });
+      }
+
+      const params = { ...addOrUpdatePortrait.item, faces };
+
+      return (
+        addOrUpdatePortrait.operationType === operationTypeEnum.Add
+          ? postCreatePortrait
+          : postUpdatePortrait
+      )(params);
+    },
+    {
+      debounceWait: 300,
+      manual: true,
+      onSuccess: () => {
+        message.success("success");
+        handleGetPortraitData.run();
+
+        setImageInformation({
+          previewOpen: false,
+          previewImage: "",
+          previewTitle: "",
+        });
+      },
+      onError: (error) => {
+        message.error((error as Error).message);
+      },
+    }
+  );
+
+  const handleDeletePortrait = useRequest(
+    (id: number) => postDeletePortrait({ portraitId: id }),
+    {
+      debounceWait: 300,
+      manual: true,
+      onBefore: () => {
+        setLoading(true);
+      },
+      onSuccess: () => {
+        message.success("success");
+      },
+      onError: (error) => {
+        message.error((error as Error).message);
+      },
+      onFinally: () => {
+        setLoading(false);
+      },
+    }
+  );
+
+  useEffect(() => {
+    handleGetPortraitData.run();
+  }, [pageData]);
 
   return {
     portraitData,
     isOpenModal,
     imageInformation,
     fileList,
-    handleChange,
-    setPortraitData,
+    loading,
+    addOrUpdatePortrait,
+    pageData,
+    handleCreateOrUpdatePortrait,
+    handleDeletePortrait,
+    handleUploadChange,
     setIsOpenModal,
     handleCancel,
-    handlePreview,
+    handleFilePreview,
+    setPageData,
+    setAddOrUpdatePortrait,
   };
 };

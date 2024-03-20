@@ -11,7 +11,7 @@ export default {
   USER_NAME: "UserName",
   DEPARTMENT: "Department",
   GROUP: "Group",
-  JOB: "Job",
+  POSITION: "position",
   PHONE_NUMBER: "PhoneNumber",
   PORTRAIT: "Portrait",
   CLICK_UPLOAD: "Click_Upload",

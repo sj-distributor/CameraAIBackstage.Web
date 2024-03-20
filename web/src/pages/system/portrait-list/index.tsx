@@ -1,5 +1,14 @@
 import { CloseOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Pagination, Select, Upload } from "antd";
+import {
+  Button,
+  Empty,
+  Input,
+  Modal,
+  Pagination,
+  Popconfirm,
+  Spin,
+  Upload,
+} from "antd";
 import { Trans } from "react-i18next";
 
 import edit from "@/assets/portrait/edit.svg";
@@ -21,10 +30,17 @@ export const PortraitList = () => {
     isOpenModal,
     imageInformation,
     fileList,
-    handleChange,
+    loading,
+    addOrUpdatePortrait,
+    pageData,
+    handleCreateOrUpdatePortrait,
+    handleDeletePortrait,
+    handleUploadChange,
     setIsOpenModal,
     handleCancel,
-    handlePreview,
+    handleFilePreview,
+    setPageData,
+    setAddOrUpdatePortrait,
   } = useAction();
 
   const { t } = useAuth();
@@ -39,8 +55,8 @@ export const PortraitList = () => {
   );
 
   return (
-    <div>
-      <div className="p-[1.5rem] bg-white">
+    <div className="h-full grid grid-rows-[1fr,auto]">
+      <div className="p-[1.5rem] bg-white ">
         <div className="text-[1.125rem] font-semibold">
           {t(KEYS.PORTRAIT_LIST, { ns: "portraitList" })}
         </div>
@@ -50,6 +66,9 @@ export const PortraitList = () => {
               className="w-[17.5rem]"
               placeholder={t(KEYS.SEARCH, { ns: "portraitList" })}
               suffix={<img src={search} />}
+              onChange={(event) => {
+                setPageData((pre) => ({ ...pre, keyword: event.target.value }));
+              }}
             />
           </div>
           <Button
@@ -61,73 +80,94 @@ export const PortraitList = () => {
             {t(KEYS.ADD, { ns: "portraitList" })}
           </Button>
         </div>
-        <div className="grid grid-cols-2 grid-rows-2 xl:grid-cols-3 xl:grid-rows-3 gap-[1rem]">
-          {portraitData.map((item, index) => {
-            return (
-              <div
-                key={index}
-                className="shadow-[0rem_.125rem_.1875rem_.0625rem_rgb(0,0,0,0.07)] rounded-[1rem]"
-              >
-                <div className="p-[1rem] flex">
-                  <div className="mr-[1rem]">
-                    {item.portraitUrl ? (
-                      item.portraitUrl
-                    ) : (
-                      <img src={avatar} width={64} height={64} />
-                    )}
+        {loading ? (
+          <div className="grid mt-[12%]">
+            <Spin />
+          </div>
+        ) : portraitData.portraits.length ? (
+          <div className="grid grid-cols-2 grid-rows-2 xl:grid-cols-3 xl:grid-rows-3 gap-[1rem]">
+            {portraitData.portraits.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  className="shadow-[0rem_.125rem_.1875rem_.0625rem_rgb(0,0,0,0.07)] rounded-[1rem]"
+                >
+                  <div className="p-[1rem] flex">
+                    <div className="mr-[1rem]">
+                      {item.faces[0]?.imageUrl ? (
+                        item.faces[0]?.imageUrl
+                      ) : (
+                        <img src={avatar} width={64} height={64} />
+                      )}
+                    </div>
+                    <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-[.75rem]">
+                      <div className="col-span-2 font-semibold text-[1.25rem]">
+                        {item.name}
+                      </div>
+                      <div>
+                        {t(KEYS.DEPARTMENT, { ns: "portraitList" })} :{" "}
+                        {item.department}
+                      </div>
+                      <div>
+                        {t(KEYS.GROUP, { ns: "portraitList" })} : {item.group}
+                      </div>
+                      <div>
+                        {t(KEYS.POSITION, { ns: "portraitList" })} :{" "}
+                        {item.position}
+                      </div>
+                      <div>
+                        {t(KEYS.PHONE_NUMBER, { ns: "portraitList" })} :{" "}
+                        {item.phone}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-[.75rem]">
-                    <div className="col-span-2 font-semibold text-[1.25rem]">
-                      {item.name}
-                    </div>
-                    <div>
-                      {t(KEYS.DEPARTMENT, { ns: "portraitList" })} :{" "}
-                      {item.department}
-                    </div>
-                    <div>
-                      {t(KEYS.GROUP, { ns: "portraitList" })} : {item.group}
-                    </div>
-                    <div>
-                      {t(KEYS.JOB, { ns: "portraitList" })} : {item.job}
-                    </div>
-                    <div>
-                      {t(KEYS.PHONE_NUMBER, { ns: "portraitList" })} :{" "}
-                      {item.phone}
+                  <div className="p-[1rem_1.5rem] flex justify-end items-center bg-[#F6F8FC]">
+                    <Popconfirm
+                      title="刪除提醒？"
+                      description="是否確認刪除?"
+                      onConfirm={() => handleDeletePortrait.run(item.id!)}
+                      okText="確認"
+                      cancelText="取消"
+                    >
+                      <div className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#F04E4E] border border-solid border-[#F04E4E] cursor-pointer mr-[1rem]">
+                        <img src={trash} className="mr-[.5rem]" />
+                        {t(KEYS.DELETE, { ns: "portraitList" })}
+                      </div>
+                    </Popconfirm>
+                    <div
+                      onClick={() => setIsOpenModal(true)}
+                      className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#2853E3] border border-solid border-[#2853E3] cursor-pointer"
+                    >
+                      <img src={edit} className="mr-[.5rem]" />
+                      {t(KEYS.EDIT, { ns: "portraitList" })}
                     </div>
                   </div>
                 </div>
-                <div className="p-[1rem_1.5rem] flex justify-end items-center bg-[#F6F8FC]">
-                  <div className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#F04E4E] border border-solid border-[#F04E4E] cursor-pointer mr-[1rem]">
-                    <img src={trash} className="mr-[.5rem]" />
-                    {t(KEYS.DELETE, { ns: "portraitList" })}
-                  </div>
-                  <div
-                    onClick={() => setIsOpenModal(true)}
-                    className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#2853E3] border border-solid border-[#2853E3] cursor-pointer"
-                  >
-                    <img src={edit} className="mr-[.5rem]" />
-                    {t(KEYS.EDIT, { ns: "portraitList" })}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <Empty description="Not Data" className="mt-[12%]" />
+        )}
       </div>
       <div className="flex justify-between items-center bg-[#F6F8FC] p-[1rem_0_1rem_1rem]">
         <div>
           <Trans
             i18nKey={KEYS.PAGINATION}
             ns="portraitList"
-            values={{ count: 200 }}
+            values={{ count: portraitData.count }}
             components={{ span: <span className="text-[#2853E3]" /> }}
           />
         </div>
         <Pagination
-          defaultCurrent={1}
-          total={50}
+          // defaultCurrent={pageData.pageIndex}
+          current={pageData.pageIndex}
+          total={portraitData.count}
           showQuickJumper
           showSizeChanger
+          onChange={(page, pageSize) => {
+            setPageData((pre) => ({ ...pre, pageIndex: page, pageSize }));
+          }}
         />
       </div>
 
@@ -144,119 +184,103 @@ export const PortraitList = () => {
         }
         open={isOpenModal}
         onCancle={() => setIsOpenModal(false)}
-        onConfirm={() => setIsOpenModal(false)}
+        onConfirm={handleCreateOrUpdatePortrait.run}
         modalWidth={"42.5rem"}
       >
-        <div className="pl-[.8125rem]">
-          <Form
-            name="basic"
-            wrapperCol={{ span: 16 }}
-            initialValues={{ remember: true }}
-            autoComplete="off"
-            colon={false}
-          >
-            <Form.Item
-              label={t(KEYS.USER_NAME, { ns: "portraitList" })}
-              name="username"
-              rules={[
-                { required: true, message: "Please input your username!" },
-              ]}
-            >
-              <Input
-                placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
-                className="w-[25rem]"
-              />
-            </Form.Item>
+        <div className="pl-[.8125rem] text-right grid grid-cols-[max-content,auto] gap-[1.25rem_.625rem] items-center w-[28.25rem]">
+          <div>{t(KEYS.USER_NAME, { ns: "portraitList" })}</div>
+          <Input
+            placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
+            value={addOrUpdatePortrait.item.name}
+            onChange={(event) => {
+              setAddOrUpdatePortrait((pre) => ({
+                ...pre,
+                item: { ...pre.item, name: event.target.value },
+              }));
+            }}
+          />
 
-            <div className="ml-[1.5rem]">
-              <Form.Item
-                label={t(KEYS.DEPARTMENT, { ns: "portraitList" })}
-                name="department"
-              >
-                <Select
-                  suffixIcon={<img src={down} />}
-                  style={{ width: 400 }}
-                  placeholder={t(KEYS.PLEASE_SELECT, { ns: "portraitList" })}
-                  options={[
-                    { value: "jack", label: "Jack" },
-                    { value: "lucy", label: "Lucy" },
-                  ]}
-                />
-              </Form.Item>
-              <Form.Item
-                label={t(KEYS.GROUP, { ns: "portraitList" })}
-                name="group"
-              >
-                <Input
-                  placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
-                  className="w-[25rem]"
-                />
-              </Form.Item>
-              <Form.Item
-                label={t(KEYS.JOB, { ns: "portraitList" })}
-                name="post"
-              >
-                <Input
-                  placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
-                  className="w-[25rem]"
-                />
-              </Form.Item>
-              <Form.Item
-                label={t(KEYS.PHONE_NUMBER, { ns: "portraitList" })}
-                name="phone"
-              >
-                <Input
-                  placeholder={t(KEYS.EXAMPLE, { ns: "portraitList" })}
-                  className="w-[25rem]"
-                />
-              </Form.Item>
-            </div>
+          <div>{t(KEYS.DEPARTMENT, { ns: "portraitList" })}</div>
+          <Input
+            placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
+            value={addOrUpdatePortrait.item.department}
+            onChange={(event) => {
+              setAddOrUpdatePortrait((pre) => ({
+                ...pre,
+                item: { ...pre.item, department: event.target.value },
+              }));
+            }}
+          />
 
-            <Form.Item
-              className="ml-[.8125rem] mb-0"
-              label={t(KEYS.PORTRAIT, { ns: "portraitList" })}
-              name="portrait"
-              rules={[
-                { required: true, message: "Please upload your portrait!" },
-              ]}
+          <div>{t(KEYS.GROUP, { ns: "portraitList" })}</div>
+          <Input
+            placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
+            value={addOrUpdatePortrait.item.group}
+            onChange={(event) => {
+              setAddOrUpdatePortrait((pre) => ({
+                ...pre,
+                item: { ...pre.item, group: event.target.value },
+              }));
+            }}
+          />
+
+          <div>{t(KEYS.POSITION, { ns: "portraitList" })}</div>
+          <Input
+            placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
+            value={addOrUpdatePortrait.item.position}
+            onChange={(event) => {
+              setAddOrUpdatePortrait((pre) => ({
+                ...pre,
+                item: { ...pre.item, position: event.target.value },
+              }));
+            }}
+          />
+
+          <div>{t(KEYS.PHONE_NUMBER, { ns: "portraitList" })}</div>
+          <Input
+            placeholder={t(KEYS.EXAMPLE, { ns: "portraitList" })}
+            value={addOrUpdatePortrait.item.phone}
+            onChange={(event) => {
+              setAddOrUpdatePortrait((pre) => ({
+                ...pre,
+                item: { ...pre.item, phone: event.target.value },
+              }));
+            }}
+          />
+
+          <div className="self-start pt-[.375rem]">
+            {t(KEYS.PORTRAIT, { ns: "portraitList" })}
+          </div>
+          <div className="flex items-end portraitUploadStyle">
+            <Upload
+              beforeUpload={() => false}
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={handleFilePreview}
+              onChange={handleUploadChange}
+              className="!w-auto"
+              accept=".jpg, .png"
             >
-              <div>
-                <div className="flex items-end portraitUploadStyle">
-                  <Upload
-                    action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-                    listType="picture-card"
-                    fileList={fileList}
-                    onPreview={handlePreview}
-                    onChange={handleChange}
-                    className="!w-auto"
-                    maxCount={1}
-                    accept=".jpg, .png"
-                  >
-                    {fileList.length === 0 && uploadButton}
-                  </Upload>
-                  <div className="text-[.625rem] text-[#9696A7] w-[11.875rem]">
-                    <div className="font-semibold">
-                      {t(KEYS.UPLOAD_TIP_TITLE, { ns: "portraitList" })}
-                    </div>
-                    <div>
-                      {t(KEYS.UPLOAD_TIP_CONTENT, { ns: "portraitList" })}
-                    </div>
-                  </div>
-                </div>
-                <Modal
-                  open={imageInformation.previewOpen}
-                  title={imageInformation.previewTitle}
-                  footer={null}
-                  onCancel={handleCancel}
-                >
-                  <img
-                    style={{ width: "100%" }}
-                    src={imageInformation.previewImage}
-                  />
-                </Modal>
+              {fileList.length < 2 && uploadButton}
+            </Upload>
+            <div className="text-[.625rem] text-[#9696A7] w-[11.875rem] text-left">
+              <div className="font-semibold">
+                {t(KEYS.UPLOAD_TIP_TITLE, { ns: "portraitList" })}
               </div>
-            </Form.Item>
-          </Form>
+              <div>{t(KEYS.UPLOAD_TIP_CONTENT, { ns: "portraitList" })}</div>
+            </div>
+          </div>
+          <Modal
+            open={imageInformation.previewOpen}
+            title={imageInformation.previewTitle}
+            footer={null}
+            onCancel={handleCancel}
+          >
+            <img
+              style={{ width: "100%" }}
+              src={imageInformation.previewImage}
+            />
+          </Modal>
         </div>
       </CustomModal>
     </div>
