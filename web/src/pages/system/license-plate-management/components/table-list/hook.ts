@@ -229,7 +229,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
       res && setRegisteredVehicleData(res);
     },
     onError(error) {
-      message.error(error.message);
+      message.error((error as unknown as { code: number; msg: string }).msg);
       setRegisteredVehicleData({ count: 0, registers: [] });
     },
   });

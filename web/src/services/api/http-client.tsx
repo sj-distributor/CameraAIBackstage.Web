@@ -9,10 +9,7 @@ api.interceptors.request.use(
 
     config.baseURL = appSettings.serverUrl;
 
-    // const authorizeToken = localStorage.getItem(appSettings.tokenKey);
-
-    const authorizeToken =
-      "bxRoEswLfV4Okh92CrYd8gS2tmdqskwnNmt_13HjH8Cj5vpFAczGTZb6ArI7Nl9NstMbH3AHdX1GRIrh_KNnnw8okeGNWrb4SfrewbQcFeniKHh3Qcpa4FNY7LJqFRbSUYw_5x9Y8dDgvB74q3WwcAgl5A8xFxpN9_zoZIE0WgoL97mvYYfk-J-296wGw_wpPr0Noa_oTn74FEJ3Ox28WvgsIbTNAD1TE0nCVIVvaUCKtE6p6zeFDB2mEZjL38ckfrOrohgv__dw908-IJRTktWS7-Yqe22HuMUlAqEn54Au-Evh0WYPRH6x8ap926ZOyaDgeWM-YeC_vPvNdyKZOmjXQRE";
+    const authorizeToken = localStorage.getItem(appSettings.tokenKey);
 
     authorizeToken &&
       (config.headers.Authorization = `Bearer ${authorizeToken}`);
