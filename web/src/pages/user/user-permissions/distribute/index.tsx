@@ -6,6 +6,7 @@ import {
   WarningFilled,
 } from "@ant-design/icons";
 import {
+  Breadcrumb,
   Button,
   ConfigProvider,
   Input,
@@ -15,11 +16,13 @@ import {
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useState } from "react";
+import { Trans } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { CustomModal } from "@/components/custom-modal";
-import Tree from "antd/es/tree/Tree";
-import search from "antd/es/transfer/search";
+import KEYS from "@/i18n/language/keys/user-permissions-keys";
+
+import { useAction } from "./hook";
 
 export const UserDistribute = () => {
   const [deletePermissions, setDeletePermissions] = useState<boolean>(false);
@@ -34,6 +37,8 @@ export const UserDistribute = () => {
 
   const navigate = useNavigate();
 
+  const { t, source } = useAction();
+
   const rowSelection = {
     getCheckboxProps: (record: { deviceId: string; name: string }) => ({
       disabled: record.name === "Disabled User",
@@ -42,15 +47,15 @@ export const UserDistribute = () => {
 
   const columns = [
     {
-      title: "用户名",
+      title: t(KEYS.USER_NAME, source),
       dataIndex: "userName",
     },
     {
-      title: "更新时间",
+      title: t(KEYS.UPDATE_TIME, source),
       dataIndex: "updateTime",
     },
     {
-      title: "操作",
+      title: t(KEYS.OPERATION, source),
       dataIndex: "operate",
       render: () => {
         return (
@@ -69,15 +74,13 @@ export const UserDistribute = () => {
               },
             }}
           >
-            <div>
-              <Button
-                type="link"
-                className="text-[0.8rem] text-blue-400 h-[1.5rem] w-[5rem] ml-[0.5rem] rounded-none"
-                onClick={() => setDeletePermissions(true)}
-              >
-                移除
-              </Button>
-            </div>
+            <Button
+              type="link"
+              className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
+              onClick={() => setDeletePermissions(true)}
+            >
+              {t(KEYS.REMOVE, source)}
+            </Button>
           </ConfigProvider>
         );
       },
@@ -120,21 +123,24 @@ export const UserDistribute = () => {
   return (
     <div>
       <div className="bg-white w-full h-[calc(100vh-7rem)] p-[1rem]">
-        <div className="bg-whitew-full flex-col justify-start pt-[1.5rem] overflow-scroll no-scrollbar">
-          <Button type="text">
-            <span className="text-[1rem] text-gray-500 tracking-tight ">
-              角色列表
-            </span>
-          </Button>
-          <span className="text-[1rem] text-gray-500">/</span>
-          <Button type="text">
-            <span className="text-[1rem] font-bold">角色名单</span>
-          </Button>
-          <br />
-          <div className="flex flex-row  justify-between mt-[1rem] mb-[0.5rem]">
-            <div>
-              <Input className="w-[17.5rem]" placeholder="搜索角色名稱" />
-            </div>
+        <div className="flex-col justify-start pt-[1rem] pl-[.5rem] overflow-scroll no-scrollbar">
+          <Breadcrumb
+            items={[
+              {
+                title: (
+                  <div onClick={() => navigate("/user/permissions")}>
+                    角色列表
+                  </div>
+                ),
+              },
+              {
+                title: "角色名单",
+              },
+            ]}
+            className="text-[1.125rem] font-semibold"
+          />
+          <div className="flex justify-between mt-[1.625rem] mb-[.625rem]">
+            <Input className="w-[17.5rem]" placeholder="搜索角色名稱" />
             <div>
               <Button
                 className="h-[2.75rem] w-[7.25rem] mr-[1rem]"
@@ -153,28 +159,37 @@ export const UserDistribute = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-between">
-          <Table
-            rowKey={(record) => record.deviceId}
-            columns={columns}
-            dataSource={data}
-            rowSelection={rowSelection}
-            pagination={false}
-          />
-          <div className="flex justify-between items-center py-[1rem]">
-            <div className="text-[#929292] text-[0.785rem]">
-              共 <span className="text-[#2853E3] font-light">200</span> 條
-            </div>
-            <div>
-              <Pagination
-                current={1}
-                total={200}
-                pageSize={10}
-                pageSizeOptions={[6, 10, 20]}
-                showSizeChanger
-                showQuickJumper
+
+        <div className="flex flex-col h-[calc(100vh-17rem)] justify-between">
+          <div className="overflow-auto no-scrollbar pb-[1.125rem]">
+            <Table
+              rowKey={(record) => record.deviceId}
+              columns={columns}
+              dataSource={data}
+              rowSelection={rowSelection}
+              pagination={false}
+              sticky={true}
+            />
+          </div>
+          <div className="flex justify-between items-center pt-[1rem]">
+            <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
+              <Trans
+                i18nKey={KEYS.PAGINATION}
+                ns="userPermissions"
+                values={{ count: 200 }}
+                components={{
+                  span: <span className="text-[#2853E3] font-light mx-1" />,
+                }}
               />
             </div>
+            <Pagination
+              current={1}
+              total={200}
+              pageSize={10}
+              pageSizeOptions={[5, 10, 20]}
+              showSizeChanger
+              showQuickJumper
+            />
           </div>
         </div>
       </div>
@@ -239,72 +254,30 @@ export const UserDistribute = () => {
         title={
           <div className="flex flex-row justify-between">
             <div>添加用戶</div>
-            <CloseOutlined className="mr-[1rem]" />
+            <CloseOutlined
+              className="mr-[1rem]"
+              onClick={() => setIsAddNewUser(false)}
+            />
           </div>
         }
         onCancle={() => setIsAddNewUser(false)}
         onConfirm={() => setIsAddNewUser(false)}
         open={isAddNewUser}
         className={"customDeviceModal"}
+        modalWidth="42.5rem"
       >
         <Transfer
           dataSource={data}
           showSearch
           render={(data) => data.userName}
-          titles={["标题"]}
           listStyle={{
-            width: 280,
+            width: 300,
             height: 250,
           }}
+          selectionsIcon={<></>}
+          selectAllLabels={["标题", `已選擇1項`]}
+          showSelectAll={false}
         />
-      </CustomModal>
-      <CustomModal
-        modalWidth={"36rem"}
-        title={
-          <div className="flex flex-row justify-between">
-            <div>添加用戶</div>
-            <CloseOutlined onClick={() => setIsClosed(true)} />
-          </div>
-        }
-        onCancle={() => setIsAddNewUser(false)}
-        onConfirm={() => setIsAddNewUser(true)}
-        open={isAddNewUser}
-        className={"customDeviceModal"}
-      >
-        <div className="flex flex-nowrap">
-          <div className="border-solid border border-gray-200 w-[16rem] rounded">
-            <div className="mb-[0.5rem] ml-[1rem] mt-[0.5rem] text-[0.8rem] text-slate-600">
-              標題
-            </div>
-            <Input
-              className="ml-[0.5rem] mb-[0.5rem] w-[14rem] h-[1.65rem] text-[0.8rem] rounded"
-              suffix={<img src={search} className="size-[1rem]" />}
-              placeholder="搜索用戶名，部門"
-            />
-            <Tree checkable treeData={data} />
-          </div>
-          <div className="mt-[6rem]">
-            <div className="border-solid border border-gray-200 w-[1rem] h-[1rem] m-[0.5rem] flex justify-items-center">
-              <RightOutlined className="text-[0.7rem] ml-[0.15rem]" />
-            </div>
-            <div className="border-solid border border-gray-200 w-[1rem] h-[1rem] m-[0.5rem] flex justify-items-center">
-              <LeftOutlined className="text-[0.7rem] ml-[0.15rem]" />
-            </div>
-          </div>
-          <div className="border-solid border border-gray-200 w-[16rem] rounded">
-            <div className="mb-[0.5rem] ml-[1rem] mt-[0.5rem] text-[0.8rem]">
-              已選
-              <span>{data.length}</span>
-              個用戶
-            </div>
-            <Input
-              className="ml-[0.5rem] mb-[0.5rem] w-[14rem] h-[1.65rem] text-[0.8rem] rounded"
-              suffix={<img src={search} className="size-[1rem]" />}
-              placeholder="搜索用戶名，部門"
-            />
-            <div className="ml-[1rem] mb-[0.5rem] scroll-auto h-[11rem] flex justify-between"></div>
-          </div>
-        </div>
       </CustomModal>
     </div>
   );

@@ -1,8 +1,11 @@
 import { CheckboxProps } from "antd/es/checkbox";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const useAction = () => {
   const [checkList, setCheckList] = useState([]);
+
+  const navigate = useNavigate();
 
   const AddRoleName = (e: []) => {
     console.log(e);
@@ -302,5 +305,6 @@ export const useAction = () => {
     handleCheckBox,
     frontendOptionsList,
     backendOptionsList,
+    navigate,
   };
 };
