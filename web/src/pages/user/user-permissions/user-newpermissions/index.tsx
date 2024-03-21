@@ -1,5 +1,7 @@
 import { AutoComplete, Breadcrumb, Button, Checkbox, Form, Input } from "antd";
 
+import KEYS from "@/i18n/language/keys/user-permissions-keys";
+
 import { useAction } from "./hook";
 
 export const NewOrUpdatePermissions = () => {
@@ -9,6 +11,8 @@ export const NewOrUpdatePermissions = () => {
     frontendOptionsList,
     backendOptionsList,
     navigate,
+    t,
+    source,
   } = useAction();
 
   return (
@@ -17,11 +21,13 @@ export const NewOrUpdatePermissions = () => {
         items={[
           {
             title: (
-              <div onClick={() => navigate("/user/permissions")}>角色列表</div>
+              <div onClick={() => navigate("/user/permissions")}>
+                {t(KEYS.ROLE_LIST, source)}
+              </div>
             ),
           },
           {
-            title: "新增角色",
+            title: t(KEYS.ADD_ROLE, source),
           },
         ]}
         className="text-[1.125rem] font-semibold ml-[1.5rem] pt-[2rem] "
@@ -32,8 +38,8 @@ export const NewOrUpdatePermissions = () => {
           <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[10.9rem] pr-[15.75rem] border-2 mt-[1rem]">
             <div className="flex justify-center items-center pl-[5.3rem] pt-[2rem]">
               <Form.Item
-                name="角色名稱"
-                label="角色名稱"
+                name={t(KEYS.ROLE_NAME, source)}
+                label={t(KEYS.ROLE_NAME, source)}
                 rules={[
                   {
                     required: true,

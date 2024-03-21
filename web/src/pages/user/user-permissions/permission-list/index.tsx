@@ -1,21 +1,18 @@
-import { PlusOutlined, WarningFilled } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, Input, Pagination, Table } from "antd";
-import TextArea from "antd/es/input/TextArea";
 import { useState } from "react";
 import { Trans } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
 
 import search from "../../../../assets/public/search.png";
+import { OperateConfirmModal } from "../operate-confirm";
 import { useAction } from "./hook";
 
 export const UserPermissions = () => {
   const [isDeletePermissions, setISDeletePermissions] =
     useState<boolean>(false);
-
-  const [isAddNewRole, setIsAddNewRole] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -130,14 +127,13 @@ export const UserPermissions = () => {
       <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-[calc(100vh-7rem)]">
         <div className="bg-white w-full flex-col justify-start pt-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            角色列表
+            {t(KEYS.ROLE_LIST, source)}
           </span>
-          <br />
-          <div className="flex flex-row justify-between mt-[1rem] mb-[0.5rem]">
+          <div className="flex justify-between mt-[1rem] mb-[0.5rem]">
             <div>
               <Input
                 className="w-[17.5rem]"
-                placeholder="搜索角色名稱"
+                placeholder={t(KEYS.SEARCHING_FOR_ROLE_NAMES, source)}
                 suffix={<img src={search} />}
               />
             </div>
@@ -147,7 +143,7 @@ export const UserPermissions = () => {
               onClick={() => navigate("/user/permissions/newOrUpdate")}
             >
               <PlusOutlined />
-              新增角色
+              {t(KEYS.ADD_ROLE, source)}
             </Button>
           </div>
         </div>
@@ -184,47 +180,11 @@ export const UserPermissions = () => {
           </div>
         </div>
       </div>
-      <CustomModal
-        title={
-          <div className="flex flex-row justify-content">
-            <div className="text-gray-300 mr-[0.5rem]">角色列表 /</div>
-            <span>新增角色</span>
-          </div>
-        }
-        onCancle={() => setIsAddNewRole(false)}
-        onConfirm={() => setIsAddNewRole(false)}
-        open={isAddNewRole}
-        className={"customDeviceModal"}
-        modalWidth="105.375rem"
-      >
-        <div>
-          <div>角色信息</div>
-          <div className="w-[71.25rem] rounded h-[14rem]">
-            <div className="flex justify-start w-[71.25rem] rounded">
-              <span>角色名稱</span>
-              <Input placeholder="請輸入" className="h-[2rem] rounded" />
-            </div>
-            <div className="flex justify-start">
-              <span>角色描述</span>
-              <TextArea placeholder="請輸入" />
-            </div>
-          </div>
-        </div>
-      </CustomModal>
-      <CustomModal
-        title={
-          <div>
-            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            操作確認
-          </div>
-        }
-        onCancle={() => setISDeletePermissions(false)}
-        onConfirm={() => setISDeletePermissions(false)}
-        open={isDeletePermissions}
-        className={"customModal"}
-      >
-        <span className="pl-[2rem]">{t(KEYS.CONFIRM_DELETE_ROLE, source)}</span>
-      </CustomModal>
+      <OperateConfirmModal
+        isModelOpen={isDeletePermissions}
+        setIsModelOpen={setISDeletePermissions}
+        contentText={t(KEYS.CONFIRM_DELETE_ROLE, source)}
+      />
     </div>
   );
 };

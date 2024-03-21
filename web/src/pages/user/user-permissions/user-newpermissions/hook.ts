@@ -2,7 +2,13 @@ import { CheckboxProps } from "antd/es/checkbox";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useAuth } from "@/hooks/use-auth";
+
 export const useAction = () => {
+  const { t } = useAuth();
+
+  const source = { ns: "userPermissions" };
+
   const [checkList, setCheckList] = useState([]);
 
   const navigate = useNavigate();
@@ -306,5 +312,7 @@ export const useAction = () => {
     frontendOptionsList,
     backendOptionsList,
     navigate,
+    t,
+    source,
   };
 };

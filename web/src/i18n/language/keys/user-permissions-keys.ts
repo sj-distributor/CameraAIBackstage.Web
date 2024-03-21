@@ -19,4 +19,7 @@ export default {
   SEARCHING_USER_DEPARTMENT: "SearchingUserDepartment",
   REMOVE: "Remove",
   USER_HAS_BEEN_SELECTED: "UserHasBeenSelected",
+  OPERATION_CONFIRMATION: "OperationConfirmation",
+  CONFIRM_DELETE_USERS_IN_BATCHES: "ConfirmBatchRemoval",
+  ROLE_NAME_LIST: "RoleNameList",
 };
