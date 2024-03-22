@@ -54,8 +54,8 @@ export const PortraitList = () => {
   );
 
   return (
-    <div className="h-full grid grid-rows-[1fr,auto]">
-      <div className="p-[1.5rem] bg-white ">
+    <div className="h-full grid grid-rows-[1fr,auto] ">
+      <div className="p-[1.5rem] bg-white box-border">
         <div className="text-[1.125rem] font-semibold">
           {t(KEYS.PORTRAIT_LIST, { ns: "portraitList" })}
         </div>
@@ -74,7 +74,11 @@ export const PortraitList = () => {
             className="flex justify-center items-center w-[5.5rem] h-[2.75rem]"
             type="primary"
             onClick={() =>
-              setAddOrUpdatePortrait((pre) => ({ ...pre, isOpen: true }))
+              setAddOrUpdatePortrait((pre) => ({
+                ...pre,
+                isOpen: true,
+                operationType: OperationTypeEnum.Add,
+              }))
             }
           >
             <img src={add} className="mr-[.375rem]" />

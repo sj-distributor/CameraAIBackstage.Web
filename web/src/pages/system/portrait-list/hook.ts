@@ -53,7 +53,7 @@ export const useAction = () => {
 
   const [pageData, setPageData] = useState<IGetPortraitByParams>({
     pageIndex: 1,
-    pageSize: 12,
+    pageSize: 9,
   });
 
   const [imageInformation, setImageInformation] = useState<IPreviewImageDto>({
@@ -144,7 +144,11 @@ export const useAction = () => {
         handleGetPortraitData.run();
 
         setFileList([]);
-        setAddOrUpdatePortrait((pre) => ({ ...pre, item: initialPortraitDto }));
+        setAddOrUpdatePortrait((pre) => ({
+          ...pre,
+          item: initialPortraitDto,
+          isOpen: false,
+        }));
         setImageInformation({
           previewOpen: false,
           previewImage: "",
@@ -160,7 +164,10 @@ export const useAction = () => {
       debounceWait: 300,
       manual: true,
       onBefore: () => setLoading(true),
-      onSuccess: () => message.success("success"),
+      onSuccess: () => {
+        message.success("success");
+        handleGetPortraitData.run();
+      },
       onError: (error) => message.error((error as Error).message),
       onFinally: () => setLoading(false),
     }
