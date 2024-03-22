@@ -1,26 +1,19 @@
+import { useRequest } from "ahooks";
+import { message } from "antd";
 import dayjs from "dayjs";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SwiperRef } from "swiper/react";
 
 import { useAuth } from "@/hooks/use-auth";
+import { GetWarningDemand } from "@/services/api/license-plate-management";
+import { IGetWarningDemandResponse } from "@/services/dtos/license-plate-management";
 
 export type Speed = 0.5 | 1 | 1.25 | 1.5 | 2;
 
 export const useAction = () => {
-  const details = {
-    name: "攝像頭001",
-    type: "識別車輛",
-    content: "攝像頭001，識別車輛（車牌LA12356），出現超過10秒",
-    startTime: "2023-05-02 12:00:00",
-    address: "廣東省中山市中山二路1號",
-    duration: "1m10s",
-  };
-
   const { t } = useAuth();
 
   const source = { ns: "licensePlateManagement" };
-
-  const detailsList = Object.entries(details);
 
   const videoRef = useRef<HTMLVideoElement>(null!);
 
@@ -34,6 +27,9 @@ export const useAction = () => {
 
   const [videoDuration, setVideoDuration] = useState<number>(0);
 
+  const [warningDemandData, setWarningDemandData] =
+    useState<IGetWarningDemandResponse>();
+
   const [timeAxisList, setTimeAxisList] = useState<
     {
       timeList: string[][];
@@ -41,6 +37,29 @@ export const useAction = () => {
   >();
 
   const [videoSpeed, setVideoSpeed] = useState<Speed>(1);
+
+  const warningDetails = useMemo(() => {
+    const details = {
+      name: warningDemandData?.record?.faceName ?? "攝像頭001",
+      type: warningDemandData?.record?.monitorTypeId ?? "識別車輛",
+      content:
+        warningDemandData?.regionAndArea?.principal ??
+        "攝像頭001，識別車輛（車牌LA12356），出現超過10秒",
+      startTime:
+        warningDemandData?.record?.occurrenceTime ?? "2023-05-02 12:00:00",
+      address:
+        warningDemandData?.regionAndArea?.areaName ?? "廣東省中山市中山二路1號",
+      duration:
+        warningDemandData?.record?.duration ??
+        dayjs.unix(60).format("HH[h]mm[m]ss[s]"),
+    };
+
+    return details;
+  }, [warningDemandData]);
+
+  const warningDetailList = useMemo(() => {
+    return Object.entries(warningDetails);
+  }, [warningDetails]);
 
   const handleSetPalyVideo = (duration?: number) => {
     if (videoRef?.current) {
@@ -96,8 +115,21 @@ export const useAction = () => {
     }
   };
 
+  const { run: handelGetWarningDemand } = useRequest(GetWarningDemand, {
+    manual: true,
+    onSuccess: (res) => {
+      res && setWarningDemandData(res);
+    },
+    onError: (err) => {
+      message.error(err.message);
+    },
+  });
+
+  useEffect(() => {
+    handelGetWarningDemand("1");
+  }, []);
+
   return {
-    detailsList,
     handleSetPalyVideo,
     isOpenSpeedList,
     hide,
@@ -114,8 +146,10 @@ export const useAction = () => {
     setVideoSpeed,
     videoDuration,
     swiperRef,
-    details,
     t,
     source,
+    warningDetails,
+    warningDemandData,
+    warningDetailList,
   };
 };

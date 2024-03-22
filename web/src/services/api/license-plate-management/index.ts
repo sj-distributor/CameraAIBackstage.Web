@@ -3,6 +3,7 @@ import {
   IGetRegisteredVehicleListResponse,
   IGetVehicleMonitorRecordsRequest,
   IGetVehicleMonitorRecordsResponse,
+  IGetWarningDemandResponse,
   IPostRegisteringCarRequest,
 } from "@/services/dtos/license-plate-management";
 
@@ -40,6 +41,17 @@ export const PostRegisteringVehicles = async (
   const response = await api.post(
     "/api/CameraAi/monitor/record/register",
     data
+  );
+
+  return response.data;
+};
+
+export const GetWarningDemand = async (recordId: string) => {
+  const response = await api.get<IGetWarningDemandResponse>(
+    "/api/CameraAi/monitor/record/detail",
+    {
+      params: { RecordId: recordId },
+    }
   );
 
   return response.data;

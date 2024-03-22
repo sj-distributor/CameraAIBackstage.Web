@@ -16,6 +16,7 @@ import {
   Table,
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
+import TextArea from "antd/es/input/TextArea";
 import type { ColumnsType } from "antd/es/table";
 import dayjs, { Dayjs } from "dayjs";
 import { Trans } from "react-i18next";
@@ -47,6 +48,7 @@ export const LicensePlateManagementTable = (
 
   const {
     t,
+    registerForm,
     language,
     plateNumberKeyword,
     isUnbindOpen,
@@ -291,9 +293,11 @@ export const LicensePlateManagementTable = (
       <div className="flex flex-col flex-1">
         <div className="flex flex-row pt-[1.625rem] justify-between">
           <div className="flex">
+            <button onClick={() => setIsRegisterOpen(true)}>aaa</button>
             <Input
               className="w-[17.5rem] mr-4 h-[2.5rem]"
               suffix={<img src={search} />}
+              allowClear
               placeholder={t(KEYS.SEARCH_VEHICLE_NUMBER, source)}
               onChange={(e) => setPlateNumberKeyword(e.target.value)}
               value={
@@ -500,7 +504,12 @@ export const LicensePlateManagementTable = (
             <Button
               loading={isRegisteringCar}
               onClick={() => {
-                handelRegisteringCar(registeringCarRequest);
+                registerForm
+                  .validateFields()
+                  .then(() => {
+                    handelRegisteringCar(registeringCarRequest);
+                  })
+                  .catch(() => {});
               }}
               className="ant-btn css-dev-only-do-not-override-9alsuj ant-btn-primary w-[6rem] h-[2.75rem] mr-[1.5rem] bg-[#2853E3]"
             >
@@ -510,7 +519,7 @@ export const LicensePlateManagementTable = (
         }
       >
         <div className="py-[2rem] border-t">
-          <Form colon={false} className="ml-6">
+          <Form colon={false} form={registerForm} className="ml-6">
             <FormItem
               name="id"
               label={t(KEYS.LICENSE_PLATE_NUMBER, source)}
@@ -540,6 +549,14 @@ export const LicensePlateManagementTable = (
                   }))
                 }
               />
+            </FormItem>
+            <FormItem
+              name="exceptionReason"
+              label={t(KEYS.ABNORMAL_CAUSE, source)}
+              labelCol={{ span: language === "ch" ? 3 : 6 }}
+              wrapperCol={{ span: 15 }}
+            >
+              <TextArea rows={4} />
             </FormItem>
           </Form>
         </div>

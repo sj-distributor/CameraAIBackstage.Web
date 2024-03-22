@@ -38,7 +38,6 @@ export enum WarningTypes {
 
 export const WarningDetails = () => {
   const {
-    detailsList,
     handleSetPalyVideo,
     isOpenSpeedList,
     isPalyVideo,
@@ -52,8 +51,9 @@ export const WarningDetails = () => {
     setVideoSpeed,
     timeAxisList,
     videoDuration,
-    details,
     source,
+    warningDetails,
+    warningDetailList,
   } = useAction();
 
   const DetailsTitle = {
@@ -77,12 +77,12 @@ export const WarningDetails = () => {
 
     return (
       <>
-        {warnData.map((item) => {
+        {warnData.map((item, index) => {
           const perMinuteWidth = swiperRef.current.swiper.width / 40;
 
           const left =
             (dayjs(item.startTime).diff(
-              dayjs(details.startTime).add(index * 40, "minute"),
+              dayjs(warningDetails.startTime).add(index * 40, "minute"),
               "minute"
             ) *
               perMinuteWidth) /
@@ -110,7 +110,7 @@ export const WarningDetails = () => {
   return (
     <div className="h-full flex flex-col">
       <div className="text-[0.75rem] flex flex-wrap pt-[1.5rem] px-[1.5rem] bg-white rounded-lg mt-[1.5rem]">
-        {detailsList.map((item, index) => {
+        {warningDetailList?.map((item, index) => {
           return (
             <div className="w-1/3 mb-[1.5rem]" key={index}>
               <span className="text-[#5F6279 font-regular">
@@ -253,7 +253,7 @@ export const WarningDetails = () => {
             ],
           };
 
-          const currentStartTime = dayjs(details.startTime).add(
+          const currentStartTime = dayjs(warningDetails.startTime).add(
             index + 1 * 40,
             "minute"
           );
@@ -286,7 +286,7 @@ export const WarningDetails = () => {
                   </div>
                   <div className="w-full flex">
                     {item.timeList.map((item, i) => {
-                      const startTime = dayjs(details.startTime);
+                      const startTime = dayjs(warningDetails.startTime);
 
                       const duration = dayjs(item[0]).diff(startTime, "second");
 

@@ -1,11 +1,13 @@
 import { useDebounce, useRequest } from "ahooks";
 import { message, TimeRangePickerProps } from "antd";
+import { useForm } from "antd/es/form/Form";
 import dayjs, { Dayjs } from "dayjs";
-import KEYS from "@/i18n/language/keys/license-plate-management-keys";
 import utc from "dayjs/plugin/utc";
 import { RangeValue } from "rc-picker/lib/interface.d";
 import { useEffect, useState } from "react";
 
+import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/license-plate-management-keys";
 import {
   GetRegisteredVehicleList,
   GetVehicleMonitorRecords,
@@ -22,7 +24,6 @@ import {
 
 import { IDeviceDataType } from "../../props";
 import { ILicensePlateManagementTableProps } from "./props";
-import { useAuth } from "@/hooks/use-auth";
 
 dayjs.extend(utc);
 
@@ -30,6 +31,8 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   const { isRegisteredVehicle } = props;
 
   const { t, language } = useAuth();
+
+  const [registerForm] = useForm();
 
   const [isUnbindOpen, setIsUnbindOpen] = useState<boolean>(false);
 
@@ -160,6 +163,8 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   const [dateRange, setDateRange] = useState<RangeValue<Dayjs>>();
 
   const [plateNumberKeyword, setPlateNumberKeyword] = useState<string>("");
+
+  const [isEditKeyword, setEditKeyword] = useState<boolean>(false);
 
   const rangePresets: TimeRangePickerProps["presets"] = [
     {
@@ -315,11 +320,16 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   }, [isRegisteredVehicle]);
 
   useEffect(() => {
-    handelSetPlateNumberKeyword(filterKeyword);
+    isEditKeyword && handelSetPlateNumberKeyword(filterKeyword);
   }, [filterKeyword]);
+
+  useEffect(() => {
+    setEditKeyword(true);
+  }, []);
 
   return {
     t,
+    registerForm,
     language,
     plateNumberKeyword,
     isUnbindOpen,

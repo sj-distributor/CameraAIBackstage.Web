@@ -23,6 +23,7 @@ export interface IGetRegisteredVehicleListRequest {
 export interface IPostRegisteringCarRequest {
   recordId: string;
   recordStatus: CameraAiMonitorRecordStatus;
+  exceptionReason?: string;
 }
 
 export interface IGetVehicleMonitorRecordsResponse {
@@ -33,6 +34,41 @@ export interface IGetVehicleMonitorRecordsResponse {
 export interface IGetRegisteredVehicleListResponse {
   count: number;
   registers: IRegisteredVehicleListItem[];
+}
+
+export interface IGetWarningDemandResponse {
+  record: IWarningRecord;
+  regionAndArea: IWarningRegionAndArea;
+}
+
+export interface IWarningRecord {
+  id: number;
+  correlationId: string;
+  equipmentCode: string;
+  settingId: number;
+  monitorTypeId: number;
+  duration: number;
+  exceptionReason: string;
+  recordStatus: number;
+  plateNumber: string;
+  faceName: string;
+  replayTaskId: string;
+  replayUrl: string;
+  isRegistered: true;
+  licensePlateImageUrl: string;
+  occurrenceTime: string;
+  createdTime: string;
+}
+
+export interface IWarningRegionAndArea {
+  id: number;
+  areaId: number;
+  locationId: string;
+  areaName: string;
+  regionAddress: string;
+  areaNames: [string];
+  principal: string;
+  createdTime: string;
 }
 
 export interface IRegisteredVehicleListItem {

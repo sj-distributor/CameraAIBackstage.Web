@@ -42,4 +42,5 @@ export default {
   EDIT: "Edit",
   DELETE: "Delete",
   REGISTERING_CAR_OK: "RegisteringCarOk",
+  ABNORMAL_CAUSE: "AbnormalCause",
 };

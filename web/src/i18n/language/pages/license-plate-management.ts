@@ -46,6 +46,7 @@ export default {
     [KEYS.EDIT]: "Edit",
     [KEYS.DELETE]: "Delete",
     [KEYS.REGISTERING_CAR_OK]: "Vehicle registration successful",
+    [KEYS.ABNORMAL_CAUSE]: "Abnormal cause",
   },
 
   ch: {
@@ -92,5 +93,6 @@ export default {
     [KEYS.EDIT]: "編輯",
     [KEYS.DELETE]: "刪除",
     [KEYS.REGISTERING_CAR_OK]: "登記車輛成功",
+    [KEYS.ABNORMAL_CAUSE]: "異常原因",
   },
 };
