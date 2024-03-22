@@ -6,6 +6,7 @@ import {
   IEquipmentPageResponse,
   IRegionPageResponse,
 } from "@/services/dtos/equipment/list";
+
 import { api } from "../http-client";
 
 export const GetEquipmentPage = async (data: IEquipmentPageRequest) => {

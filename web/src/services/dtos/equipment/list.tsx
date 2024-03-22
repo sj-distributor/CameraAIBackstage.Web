@@ -2,6 +2,7 @@ export interface IEquipmentPageRequest extends IPageDto {
   IsOnline?: boolean;
   IsBind?: boolean;
   Keyword?: string;
+  RegionId: string;
 }
 
 export interface IPageDto {
@@ -34,6 +35,10 @@ export interface IEquipmentCreateOrUpdateDto {
   equipmentTypeId?: number | null;
   id?: number;
   areaId?: number;
+  ipAddress: string;
+  brand?: string;
+  username: string;
+  password: string;
 }
 
 export interface IRegionPageResponse {
@@ -49,7 +54,7 @@ export interface IRegionDto {
   regionAreaNames: string[];
   principal: string;
   createdTime: string;
-  radio?: boolean; //自定义
+  radio?: boolean; // 自定义
 }
 
 export interface IEquipmentBindDto {
