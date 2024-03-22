@@ -109,30 +109,37 @@ export const useAction = () => {
         {
           label: t(KEYS.ROLE_LIST, source),
           value: "用戶列表",
+          width: "w-[13.5rem]",
         },
         {
           label: t(KEYS.ADD_USER, source),
           value: "添加用戶",
+          width: "w-[9rem]",
         },
         {
           label: t(KEYS.DELETE_USERS_IN_BATCHES, source),
           value: "批量移除",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.ENABLE, source),
           value: "啟用",
+          width: "w-[4rem]",
         },
         {
           label: t(KEYS.DISABLE, source),
           value: "停用",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.RESET_PASSWORDS, source),
           value: "重置密碼",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.REMOVE, source),
           value: "移除",
+          width: "w-[8rem]",
         },
       ],
     },
@@ -142,22 +149,27 @@ export const useAction = () => {
         {
           label: t(KEYS.ROLE_PERMISSION, source),
           value: "角色權限",
+          width: "w-[13.5rem]",
         },
         {
           label: t(KEYS.ADD_ROLE, source),
           value: "新增角色",
+          width: "w-[9rem]",
         },
         {
           label: t(KEYS.ALLOT, source),
           value: "分配",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.EDIT, source),
           value: "編輯",
+          width: "w-[4rem]",
         },
         {
           label: t(KEYS.DELETE, source),
           value: "删除",
+          width: "w-[8rem]",
         },
       ],
     },
@@ -167,26 +179,32 @@ export const useAction = () => {
         {
           label: t(KEYS.DEVICE_LIST, source),
           value: "設備列表",
+          width: "w-[13.5rem]",
         },
         {
           label: t(KEYS.ADD_DEVICE, source),
           value: "添加設備",
+          width: "w-[9rem]",
         },
         {
           label: t(KEYS.EDIT, source),
           value: "編輯",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.BINGDING, source),
           value: "綁定",
+          width: "w-[4rem]",
         },
         {
           label: t(KEYS.REMOVE_BINDING, source),
           value: "解除綁定",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.DELETE, source),
           value: "刪除",
+          width: "w-[8rem]",
         },
       ],
     },
@@ -196,18 +214,22 @@ export const useAction = () => {
         {
           label: t(KEYS.DEVICE_TYPE, source),
           value: "設備類型",
+          width: "w-[13.5rem]",
         },
         {
           label: t(KEYS.ADD, source),
           value: "新增",
+          width: "w-[9rem]",
         },
         {
           label: t(KEYS.EDIT, source),
           value: "編輯",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.DELETE, source),
           value: "刪除",
+          width: "w-[4rem]",
         },
       ],
     },
@@ -217,26 +239,32 @@ export const useAction = () => {
         {
           label: t(KEYS.MONITORING_MANAGEMENT, source),
           value: "監測管理",
+          width: "w-[13.5rem]",
         },
         {
           label: t(KEYS.ADD, source),
           value: "新增",
+          width: "w-[9rem]",
         },
         {
           label: t(KEYS.ENABLE, source),
           value: "啟用",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.CLOSURE, source),
           value: "關閉",
+          width: "w-[4rem]",
         },
         {
           label: t(KEYS.EDIT, source),
           value: "編輯",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.DELETE, source),
           value: "刪除",
+          width: "w-[8rem]",
         },
       ],
     },
@@ -246,18 +274,22 @@ export const useAction = () => {
         {
           label: t(KEYS.LIST_OF_PORTRAITS, source),
           value: "人像管理",
+          width: "w-[13.5rem]",
         },
         {
           label: t(KEYS.ADD, source),
           value: "新增",
+          width: "w-[9rem]",
         },
         {
           label: t(KEYS.EDIT, source),
           value: "編輯",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.DELETE, source),
           value: "刪除",
+          width: "w-[4rem]",
         },
       ],
     },
@@ -267,18 +299,22 @@ export const useAction = () => {
         {
           label: t(KEYS.LICENCE_PLATE_MANAGEMENT, source),
           value: "車牌管理",
+          width: "w-[13.5rem]",
         },
         {
           label: t(KEYS.REGISTERED_VEHICLE, source),
           value: "已登記車輛",
+          width: "w-[9rem]",
         },
         {
           label: t(KEYS.REGISTER, source),
           value: "登記",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.DETAILS, source),
           value: "詳情",
+          width: "w-[4rem]",
         },
       ],
     },
@@ -288,18 +324,22 @@ export const useAction = () => {
         {
           label: t(KEYS.DISTRICT_MANAGEMENT, source),
           value: "區域管理",
+          width: "w-[13.5rem]",
         },
         {
           label: t(KEYS.ADD, source),
           value: "新增",
+          width: "w-[9rem]",
         },
         {
           label: t(KEYS.EDIT, source),
           value: "編輯",
+          width: "w-[8rem]",
         },
         {
           label: t(KEYS.DELETE, source),
           value: "刪除",
+          width: "w-[4rem]",
         },
       ],
     },

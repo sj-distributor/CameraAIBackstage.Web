@@ -76,7 +76,7 @@ export const NewOrUpdatePermissions = () => {
               <div className="flex justify-row mb-[1rem]">
                 <span
                   className={`${
-                    language === "en" ? "w-[12rem]" : "w-[8rem]"
+                    language === "en" ? "w-[13.2rem]" : "w-[9.5rem]"
                   } font-medium`}
                 >
                   {t(KEYS.VISIBLE_PAGES, source)}
@@ -85,24 +85,27 @@ export const NewOrUpdatePermissions = () => {
                   {t(KEYS.FUNCTION_PERMISSIONS, source)}
                 </span>
               </div>
-              <div className="flex flex-col">
-                {frontendOptionsList.map((item, index) => (
-                  <div className="flex flex-row mb-[0.8rem]" key={index}>
-                    {item.option.map((option) => (
-                      <Checkbox
-                        className={`${
-                          language === "en" ? "w-[12rem]" : "w-[8rem]"
-                        } `}
-                        key={item.optionName}
-                        value={item.option}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                ))}
-              </div>
+              {frontendOptionsList.map((item, index) => (
+                <div
+                  className={`grid ${
+                    language === "en"
+                      ? "grid-cols-[repeat(5,1fr)]"
+                      : "grid-cols-[repeat(7,1fr)]"
+                  }
+                    items-center mb-[0.8rem] text-nowrap`}
+                  key={index}
+                >
+                  {item.option.map((option) => (
+                    <Checkbox
+                      key={item.optionName}
+                      value={item.option}
+                      onChange={handleCheckBox}
+                    >
+                      {option.label}
+                    </Checkbox>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -113,31 +116,37 @@ export const NewOrUpdatePermissions = () => {
           <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[24rem] pr-[15.75rem] border-2 mt-[1rem]">
             <div className="flex flex-col w-[71.25rem] rounded pl-[4.9rem] pt-[2rem]">
               <div className="flex justify-row mb-[1.2rem]">
-                <span className="w-[8rem] font-medium">
+                <span
+                  className={`${
+                    language === "en" ? "w-[13.8rem]" : "w-[9.5rem]"
+                  } font-medium`}
+                >
                   {t(KEYS.VISIBLE_PAGES, source)}
                 </span>
                 <span className="font-medium">
                   {t(KEYS.FUNCTION_PERMISSIONS, source)}
                 </span>
               </div>
-              <div className="flex flex-col">
-                {backendOptionsList.map((items, index) => (
-                  <div className="flex flex-row mb-[0.8rem]" key={index}>
-                    {items.option.map((option) => (
-                      <Checkbox
-                        className={`${
-                          language === "en" ? "w-[12rem]" : "w-[8rem]"
-                        } `}
-                        key={index}
-                        value={items.option}
-                        onChange={handleCheckBox}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    ))}
-                  </div>
-                ))}
-              </div>
+              {backendOptionsList.map((items, index) => (
+                <div
+                  className={`grid ${
+                    language === "en"
+                      ? "grid-cols-[1.6fr,1.2fr,1fr,.7fr,1.1fr,1.1fr,1fr]"
+                      : "grid-cols-[repeat(7,1fr)]"
+                  } items-center mb-[0.8rem] text-nowrap`}
+                  key={index}
+                >
+                  {items.option.map((option) => (
+                    <Checkbox
+                      key={index}
+                      value={items.option}
+                      onChange={handleCheckBox}
+                    >
+                      {option.label}
+                    </Checkbox>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </div>
