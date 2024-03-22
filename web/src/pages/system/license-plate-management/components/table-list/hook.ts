@@ -1,6 +1,7 @@
 import { useDebounce, useRequest } from "ahooks";
 import { message, TimeRangePickerProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
+import KEYS from "@/i18n/language/keys/license-plate-management-keys";
 import utc from "dayjs/plugin/utc";
 import { RangeValue } from "rc-picker/lib/interface.d";
 import { useEffect, useState } from "react";
@@ -21,11 +22,14 @@ import {
 
 import { IDeviceDataType } from "../../props";
 import { ILicensePlateManagementTableProps } from "./props";
+import { useAuth } from "@/hooks/use-auth";
 
 dayjs.extend(utc);
 
 export const useAction = (props: ILicensePlateManagementTableProps) => {
   const { isRegisteredVehicle } = props;
+
+  const { t, language } = useAuth();
 
   const [isUnbindOpen, setIsUnbindOpen] = useState<boolean>(false);
 
@@ -158,12 +162,18 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   const [plateNumberKeyword, setPlateNumberKeyword] = useState<string>("");
 
   const rangePresets: TimeRangePickerProps["presets"] = [
-    { label: "最近一週", value: [dayjs().subtract(7, "d"), dayjs()] },
     {
-      label: "最近一個月",
+      label: t(KEYS.LAST_WEEK, source),
+      value: [dayjs().subtract(7, "d"), dayjs()],
+    },
+    {
+      label: t(KEYS.LAST_MONTH, source),
       value: [dayjs().subtract(1, "month"), dayjs()],
     },
-    { label: "最近三個月", value: [dayjs().subtract(3, "month"), dayjs()] },
+    {
+      label: t(KEYS.LAST_THREE_MONTHS, source),
+      value: [dayjs().subtract(3, "month"), dayjs()],
+    },
   ];
 
   const onRangeChange = (dates: null | (Dayjs | null)[]) => {
@@ -261,7 +271,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     {
       manual: true,
       onSuccess: () => {
-        message.success("車輛登記成功");
+        message.success(t(KEYS.REGISTERING_CAR_OK, source));
       },
       onError(error) {
         message.error((error as unknown as { code: number; msg: string }).msg);
@@ -309,6 +319,8 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   }, [filterKeyword]);
 
   return {
+    t,
+    language,
     plateNumberKeyword,
     isUnbindOpen,
     isShowLicensePlateOpen,

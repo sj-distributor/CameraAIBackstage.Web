@@ -45,6 +45,7 @@ export default {
     [KEYS.REGISTERED_VEHICLES]: "Registered vehicle",
     [KEYS.EDIT]: "Edit",
     [KEYS.DELETE]: "Delete",
+    [KEYS.REGISTERING_CAR_OK]: "Vehicle registration successful",
   },
 
   ch: {
@@ -90,5 +91,6 @@ export default {
     [KEYS.REGISTERED_VEHICLES]: "已登記車輛",
     [KEYS.EDIT]: "編輯",
     [KEYS.DELETE]: "刪除",
+    [KEYS.REGISTERING_CAR_OK]: "登記車輛成功",
   },
 };

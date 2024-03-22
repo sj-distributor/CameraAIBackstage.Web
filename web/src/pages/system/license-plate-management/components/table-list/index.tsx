@@ -23,7 +23,6 @@ import { Trans } from "react-i18next";
 import down from "@/assets/public/down-arrow.png";
 import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
-import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/license-plate-management-keys";
 import LOG_KEYS from "@/i18n/language/keys/operation-log-keys";
 import {
@@ -44,11 +43,11 @@ export const LicensePlateManagementTable = (
   const { setShowWarningDetails, setIsRegisteredVehicle, isRegisteredVehicle } =
     props;
 
-  const { t, language } = useAuth();
-
   const { RangePicker } = DatePicker;
 
   const {
+    t,
+    language,
     plateNumberKeyword,
     isUnbindOpen,
     isShowLicensePlateOpen,

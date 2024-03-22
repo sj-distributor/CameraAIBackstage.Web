@@ -41,4 +41,5 @@ export default {
   REGISTERED_VEHICLES: "RegisteredVehicles",
   EDIT: "Edit",
   DELETE: "Delete",
+  REGISTERING_CAR_OK: "RegisteringCarOk",
 };
