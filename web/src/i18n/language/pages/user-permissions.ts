@@ -127,5 +127,6 @@ export default {
     [KEYS.REMOVE_BINDING]: "解除綁定",
     [KEYS.REMOVE_BINDING]: "關閉",
     [KEYS.REGISTERED_VEHICLE]: "已登記車輛",
+    [KEYS.CLOSURE]: "開關",
   },
 };
