@@ -1,7 +1,7 @@
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, WarningFilled } from "@ant-design/icons";
 import { Transfer } from "antd";
 import { TransferItem } from "antd/es/transfer";
-import { SetStateAction } from "react";
+import { SetStateAction, useEffect } from "react";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
@@ -19,11 +19,29 @@ export const TransferTree = ({
 }) => {
   const { t, source } = useAction();
 
+  const SearchLists = document.querySelectorAll(
+    ".ant-transfer-list-body-search-wrapper"
+  );
+
+  useEffect(() => {
+    const SearchList = document.querySelectorAll(
+      ".ant-transfer-list-body-search-wrapper"
+    );
+
+    SearchList.forEach((list) => {
+      const input = list.querySelector("input");
+
+      if (input) {
+        input.placeholder = t(KEYS.SEARCHING_USER_DEPARTMENT, source);
+      }
+    });
+  }, [SearchLists]);
+
   return (
     <CustomModal
       title={
         <div className="flex flex-row justify-between">
-          <div>添加用戶</div>
+          <div>{t(KEYS.ADD_USER, source)}</div>
           <CloseOutlined
             className="mr-[1rem]"
             onClick={() => setIsModelOpen(false)}
@@ -45,7 +63,10 @@ export const TransferTree = ({
           height: 250,
         }}
         selectionsIcon={<></>}
-        selectAllLabels={["标题", `已選擇1項`]}
+        selectAllLabels={[
+          t(KEYS.TITLE, source),
+          t(KEYS.USER_HAS_BEEN_SELECTED, source),
+        ]}
         showSelectAll={false}
       />
     </CustomModal>

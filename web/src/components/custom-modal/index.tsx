@@ -1,5 +1,8 @@
 import { Button, Modal } from "antd";
 
+import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/user-permissions-keys";
+
 export const CustomModal = ({
   title,
   onCancle,
@@ -25,6 +28,10 @@ export const CustomModal = ({
   forceRender?: boolean;
   confirmLoading?: boolean;
 }) => {
+  const { t } = useAuth();
+
+  const source = { ns: "userPermissions" };
+
   return (
     <Modal
       className={className ?? ""}
@@ -42,7 +49,7 @@ export const CustomModal = ({
               className="w-[6rem] h-[2.75rem] mr-[1rem]"
               onClick={onCancle}
             >
-              取消
+              {t(KEYS.CANCEL, source)}
             </Button>
             <Button
               type="primary"
@@ -50,7 +57,7 @@ export const CustomModal = ({
               onClick={onConfirm}
               loading={confirmLoading}
             >
-              確定
+              {t(KEYS.CONFIRM, source)}
             </Button>
           </div>
         )

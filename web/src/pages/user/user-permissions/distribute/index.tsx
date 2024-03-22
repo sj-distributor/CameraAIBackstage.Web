@@ -136,7 +136,7 @@ export const UserDistribute = () => {
             />
             <div>
               <Button
-                className="h-[2.75rem] w-[7.25rem] mr-[1rem]"
+                className="h-[2.75rem] px-[1rem] min-w-[7.25rem] mr-[1rem]"
                 onClick={() => setIsBatchDeleteUser(true)}
               >
                 {t(KEYS.DELETE_USERS_IN_BATCHES, source)}

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 
 export const useAction = () => {
-  const { t } = useAuth();
+  const { t, language } = useAuth();
 
   const source = { ns: "userPermissions" };
 
@@ -314,5 +314,6 @@ export const useAction = () => {
     navigate,
     t,
     source,
+    language,
   };
 };
