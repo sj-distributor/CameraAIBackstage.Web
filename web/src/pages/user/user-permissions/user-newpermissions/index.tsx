@@ -76,7 +76,7 @@ export const NewOrUpdatePermissions = () => {
               <div className="flex justify-row mb-[1rem]">
                 <span
                   className={`${
-                    language === "en" ? "w-[13.2rem]" : "w-[9.5rem]"
+                    language === "en" ? "w-[13.8rem]" : "w-[9.5rem]"
                   } font-medium`}
                 >
                   {t(KEYS.VISIBLE_PAGES, source)}
@@ -89,7 +89,7 @@ export const NewOrUpdatePermissions = () => {
                 <div
                   className={`grid ${
                     language === "en"
-                      ? "grid-cols-[repeat(5,1fr)]"
+                      ? "grid-cols-[1.6fr,1.2fr,1fr,.7fr,1.1fr,1.1fr,1fr]"
                       : "grid-cols-[repeat(7,1fr)]"
                   }
                     items-center mb-[0.8rem] text-nowrap`}
