@@ -74,7 +74,11 @@ export const NewOrUpdatePermissions = () => {
           <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[15rem] pr-[15.75rem] border-2 mt-[1rem] mb-[1rem]">
             <div className="flex flex-col w-[71.25rem] rounded pl-[4.9rem] pt-[1rem]">
               <div className="flex justify-row mb-[1rem]">
-                <span className="w-[8rem] font-medium">
+                <span
+                  className={`${
+                    language === "en" ? "w-[12rem]" : "w-[8rem]"
+                  } font-medium`}
+                >
                   {t(KEYS.VISIBLE_PAGES, source)}
                 </span>
                 <span className="font-medium">
@@ -86,7 +90,9 @@ export const NewOrUpdatePermissions = () => {
                   <div className="flex flex-row mb-[0.8rem]" key={index}>
                     {item.option.map((option) => (
                       <Checkbox
-                        className="w-[8rem]"
+                        className={`${
+                          language === "en" ? "w-[12rem]" : "w-[8rem]"
+                        } `}
                         key={item.optionName}
                         value={item.option}
                         onChange={handleCheckBox}
@@ -119,7 +125,9 @@ export const NewOrUpdatePermissions = () => {
                   <div className="flex flex-row mb-[0.8rem]" key={index}>
                     {items.option.map((option) => (
                       <Checkbox
-                        className="w-[8rem]"
+                        className={`${
+                          language === "en" ? "w-[12rem]" : "w-[8rem]"
+                        } `}
                         key={index}
                         value={items.option}
                         onChange={handleCheckBox}

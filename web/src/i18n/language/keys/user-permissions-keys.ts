@@ -57,4 +57,7 @@ export default {
   BACKGROUND_FUNCTION_PERMISSIONS: "BackgroundFunctionPermissions",
   PLEASE_ENTER: "PleaseEnter",
   TITLE: "Title",
+  REMOVE_BINDING: "RemoveBinding",
+  CLOSURE: "Closure",
+  REGISTERED_VEHICLE: "RegisteredVehicle",
 };

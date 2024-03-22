@@ -29,7 +29,7 @@ export default {
     [KEYS.ADD]: "Add",
     [KEYS.ROLE_PERMISSION]: "Role permission",
     [KEYS.ENABLE]: "Enable",
-    [KEYS.RESET_PASSWORDS]: "ResetPasswords",
+    [KEYS.RESET_PASSWORDS]: "Reset Passwords",
     [KEYS.DASHBOARD]: "Dashboard",
     [KEYS.REAL_TIME_MONITORING]: "Real time Monitoring",
     [KEYS.VIDEO_PLAYBACK]: "Video playback",
@@ -61,6 +61,9 @@ export default {
     [KEYS.BACKGROUND_FUNCTION_PERMISSIONS]: "Background function permissions",
     [KEYS.PLEASE_ENTER]: "Please enter",
     [KEYS.TITLE]: "Title",
+    [KEYS.REMOVE_BINDING]: "Remove Binding",
+    [KEYS.CLOSURE]: "Closure",
+    [KEYS.REGISTERED_VEHICLE]: "Registered vehicle",
   },
   ch: {
     [KEYS.USER_PERMISSIONS]: "用戶權限",
@@ -121,5 +124,8 @@ export default {
     [KEYS.BACKGROUND_FUNCTION_PERMISSIONS]: "後台功能權限",
     [KEYS.PLEASE_ENTER]: "請輸入",
     [KEYS.TITLE]: "標題",
+    [KEYS.REMOVE_BINDING]: "解除綁定",
+    [KEYS.REMOVE_BINDING]: "關閉",
+    [KEYS.REGISTERED_VEHICLE]: "已登記車輛",
   },
 };
