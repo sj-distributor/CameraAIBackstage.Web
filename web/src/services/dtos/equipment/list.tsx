@@ -46,10 +46,10 @@ export interface IRegionDto {
   areaId: number;
   areaName: string;
   regionAddress: string;
-  regionAreaNames: string[];
+  areaNames: string[];
   principal: string;
   createdTime: string;
-  radio?: boolean; //自定义
+  radio?: boolean; // 自定义
 }
 
 export interface IEquipmentBindDto {
