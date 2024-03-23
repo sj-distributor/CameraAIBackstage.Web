@@ -1,12 +1,13 @@
 import { CloseOutlined, WarningFilled } from "@ant-design/icons";
-import { Transfer } from "antd";
-import { TransferItem } from "antd/es/transfer";
-import { SetStateAction, useEffect } from "react";
+import { Transfer, Tree } from "antd";
+import { TransferItem, TransferProps } from "antd/es/transfer";
+import { DataNode } from "antd/es/tree";
+import { Key, SetStateAction, useEffect, useState } from "react";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
 
-import { useAction } from "./hook";
+import { ITreeData, ITreeSelectNode, useAction } from "./hook";
 
 export const TransferTree = ({
   isModelOpen,
@@ -17,7 +18,19 @@ export const TransferTree = ({
   setIsModelOpen: (value: SetStateAction<boolean>) => void;
   data: TransferItem[];
 }) => {
-  const { t, source } = useAction();
+  const { t, source, treeData } = useAction();
+
+  const [targetKeys, setTargetKeys] = useState<string[]>([]);
+
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
+
+  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+
+  const [searchValue, setSearchValue] = useState("");
+
+  const onChange = (keys: string[]) => {
+    setTargetKeys(keys);
+  };
 
   const SearchLists = document.querySelectorAll(
     ".ant-transfer-list-body-search-wrapper"
@@ -37,6 +50,78 @@ export const TransferTree = ({
     });
   }, [SearchLists]);
 
+  const generateTree = (
+    treeNodes: DataNode[] = [],
+    targetKeys: string[] = []
+  ): DataNode[] =>
+    treeNodes.map(({ children, ...props }) => ({
+      ...props,
+      disabled: targetKeys.includes(props.key as string),
+      children: generateTree(children, targetKeys),
+    }));
+
+  const isChecked = (selectedKeys: React.Key[], eventKey: React.Key) =>
+    selectedKeys.includes(eventKey);
+
+  const filterOption = (inputValue: string, option: ITreeData) => {
+    if (option.title.indexOf(inputValue) > -1) {
+      console.log(option);
+      setExpandedKeys([option.key]);
+      setAutoExpandParent(true);
+    }
+
+    return option.title.indexOf(inputValue) > -1;
+  };
+
+  const handleSearch: TransferProps["onSearch"] = (dir: any, value: any) => {
+    // setSearchValue(value);
+  };
+
+  const onExpand = (expandedKeys: SetStateAction<Key[]>) => {
+    setExpandedKeys(expandedKeys);
+    setAutoExpandParent(true);
+  };
+
+  const filterTreeNode = (node: any) => {
+    const title = node.title.props.children[2];
+
+    const result = title.indexOf(searchValue) !== -1 ? true : false;
+
+    // console.log(title);
+    // console.log(searchValue);
+    // console.log(result);
+    return result;
+  };
+
+  const loop = (data: any) =>
+    data.map((item: any) => {
+      const index = item.title.indexOf(searchValue);
+
+      const beforeStr = item.title.substr(0, index);
+
+      const afterStr = item.title.substr(index + searchValue.length);
+
+      const title =
+        index > -1 ? (
+          <span>
+            {beforeStr}
+            <span className="site-tree-search-value">{searchValue}</span>
+            {afterStr}
+          </span>
+        ) : (
+          <span>{item.title}</span>
+        );
+
+      if (item.children) {
+        return { title, key: item.key, children: loop(item.children) };
+      }
+
+      return {
+        title,
+        key: item.key,
+      };
+    });
+
   return (
     <CustomModal
       title={
@@ -55,20 +140,48 @@ export const TransferTree = ({
       modalWidth="42.5rem"
     >
       <Transfer
-        dataSource={data}
+        onSearch={handleSearch}
+        targetKeys={targetKeys}
+        showSelectAll={false}
+        dataSource={treeData}
+        filterOption={filterOption}
+        onChange={onChange}
         showSearch
-        render={(data) => data.userName}
+        className="tree-transfer"
+        render={(item) => item.title!}
         listStyle={{
           width: 300,
           height: 250,
         }}
-        selectionsIcon={<></>}
-        selectAllLabels={[
-          t(KEYS.TITLE, source),
-          t(KEYS.USER_HAS_BEEN_SELECTED, source),
-        ]}
-        showSelectAll={false}
-      />
+      >
+        {({ direction, onItemSelect, selectedKeys }) => {
+          if (direction === "left") {
+            const checkedKeys = [...selectedKeys, ...targetKeys];
+
+            return (
+              <div>
+                <Tree
+                  onExpand={onExpand}
+                  expandedKeys={expandedKeys}
+                  autoExpandParent={autoExpandParent}
+                  checkable
+                  checkStrictly
+                  checkedKeys={checkedKeys}
+                  filterTreeNode={filterTreeNode}
+                  className="h-full"
+                  treeData={generateTree(loop(treeData), targetKeys)}
+                  onCheck={(_, { node: { key } }) => {
+                    onItemSelect(key as string, !isChecked(checkedKeys, key));
+                  }}
+                  onSelect={(_, { node: { key } }) => {
+                    onItemSelect(key as string, !isChecked(checkedKeys, key));
+                  }}
+                />
+              </div>
+            );
+          }
+        }}
+      </Transfer>
     </CustomModal>
   );
 };
