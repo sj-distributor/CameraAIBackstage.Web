@@ -46,7 +46,7 @@ export interface IRegionDto {
   areaId: number;
   areaName: string;
   regionAddress: string;
-  areaNames: string[];
+  regionAreaNames: string[];
   principal: string;
   createdTime: string;
   radio?: boolean; // 自定义
