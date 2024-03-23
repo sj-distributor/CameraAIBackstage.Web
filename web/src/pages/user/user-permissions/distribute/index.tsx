@@ -7,33 +7,36 @@ import {
   Pagination,
   Table,
 } from "antd";
-import { useState } from "react";
 import { Trans } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
 
+import search from "../../../../assets/public/search.png";
 import { OperateConfirmModal } from "../operate-confirm";
 import { TransferTree } from "../tranfer-tree";
 import { useAction } from "./hook";
 
 export const UserDistribute = () => {
-  const [isDeletePermissions, setIsDeletePermissions] =
-    useState<boolean>(false);
-
-  const [isBatchDeleteUser, setIsBatchDeleteUser] = useState<boolean>(false);
-
-  const [isAddNewUser, setIsAddNewUser] = useState<boolean>(false);
-
-  const navigate = useNavigate();
-
-  const { t, source } = useAction();
-
-  const rowSelection = {
-    getCheckboxProps: (record: { deviceId: string; name: string }) => ({
-      disabled: record.name === "Disabled User",
-    }),
-  };
+  const {
+    t,
+    source,
+    isDeletePermissions,
+    setIsDeletePermissions,
+    isBatchDeleteUser,
+    setIsBatchDeleteUser,
+    isAddNewUser,
+    setIsAddNewUser,
+    navigate,
+    data,
+    isTableLoading,
+    pageDto,
+    setPageDto,
+    onSelectedAllRow,
+    selectedRowKeys,
+    setSearchValue,
+    setSearchKeywordValue,
+    searchValue,
+  } = useAction();
 
   const columns = [
     {
@@ -77,39 +80,6 @@ export const UserDistribute = () => {
     },
   ];
 
-  const data = [
-    {
-      key: "001",
-      userName: "Janny",
-      updateTime: "2021-12-12 12:00",
-    },
-    {
-      key: "002",
-      userName: "Tom",
-      updateTime: "2021-12-12 12:00",
-    },
-    {
-      key: "003",
-      userName: "Tonny",
-      updateTime: "2021-12-12 12:00",
-    },
-    {
-      key: "004",
-      userName: "Bonni",
-      updateTime: "2021-12-12 12:00",
-    },
-    {
-      key: "005",
-      userName: "Bonni",
-      updateTime: "2021-12-12 12:00",
-    },
-    {
-      key: "006",
-      userName: "Rex",
-      updateTime: "2021-12-12 12:00",
-    },
-  ];
-
   return (
     <div>
       <div className="bg-white w-full h-[calc(100vh-7rem)] p-[1rem]">
@@ -133,6 +103,14 @@ export const UserDistribute = () => {
             <Input
               className="w-[17.5rem]"
               placeholder={t(KEYS.SEARCHING_FOR_ROLE_NAMES, source)}
+              suffix={
+                <img
+                  src={search}
+                  onClick={() => setSearchKeywordValue(searchValue)}
+                />
+              }
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
             <div>
               <Button
@@ -158,9 +136,14 @@ export const UserDistribute = () => {
               rowKey={(record) => record.deviceId}
               columns={columns}
               dataSource={data}
-              rowSelection={rowSelection}
               pagination={false}
               sticky={true}
+              loading={isTableLoading}
+              rowSelection={{
+                type: "checkbox",
+                selectedRowKeys,
+                onSelectAll: (selected) => onSelectedAllRow(selected),
+              }}
             />
           </div>
           <div className="flex justify-between items-center pt-[1rem]">
@@ -168,19 +151,22 @@ export const UserDistribute = () => {
               <Trans
                 i18nKey={KEYS.PAGINATION}
                 ns="userPermissions"
-                values={{ count: 200 }}
+                values={{ count: data.length }}
                 components={{
                   span: <span className="text-[#2853E3] font-light mx-1" />,
                 }}
               />
             </div>
             <Pagination
-              current={1}
-              total={200}
-              pageSize={10}
+              current={pageDto.pageIndex}
+              pageSize={pageDto.pageSize}
               pageSizeOptions={[5, 10, 20]}
-              showSizeChanger
+              total={data.length}
               showQuickJumper
+              showSizeChanger
+              onChange={(page, pageSize) =>
+                setPageDto({ pageIndex: page, pageSize })
+              }
             />
           </div>
         </div>

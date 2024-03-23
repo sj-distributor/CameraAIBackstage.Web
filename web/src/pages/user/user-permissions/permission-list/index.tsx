@@ -1,8 +1,6 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, Input, Pagination, Table } from "antd";
-import { useState } from "react";
 import { Trans } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
 
@@ -11,18 +9,22 @@ import { OperateConfirmModal } from "../operate-confirm";
 import { useAction } from "./hook";
 
 export const UserPermissions = () => {
-  const [isDeletePermissions, setISDeletePermissions] =
-    useState<boolean>(false);
-
-  const navigate = useNavigate();
-
-  const rowSelection = {
-    getCheckboxProps: (record: { deviceId: string; name: string }) => ({
-      disabled: record.name === "Disabled User",
-    }),
-  };
-
-  const { t, source } = useAction();
+  const {
+    t,
+    source,
+    setSearchValue,
+    setSearchKeywordValue,
+    searchValue,
+    isDeletePermissions,
+    setISDeletePermissions,
+    navigate,
+    isTableLoading,
+    pageDto,
+    setPageDto,
+    onSelectedAllRow,
+    data,
+    selectedRowKeys,
+  } = useAction();
 
   const operateButtons = [
     {
@@ -89,54 +91,26 @@ export const UserPermissions = () => {
     },
   ];
 
-  const data = [
-    {
-      key: "001",
-      characterName: "超級管理員",
-      roleDescription: "系統最高權限角色，擁有全部權限，不能刪除",
-    },
-    {
-      key: "002",
-      characterName: "管理員",
-      roleDescription: "管理員角色",
-    },
-    {
-      key: "003",
-      characterName: "普通員工1",
-      roleDescription: "系統默認角色",
-    },
-    {
-      key: "004",
-      characterName: "普通員工2",
-      roleDescription: "自定義角色1",
-    },
-    {
-      key: "005",
-      characterName: "倉務主管",
-      roleDescription: "自定義角色2",
-    },
-    {
-      key: "006",
-      characterName: "採購主管",
-      roleDescription: "自定義角色3",
-    },
-  ];
-
   return (
     <div>
-      <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-[calc(100vh-7rem)]">
+      <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-screen">
         <div className="bg-white w-full flex-col justify-start pt-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
             {t(KEYS.ROLE_LIST, source)}
           </span>
           <div className="flex justify-between mt-[1rem] mb-[0.5rem]">
-            <div>
-              <Input
-                className="w-[17.5rem]"
-                placeholder={t(KEYS.SEARCHING_FOR_ROLE_NAMES, source)}
-                suffix={<img src={search} />}
-              />
-            </div>
+            <Input
+              className="w-[17.5rem]"
+              placeholder={t(KEYS.SEARCHING_FOR_ROLE_NAMES, source)}
+              suffix={
+                <img
+                  src={search}
+                  onClick={() => setSearchKeywordValue(searchValue)}
+                />
+              }
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
             <Button
               type="primary"
               className="h-[2.75rem] w-[7.25rem]"
@@ -153,9 +127,14 @@ export const UserPermissions = () => {
               rowKey={(record) => record.deviceId}
               columns={columns}
               dataSource={data}
-              rowSelection={rowSelection}
               pagination={false}
               sticky={true}
+              loading={isTableLoading}
+              rowSelection={{
+                type: "checkbox",
+                selectedRowKeys,
+                onSelectAll: (selected) => onSelectedAllRow(selected),
+              }}
             />
           </div>
           <div className="flex justify-between items-center pt-[1rem]">
@@ -163,19 +142,22 @@ export const UserPermissions = () => {
               <Trans
                 i18nKey={KEYS.PAGINATION}
                 ns="userPermissions"
-                values={{ count: 200 }}
+                values={{ count: data.length }}
                 components={{
                   span: <span className="text-[#2853E3] font-light mx-1" />,
                 }}
               />
             </div>
             <Pagination
-              current={1}
-              total={200}
-              pageSize={10}
+              current={pageDto.pageIndex}
+              pageSize={pageDto.pageSize}
               pageSizeOptions={[5, 10, 20]}
-              showSizeChanger
+              total={data.length}
               showQuickJumper
+              showSizeChanger
+              onChange={(page, pageSize) =>
+                setPageDto({ pageIndex: page, pageSize })
+              }
             />
           </div>
         </div>
