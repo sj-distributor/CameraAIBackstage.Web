@@ -50,9 +50,7 @@ export const OperationLog = () => {
       dataIndex: "createdTime",
       width: "25%",
       render: (text) => {
-        const formattedDate = dayjs(text).format("YYYY-MM-DD HH:mm:ss");
-
-        return formattedDate;
+        return <div>{dayjs(text).format("YYYY-MM-DD HH:mm:ss")}</div>;
       },
     },
   ];
