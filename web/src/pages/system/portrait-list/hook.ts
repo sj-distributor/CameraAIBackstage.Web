@@ -13,6 +13,7 @@ import {
   IFaceDto,
   IGetPortraitByParams,
   IPortraitDto,
+  IPortraitModal,
   IPortraitResponse,
   IPreviewImageDto,
   OperationTypeEnum,
@@ -38,11 +39,7 @@ export const useAction = () => {
     portraits: [],
   };
 
-  const [addOrUpdatePortrait, setAddOrUpdatePortrait] = useState<{
-    isOpen: boolean;
-    operationType: OperationTypeEnum;
-    item: IPortraitDto;
-  }>({
+  const [portraitModal, setPortraitModal] = useState<IPortraitModal>({
     isOpen: false,
     operationType: OperationTypeEnum.Add,
     item: initialPortraitDto,
@@ -128,10 +125,10 @@ export const useAction = () => {
         });
       }
 
-      const params: IPortraitDto = { ...addOrUpdatePortrait.item, faces };
+      const params: IPortraitDto = { ...portraitModal.item, faces };
 
       return (
-        addOrUpdatePortrait.operationType === OperationTypeEnum.Add
+        portraitModal.operationType === OperationTypeEnum.Add
           ? postCreatePortrait
           : postUpdatePortrait
       )({ portrait: params });
@@ -144,7 +141,7 @@ export const useAction = () => {
         handleGetPortraitData.run();
 
         setFileList([]);
-        setAddOrUpdatePortrait((pre) => ({
+        setPortraitModal((pre) => ({
           ...pre,
           item: initialPortraitDto,
           isOpen: false,
@@ -180,7 +177,7 @@ export const useAction = () => {
     imageInformation,
     fileList,
     loading,
-    addOrUpdatePortrait,
+    portraitModal,
     pageData,
     handleCreateOrUpdatePortrait,
     handleDeletePortrait,
@@ -189,7 +186,7 @@ export const useAction = () => {
     handleCancel,
     handleFilePreview,
     setPageData,
-    setAddOrUpdatePortrait,
+    setPortraitModal,
     setFileList,
   };
 };

@@ -1,5 +1,5 @@
 import {
-  ICreateOrUpdatePortrait,
+  ICreateOrUpdatePortraitDto,
   IDeletePortrait,
   IGetPortraitByParams,
   IPortraitResponse,
@@ -16,11 +16,15 @@ export const getPortraitList = async (params: IGetPortraitByParams) => {
   return response.data;
 };
 
-export const postCreatePortrait = async (params: ICreateOrUpdatePortrait) => {
+export const postCreatePortrait = async (
+  params: ICreateOrUpdatePortraitDto
+) => {
   await api.post("/api/CameraAi/portrait/create", params);
 };
 
-export const postUpdatePortrait = async (params: ICreateOrUpdatePortrait) => {
+export const postUpdatePortrait = async (
+  params: ICreateOrUpdatePortraitDto
+) => {
   await api.post("/api/CameraAi/portrait/update", params);
 };
 

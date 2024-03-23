@@ -22,7 +22,7 @@ export interface IPortraitResponse {
   portraits: IPortraitDto[];
 }
 
-export interface ICreateOrUpdatePortrait {
+export interface ICreateOrUpdatePortraitDto {
   portrait: IPortraitDto;
 }
 
@@ -44,4 +44,10 @@ export interface IPreviewImageDto {
 export enum OperationTypeEnum {
   Add,
   Edit,
+}
+
+export interface IPortraitModal {
+  isOpen: boolean;
+  operationType: OperationTypeEnum;
+  item: IPortraitDto;
 }

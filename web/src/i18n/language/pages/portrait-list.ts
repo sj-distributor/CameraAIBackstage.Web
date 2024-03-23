@@ -10,7 +10,7 @@ export default {
     [KEYS.EDIT]: "Edit",
     [KEYS.PLEASE_SELECT]: "place select",
     [KEYS.PLEASE_ENTRY]: "place entry",
-    [KEYS.EXAMPLE]: "example",
+    [KEYS.EXAMPLE]: "example:188-6666-6666",
     [KEYS.ADD_PORTRAIT]: "Add Portrait",
     [KEYS.USER_NAME]: "User",
     [KEYS.DEPARTMENT]: "Department",

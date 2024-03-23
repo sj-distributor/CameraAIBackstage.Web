@@ -30,7 +30,7 @@ export const PortraitList = () => {
     imageInformation,
     fileList,
     loading,
-    addOrUpdatePortrait,
+    portraitModal,
     pageData,
     handleCreateOrUpdatePortrait,
     handleDeletePortrait,
@@ -39,7 +39,7 @@ export const PortraitList = () => {
     handleCancel,
     handleFilePreview,
     setPageData,
-    setAddOrUpdatePortrait,
+    setPortraitModal,
     setFileList,
   } = useAction();
 
@@ -75,7 +75,7 @@ export const PortraitList = () => {
             className="flex justify-center items-center w-[5.5rem] h-[2.75rem]"
             type="primary"
             onClick={() => {
-              setAddOrUpdatePortrait(() => ({
+              setPortraitModal(() => ({
                 isOpen: true,
                 operationType: OperationTypeEnum.Add,
                 item: initialPortraitDto,
@@ -150,7 +150,7 @@ export const PortraitList = () => {
                     </Popconfirm>
                     <div
                       onClick={() => {
-                        setAddOrUpdatePortrait({
+                        setPortraitModal({
                           isOpen: true,
                           operationType: OperationTypeEnum.Edit,
                           item,
@@ -194,6 +194,8 @@ export const PortraitList = () => {
           total={portraitData.count}
           showQuickJumper
           showSizeChanger
+          pageSize={pageData.pageSize}
+          pageSizeOptions={[9, 12, 15]}
           onChange={(page, pageSize) => {
             setPageData((pre) => ({ ...pre, pageIndex: page, pageSize }));
           }}
@@ -208,15 +210,13 @@ export const PortraitList = () => {
             <CloseOutlined
               className="text-[1rem] cursor-pointer"
               onClick={() =>
-                setAddOrUpdatePortrait((pre) => ({ ...pre, isOpen: false }))
+                setPortraitModal((pre) => ({ ...pre, isOpen: false }))
               }
             />
           </div>
         }
-        open={addOrUpdatePortrait.isOpen}
-        onCancle={() =>
-          setAddOrUpdatePortrait((pre) => ({ ...pre, isOpen: false }))
-        }
+        open={portraitModal.isOpen}
+        onCancle={() => setPortraitModal((pre) => ({ ...pre, isOpen: false }))}
         onConfirm={handleCreateOrUpdatePortrait.run}
         modalWidth={"42.5rem"}
       >
@@ -224,9 +224,9 @@ export const PortraitList = () => {
           <div>{t(KEYS.USER_NAME, { ns: "portraitList" })}</div>
           <Input
             placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
-            value={addOrUpdatePortrait.item.name}
+            value={portraitModal.item.name}
             onChange={(event) => {
-              setAddOrUpdatePortrait((pre) => ({
+              setPortraitModal((pre) => ({
                 ...pre,
                 item: { ...pre.item, name: event.target.value },
               }));
@@ -236,9 +236,9 @@ export const PortraitList = () => {
           <div>{t(KEYS.DEPARTMENT, { ns: "portraitList" })}</div>
           <Input
             placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
-            value={addOrUpdatePortrait.item.department}
+            value={portraitModal.item.department}
             onChange={(event) => {
-              setAddOrUpdatePortrait((pre) => ({
+              setPortraitModal((pre) => ({
                 ...pre,
                 item: { ...pre.item, department: event.target.value },
               }));
@@ -248,9 +248,9 @@ export const PortraitList = () => {
           <div>{t(KEYS.GROUP, { ns: "portraitList" })}</div>
           <Input
             placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
-            value={addOrUpdatePortrait.item.group}
+            value={portraitModal.item.group}
             onChange={(event) => {
-              setAddOrUpdatePortrait((pre) => ({
+              setPortraitModal((pre) => ({
                 ...pre,
                 item: { ...pre.item, group: event.target.value },
               }));
@@ -260,9 +260,9 @@ export const PortraitList = () => {
           <div>{t(KEYS.POSITION, { ns: "portraitList" })}</div>
           <Input
             placeholder={t(KEYS.PLEASE_ENTRY, { ns: "portraitList" })}
-            value={addOrUpdatePortrait.item.position}
+            value={portraitModal.item.position}
             onChange={(event) => {
-              setAddOrUpdatePortrait((pre) => ({
+              setPortraitModal((pre) => ({
                 ...pre,
                 item: { ...pre.item, position: event.target.value },
               }));
@@ -272,9 +272,9 @@ export const PortraitList = () => {
           <div>{t(KEYS.PHONE_NUMBER, { ns: "portraitList" })}</div>
           <Input
             placeholder={t(KEYS.EXAMPLE, { ns: "portraitList" })}
-            value={addOrUpdatePortrait.item.phone}
+            value={portraitModal.item.phone}
             onChange={(event) => {
-              setAddOrUpdatePortrait((pre) => ({
+              setPortraitModal((pre) => ({
                 ...pre,
                 item: { ...pre.item, phone: event.target.value },
               }));
