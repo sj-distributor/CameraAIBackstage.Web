@@ -34,6 +34,7 @@ export const PortraitList = () => {
     pageData,
     handleCreateOrUpdatePortrait,
     handleDeletePortrait,
+    initialPortraitDto,
     handleUploadChange,
     handleCancel,
     handleFilePreview,
@@ -73,13 +74,15 @@ export const PortraitList = () => {
           <Button
             className="flex justify-center items-center w-[5.5rem] h-[2.75rem]"
             type="primary"
-            onClick={() =>
-              setAddOrUpdatePortrait((pre) => ({
-                ...pre,
+            onClick={() => {
+              setAddOrUpdatePortrait(() => ({
                 isOpen: true,
                 operationType: OperationTypeEnum.Add,
-              }))
-            }
+                item: initialPortraitDto,
+              }));
+
+              setFileList([]);
+            }}
           >
             <img src={add} className="mr-[.375rem]" />
             {t(KEYS.ADD, { ns: "portraitList" })}
@@ -97,15 +100,20 @@ export const PortraitList = () => {
                   key={index}
                   className="shadow-[0rem_.125rem_.1875rem_.0625rem_rgb(0,0,0,0.07)] rounded-[1rem]"
                 >
-                  <div className="p-[1rem] flex">
+                  <div className="p-[.875rem] flex">
                     <div className="mr-[1rem]">
                       {item.faces[0]?.imageUrl ? (
-                        item.faces[0]?.imageUrl
+                        <img
+                          src={item.faces[0]?.imageUrl}
+                          width={64}
+                          height={64}
+                          className="rounded-[50%]"
+                        />
                       ) : (
                         <img src={avatar} width={64} height={64} />
                       )}
                     </div>
-                    <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-[.75rem]">
+                    <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-[.5rem]">
                       <div className="col-span-2 font-semibold text-[1.25rem]">
                         {item.name}
                       </div>
@@ -126,13 +134,14 @@ export const PortraitList = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="p-[1rem_1.5rem] flex justify-end items-center bg-[#F6F8FC]">
+                  <div className="p-[.625rem_.75rem] flex justify-end items-center bg-[#F6F8FC] portrait">
                     <Popconfirm
-                      title="刪除提醒？"
+                      title="刪除提醒"
                       description="是否確認刪除?"
                       onConfirm={() => handleDeletePortrait.run(item.id!)}
                       okText="確認"
                       cancelText="取消"
+                      rootClassName="portrait"
                     >
                       <div className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#F04E4E] border border-solid border-[#F04E4E] cursor-pointer mr-[1rem]">
                         <img src={trash} className="mr-[.5rem]" />
@@ -148,11 +157,13 @@ export const PortraitList = () => {
                         });
 
                         setFileList(
-                          item.faces.map((item) => ({
-                            name: "",
-                            uid: item.faceId!,
-                            url: item.imageUrl,
-                          }))
+                          item.faces
+                            .map((item) => ({
+                              name: "",
+                              uid: item.faceId!,
+                              url: item.imageUrl,
+                            }))
+                            .filter((x) => !!x.url)
                         );
                       }}
                       className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#2853E3] border border-solid border-[#2853E3] cursor-pointer"
@@ -293,6 +304,7 @@ export const PortraitList = () => {
             </div>
           </div>
           <Modal
+            title="图片预览"
             open={imageInformation.previewOpen}
             footer={null}
             onCancel={handleCancel}

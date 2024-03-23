@@ -121,10 +121,10 @@ export const useAction = () => {
 
       for (const file of fileList) {
         faces.push({
-          image: (await getBase64(file.originFileObj!)).replace(
-            "data:image/jpeg;base64,",
-            ""
-          ),
+          image: (await getBase64(file.originFileObj!))
+            .replace("data:image/jpg;base64,", "")
+            .replace("data:image/jpeg;base64,", "")
+            .replace("data:image/png;base64,", ""),
         });
       }
 
@@ -163,13 +163,11 @@ export const useAction = () => {
     {
       debounceWait: 300,
       manual: true,
-      onBefore: () => setLoading(true),
       onSuccess: () => {
         message.success("success");
         handleGetPortraitData.run();
       },
       onError: (error) => message.error((error as Error).message),
-      onFinally: () => setLoading(false),
     }
   );
 
@@ -186,6 +184,7 @@ export const useAction = () => {
     pageData,
     handleCreateOrUpdatePortrait,
     handleDeletePortrait,
+    initialPortraitDto,
     handleUploadChange,
     handleCancel,
     handleFilePreview,
