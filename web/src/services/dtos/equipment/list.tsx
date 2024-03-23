@@ -1,8 +1,11 @@
 export interface IEquipmentPageRequest extends IPageDto {
+  RegionId: string;
   IsOnline?: boolean;
   IsBind?: boolean;
   Keyword?: string;
-  RegionId: string;
+  EquipmentCode?: string;
+  EquipmentName?: string;
+  EquipmentTypeName?: string;
 }
 
 export interface IPageDto {
@@ -44,6 +47,13 @@ export interface IEquipmentCreateOrUpdateDto {
 export interface IRegionPageResponse {
   count: number;
   regions: IRegionDto[];
+}
+
+export interface IGetRegionPageRequest extends IPageDto {
+  RegionId?: string;
+  RegionAddress?: string;
+  Keyword?: string;
+  IsFilter?: boolean;
 }
 
 export interface IRegionDto {

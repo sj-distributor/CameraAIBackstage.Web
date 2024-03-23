@@ -5,6 +5,7 @@ import {
   Form,
   Input,
   Pagination,
+  Select,
   Spin,
   Table,
 } from "antd";
@@ -14,9 +15,12 @@ import { ColumnsType } from "antd/es/table";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-type-keys";
+import {
+  CameraAiEquipmentTypeLabel,
+  IEquipmentTypeList,
+} from "@/services/dtos/equipment/type";
 
 import { useAction } from "./hook";
-import { IEquipmentTypeList } from "@/services/dtos/equipment/type";
 
 export const EquipmentType = () => {
   const {
@@ -45,6 +49,8 @@ export const EquipmentType = () => {
     language,
     pageDto,
     setIsDeleteId,
+    typeLabel,
+    setTypeLabel,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentTypeList> = [
@@ -186,6 +192,7 @@ export const EquipmentType = () => {
             typeName: "",
             description: "",
           });
+          setTypeLabel(CameraAiEquipmentTypeLabel.Camera);
           setTypeName("");
           setDescription("");
         }}
@@ -222,6 +229,33 @@ export const EquipmentType = () => {
                 onChange={(e) => {
                   setTypeName(e.target.value);
                 }}
+              />
+            </FormItem>
+            <FormItem
+              name="typeLabel"
+              label={t(KEYS.DEVICE_TYPE, source)}
+              rules={[{ required: true }]}
+              labelCol={{ span: language === "ch" ? 4 : 5 }}
+              wrapperCol={{ span: 20 }}
+              initialValue={typeLabel}
+            >
+              <Select
+                onChange={(type) => setTypeLabel(type)}
+                value={typeLabel}
+                options={[
+                  {
+                    value: CameraAiEquipmentTypeLabel.Camera,
+                    label: "監控設備",
+                  },
+                  {
+                    value: CameraAiEquipmentTypeLabel.Sound,
+                    label: "聲音設備",
+                  },
+                  {
+                    value: CameraAiEquipmentTypeLabel.Lighting,
+                    label: "燈光設備",
+                  },
+                ]}
               />
             </FormItem>
             <FormItem
