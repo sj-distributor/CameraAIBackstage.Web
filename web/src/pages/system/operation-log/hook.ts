@@ -1,42 +1,19 @@
-import { TimeRangePickerProps } from "antd";
+import { message, TimeRangePickerProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
-
-import { IOperationLogData } from "./props";
+import { GetOperateLogsPage } from "@/services/api/operate-log";
+import { IOperateLogsPageResponse } from "@/services/dtos/operate-log";
 
 export const useAction = () => {
   const { t } = useAuth();
 
-  const data: IOperationLogData[] = [
-    {
-      id: 1,
-      userName: "Jim Green",
-      operateContent: "Janny创建了角色经理",
-      OperateTime: "2023-09-26 12:30",
-    },
-    {
-      id: 2,
-      userName: "Jim Green",
-      operateContent: "Janny创建了角色经理",
-      OperateTime: "2023-09-26 12:30",
-    },
-    {
-      id: 3,
-      userName: "Jim Green",
-      operateContent: "Janny创建了角色经理",
-      OperateTime: "2023-09-26 12:30",
-    },
-    {
-      id: 4,
-      userName: "Jim Green",
-      operateContent: "Janny创建了角色经理",
-      OperateTime: "2023-09-26 12:30",
-    },
-  ];
+  const initOperateLogsDto = { count: 0, logs: [] };
 
   const [searchValue, setSearchValue] = useState<string>("");
+
+  const [searchKeywordValue, setSearchKeywordValue] = useState<string>("");
 
   const [isTableLoading, setIsTableLoading] = useState<boolean>(false);
 
@@ -48,15 +25,13 @@ export const useAction = () => {
     pageSize: 5,
   });
 
-  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [dateRange, setDateRange] = useState<(Dayjs | null)[]>([null, null]);
 
-  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const [operateLogsDto, setOperateLogsDto] =
+    useState<IOperateLogsPageResponse>(initOperateLogsDto);
 
   const onRangeChange = (dates: null | (Dayjs | null)[]) => {
-    if (dates) {
-      setStartDate(dates[0]);
-      setEndDate(dates[1]);
-    }
+    dates ? setDateRange([dates[0], dates[1]]) : setDateRange([null, null]);
   };
 
   const rangePresets: TimeRangePickerProps["presets"] = [
@@ -68,8 +43,40 @@ export const useAction = () => {
     { label: "最近三個月", value: [dayjs().subtract(3, "month"), dayjs()] },
   ];
 
+  const initGetLogsList = () => {
+    setIsTableLoading(true);
+    GetOperateLogsPage({
+      PageIndex: pageDto.pageIndex,
+      PageSize: pageDto.pageSize,
+      StartTime: dateRange[0] ? dayjs(dateRange[0]).toISOString() : null,
+      EndTime: dateRange[1] ? dayjs(dateRange[1]).toISOString() : null,
+      Keyword: searchKeywordValue,
+    })
+      .then((res) => {
+        if (res) setOperateLogsDto({ count: res.count, logs: res.logs });
+      })
+      .catch((err) => {
+        setOperateLogsDto(initOperateLogsDto);
+        message.error(err);
+      })
+      .finally(() => setIsTableLoading(false));
+  };
+
+  useEffect(() => {
+    if (searchValue === "") setSearchKeywordValue("");
+  }, [searchValue]);
+
+  useEffect(() => {
+    initGetLogsList();
+  }, [
+    pageDto.pageSize,
+    pageDto.pageIndex,
+    dateRange[0],
+    dateRange[1],
+    searchKeywordValue,
+  ]);
+
   return {
-    data,
     searchValue,
     isTableLoading,
     pageDto,
@@ -78,8 +85,9 @@ export const useAction = () => {
     setIsTableLoading,
     rangePresets,
     onRangeChange,
-    startDate,
-    endDate,
     t,
+    setSearchKeywordValue,
+    dateRange,
+    operateLogsDto,
   };
 };
