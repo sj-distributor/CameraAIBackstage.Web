@@ -37,6 +37,11 @@ export const AreaManagement = () => {
       width: "10%",
     },
     {
+      title: t(KEYS.WAREHOUSE_ID, source),
+      dataIndex: "locationId",
+      width: "10%",
+    },
+    {
       title: t(KEYS.AREA_NAME, source),
       dataIndex: "areaName",
       width: "10%",

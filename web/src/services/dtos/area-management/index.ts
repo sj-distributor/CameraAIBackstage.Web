@@ -7,6 +7,7 @@ export interface IAreaManagementPageRequest extends IPageDto {
   RegionId?: string;
   RegionAddress?: string;
   Keyword?: string;
+  IsFilter?: boolean;
 }
 
 export interface IAreaManagementPageResponse {
@@ -23,9 +24,10 @@ export interface IRegionsDto {
   areaId?: number;
   areaName?: string;
   regionAddress: string;
-  regionAreaNames?: string[];
+  areaNames?: string[];
   principal: string;
   createdTime?: string;
+  locationId: string;
 }
 
 export interface IPageDto {
