@@ -292,10 +292,9 @@ export const LicensePlateManagementTable = (
     >
       <div className="flex flex-col flex-1">
         <div className="flex flex-row pt-[1.625rem] justify-between">
-          <div className="flex">
-            <button onClick={() => setIsRegisterOpen(true)}>aaa</button>
+          <div className="flex flex-wrap gap-4">
             <Input
-              className="w-[17.5rem] mr-4 h-[2.5rem]"
+              className="w-[17.5rem] h-[2.5rem]"
               suffix={<img src={search} />}
               allowClear
               placeholder={t(KEYS.SEARCH_VEHICLE_NUMBER, source)}
@@ -319,7 +318,7 @@ export const LicensePlateManagementTable = (
               }}
             />
             <RangePicker
-              className="w-[18.75rem] mr-4 h-[2.5rem]"
+              className="w-[18.75rem] h-[2.5rem]"
               presets={rangePresets}
               value={dateRange}
               onChange={onRangeChange}
@@ -354,7 +353,7 @@ export const LicensePlateManagementTable = (
           {!isRegisteredVehicle && (
             <Button
               type="primary"
-              className="h-[2.75rem] max-w-max bg-[#2853E3] flex items-center"
+              className="h-[2.5rem] max-w-max bg-[#2853E3] flex items-center"
               onClick={() => setIsRegisteredVehicle(true)}
             >
               {t(KEYS.REGISTERED_VEHICLES, source)}
@@ -556,7 +555,15 @@ export const LicensePlateManagementTable = (
               labelCol={{ span: language === "ch" ? 3 : 6 }}
               wrapperCol={{ span: 15 }}
             >
-              <TextArea rows={4} />
+              <TextArea
+                rows={4}
+                onChange={(e) =>
+                  setRegisteringCarRequest((prev) => ({
+                    ...prev,
+                    exceptionReason: e.target.value,
+                  }))
+                }
+              />
             </FormItem>
           </Form>
         </div>

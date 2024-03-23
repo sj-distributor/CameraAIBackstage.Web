@@ -55,6 +55,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     useState<IPostRegisteringCarRequest>({
       recordId: "",
       recordStatus: CameraAiMonitorRecordStatus.Unmarked,
+      exceptionReason: undefined,
     });
 
   const [isRegisterOpen, setIsRegisterOpen] = useState<boolean>(false);

@@ -140,15 +140,7 @@ export const WarningDetails = () => {
             {isPalyVideo ? <SuspendIcon /> : <PalyIcon />}
           </div>
           <div className="flex font-semibold text-white items-center">
-            <DatePicker
-              className="text-[0.75rem] border-0 bg-transparent videoDatePicker"
-              format="dddd,  hh:mm:ss A"
-              suffixIcon={false}
-              showToday={false}
-              placeholder="Thursday,  05:41:28 PM"
-              allowClear={false}
-              defaultValue={dayjs()}
-            />
+            <span style={{ userSelect: "none" }}>Saturday, 12:00:00 AM</span>
             <div className="cursor-pointer flex rounded ml-[1.5rem] items-center px-2 text-white border border-white border-solid">
               <GoIcon />
               <span className="text-[1.125rem]">Live</span>
