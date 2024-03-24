@@ -1,96 +1,84 @@
-import { UploadFile, UploadProps } from "antd";
+import { useRequest } from "ahooks";
+import { App, UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { IPreviewImageDto, IPortraitDto } from "@/services/dtos/portrait";
+import {
+  getPortraitList,
+  postCreatePortrait,
+  postDeletePortrait,
+  postUpdatePortrait,
+} from "@/services/api/portrait";
+import {
+  IFaceDto,
+  IGetPortraitByParams,
+  IPortraitDto,
+  IPortraitModal,
+  IPortraitResponse,
+  IPreviewImageDto,
+  OperationTypeEnum,
+} from "@/services/dtos/portrait";
 
 export const useAction = () => {
-  const initialPortraitData: IPortraitDto[] = [
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-    {
-      portraitUrl: "",
-      name: "Danny.K",
-      department: "营运支持中心",
-      group: "数据管理组",
-      job: "产品经理",
-      phone: "13402546565",
-    },
-  ];
+  const initialPortraitDto: IPortraitDto = {
+    name: "",
+    department: "",
+    group: "",
+    position: "",
+    phone: "",
+    isQualified: false,
+    faces: [
+      {
+        image: "",
+      },
+    ],
+  };
+
+  const initialPortraitData: IPortraitResponse = {
+    count: 0,
+    portraits: [],
+  };
+
+  const [portraitModal, setPortraitModal] = useState<IPortraitModal>({
+    isOpen: false,
+    operationType: OperationTypeEnum.Add,
+    item: initialPortraitDto,
+  });
 
   const [portraitData, setPortraitData] =
-    useState<IPortraitDto[]>(initialPortraitData);
+    useState<IPortraitResponse>(initialPortraitData);
 
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [pageData, setPageData] = useState<IGetPortraitByParams>({
+    pageIndex: 1,
+    pageSize: 9,
+  });
 
   const [imageInformation, setImageInformation] = useState<IPreviewImageDto>({
     previewOpen: false,
     previewImage: "",
-    previewTitle: "",
   });
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  const getBase64 = (file: RcFile): Promise<string> =>
-    new Promise((resolve, reject) => {
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { message } = App.useApp();
+
+  const getBase64 = (file: RcFile): Promise<string> => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = (error) => reject(error);
     });
+  };
 
   const handleCancel = () => {
     setImageInformation({ ...imageInformation, previewOpen: false });
   };
 
-  const handlePreview = async (file: UploadFile) => {
+  const handleFilePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
@@ -98,24 +86,107 @@ export const useAction = () => {
     setImageInformation({
       previewOpen: true,
       previewImage: file.url || (file.preview as string),
-      previewTitle:
-        file.name || file.url!.substring(file.url!.lastIndexOf("/") + 1),
     });
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+  const handleUploadChange: UploadProps["onChange"] = ({
+    fileList: newFileList,
+  }) => {
     setFileList(newFileList);
   };
 
+  const handleGetPortraitData = useRequest(() => getPortraitList(pageData), {
+    debounceWait: 300,
+    manual: true,
+    onBefore: () => setLoading(true),
+    onSuccess: (data) => {
+      setPortraitData(() => ({
+        count: data?.count ?? 0,
+        portraits: data?.portraits ?? [],
+      }));
+    },
+    onError: (error) => {
+      message.error((error as Error).message);
+      setPortraitData(initialPortraitData);
+    },
+    onFinally: () => setLoading(false),
+  });
+
+  const handleCreateOrUpdatePortrait = useRequest(
+    async () => {
+      const faces: IFaceDto[] = [];
+
+      for (const file of fileList) {
+        faces.push({
+          image: (await getBase64(file.originFileObj!))
+            .replace("data:image/jpg;base64,", "")
+            .replace("data:image/jpeg;base64,", "")
+            .replace("data:image/png;base64,", ""),
+        });
+      }
+
+      const params: IPortraitDto = { ...portraitModal.item, faces };
+
+      return (
+        portraitModal.operationType === OperationTypeEnum.Add
+          ? postCreatePortrait
+          : postUpdatePortrait
+      )({ portrait: params });
+    },
+    {
+      debounceWait: 300,
+      manual: true,
+      onSuccess: () => {
+        message.success("success");
+        handleGetPortraitData.run();
+
+        setFileList([]);
+        setPortraitModal((pre) => ({
+          ...pre,
+          item: initialPortraitDto,
+          isOpen: false,
+        }));
+        setImageInformation({
+          previewOpen: false,
+          previewImage: "",
+        });
+      },
+      onError: (error) => message.error((error as Error).message),
+    }
+  );
+
+  const handleDeletePortrait = useRequest(
+    (id: number) => postDeletePortrait({ portraitId: id }),
+    {
+      debounceWait: 300,
+      manual: true,
+      onSuccess: () => {
+        message.success("success");
+        handleGetPortraitData.run();
+      },
+      onError: (error) => message.error((error as Error).message),
+    }
+  );
+
+  useEffect(() => {
+    handleGetPortraitData.run();
+  }, [pageData]);
+
   return {
     portraitData,
-    isOpenModal,
     imageInformation,
     fileList,
-    handleChange,
-    setPortraitData,
-    setIsOpenModal,
+    loading,
+    portraitModal,
+    pageData,
+    handleCreateOrUpdatePortrait,
+    handleDeletePortrait,
+    initialPortraitDto,
+    handleUploadChange,
     handleCancel,
-    handlePreview,
+    handleFilePreview,
+    setPageData,
+    setPortraitModal,
+    setFileList,
   };
 };
