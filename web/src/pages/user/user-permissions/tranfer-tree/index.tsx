@@ -251,7 +251,7 @@ export const TransferTree = ({
                   checkable
                   checkedKeys={checkedKeys}
                   className="h-full"
-                  treeData={generateTree(treeList, targetKeys)}
+                  treeData={treeList}
                   onCheck={(_, { node: { key } }) => {
                     onItemSelect(key as string, !isChecked(checkedKeys, key));
                   }}
