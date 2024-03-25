@@ -1,5 +1,6 @@
 import {
   CloseOutlined,
+  DownOutlined,
   LeftOutlined,
   RightOutlined,
   WarningFilled,
@@ -16,6 +17,7 @@ import {
 } from "antd";
 
 import { CustomModal } from "@/components/custom-modal";
+import KEYS from "@/i18n/language/keys/user-list-keys";
 
 import { useAction } from "./hook";
 import search from "../../../assets/public/search.png";
@@ -38,48 +40,53 @@ export const UserList = () => {
     checkedKeys,
     selectedKeys,
     autoExpandParent,
+    source,
+    t,
+    // pageDto,
+    // setPageDto,
   } = useAction();
 
   const columns = [
     {
-      title: "用戶ID",
-      dataIndex: "userId",
+      title: t(KEYS.USER_ID, source),
+      dataIndex: "id",
     },
     {
-      title: "用戶名",
-      dataIndex: "userName",
+      title: t(KEYS.USER_NAME, source),
+      dataIndex: "name",
     },
     {
-      title: "部門",
+      title: t(KEYS.DEPARTMENT, source),
       dataIndex: "department",
     },
+
     {
-      title: "組別",
+      title: t(KEYS.GROUP, source),
       dataIndex: "group",
     },
     {
-      title: "崗位",
+      title: t(KEYS.POSITION, source),
       dataIndex: "position",
     },
     {
-      title: "是否在職",
+      title: t(KEYS.EMPLOYED, source),
       dataIndex: "employed",
     },
     {
-      title: "電話",
+      title: t(KEYS.PHONE, source),
       dataIndex: "phone",
     },
     {
-      title: "企業微信",
+      title: t(KEYS.ENTERPRISEWECHAT, source),
       dataIndex: "enterpriseWeChat",
     },
     {
-      title: "關聯郵箱",
+      title: t(KEYS.EMAIL, source),
       dataIndex: "email",
     },
     {
-      title: "狀態",
-      dataIndex: "states",
+      title: t(KEYS.STATES, source),
+      dataIndex: "positionStates",
       render: () => {
         return (
           <Switch
@@ -91,7 +98,7 @@ export const UserList = () => {
       },
     },
     {
-      title: "操作",
+      title: t(KEYS.OPERATE, source),
       dataIndex: "operate",
       render: () => {
         return (
@@ -110,12 +117,8 @@ export const UserList = () => {
               },
             }}
           >
-            <Button
-              type="link"
-              // className="w-[4.5rem] text-[0.8rem]"
-              onClick={() => setIsResetPassword(true)}
-            >
-              重置密碼
+            <Button type="link" onClick={() => setIsResetPassword(true)}>
+              {t(KEYS.RESETPASSWORD, source)}
             </Button>
           </ConfigProvider>
         );
@@ -142,7 +145,7 @@ export const UserList = () => {
             }}
           >
             <Button type="link" onClick={() => setIsRemoveUser(true)}>
-              移除
+              {t(KEYS.REMOVE, source)}
             </Button>
           </ConfigProvider>
         );
@@ -150,12 +153,11 @@ export const UserList = () => {
     },
   ];
 
-  const data = [
+  const userData = [
     {
-      key: "001",
+      key: "0",
       userId: "001",
-      userName: "Janny",
-      department: "OSC",
+      userName: "string",
       group: "A組",
       position: "助理",
       employed: "在職",
@@ -244,10 +246,10 @@ export const UserList = () => {
   ];
 
   return (
-    <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-[calc(100vh-7rem)]">
-      <div className="bg-whitew-full flex-col justify-start pt-[1.5rem] overflow-scroll no-scrollbar">
+    <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-screen">
+      <div className="bg-white w-full flex-col justify-start pt-[1.5rem] overflow-scroll no-scrollbar">
         <span className="text-[1.125rem] font-semibold tracking-tight">
-          用戶列表
+          {t(KEYS.USER_LIST, source)}
         </span>
         <br />
         <div className="flex flex-row justify-between">
@@ -255,14 +257,20 @@ export const UserList = () => {
             <Input
               className="w-[17.5rem]"
               suffix={<img src={search} />}
-              placeholder="搜索用戶名，部門"
+              placeholder={t(KEYS.SEARCH_USERNAME_DEPARTMENT, source)}
             />
             <Select
               className="mx-[1rem] w-[13.5rem] mt-[1.7rem]"
-              placeholder="狀態"
+              placeholder={t(KEYS.STATES, source)}
               options={[
-                { value: "啟用", label: "啟用" },
-                { value: "非啟用", label: "非啟用" },
+                {
+                  value: t(KEYS.ENABLE, source),
+                  label: t(KEYS.ENABLE, source),
+                },
+                {
+                  value: t(KEYS.NOT_ENABLED, source),
+                  label: t(KEYS.NOT_ENABLED, source),
+                },
               ]}
             />
           </div>
@@ -272,14 +280,14 @@ export const UserList = () => {
               className="h-[2.5rem] w-[7.25rem] mr-[1rem] mt-[1.5rem]"
               onClick={() => setIsDeleteUser(true)}
             >
-              批量移除用戶
+              {t(KEYS.REMOVE_USERS_IN_BULK, source)}
             </Button>
             <Button
               type="primary"
               className="h-[2.5rem] w-[7.25rem]"
               onClick={() => setIsAddUser(true)}
             >
-              <PlusOutlined /> 添加用戶
+              <PlusOutlined /> {t(KEYS.ADD_USER, source)}
             </Button>
           </div>
         </div>
@@ -288,13 +296,14 @@ export const UserList = () => {
         <Table
           rowKey={(record) => record.deviceId}
           columns={columns}
-          dataSource={data}
+          dataSource={userData}
           rowSelection={rowSelection}
           pagination={false}
         />
         <div className="flex justify-between items-center py-[1rem]">
           <div className="text-[#929292] text-[0.785rem]">
-            共 <span className="text-[#2853E3] font-light">{data.length}</span>
+            共{" "}
+            <span className="text-[#2853E3] font-light">{userData.length}</span>
             條
           </div>
           <div>
@@ -305,6 +314,9 @@ export const UserList = () => {
               pageSizeOptions={[6, 10, 20]}
               showSizeChanger
               showQuickJumper
+              onChange={(page, pageSize) => {
+                // setPageDto({ PageIndex: page, PageSize: pageSize });
+              }}
             />
           </div>
         </div>
@@ -313,7 +325,7 @@ export const UserList = () => {
         modalWidth={"36rem"}
         title={
           <div className="flex flex-row justify-between">
-            <div>添加用戶</div>
+            <div>{t(KEYS.ADD_USER, source)}</div>
             <CloseOutlined onClick={() => setIsClosed(true)} />
           </div>
         }
@@ -325,16 +337,16 @@ export const UserList = () => {
         <div className="flex flex-nowrap">
           <div className="border-solid border border-gray-200 w-[16rem] rounded">
             <div className="mb-[0.5rem] ml-[1rem] mt-[0.5rem] text-[0.8rem] text-slate-600">
-              標題
+              {t(KEYS.TITLE, source)}
             </div>
             <Input
               className="ml-[0.5rem] mb-[0.5rem] w-[14rem] h-[1.65rem] text-[0.8rem] rounded"
               suffix={<img src={search} className="size-[1rem]" />}
-              placeholder="搜索用戶名，部門"
+              placeholder={t(KEYS.SEARCH_USERNAME_DEPARTMENT, source)}
             />
             <Tree
               checkable
-              treeData={data}
+              treeData={userData}
               autoExpandParent={autoExpandParent}
               checkedKeys={checkedKeys}
               selectedKeys={selectedKeys}
@@ -357,14 +369,14 @@ export const UserList = () => {
           </div>
           <div className="border-solid border border-gray-200 w-[16rem] rounded">
             <div className="mb-[0.5rem] ml-[1rem] mt-[0.5rem] text-[0.8rem]">
-              已選
-              <span>{data.length}</span>
-              個用戶
+              {t(KEYS.SELECTED, source)}
+              <span>{userData.length}</span>
+              {t(KEYS.USERS, source)}
             </div>
             <Input
               className="ml-[0.5rem] mb-[0.5rem] w-[14rem] h-[1.65rem] text-[0.8rem] rounded"
               suffix={<img src={search} className="size-[1rem]" />}
-              placeholder="搜索用戶名，部門"
+              placeholder={t(KEYS.SEARCH_USERNAME_DEPARTMENT, source)}
             />
             <div className="ml-[1rem] mb-[0.5rem] scroll-auto h-[11rem] flex justify-between" />
           </div>
@@ -374,7 +386,7 @@ export const UserList = () => {
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            操作確認
+            {t(KEYS.OPERATION_CONFIRMATION, source)}
           </div>
         }
         onCancle={() => setIsDeleteUser(false)}
@@ -382,13 +394,15 @@ export const UserList = () => {
         open={isDeleteUser}
         className={"customModal"}
       >
-        <span className="pl-[2rem]">請確認是否批量删除？</span>
+        <span className="pl-[2rem]">
+          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE_IN_BATCHES, source)}
+        </span>
       </CustomModal>
       <CustomModal
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            操作確認
+            {t(KEYS.OPERATION_CONFIRMATION, source)}
           </div>
         }
         onCancle={() => setIsRemoveUser(false)}
@@ -396,12 +410,14 @@ export const UserList = () => {
         open={isRemoveUser}
         className={"customModal"}
       >
-        <span className="pl-[2rem]">請確認是否批量删除？</span>
+        <span className="pl-[2rem]">
+          {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE_IN_BATCHES, source)}
+        </span>
       </CustomModal>
       <CustomModal
         title={
           <div className="flex flex-row justify-between">
-            <div>修改密码</div>
+            <div>{t(KEYS.UPDATE_PASSWORD, source)}</div>
             <CloseOutlined onClick={() => setIsClosed(true)} />
           </div>
         }
@@ -412,28 +428,35 @@ export const UserList = () => {
         className={"customDeviceModal h-[13.1rem]"}
       >
         <div>
-          <div className="flex flex-col-reverse">
-            <div className="flex justify-start items-center mb-[1rem]">
-              <span className="text-[0.8rem]">當前密碼</span>
-              <Input
-                placeholder="請輸入"
-                className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
-              />
-            </div>
+          <div className="flex justify-start items-center mb-[1rem]">
+            <span className="text-[0.8rem]">
+              {t(KEYS.CURRENT_PASSWORD, source)}
+            </span>
+            <Input
+              placeholder={t(KEYS.PLEASE_ENTER, source)}
+              className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
+            />
           </div>
-          <div className="flex justify-start mb-[1rem] ml-[1rem] items-center">
-            <span className="text-[0.8rem]">新密碼</span>
+          <div className="flex justify-start items-center mb-[1rem]">
+            <span className="text-[0.8rem] pl-[0.78rem]">
+              {t(KEYS.NEW_PASSWORD, source)}
+            </span>
             <Select
-              className="h-[1.7rem] w-[23rem] ml-[0.5rem]"
+              className="h-[1.7rem] w-[23rem] ml-[0.5rem] userListSelect"
               mode="tags"
-              placeholder="請選擇"
+              placeholder={t(KEYS.PLEASE_SELECT, source)}
+              suffixIcon={
+                <DownOutlined className="text-gray-600 text-[0.7rem]" />
+              }
               defaultActiveFirstOption
             />
           </div>
-          <div className="flex justify-start items-center">
-            <span className="text-[0.8rem]">確認密碼</span>
+          <div>
+            <span className="text-[0.8rem]">
+              {t(KEYS.CONFIRM_PASSWORD, source)}
+            </span>
             <Input
-              placeholder="請輸入"
+              placeholder={t(KEYS.PLEASE_ENTER, source)}
               className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
             />
           </div>

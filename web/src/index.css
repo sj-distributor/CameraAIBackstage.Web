@@ -160,3 +160,7 @@ code {
   color: #2853e4 !important;
   font-weight: 500 !important;
 }
+
+.userListSelect .ant-select-selector {
+  border-radius: 4px;
+}

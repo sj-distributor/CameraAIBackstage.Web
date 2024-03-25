@@ -56,7 +56,7 @@ export const UserPermissions = () => {
             <div className="flex justify-center items-center">
               <Button
                 type="link"
-                className="text-[0.8rem] text-blue-600 h-[1.5rem] w-[5rem]"
+                className="text-[0.8rem] text-blue-600 h-[1.5rem] w-[5rem] flex justify-center items-center"
                 onClick={() => navigate("/user/permissions/distribute")}
               >
                 分配
