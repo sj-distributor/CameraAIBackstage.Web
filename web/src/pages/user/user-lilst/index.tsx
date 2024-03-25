@@ -15,13 +15,13 @@ import {
   Switch,
   Table,
 } from "antd";
+import Tree from "antd/es/tree/Tree";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-list-keys";
 
-import { useAction } from "./hook";
 import search from "../../../assets/public/search.png";
-import Tree from "antd/es/tree/Tree";
+import { useAction } from "./hook";
 
 export const UserList = () => {
   const {

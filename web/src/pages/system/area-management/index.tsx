@@ -17,8 +17,6 @@ export const AreaManagement = () => {
     setPageDto,
     t,
     isRegionListLoading,
-    regionListCount,
-    regionDataList,
     setSearchIconValue,
     setIsDeleteOpen,
     isDeleteOpen,
@@ -29,12 +27,18 @@ export const AreaManagement = () => {
     isLoading,
     source,
     initialRegionDataItem,
+    regionListDto,
   } = useAction();
 
   const columns: TableColumnsType<IRegionsDto> = [
     {
       title: t(KEYS.AREA_ID, source),
       dataIndex: "areaId",
+      width: "10%",
+    },
+    {
+      title: t(KEYS.WAREHOUSE_ID, source),
+      dataIndex: "locationId",
       width: "10%",
     },
     {
@@ -132,7 +136,7 @@ export const AreaManagement = () => {
           <div className="h-full overflow-auto no-scrollbar pb-[1.125rem]">
             <Table
               columns={columns}
-              dataSource={regionDataList}
+              dataSource={regionListDto.regions}
               pagination={false}
               rowKey="areaId"
               loading={isRegionListLoading}
@@ -144,7 +148,7 @@ export const AreaManagement = () => {
               <Trans
                 i18nKey={KEYS.PAGINATION}
                 ns="portraitList"
-                values={{ count: regionListCount }}
+                values={{ count: regionListDto.count }}
                 components={{
                   span: <span className="text-[#2853E3] font-light mx-1" />,
                 }}
@@ -154,7 +158,7 @@ export const AreaManagement = () => {
               current={pageDto.pageIndex}
               pageSize={pageDto.pageSize}
               pageSizeOptions={[5, 10, 20]}
-              total={regionListCount}
+              total={regionListDto.count}
               showQuickJumper
               showSizeChanger
               onChange={(page, pageSize) =>

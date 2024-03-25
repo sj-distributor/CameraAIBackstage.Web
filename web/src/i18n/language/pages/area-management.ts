@@ -23,6 +23,7 @@ export default {
     [KEYS.OPERATION_CONFIRM]: "Operation Confirmation",
     [KEYS.EDIT_AREA]: "Edit District",
     [KEYS.REQUIRED_FIELDS]: "Please enter required fields.",
+    [KEYS.WAREHOUSE_ID]: "Warehouse ID",
   },
   ch: {
     [KEYS.AREA_MANAGEMENT]: "區域管理",
@@ -45,5 +46,6 @@ export default {
     [KEYS.OPERATION_CONFIRM]: "操作確認",
     [KEYS.EDIT_AREA]: "編輯區域",
     [KEYS.REQUIRED_FIELDS]: "請輸入必填項",
+    [KEYS.WAREHOUSE_ID]: "货仓ID",
   },
 };

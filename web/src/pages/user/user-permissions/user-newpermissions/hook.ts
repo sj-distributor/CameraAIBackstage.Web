@@ -1,8 +1,18 @@
 import { CheckboxProps } from "antd/es/checkbox";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/user-permissions-keys";
 
 export const useAction = () => {
+  const { t, language } = useAuth();
+
+  const source = { ns: "userPermissions" };
+
   const [checkList, setCheckList] = useState([]);
+
+  const navigate = useNavigate();
 
   const AddRoleName = (e: []) => {
     console.log(e);
@@ -17,11 +27,11 @@ export const useAction = () => {
       optionName: "homePageList",
       option: [
         {
-          label: "首页",
+          label: t(KEYS.DASHBOARD, source),
           value: "首页",
         },
         {
-          label: "切换后台",
+          label: t(KEYS.SWITCH_BACKGROUND, source),
           value: "切換後台",
         },
       ],
@@ -30,11 +40,11 @@ export const useAction = () => {
       optionName: "monitor",
       option: [
         {
-          label: "實時監控",
+          label: t(KEYS.REAL_TIME_MONITORING, source),
           value: "實時監控",
         },
         {
-          label: "導出",
+          label: t(KEYS.EXPORT, source),
           value: "導出",
         },
       ],
@@ -43,11 +53,11 @@ export const useAction = () => {
       optionName: "videoPlayback",
       option: [
         {
-          label: "視頻回放",
+          label: t(KEYS.VIDEO_PLAYBACK, source),
           value: "視頻回放",
         },
         {
-          label: "導出",
+          label: t(KEYS.EXPORT, source),
           value: "導出",
         },
       ],
@@ -56,19 +66,19 @@ export const useAction = () => {
       optionName: "alertList",
       option: [
         {
-          label: "預警列表",
+          label: t(KEYS.WARNING_LIST, source),
           value: "預警列表",
         },
         {
-          label: "導出",
+          label: t(KEYS.EXPORT, source),
           value: "導出",
         },
         {
-          label: "查看詳情",
+          label: t(KEYS.VIEW_DETAILS, source),
           value: "查看詳情",
         },
         {
-          label: "標記",
+          label: t(KEYS.LABELED, source),
           value: "標記",
         },
       ],
@@ -77,15 +87,15 @@ export const useAction = () => {
       optionName: "feedbackList",
       option: [
         {
-          label: "反饋列表",
+          label: t(KEYS.FEEDBACK_LIST, source),
           value: "反饋列表",
         },
         {
-          label: "導出",
+          label: t(KEYS.EXPORT, source),
           value: "導出",
         },
         {
-          label: "查看詳情",
+          label: t(KEYS.VIEW_DETAILS, source),
           value: "查看詳情",
         },
       ],
@@ -97,31 +107,31 @@ export const useAction = () => {
       optionName: "userList",
       option: [
         {
-          label: "用戶列表",
+          label: t(KEYS.ROLE_LIST, source),
           value: "用戶列表",
         },
         {
-          label: "添加用戶",
+          label: t(KEYS.ADD_USER, source),
           value: "添加用戶",
         },
         {
-          label: "批量移除",
+          label: t(KEYS.DELETE_USERS_IN_BATCHES, source),
           value: "批量移除",
         },
         {
-          label: "啟用",
+          label: t(KEYS.ENABLE, source),
           value: "啟用",
         },
         {
-          label: "停用",
+          label: t(KEYS.DISABLE, source),
           value: "停用",
         },
         {
-          label: "重置密碼",
+          label: t(KEYS.RESET_PASSWORDS, source),
           value: "重置密碼",
         },
         {
-          label: "移除",
+          label: t(KEYS.REMOVE, source),
           value: "移除",
         },
       ],
@@ -130,23 +140,23 @@ export const useAction = () => {
       optionName: "permissionsList",
       option: [
         {
-          label: "角色權限",
+          label: t(KEYS.ROLE_PERMISSION, source),
           value: "角色權限",
         },
         {
-          label: "新增角色",
+          label: t(KEYS.ADD_ROLE, source),
           value: "新增角色",
         },
         {
-          label: "分配",
+          label: t(KEYS.ALLOT, source),
           value: "分配",
         },
         {
-          label: "編輯",
+          label: t(KEYS.EDIT, source),
           value: "編輯",
         },
         {
-          label: "删除",
+          label: t(KEYS.DELETE, source),
           value: "删除",
         },
       ],
@@ -155,27 +165,27 @@ export const useAction = () => {
       optionName: "deviceList",
       option: [
         {
-          label: "設備列表",
+          label: t(KEYS.DEVICE_LIST, source),
           value: "設備列表",
         },
         {
-          label: "添加設備",
+          label: t(KEYS.ADD_DEVICE, source),
           value: "添加設備",
         },
         {
-          label: "編輯",
+          label: t(KEYS.EDIT, source),
           value: "編輯",
         },
         {
-          label: "綁定",
+          label: t(KEYS.BINGDING, source),
           value: "綁定",
         },
         {
-          label: "解除綁定",
+          label: t(KEYS.REMOVE_BINDING, source),
           value: "解除綁定",
         },
         {
-          label: "刪除",
+          label: t(KEYS.DELETE, source),
           value: "刪除",
         },
       ],
@@ -184,19 +194,19 @@ export const useAction = () => {
       optionName: "equipmentType",
       option: [
         {
-          label: "設備類型",
+          label: t(KEYS.DEVICE_TYPE, source),
           value: "設備類型",
         },
         {
-          label: "新增",
+          label: t(KEYS.ADD, source),
           value: "新增",
         },
         {
-          label: "編輯",
+          label: t(KEYS.EDIT, source),
           value: "編輯",
         },
         {
-          label: "刪除",
+          label: t(KEYS.DELETE, source),
           value: "刪除",
         },
       ],
@@ -205,48 +215,48 @@ export const useAction = () => {
       optionName: "monitorSet",
       option: [
         {
-          label: "監測管理",
+          label: t(KEYS.MONITORING_MANAGEMENT, source),
           value: "監測管理",
         },
         {
-          label: "新增",
+          label: t(KEYS.ADD, source),
           value: "新增",
         },
         {
-          label: "啟用",
+          label: t(KEYS.ENABLE, source),
           value: "啟用",
         },
         {
-          label: "關閉",
+          label: t(KEYS.CLOSURE, source),
           value: "關閉",
         },
         {
-          label: "編輯",
+          label: t(KEYS.EDIT, source),
           value: "編輯",
         },
         {
-          label: "刪除",
+          label: t(KEYS.DELETE, source),
           value: "刪除",
         },
       ],
     },
     {
-      optionName: " portraitSet",
+      optionName: "portraitSet",
       option: [
         {
-          label: "人像管理",
+          label: t(KEYS.LIST_OF_PORTRAITS, source),
           value: "人像管理",
         },
         {
-          label: "新增",
+          label: t(KEYS.ADD, source),
           value: "新增",
         },
         {
-          label: "編輯",
+          label: t(KEYS.EDIT, source),
           value: "編輯",
         },
         {
-          label: "刪除",
+          label: t(KEYS.DELETE, source),
           value: "刪除",
         },
       ],
@@ -255,19 +265,19 @@ export const useAction = () => {
       optionName: "licensePlateSet",
       option: [
         {
-          label: "車牌管理",
+          label: t(KEYS.LICENCE_PLATE_MANAGEMENT, source),
           value: "車牌管理",
         },
         {
-          label: "已登記車輛",
+          label: t(KEYS.REGISTERED_VEHICLE, source),
           value: "已登記車輛",
         },
         {
-          label: "登記",
+          label: t(KEYS.REGISTER, source),
           value: "登記",
         },
         {
-          label: "詳情",
+          label: t(KEYS.DETAILS, source),
           value: "詳情",
         },
       ],
@@ -276,19 +286,19 @@ export const useAction = () => {
       optionName: "areaSet",
       option: [
         {
-          label: "區域管理",
+          label: t(KEYS.DISTRICT_MANAGEMENT, source),
           value: "區域管理",
         },
         {
-          label: "新增",
+          label: t(KEYS.ADD, source),
           value: "新增",
         },
         {
-          label: "編輯",
+          label: t(KEYS.EDIT, source),
           value: "編輯",
         },
         {
-          label: "刪除",
+          label: t(KEYS.DELETE, source),
           value: "刪除",
         },
       ],
@@ -302,5 +312,9 @@ export const useAction = () => {
     handleCheckBox,
     frontendOptionsList,
     backendOptionsList,
+    navigate,
+    t,
+    source,
+    language,
   };
 };
