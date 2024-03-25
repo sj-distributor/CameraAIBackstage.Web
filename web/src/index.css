@@ -164,7 +164,3 @@ code {
 .tree-transfer .ant-transfer-list-body-customize-wrapper {
   overflow-y: auto;
 }
-
-.tree-transfer .ant-transfer-list-header {
-  display: none;
-}
