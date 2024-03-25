@@ -40,8 +40,17 @@ export const TransferTree = ({
   };
 
   const onChange = (keys: string[]) => {
-    console.log(keys);
-    setTargetKeys(keys);
+    const data = arrTreeData.filter((item) => keys.includes(item.key));
+
+    const allSelectedData = treeToFlat(data);
+
+    console.log(
+      allSelectedData.map((item) => item.key).filter((item) => Number(item))
+    );
+
+    setTargetKeys(
+      allSelectedData.map((item) => item.key).filter((item) => Number(item))
+    );
   };
 
   const SearchLists = document.querySelectorAll(
