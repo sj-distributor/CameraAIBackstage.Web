@@ -11,19 +11,23 @@ import KEYS from "@/i18n/language/keys/license-plate-management-keys";
 import {
   GetRegisteredVehicleList,
   GetVehicleMonitorRecords,
+  PostDeleteRegisterCar,
+  PostEditRegisterCar,
   PostRegisteringVehicles,
 } from "@/services/api/license-plate-management";
 import {
   CameraAiMonitorRecordStatus,
+  CameraAiMonitorRegisterType,
   IGetRegisteredVehicleListRequest,
   IGetRegisteredVehicleListResponse,
   IGetVehicleMonitorRecordsRequest,
   IGetVehicleMonitorRecordsResponse,
+  IPostEditRegisterCarRequest,
   IPostRegisteringCarRequest,
+  IRegisteredVehicleListItem,
 } from "@/services/dtos/license-plate-management";
 
-import { IDeviceDataType } from "../../props";
-import { ILicensePlateManagementTableProps } from "./props";
+import { ConfirmData, ILicensePlateManagementTableProps } from "./props";
 
 dayjs.extend(utc);
 
@@ -34,7 +38,11 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
 
   const [registerForm] = useForm();
 
-  const [isUnbindOpen, setIsUnbindOpen] = useState<boolean>(false);
+  const [confirmData, setConfirmData] = useState<ConfirmData>(
+    ConfirmData.DeleteRegisterCar
+  );
+
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false);
 
   const [isShowLicensePlateOpen, setIsShowLicensePlateOpen] =
     useState<boolean>(false);
@@ -51,12 +59,13 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   const [registeredVehicleRequest, setRegisteredVehicleRequest] =
     useState<IGetRegisteredVehicleListRequest>({ PageIndex: 1, PageSize: 20 });
 
-  const [registeringCarRequest, setRegisteringCarRequest] =
-    useState<IPostRegisteringCarRequest>({
-      recordId: "",
-      recordStatus: CameraAiMonitorRecordStatus.Unmarked,
-      exceptionReason: undefined,
-    });
+  const [registeringCarRequest, setRegisteringCarRequest] = useState<
+    IPostRegisteringCarRequest | IRegisteredVehicleListItem
+  >({
+    recordId: "",
+    recordStatus: undefined,
+    exceptionReason: undefined,
+  });
 
   const [isRegisterOpen, setIsRegisterOpen] = useState<boolean>(false);
 
@@ -65,107 +74,49 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   const [vehicleMonitorRecordsData, setVehicleMonitorRecordsData] =
     useState<IGetVehicleMonitorRecordsResponse>({
       count: 0,
-      records: [],
+      records: [
+        {
+          id: 1,
+          equipmentName: "string",
+          equipmentCode: "string",
+          monitorTypeId: 1,
+          correlationId: "string",
+          duration: 1,
+          recordStatus: CameraAiMonitorRecordStatus.Unmarked,
+          plateNumber: "string",
+          faceName: "string",
+          replayTaskId: "string",
+          replayUrl: "",
+          isRegistered: false,
+          licensePlateImageUrl: "",
+          occurrenceTime: "2024-03-14",
+          createdTime: "2024-03-14",
+        },
+      ],
     });
 
   const [registeredVehicleData, setRegisteredVehicleData] =
     useState<IGetRegisteredVehicleListResponse>({
       count: 0,
-      registers: [],
+      registers: [
+        {
+          id: 1,
+          type: CameraAiMonitorRegisterType.Car,
+          faceName: "string",
+          plateNumber: "string",
+          registeredRecordStatus: CameraAiMonitorRecordStatus.Verified,
+          createdTime: "2024-3-26",
+        },
+      ],
     });
-
-  const [deviceData, setDeviceData] = useState<IDeviceDataType[]>([
-    {
-      radio: true,
-      areaId: "1",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "2",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "3",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "4",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "5",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "6",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "7",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "8",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "9",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "10",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "11",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "12",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-  ]);
 
   const [dateRange, setDateRange] = useState<RangeValue<Dayjs>>();
 
   const [plateNumberKeyword, setPlateNumberKeyword] = useState<string>("");
 
   const [isEditKeyword, setEditKeyword] = useState<boolean>(false);
+
+  const [deleteRegisterCarId, setDeleteRegisterCarId] = useState<string>("");
 
   const rangePresets: TimeRangePickerProps["presets"] = [
     {
@@ -244,8 +195,66 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     }
   };
 
+  const handelRegisterOrEditCar = () => {
+    registerForm
+      .validateFields()
+      .then(() => {
+        if (isRegisteredVehicle) {
+          const {
+            id,
+            type,
+            faceName,
+            plateNumber,
+            registeredRecordStatus,
+            createdTime,
+          } = registeringCarRequest as IRegisteredVehicleListItem;
+
+          const data: IPostEditRegisterCarRequest = {
+            recordRegister: {
+              id,
+              type,
+              faceName,
+              plateNumber,
+              registeredRecordStatus,
+              createdTime,
+            },
+          };
+
+          handelEditRegisterCar(data);
+        } else {
+          const { recordId, recordStatus } =
+            registeringCarRequest as IPostRegisteringCarRequest;
+
+          const data: IPostRegisteringCarRequest = {
+            recordId,
+            recordStatus,
+          };
+
+          handelRegisteringCar(data);
+        }
+      })
+      .catch(() => {
+        console.log("first");
+      });
+  };
+
+  const handelConfirmOperate = () => {
+    switch (confirmData) {
+      case ConfirmData.DeleteRegisterCar:
+        deleteRegisterCarId && handelDeleteRegisterCar(deleteRegisterCarId);
+        break;
+      case ConfirmData.EditRegisterCar:
+        console.log("first");
+        handelRegisterOrEditCar();
+        break;
+      default:
+        break;
+    }
+  };
+
   const filterKeyword = useDebounce(plateNumberKeyword, { wait: 500 });
 
+  // 已登記list
   const {
     run: handelGetRegisteredVehicleList,
     loading: isGetRegisteredVehicleList,
@@ -260,6 +269,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     },
   });
 
+  // 車牌紀錄list
   const { run: handelGetVehicleMonitorRecords, loading: isGetMonitorRecords } =
     useRequest(GetVehicleMonitorRecords, {
       manual: true,
@@ -272,18 +282,49 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
       },
     });
 
+  // 登記車牌
   const { run: handelRegisteringCar, loading: isRegisteringCar } = useRequest(
     PostRegisteringVehicles,
     {
       manual: true,
       onSuccess: () => {
         message.success(t(KEYS.REGISTERING_CAR_OK, source));
+        handelGetVehicleMonitorRecords(vehicleMonitorRecordsRequest);
+        setIsRegisterOpen(false);
       },
       onError(error) {
         message.error((error as unknown as { code: number; msg: string }).msg);
       },
     }
   );
+
+  // 編輯已登記車牌
+  const { run: handelEditRegisterCar, loading: isEditRegisterCar } = useRequest(
+    PostEditRegisterCar,
+    {
+      manual: true,
+      onSuccess: () => {
+        message.success(t(KEYS.REGISTERING_CAR_OK, source));
+        setIsRegisterOpen(false);
+      },
+      onError(error) {
+        message.error((error as unknown as { code: number; msg: string }).msg);
+      },
+    }
+  );
+
+  const { run: handelDeleteRegisterCar, loading: isDeleteRegisterCar } =
+    useRequest(PostDeleteRegisterCar, {
+      manual: true,
+      onSuccess: () => {
+        message.success("刪除成功");
+        setIsOpenConfirmModal(false);
+        handelGetRegisteredVehicleList(registeredVehicleRequest);
+      },
+      onError(error) {
+        message.error((error as unknown as { code: number; msg: string }).msg);
+      },
+    });
 
   useEffect(() => {
     !isRegisteredVehicle &&
@@ -333,7 +374,6 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     registerForm,
     language,
     plateNumberKeyword,
-    isUnbindOpen,
     isShowLicensePlateOpen,
     isRegisterOpen,
     isAddDeviceOpen,
@@ -350,17 +390,25 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     registerCarNumber,
     isRegisteringCar,
     registeringCarRequest,
+    isOpenConfirmModal,
+    confirmData,
+    isEditRegisterCar,
+    isDeleteRegisterCar,
+    setDeleteRegisterCarId,
+    setConfirmData,
     setLicensePlateImageUrl,
     onRangeChange,
     setVehicleMonitorRecordsRequest,
     setRegisteredVehicleRequest,
     setPlateNumberKeyword,
-    setIsUnbindOpen,
+    setIsOpenConfirmModal,
     setIsShowLicensePlateOpen,
     setIsRegisterOpen,
     setIsAddDeviceOpen,
     setRegisterCarNumber,
     setRegisteringCarRequest,
     handelRegisteringCar,
+    handelConfirmOperate,
+    handelRegisterOrEditCar,
   };
 };

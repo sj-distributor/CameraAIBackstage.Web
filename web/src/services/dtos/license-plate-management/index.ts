@@ -22,8 +22,12 @@ export interface IGetRegisteredVehicleListRequest {
 
 export interface IPostRegisteringCarRequest {
   recordId: string;
-  recordStatus: CameraAiMonitorRecordStatus;
+  recordStatus?: CameraAiMonitorRecordStatus;
   exceptionReason?: string;
+}
+
+export interface IPostEditRegisterCarRequest {
+  recordRegister: IRegisteredVehicleListItem;
 }
 
 export interface IGetVehicleMonitorRecordsResponse {
@@ -85,8 +89,9 @@ export interface IVehicleMonitorRecordsItem {
   equipmentName: string;
   equipmentCode: string;
   monitorTypeId: number;
+  correlationId: string;
   duration: number;
-  status: CameraAiMonitorRecordStatus;
+  recordStatus: CameraAiMonitorRecordStatus;
   plateNumber: string;
   faceName: string;
   replayTaskId: string;

@@ -14,3 +14,8 @@ export interface ICameraAiMonitorRecordStatusOption {
   value: CameraAiMonitorRecordStatus;
   label: string;
 }
+
+export enum ConfirmData {
+  DeleteRegisterCar,
+  EditRegisterCar,
+}

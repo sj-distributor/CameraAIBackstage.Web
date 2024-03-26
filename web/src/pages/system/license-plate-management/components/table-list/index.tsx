@@ -16,7 +16,6 @@ import {
   Table,
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import TextArea from "antd/es/input/TextArea";
 import type { ColumnsType } from "antd/es/table";
 import dayjs, { Dayjs } from "dayjs";
 import { Trans } from "react-i18next";
@@ -28,12 +27,14 @@ import KEYS from "@/i18n/language/keys/license-plate-management-keys";
 import LOG_KEYS from "@/i18n/language/keys/operation-log-keys";
 import {
   CameraAiMonitorRecordStatus,
+  IPostRegisteringCarRequest,
   IRegisteredVehicleListItem,
   IVehicleMonitorRecordsItem,
 } from "@/services/dtos/license-plate-management";
 
 import { useAction } from "./hook";
 import {
+  ConfirmData,
   ICameraAiMonitorRecordStatusOption,
   ILicensePlateManagementTableProps,
 } from "./props";
@@ -51,10 +52,8 @@ export const LicensePlateManagementTable = (
     registerForm,
     language,
     plateNumberKeyword,
-    isUnbindOpen,
     isShowLicensePlateOpen,
     isRegisterOpen,
-    isAddDeviceOpen,
     vehicleMonitorRecordsData,
     source,
     isGetMonitorRecords,
@@ -67,19 +66,25 @@ export const LicensePlateManagementTable = (
     vehicleMonitorRecordsRequest,
     registerCarNumber,
     isRegisteringCar,
+    isOpenConfirmModal,
     registeringCarRequest,
+    confirmData,
+    isEditRegisterCar,
+    isDeleteRegisterCar,
+    setDeleteRegisterCarId,
+    setConfirmData,
     setLicensePlateImageUrl,
     onRangeChange,
     setVehicleMonitorRecordsRequest,
     setRegisteredVehicleRequest,
     setPlateNumberKeyword,
-    setIsUnbindOpen,
-    setIsShowLicensePlateOpen,
+    setIsOpenConfirmModal,
     setIsRegisterOpen,
-    setIsAddDeviceOpen,
     setRegisterCarNumber,
     setRegisteringCarRequest,
-    handelRegisteringCar,
+    handelConfirmOperate,
+    setIsShowLicensePlateOpen,
+    handelRegisterOrEditCar,
   } = useAction(props);
 
   const getCameraAiMonitorRecordStatusNode = (
@@ -90,7 +95,7 @@ export const LicensePlateManagementTable = (
         return (
           <div className="flex flex-row items-center">
             <div className="bg-[#34A46E] w-1.5 h-1.5 rounded-full mr-2" />
-            <span>{t(KEYS.ONLINE, source)}</span>
+            <span>{t(KEYS.NORMAL_VEHICLES, source)}</span>
           </div>
         );
       case CameraAiMonitorRecordStatus.Unmarked:
@@ -139,7 +144,7 @@ export const LicensePlateManagementTable = (
     },
     {
       title: t(KEYS.VEHICLE_TYPE, source),
-      dataIndex: "status",
+      dataIndex: "recordStatus",
       width: "16.6%",
       render: (status: CameraAiMonitorRecordStatus) => {
         return getCameraAiMonitorRecordStatusNode(status);
@@ -153,6 +158,7 @@ export const LicensePlateManagementTable = (
         <div>
           <Button
             type="link"
+            disabled={record.isRegistered}
             onClick={() => {
               setRegisterCarNumber(record.plateNumber);
               setRegisteringCarRequest((prev) => ({
@@ -215,9 +221,17 @@ export const LicensePlateManagementTable = (
       title: t(KEYS.OPERATION, source),
       dataIndex: "operate",
       width: "26.6%",
-      render: () => (
+      render: (_, record) => (
         <div>
-          <Button type="link" onClick={() => setIsRegisterOpen(true)}>
+          <Button
+            type="link"
+            onClick={() => {
+              setRegisterCarNumber(record.plateNumber);
+
+              setRegisteringCarRequest(record);
+              setIsRegisterOpen(true);
+            }}
+          >
             {t(KEYS.EDIT, source)}
           </Button>
           <Button
@@ -231,7 +245,9 @@ export const LicensePlateManagementTable = (
           <Button
             type="link"
             onClick={() => {
-              setIsShowLicensePlateOpen(true);
+              setConfirmData(ConfirmData.DeleteRegisterCar);
+              setDeleteRegisterCarId(String(record.id));
+              setIsOpenConfirmModal(true);
             }}
           >
             {t(KEYS.DELETE, source)}
@@ -337,7 +353,8 @@ export const LicensePlateManagementTable = (
             {!isRegisteredVehicle && (
               <Select
                 className="w-[13.5rem] h-[2.5rem]"
-                placeholder={t(KEYS.UNREGISTERED, source)}
+                placeholder={t(KEYS.REGISTER_STATUS, source)}
+                allowClear
                 defaultActiveFirstOption
                 onChange={(status) => {
                   setVehicleMonitorRecordsRequest((prev) => ({
@@ -426,29 +443,7 @@ export const LicensePlateManagementTable = (
         </div>
       </div>
 
-      <CustomModal
-        title={
-          <div>
-            <WarningFilled className="text-[#ED940F] pr-[0.625rem]" />
-            {t(KEYS.CONFIRM_OPERATION, source)}
-          </div>
-        }
-        onCancle={() => setIsUnbindOpen(false)}
-        onConfirm={() => {
-          // const newList = clone(vehicleMonitorRecordsData);
-
-          // newList[isUnbindIndex].whetherToBind = false;
-          // setData(newList);
-          setIsUnbindOpen(false);
-        }}
-        open={isUnbindOpen}
-        className={"customModal"}
-      >
-        <span className="pl-[2rem]">
-          {t(KEYS.PLEASE_CONFIRM_UNBIND, source)}
-        </span>
-      </CustomModal>
-
+      {/* 查看車牌圖片 */}
       <CustomModal
         title={<></>}
         onCancle={() => setIsShowLicensePlateOpen(false)}
@@ -477,6 +472,7 @@ export const LicensePlateManagementTable = (
         </div>
       </CustomModal>
 
+      {/* 登記or編輯登記 */}
       <CustomModal
         title={
           <div className="px-[1.25rem] mb-[1.25rem] pt-4 text-[#323444] text-xl flex justify-between items-center">
@@ -495,7 +491,13 @@ export const LicensePlateManagementTable = (
           <div className="py-4 bg-[#F6F8FC] rounded-b-md items-center flex justify-end">
             <button
               type="button"
-              onClick={() => setIsRegisterOpen(false)}
+              onClick={() => {
+                setRegisteringCarRequest({
+                  recordStatus: undefined,
+                  recordId: "",
+                });
+                setIsRegisterOpen(false);
+              }}
               className="ant-btn css-dev-only-do-not-override-9alsuj ant-btn-default w-[6rem] h-[2.75rem] mr-[1.5rem]"
             >
               <span>{t(KEYS.CANCEL, source)}</span>
@@ -503,12 +505,13 @@ export const LicensePlateManagementTable = (
             <Button
               loading={isRegisteringCar}
               onClick={() => {
-                registerForm
-                  .validateFields()
-                  .then(() => {
-                    handelRegisteringCar(registeringCarRequest);
-                  })
-                  .catch(() => {});
+                if (isRegisteredVehicle) {
+                  setConfirmData(ConfirmData.EditRegisterCar);
+
+                  setIsOpenConfirmModal(true);
+                } else {
+                  handelRegisterOrEditCar();
+                }
               }}
               className="ant-btn css-dev-only-do-not-override-9alsuj ant-btn-primary w-[6rem] h-[2.75rem] mr-[1.5rem] bg-[#2853E3]"
             >
@@ -518,7 +521,7 @@ export const LicensePlateManagementTable = (
         }
       >
         <div className="py-[2rem] border-t">
-          <Form colon={false} form={registerForm} className="ml-6">
+          <Form form={registerForm} className="ml-6">
             <FormItem
               name="id"
               label={t(KEYS.LICENSE_PLATE_NUMBER, source)}
@@ -528,103 +531,73 @@ export const LicensePlateManagementTable = (
               <div>{registerCarNumber}</div>
             </FormItem>
             <FormItem
-              name="deviceType"
+              name={
+                isRegisteredVehicle ? "registeredRecordStatus" : "recordStatus"
+              }
               label={t(KEYS.VEHICLE_TYPE, source)}
               rules={[{ required: true }]}
               labelCol={{ span: language === "ch" ? 3 : 6 }}
               wrapperCol={{ span: 15 }}
             >
-              <Select
-                suffixIcon={<img src={down} />}
-                placeholder={t(KEYS.PLEASE_SELECT, source)}
-                defaultActiveFirstOption
-                options={statusOption.filter(
-                  (item) => item.value !== CameraAiMonitorRecordStatus.Unmarked
-                )}
-                onChange={(status) =>
-                  setRegisteringCarRequest((prev) => ({
-                    ...prev,
-                    recordStatus: status,
-                  }))
-                }
-              />
-            </FormItem>
-            <FormItem
-              name="exceptionReason"
-              label={t(KEYS.ABNORMAL_CAUSE, source)}
-              labelCol={{ span: language === "ch" ? 3 : 6 }}
-              wrapperCol={{ span: 15 }}
-            >
-              <TextArea
-                rows={4}
-                onChange={(e) =>
-                  setRegisteringCarRequest((prev) => ({
-                    ...prev,
-                    exceptionReason: e.target.value,
-                  }))
-                }
-              />
+              <div>
+                <Select
+                  suffixIcon={<img src={down} />}
+                  placeholder={t(KEYS.PLEASE_SELECT, source)}
+                  defaultActiveFirstOption
+                  options={statusOption.filter(
+                    (item) =>
+                      item.value !== CameraAiMonitorRecordStatus.Unmarked
+                  )}
+                  onChange={(status) => {
+                    registerForm.setFieldsValue({
+                      registeredRecordStatus: status,
+                      recordStatus: status,
+                    });
+                    setRegisteringCarRequest((prev) => ({
+                      ...prev,
+                      recordStatus: status,
+                      registeredRecordStatus: status,
+                    }));
+                  }}
+                  value={
+                    isRegisteredVehicle
+                      ? (registeringCarRequest as IRegisteredVehicleListItem)
+                          .registeredRecordStatus
+                      : (registeringCarRequest as IPostRegisteringCarRequest)
+                          .recordStatus
+                  }
+                />
+              </div>
             </FormItem>
           </Form>
         </div>
       </CustomModal>
 
+      {/* 確認刪除or編輯 */}
       <CustomModal
-        title={<div>{t(KEYS.ADD_DEVICE, source)}</div>}
-        onCancle={() => setIsAddDeviceOpen(false)}
-        onConfirm={() => setIsAddDeviceOpen(false)}
-        open={isAddDeviceOpen}
-        className={"customDeviceModal"}
-        modalWidth="42.5rem"
+        title={
+          <div>
+            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
+            {t(KEYS.OPERATION_CONFIRMATION, source)}
+          </div>
+        }
+        onCancle={() => {
+          setDeleteRegisterCarId("");
+          setIsOpenConfirmModal(false);
+        }}
+        onConfirm={() => handelConfirmOperate()}
+        open={isOpenConfirmModal}
+        className={"customModal"}
+        confirmLoading={isDeleteRegisterCar || isEditRegisterCar}
       >
-        <Form colon={false}>
-          <FormItem
-            name="deviceId"
-            label={t(KEYS.DEVICE_ID, source)}
-            rules={[{ required: true }]}
-            labelCol={{ span: language === "ch" ? 3 : 5 }}
-            wrapperCol={{ span: 15 }}
-          >
-            <Input placeholder={t(KEYS.PLEASE_ENTER, source)} />
-          </FormItem>
-          <FormItem
-            name="deviceType"
-            label={t(KEYS.DEVICE_TYPE, source)}
-            rules={[{ required: true }]}
-            labelCol={{ span: language === "ch" ? 3 : 5 }}
-            wrapperCol={{ span: 15 }}
-          >
-            <Select
-              suffixIcon={<img src={down} />}
-              placeholder={t(KEYS.PLEASE_SELECT, source)}
-              defaultActiveFirstOption
-              options={[
-                {
-                  value: t(KEYS.PLEASE_SELECT, source),
-                  label: t(KEYS.PLEASE_SELECT, source),
-                },
-                {
-                  value: t(KEYS.CAMERA, source),
-                  label: t(KEYS.CAMERA, source),
-                },
-                {
-                  value: t(KEYS.SPEAKER, source),
-                  label: t(KEYS.SPEAKER, source),
-                },
-              ]}
-            />
-          </FormItem>
-          <FormItem
-            name="deviceName"
-            label={t(KEYS.DEVICE_NAME, source)}
-            rules={[{ required: true }]}
-            labelCol={{ span: language === "ch" ? 3 : 5 }}
-            wrapperCol={{ span: 15 }}
-            style={{ marginBottom: 0 }}
-          >
-            <Input placeholder={t(KEYS.PLEASE_ENTER, source)} />
-          </FormItem>
-        </Form>
+        <span className="pl-[2rem]">
+          {t(
+            confirmData === ConfirmData.DeleteRegisterCar
+              ? KEYS.CONFIRM_DELETE_REGISTER_CAR
+              : KEYS.CONFIRM_EDIT_REGISTER_CAR,
+            source
+          )}
+        </span>
       </CustomModal>
     </ConfigProvider>
   );

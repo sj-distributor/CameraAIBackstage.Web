@@ -56,7 +56,7 @@ export const WarningDetails = () => {
     warningDetailList,
   } = useAction();
 
-  const DetailsTitle = {
+  const detailsTitle = {
     name: t(KEYS.DEVICE_NAME, source),
     type: t(KEYS.ALERT_TYPE, source),
     content: t(KEYS.ALERT_CONTENT, source),
@@ -114,7 +114,7 @@ export const WarningDetails = () => {
           return (
             <div className="w-1/3 mb-[1.5rem]" key={index}>
               <span className="text-[#5F6279 font-regular">
-                {DetailsTitle[item[0] as keyof IDetailsDataDto]} ：
+                {detailsTitle[item[0] as keyof IDetailsDataDto]} ：
               </span>
               <span className="text-[#323444] text-semibold">{item[1]}</span>
             </div>

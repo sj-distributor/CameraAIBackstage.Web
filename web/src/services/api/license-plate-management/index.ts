@@ -4,6 +4,7 @@ import {
   IGetVehicleMonitorRecordsRequest,
   IGetVehicleMonitorRecordsResponse,
   IGetWarningDemandResponse,
+  IPostEditRegisterCarRequest,
   IPostRegisteringCarRequest,
 } from "@/services/dtos/license-plate-management";
 
@@ -53,6 +54,22 @@ export const GetWarningDemand = async (recordId: string) => {
       params: { RecordId: recordId },
     }
   );
+
+  return response.data;
+};
+
+export const PostEditRegisterCar = async (
+  data: IPostEditRegisterCarRequest
+) => {
+  const response = await api.post("/api/CameraAi/monitor/register/edit", data);
+
+  return response.data;
+};
+
+export const PostDeleteRegisterCar = async (registerId: string) => {
+  const response = await api.post("/api/CameraAi/monitor/register/delete", {
+    registerId,
+  });
 
   return response.data;
 };
