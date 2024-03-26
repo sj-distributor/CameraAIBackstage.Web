@@ -13,7 +13,6 @@ import {
 import { IPageDto } from "@/services/dtos/public";
 import {
   IMonitorSettingRequest,
-  IMonitorSettingsCreateOrUpdateDto,
   IMonitorSettingsDto,
   IMonitorTypeResponse,
 } from "@/services/dtos/monitor";
@@ -55,7 +54,7 @@ export const useAction = () => {
     return list;
   }, [warningTypeData]);
 
-  const [data, setData] = useState<IMonitorSettingsCreateOrUpdateDto[]>([]);
+  const [data, setData] = useState<IMonitorSettingsDto[]>([]);
 
   const [loading, setLoading] = useState<boolean>(false);
 

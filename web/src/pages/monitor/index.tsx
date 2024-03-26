@@ -21,7 +21,6 @@ import { useAction } from "./hook";
 import { IOpenOrStopStatus, IOptionDto } from "./props";
 import {
   CameraAiNotificationType,
-  IMonitorSettingsCreateOrUpdateDto,
   IMonitorSettingsDto,
 } from "@/services/dtos/monitor";
 import { isEmpty, otherwise } from "ramda";
@@ -49,7 +48,7 @@ export const Monitor = () => {
     switchLoading,
   } = useAction();
 
-  const columns: ColumnsType<IMonitorSettingsCreateOrUpdateDto> = [
+  const columns: ColumnsType<IMonitorSettingsDto> = [
     {
       title: `${t(KEYS.TITLE, source)}`,
       dataIndex: "title",

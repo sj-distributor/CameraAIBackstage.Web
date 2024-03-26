@@ -17,7 +17,7 @@ import { clone, isEmpty } from "ramda";
 import downArrow from "@/assets/public/down-arrow.png";
 
 import { useAction } from "./hook";
-import { IOptionsNumberDto, IOptionsStringDto, TimeType } from "./props";
+import { IOptionsStringDto, TimeType } from "./props";
 import dayjs from "dayjs";
 
 export const AddOrUpdateConfiguration = () => {

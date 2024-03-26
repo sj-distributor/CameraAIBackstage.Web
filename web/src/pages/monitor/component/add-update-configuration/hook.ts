@@ -17,7 +17,7 @@ import {
   CameraAiNotificationType,
   DayOfWeek,
   IMonitorNotificationsDto,
-  IMonitorSettingsCreateOrUpdateDto,
+  IMonitorSettingsDto,
   IUserProfiles,
 } from "@/services/dtos/monitor";
 import {
@@ -111,7 +111,7 @@ export const useAction = () => {
   ];
 
   const [editDetailData, serEditDetailData] = useState<
-    IMonitorSettingsCreateOrUpdateDto | undefined
+    IMonitorSettingsDto | undefined
   >(isAdd ? initConfigurationInfo : undefined);
 
   const editCronList = initCronList.map((x) => {
@@ -131,12 +131,9 @@ export const useAction = () => {
 
   const [userData, setUserData] = useState<IUserProfiles[]>([]); //接受数据
 
-  // const [selectUserData, setSelectUserData] = useState<
-  //   IMonitorNotificationsDto[]
-  // >(isAdd ? initUserData : editDetailData?.monitorNotifications ?? []); //接口
-
-  const [selectUserData, setSelectUserData] =
-    useState<IMonitorNotificationsDto[]>(initUserData); //接口
+  const [selectUserData, setSelectUserData] = useState<
+    IMonitorNotificationsDto[]
+  >(isAdd ? initUserData : editDetailData?.monitorNotifications ?? []); //接口
 
   const [monitorType, setMonitorType] = useState<IOptionsNumberDto[]>([]);
 
@@ -219,10 +216,10 @@ export const useAction = () => {
     const divisibleMinutes = duration % 60;
     const divisibleHours = duration % 3600;
 
-    if (divisibleMinutes === 0) {
-      return isUnit ? TimeType.Minute : duration / 60;
-    } else if (divisibleHours === 0) {
+    if (divisibleHours === 0) {
       return isUnit ? TimeType.Hours : duration / 3600;
+    } else if (divisibleMinutes === 0) {
+      return isUnit ? TimeType.Minute : duration / 60;
     } else {
       return isUnit ? TimeType.Second : duration;
     }
@@ -260,7 +257,7 @@ export const useAction = () => {
     ); // 去除空的recipientIds的 userdata
 
     form.validateFields().then(async (values) => {
-      const data: IMonitorSettingsCreateOrUpdateDto = {
+      const data: IMonitorSettingsDto = {
         title: values.title,
         duration: handleTotalDuration(values.time, values.timeType),
         notificationContent: values.content,

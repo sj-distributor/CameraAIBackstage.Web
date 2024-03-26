@@ -36,40 +36,7 @@ export interface IMonitorSettingRequest extends IPageDto {
 
 export interface IMonitorSettingResponse {
   count: number;
-  monitorSettings: IMonitorSettingsCreateOrUpdateDto[];
-}
-
-export interface IMonitorSettingsDto extends IMonitorSettingsPublicDto {
-  equipmentIds: string[];
-  monitorNotifications: IMonitorNotificationsDto[];
-}
-
-export interface INotificationsDto {
-  id: number;
-  settingId: number;
-  recipientId: number;
-  notifyType: CameraAiNotificationType;
-  isDeleted: boolean;
-  createdDate: string;
-}
-
-export interface IEquipmentsDto {
-  id: number;
-  settingId: number;
-  equipmentId: number;
-  isDeleted: boolean;
-  createdDate: string;
-}
-
-export interface IPeriodsDto {
-  id: number;
-  settingId: number;
-  startTime: number;
-  endTime: number;
-  weekDay: number;
-  timeZone: string;
-  isDeleted: boolean;
-  createdDate: string;
+  monitorSettings: IMonitorSettingsDto[];
 }
 
 export interface IMonitorSettingsPublicDto {
@@ -86,8 +53,7 @@ export interface IMonitorSettingsPublicDto {
   createdDate?: string;
 }
 
-export interface IMonitorSettingsCreateOrUpdateDto
-  extends IMonitorSettingsPublicDto {
+export interface IMonitorSettingsDto extends IMonitorSettingsPublicDto {
   weekDays: DayOfWeek[];
   equipmentIds: number[];
   monitorNotifications: IMonitorNotificationsDto[];
