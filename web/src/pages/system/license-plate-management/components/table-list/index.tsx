@@ -306,7 +306,7 @@ export const LicensePlateManagementTable = (
         },
       }}
     >
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col h-full">
         <div className="flex flex-row pt-[1.625rem] justify-between">
           <div className="flex flex-wrap gap-4">
             <Input
@@ -377,27 +377,29 @@ export const LicensePlateManagementTable = (
             </Button>
           )}
         </div>
-        {isRegisteredVehicle ? (
-          <Table
-            rowKey={(record) => record.id}
-            columns={registeredColumns}
-            dataSource={registeredVehicleData.registers}
-            loading={isGetRegisteredVehicleList}
-            className="pt-[1.125rem] tableHiddenScrollBar flex-1"
-            scroll={{ y: 580 }}
-            pagination={false}
-          />
-        ) : (
-          <Table
-            rowKey={(record) => record.id}
-            columns={columns}
-            dataSource={vehicleMonitorRecordsData.records}
-            loading={isGetMonitorRecords}
-            className="pt-[1.125rem] tableHiddenScrollBar flex-1"
-            scroll={{ y: 580 }}
-            pagination={false}
-          />
-        )}
+        <div className="no-scrollbar overflow-y-auto flex-1 mt-[1.125rem]">
+          {isRegisteredVehicle ? (
+            <Table
+              rowKey={(record) => record.id}
+              columns={registeredColumns}
+              dataSource={registeredVehicleData.registers}
+              loading={isGetRegisteredVehicleList}
+              scroll={{ x: 1000 }}
+              sticky
+              pagination={false}
+            />
+          ) : (
+            <Table
+              rowKey={(record) => record.id}
+              columns={columns}
+              sticky
+              dataSource={vehicleMonitorRecordsData.records}
+              loading={isGetMonitorRecords}
+              scroll={{ x: 1000 }}
+              pagination={false}
+            />
+          )}
+        </div>
         <div className="flex justify-between items-center pt-[1rem]">
           <div className="text-[#929292] text-[0.875rem] font-light">
             <Trans
