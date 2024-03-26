@@ -3,7 +3,6 @@ import { Transfer, Tree } from "antd";
 import { TransferItem, TransferProps } from "antd/es/transfer";
 import { DataNode } from "antd/es/tree";
 import { Key, SetStateAction, useEffect, useState } from "react";
-import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
@@ -170,7 +169,7 @@ export const TransferTree = ({
         filterData && setTreeList(filterData);
         setTimeout(() => {
           setExpandedKeys(expkey);
-        }, 500);
+        }, 100);
       }
     } else {
       setSearchKeyword(value);
