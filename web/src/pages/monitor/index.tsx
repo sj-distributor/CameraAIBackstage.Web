@@ -21,9 +21,10 @@ import { useAction } from "./hook";
 import { IOpenOrStopStatus, IOptionDto } from "./props";
 import {
   CameraAiNotificationType,
+  IMonitorSettingsCreateOrUpdateDto,
   IMonitorSettingsDto,
 } from "@/services/dtos/monitor";
-import { isEmpty } from "ramda";
+import { isEmpty, otherwise } from "ramda";
 
 export const Monitor = () => {
   const {
@@ -46,10 +47,9 @@ export const Monitor = () => {
     onDelete,
     loading,
     switchLoading,
-    userData,
   } = useAction();
 
-  const columns: ColumnsType<IMonitorSettingsDto> = [
+  const columns: ColumnsType<IMonitorSettingsCreateOrUpdateDto> = [
     {
       title: `${t(KEYS.TITLE, source)}`,
       dataIndex: "title",
@@ -92,7 +92,7 @@ export const Monitor = () => {
     },
     {
       title: `${t(KEYS.NOTIFICATION_OBJECT, source)}`,
-      dataIndex: "notificationContent",
+      dataIndex: "monitorNotifications",
       width: "16.6%",
       render: (_, record) => {
         const handleTitle = (type: CameraAiNotificationType) => {
@@ -102,7 +102,7 @@ export const Monitor = () => {
                 ns: "monitorConfiguration",
               });
             case CameraAiNotificationType.PhoneCall:
-              return t(CONFIGURATION_KEYS.ENTERPRISE_WECHAT, {
+              return t(CONFIGURATION_KEYS.TELEPHONE, {
                 ns: "monitorConfiguration",
               });
             case CameraAiNotificationType.Sms:
@@ -110,47 +110,28 @@ export const Monitor = () => {
                 ns: "monitorConfiguration",
               });
             case CameraAiNotificationType.WorkWechat:
-              return t(CONFIGURATION_KEYS.TELEPHONE, {
+              return t(CONFIGURATION_KEYS.ENTERPRISE_WECHAT, {
                 ns: "monitorConfiguration",
               });
           }
         };
 
-        const userNameList = [
-          {
-            recipientNames: ["TRACY.W", "TED.F", "KOKI.K", "AIMER.A"],
-            notifyType: CameraAiNotificationType.Email,
-          },
-          {
-            recipientNames: ["123", "123", "123", "123"],
-            notifyType: CameraAiNotificationType.PhoneCall,
-          },
-          {
-            recipientNames: ["123", "123", "123", "123"],
-            notifyType: CameraAiNotificationType.Sms,
-          },
-          {
-            recipientNames: ["123", "123", "123", "123"],
-            notifyType: CameraAiNotificationType.WorkWechat,
-          },
-        ];
-
         return (
           <div>
-            {userNameList.map(
+            {record.monitorNotifications.map(
               (item, index) =>
-                !isEmpty(item.recipientNames) && (
+                !isEmpty(item.recipients) && (
                   <div className="break-normal md:break-all" key={index}>
                     <span className="text-nowrap">
                       {handleTitle(item.notifyType)}：
                     </span>
-                    {item.recipientNames.map((nameItem, nameIndex) => (
+                    {item.recipients.map((nameItem, nameIndex) => (
                       <span
                         className="break-normal md:break-all"
                         key={nameIndex}
                       >
-                        {nameItem}
-                        {nameIndex !== item.recipientNames.length - 1 && ","}
+                        {nameItem.name}
+                        {nameIndex !== item.recipients.length - 1 && ","}
                       </span>
                     ))}
                   </div>
@@ -173,10 +154,6 @@ export const Monitor = () => {
               navigate(
                 `/monitor/configuration/modify/` +
                   (record.id && record.id.toString())
-
-                // {
-                //   state: { data: record },
-                // }
               );
             }}
           >
@@ -283,7 +260,7 @@ export const Monitor = () => {
               columns={columns}
               dataSource={data}
               className="pt-[1.125rem] tableHiddenScrollBar"
-              scroll={{ y: 580, x: 580 }}
+              scroll={{ y: 550, x: 580 }}
               pagination={false}
               loading={loading}
             />

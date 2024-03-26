@@ -1,4 +1,4 @@
-import { Collapse, CollapseProps, ConfigProvider } from "antd";
+import { Collapse, CollapseProps, ConfigProvider, Spin } from "antd";
 
 import cameraTag from "../../../../assets/monitor/camera-tag.png";
 import collapseDown from "../../../../assets/monitor/collapse-down.png";
@@ -6,7 +6,8 @@ import menuIcon from "../../../../assets/monitor/menu-icon.svg";
 import { useAction } from "./hook";
 
 export const AddSelectType = () => {
-  const { warningTypeData, token, navigate, KEYS, t, source } = useAction();
+  const { warningTypeData, token, navigate, KEYS, t, source, loading } =
+    useAction();
 
   const collapseItem: () => CollapseProps["items"] = () => [
     {
@@ -70,18 +71,22 @@ export const AddSelectType = () => {
                 </span>
               </div>
               <div className="border border-[#E7E8EE] border-solid rounded-lg p-[2rem_1.5rem] h-full overflow-y-auto customScollbar shadow-md">
-                <Collapse
-                  bordered={false}
-                  activeKey={["1"]}
-                  expandIcon={() => (
-                    <div className="flex items-center font-semibold">
-                      <img src={collapseDown} />
-                      <img src={cameraTag} className="pl-4" />
-                    </div>
-                  )}
-                  style={{ background: token.colorBgContainer }}
-                  items={collapseItem()}
-                />
+                {loading ? (
+                  <Spin spinning={loading} className="flex justify-center" />
+                ) : (
+                  <Collapse
+                    bordered={false}
+                    activeKey={["1"]}
+                    expandIcon={() => (
+                      <div className="flex items-center font-semibold">
+                        <img src={collapseDown} />
+                        <img src={cameraTag} className="pl-4" />
+                      </div>
+                    )}
+                    style={{ background: token.colorBgContainer }}
+                    items={collapseItem()}
+                  />
+                )}
               </div>
             </div>
           </div>

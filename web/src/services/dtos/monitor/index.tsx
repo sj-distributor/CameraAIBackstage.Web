@@ -36,13 +36,12 @@ export interface IMonitorSettingRequest extends IPageDto {
 
 export interface IMonitorSettingResponse {
   count: number;
-  monitorSettings: IMonitorSettingsDto[];
+  monitorSettings: IMonitorSettingsCreateOrUpdateDto[];
 }
 
 export interface IMonitorSettingsDto extends IMonitorSettingsPublicDto {
-  equipments: IEquipmentsDto[];
-  periods: IPeriodsDto[];
-  notifications: INotificationsDto[];
+  equipmentIds: string[];
+  monitorNotifications: IMonitorNotificationsDto[];
 }
 
 export interface INotificationsDto {
@@ -96,10 +95,15 @@ export interface IMonitorSettingsCreateOrUpdateDto
 }
 
 export interface IMonitorNotificationsDto {
-  recipientIds: number[]; //发送信息的目标
-  recipients?: IRecipients[];
-  notifyType: CameraAiNotificationType; //发送方式
+  recipientIds: string[];
+  recipients: IRecipientsDto[];
+  notifyType: CameraAiNotificationType;
   notifyTypeName?: string;
+}
+
+export interface IRecipientsDto {
+  staffId: string;
+  name?: string;
 }
 
 export interface IRecipients {

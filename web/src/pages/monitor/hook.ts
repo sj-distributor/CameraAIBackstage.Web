@@ -6,7 +6,6 @@ import { IOpenOrStopStatus, IOptionDto } from "./props";
 import {
   GetMonitorSettingPage,
   GetMonitorType,
-  GetUserList,
   MonitorSettingDelete,
   MonitorSettingDisable,
   MonitorSettingEnable,
@@ -14,9 +13,9 @@ import {
 import { IPageDto } from "@/services/dtos/public";
 import {
   IMonitorSettingRequest,
+  IMonitorSettingsCreateOrUpdateDto,
   IMonitorSettingsDto,
   IMonitorTypeResponse,
-  IUserProfiles,
 } from "@/services/dtos/monitor";
 import { App } from "antd";
 
@@ -29,9 +28,9 @@ export const useAction = () => {
 
   const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
 
-  const [filterStatus, setFilterStatus] = useState<IOpenOrStopStatus>(
-    IOpenOrStopStatus.None
-  );
+  const [filterStatus, setFilterStatus] = useState<
+    IOpenOrStopStatus | undefined
+  >(undefined);
 
   const [pageDto, setPageDto] = useState<IPageDto>({
     PageSize: 10,
@@ -56,7 +55,7 @@ export const useAction = () => {
     return list;
   }, [warningTypeData]);
 
-  const [data, setData] = useState<IMonitorSettingsDto[]>([]);
+  const [data, setData] = useState<IMonitorSettingsCreateOrUpdateDto[]>([]);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -93,6 +92,7 @@ export const useAction = () => {
       setIsActive(value === IOpenOrStopStatus.Enable);
     } else {
       setIsActive(undefined);
+      setFilterStatus(undefined);
     }
   };
 
@@ -147,8 +147,6 @@ export const useAction = () => {
     initGetPageData();
   }, [pageDto, isActive, selectWarningTypeId]);
 
-  const [userData, setUserData] = useState<IUserProfiles[]>([]); //接受数据
-
   useEffect(() => {
     GetMonitorType()
       .then((res) => {
@@ -156,14 +154,6 @@ export const useAction = () => {
       })
       .catch(() => {
         setWarningTypeData([]);
-      });
-
-    GetUserList({ PageSize: 2147483647, PageIndex: 1 })
-      .then((res) => {
-        setUserData(res.userProfiles);
-      })
-      .catch(() => {
-        setUserData([]);
       });
   }, []);
 
@@ -187,6 +177,5 @@ export const useAction = () => {
     onDelete,
     loading,
     switchLoading,
-    userData,
   };
 };

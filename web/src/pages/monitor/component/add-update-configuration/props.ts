@@ -29,3 +29,8 @@ export interface IOptionsNumberDto {
   label: string;
   value: number;
 }
+
+export interface IOptionsStringDto {
+  label: string;
+  value: string;
+}

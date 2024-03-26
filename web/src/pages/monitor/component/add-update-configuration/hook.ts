@@ -1,20 +1,23 @@
 import { useUpdateEffect } from "ahooks";
 import { App, Form } from "antd";
-import dayjs, { Dayjs } from "dayjs";
 import { clone, isEmpty } from "ramda";
 import { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 
 import KEYS from "../../../../i18n/language/keys/monitor-configuration-keys";
-import { ICronListDto, IOptionsNumberDto, TimeType } from "./props";
+import {
+  ICronListDto,
+  IOptionsNumberDto,
+  IOptionsStringDto,
+  TimeType,
+} from "./props";
 import {
   CameraAiNotificationType,
   DayOfWeek,
   IMonitorNotificationsDto,
   IMonitorSettingsCreateOrUpdateDto,
-  IMonitorSettingsDto,
   IUserProfiles,
 } from "@/services/dtos/monitor";
 import {
@@ -41,25 +44,19 @@ export const useAction = () => {
 
   const isAdd = type === "add";
 
-  const [editDetailData, serEditDetailData] = useState<
-    IMonitorSettingsCreateOrUpdateDto | undefined
-  >(
-    isAdd
-      ? {
-          weekDays: [],
-          equipmentIds: [],
-          monitorNotifications: [],
-          timeZone: "",
-          title: "",
-          duration: null,
-          notificationContent: "", //通知内容
-          broadcastContent: "", //广播内容
-          monitorTypeId: null, //预警类型 id
-          startTime: null,
-          endTime: null,
-        }
-      : undefined
-  );
+  const initConfigurationInfo = {
+    weekDays: [],
+    equipmentIds: [],
+    monitorNotifications: [],
+    timeZone: "America/Los_Angeles",
+    title: "",
+    duration: null,
+    notificationContent: "", //通知内容
+    broadcastContent: "", //广播内容
+    monitorTypeId: isAdd ? (id ? Number(id) : null) : null, //预警类型 id
+    startTime: null,
+    endTime: null,
+  };
 
   const notifyType = [
     {
@@ -90,6 +87,33 @@ export const useAction = () => {
     { title: KEYS.SUNDAY, value: DayOfWeek.Sunday, isActive: false },
   ];
 
+  const initUserData = [
+    {
+      notifyType: CameraAiNotificationType.Email,
+      recipientIds: [],
+      recipients: [],
+    },
+    {
+      notifyType: CameraAiNotificationType.PhoneCall,
+      recipientIds: [],
+      recipients: [],
+    },
+    {
+      notifyType: CameraAiNotificationType.Sms,
+      recipientIds: [],
+      recipients: [],
+    },
+    {
+      notifyType: CameraAiNotificationType.WorkWechat,
+      recipientIds: [],
+      recipients: [],
+    },
+  ];
+
+  const [editDetailData, serEditDetailData] = useState<
+    IMonitorSettingsCreateOrUpdateDto | undefined
+  >(isAdd ? initConfigurationInfo : undefined);
+
   const editCronList = initCronList.map((x) => {
     if (editDetailData?.weekDays.includes(x.value)) {
       x.isActive = true;
@@ -101,34 +125,29 @@ export const useAction = () => {
     isAdd ? initCronList : editCronList
   );
 
-  useEffect(() => {
-    setCronList(isAdd ? initCronList : editCronList);
-  }, [isAdd, editDetailData]);
-
   const selectWeekday: DayOfWeek[] = useMemo(() => {
     return cronList.filter((x) => x.isActive).map((x) => x.value);
   }, [cronList]);
 
   const [userData, setUserData] = useState<IUserProfiles[]>([]); //接受数据
 
-  const initUserData = [
-    { notifyType: CameraAiNotificationType.Email, recipientIds: [] },
-    { notifyType: CameraAiNotificationType.PhoneCall, recipientIds: [] },
-    { notifyType: CameraAiNotificationType.Sms, recipientIds: [] },
-    { notifyType: CameraAiNotificationType.WorkWechat, recipientIds: [] },
-  ];
+  // const [selectUserData, setSelectUserData] = useState<
+  //   IMonitorNotificationsDto[]
+  // >(isAdd ? initUserData : editDetailData?.monitorNotifications ?? []); //接口
 
-  const [selectUserData, setSelectUserData] = useState<
-    IMonitorNotificationsDto[]
-  >(isAdd ? initUserData : editDetailData?.monitorNotifications ?? []); //接口
+  const [selectUserData, setSelectUserData] =
+    useState<IMonitorNotificationsDto[]>(initUserData); //接口
 
-  useEffect(() => {
-    setSelectUserData(
-      isAdd ? initUserData : editDetailData?.monitorNotifications ?? []
-    );
-  }, [editDetailData]);
+  const [monitorType, setMonitorType] = useState<IOptionsNumberDto[]>([]);
+
+  const [deviceList, setDeviceList] = useState<IOptionsNumberDto[]>([]);
+
+  const [detailLoading, setDetailLoading] = useState<boolean>(false);
+
+  const [submitLoading, setSubmitLoadin] = useState<boolean>(false);
 
   const editDetailUser = useMemo(() => {
+    // 处理编辑数据中的 user列表
     if (
       !editDetailData ||
       !editDetailData.monitorNotifications ||
@@ -137,7 +156,8 @@ export const useAction = () => {
       return [];
     }
 
-    const editUser = editDetailData.monitorNotifications.reduce<number[]>(
+    // 将所有recipientIds抽离出来
+    const editUser = editDetailData.monitorNotifications.reduce<string[]>(
       (acc, item) => {
         if (!isEmpty(item.recipientIds)) {
           acc.push(...item.recipientIds);
@@ -147,42 +167,37 @@ export const useAction = () => {
       []
     );
 
-    return userData.reduce<IOptionsNumberDto[]>((acc, item) => {
-      if (editUser.includes(item.id)) {
+    // 根据 userData 找对应的recipientIds的名字并凑成一个 option 回显
+    return userData.reduce<IOptionsStringDto[]>((acc, item) => {
+      if (editUser.includes(item.staffId)) {
         acc.push({
           label: item.name,
-          value: item.id,
+          value: item.staffId,
         });
       }
       return acc;
     }, []);
   }, [editDetailData, userData]);
 
-  const [selectUserValue, setSelectUserValue] = useState<IOptionsNumberDto[]>(
-    isAdd ? [] : editDetailUser
-  );
-
-  useEffect(() => {
-    setSelectUserValue(isAdd ? [] : editDetailUser);
-  }, [editDetailData]);
-
-  const userDisplayList: IOptionsNumberDto[] = useMemo(() => {
+  //构造一个显示的 user option
+  const userOptions: IOptionsStringDto[] = useMemo(() => {
     return userData
       ? userData.map((item) => {
           return {
             label: item.name,
-            value: item.id,
+            value: item.staffId,
           };
         })
       : [];
-  }, [userData]); //显示
+  }, [userData]);
 
-  const [monitorType, setMonitorType] = useState<IOptionsNumberDto[]>([]);
+  const [selectUserValue, setSelectUserValue] = useState<IOptionsStringDto[]>(
+    isAdd ? [] : editDetailUser
+  );
 
-  const [deviceList, setDeviceList] = useState<IOptionsNumberDto[]>([]);
-
-  const totalDuration = (duration: number, unit: TimeType) => {
+  const handleTotalDuration = (duration: number, unit: TimeType) => {
     let count: number = 0;
+    // 转换秒数传参
     switch (unit) {
       case TimeType.Second:
         count = Number(duration);
@@ -200,6 +215,19 @@ export const useAction = () => {
     return count;
   };
 
+  const handleUnitConversion = (duration: number, isUnit: boolean) => {
+    const divisibleMinutes = duration % 60;
+    const divisibleHours = duration % 3600;
+
+    if (divisibleMinutes === 0) {
+      return isUnit ? TimeType.Minute : duration / 60;
+    } else if (divisibleHours === 0) {
+      return isUnit ? TimeType.Hours : duration / 3600;
+    } else {
+      return isUnit ? TimeType.Second : duration;
+    }
+  };
+
   const onDeleteNoticeUserItem = (index: number) => {
     const newSelectUserList = clone(selectUserValue);
 
@@ -207,34 +235,34 @@ export const useAction = () => {
     setSelectUserValue(selectUserValue);
   };
 
-  const onChangeNoticeUserList = (option: IOptionsNumberDto[]) => {
+  const onChangeNoticeUserList = (option: IOptionsStringDto[]) => {
     const idList = option.map((idItem) => idItem.value);
 
-    const filterList = userData.reduce<IOptionsNumberDto[]>((acc, item) => {
-      if (idList.includes(item.id)) {
-        const newValue: IOptionsNumberDto = {
+    // 构造一个 lable value 的 option
+    const filterList = userData.reduce<IOptionsStringDto[]>((acc, item) => {
+      console.log(item.staffId);
+      if (idList.includes(item.staffId)) {
+        const newValue: IOptionsStringDto = {
           label: item.name,
-          value: item.id,
+          value: item.staffId,
         };
         acc.push(newValue);
       }
       return acc;
     }, []);
+
     setSelectUserValue(filterList);
   };
 
   const onSubmit = () => {
     const filterSelectUserData = selectUserData.filter(
       (x) => !isEmpty(x.recipientIds)
-    );
-    form.validateFields().then(async (values) => {
-      console.log(values);
+    ); // 去除空的recipientIds的 userdata
 
-      // const { price, description } = values;
-      // if (!monitorTypeId) return;
+    form.validateFields().then(async (values) => {
       const data: IMonitorSettingsCreateOrUpdateDto = {
         title: values.title,
-        duration: totalDuration(values.time, values.timeType),
+        duration: handleTotalDuration(values.time, values.timeType),
         notificationContent: values.content,
         monitorTypeId: values.exceptionType,
         weekDays: values.repeatEveryWeek,
@@ -244,19 +272,17 @@ export const useAction = () => {
         endTime: Math.round(values.timeSetting[1] / 1000),
         timeZone: "America/Los_Angeles",
       };
-      if (
-        (isAdd && !!values.broadcastContent) ||
-        (!isAdd && values.broadcastContent !== editDetailData?.broadcastContent)
-      ) {
+      if ((isAdd && !!values.broadcastContent) || !isAdd) {
         data.broadcastContent = values.broadcastContent;
       }
 
       if (!isAdd && id) {
-        data.id = Number(id);
+        data.id = Number(id); // 编辑添加 id
       }
       if (!isAdd && !data.id) {
         message.error("id 丢失，请重新打开");
       }
+      setSubmitLoadin(true);
       isAdd
         ? MonitorSettingCreate(data)
             .then(() => {
@@ -266,6 +292,7 @@ export const useAction = () => {
             .catch((err) => {
               message.error(`创建失败：${err}`);
             })
+            .finally(() => setSubmitLoadin(false))
         : MonitorSettingUpdate(data)
             .then(() => {
               message.success(`编辑成功`);
@@ -273,30 +300,51 @@ export const useAction = () => {
             })
             .catch((err) => {
               message.error(`编辑失败：${err}`);
-            });
-
-      console.log("data", data);
+            })
+            .finally(() => setSubmitLoadin(false));
     });
   };
 
-  const onChangeUserType = (
+  // 切换用户的通知类型
+  const onChangeUserNotificationType = (
     itemType: CameraAiNotificationType,
-    userId: number,
+    userId: string,
     isChecked: boolean
   ) => {
     const newList = clone(selectUserData);
-    newList.map((userItem) => {
+
+    for (let i = 0; i < newList.length; i++) {
+      const userItem = newList[i];
+
+      // 找到这个notifyType，对recipientIds中的 userID 勾选：新增 取消勾选：删除
       if (userItem.notifyType === itemType) {
         if (!isChecked) {
+          // 取消勾选，从 recipientIds 中删除 userId
           const deleteIndex = userItem.recipientIds.findIndex(
             (x) => x === userId
           );
           userItem.recipientIds.splice(deleteIndex, 1);
+          userItem.recipients.splice(deleteIndex, 1);
         } else {
+          // 新增勾选，向 recipientIds 中添加 userId
           userItem.recipientIds.push(userId);
+          userItem.recipients.push({ staffId: userId });
         }
       }
-    });
+    }
+
+    // 检查是否找到了对应的 notifyType，如果没找到则添加新项
+    const foundItemIndex = newList.findIndex(
+      (item) => item.notifyType === itemType
+    );
+    if (foundItemIndex === -1) {
+      newList.push({
+        recipientIds: [userId],
+        recipients: [{ staffId: userId }],
+        notifyType: itemType,
+      });
+    }
+
     setSelectUserData(newList);
   };
 
@@ -347,31 +395,30 @@ export const useAction = () => {
       message.error("id 丢失，请重新进入加载");
       return;
     }
+    if (isAdd) return; //新增不请求 detail
+    setDetailLoading(true);
     GetMonitorSettingDetail({ settingId: Number(id) })
       .then((res) => {
         serEditDetailData(res);
       })
       .catch((err) => {
-        console.log(err);
-
-        // message.error(err);
-      });
+        message.error(err);
+      })
+      .finally(() => setDetailLoading(false));
   }, [isAdd, id]);
 
-  // useEffect(() => {
-  //   if (!isAdd) {
-  //     setSelectUserValue(editDetailUser);
-  //   }
-  // }, [editDetailUser, isAdd]);
+  useEffect(() => {
+    // 未设 initvalue 的自动更新值
+    setSelectUserValue(isAdd ? [] : editDetailUser);
+    setSelectUserData(
+      isAdd ? initUserData : editDetailData?.monitorNotifications ?? []
+    );
+    setCronList(isAdd ? initCronList : editCronList);
+  }, [isAdd, editDetailData]);
 
   return {
     cronList,
-    setCronList,
-    userDisplayList,
-    onDeleteNoticeUserItem,
-    onChangeNoticeUserList,
-    onSubmit,
-    navigate,
+    userOptions,
     form,
     type,
     KEYS,
@@ -380,10 +427,18 @@ export const useAction = () => {
     selectUserValue,
     notifyType,
     selectUserData,
-    onChangeUserType,
     editDetailData,
     monitorType,
     deviceList,
     isAdd,
+    detailLoading,
+    submitLoading,
+    setCronList,
+    onDeleteNoticeUserItem,
+    onChangeNoticeUserList,
+    onSubmit,
+    navigate,
+    onChangeUserNotificationType,
+    handleUnitConversion,
   };
 };

@@ -20,15 +20,19 @@ export const useAction = () => {
     IMonitorTypeResponse[]
   >([]);
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
+    setLoading(true);
     GetMonitorType()
       .then((res) => {
         setWarningTypeData(res);
       })
       .catch(() => {
         setWarningTypeData([]);
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  return { warningTypeData, token, navigate, KEYS, t, source };
+  return { warningTypeData, token, navigate, KEYS, t, source, loading };
 };
