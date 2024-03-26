@@ -6,7 +6,6 @@ import KEYS from "../../../../i18n/language/keys/monitor-add-keys";
 import { useEffect, useState } from "react";
 import { GetMonitorType } from "@/services/api/monitor";
 import { IMonitorTypeResponse } from "@/services/dtos/monitor";
-import { GetEquipmentPage } from "@/services/api/equipment/list";
 
 export const useAction = () => {
   const { t } = useAuth();

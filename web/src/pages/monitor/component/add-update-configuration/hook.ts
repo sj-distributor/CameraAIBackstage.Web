@@ -13,10 +13,12 @@ import {
   CameraAiNotificationType,
   DayOfWeek,
   IMonitorNotificationsDto,
+  IMonitorSettingsCreateOrUpdateDto,
   IMonitorSettingsDto,
   IUserProfiles,
 } from "@/services/dtos/monitor";
 import {
+  GetMonitorSettingDetail,
   GetMonitorType,
   GetUserList,
   MonitorSettingCreate,
@@ -39,9 +41,25 @@ export const useAction = () => {
 
   const isAdd = type === "add";
 
-  const editDetailData: IMonitorSettingsDto = isAdd
-    ? undefined
-    : useLocation().state.data;
+  const [editDetailData, serEditDetailData] = useState<
+    IMonitorSettingsCreateOrUpdateDto | undefined
+  >(
+    isAdd
+      ? {
+          weekDays: [],
+          equipmentIds: [],
+          monitorNotifications: [],
+          timeZone: "",
+          title: "",
+          duration: null,
+          notificationContent: "", //通知内容
+          broadcastContent: "", //广播内容
+          monitorTypeId: null, //预警类型 id
+          startTime: null,
+          endTime: null,
+        }
+      : undefined
+  );
 
   const notifyType = [
     {
@@ -72,23 +90,23 @@ export const useAction = () => {
     { title: KEYS.SUNDAY, value: DayOfWeek.Sunday, isActive: false },
   ];
 
+  const editCronList = initCronList.map((x) => {
+    if (editDetailData?.weekDays.includes(x.value)) {
+      x.isActive = true;
+    }
+    return x;
+  });
+
   const [cronList, setCronList] = useState<ICronListDto[]>(
-    isAdd
-      ? initCronList
-      : initCronList.map((x) => {
-          if (editDetailData.weekDays.includes(x.value)) {
-            x.isActive = true;
-          }
-          return x;
-        })
+    isAdd ? initCronList : editCronList
   );
 
+  useEffect(() => {
+    setCronList(isAdd ? initCronList : editCronList);
+  }, [isAdd, editDetailData]);
+
   const selectWeekday: DayOfWeek[] = useMemo(() => {
-    if (isAdd) {
-      return cronList.filter((x) => x.isActive).map((x) => x.value);
-    } else {
-      return editDetailData.weekDays;
-    }
+    return cronList.filter((x) => x.isActive).map((x) => x.value);
   }, [cronList]);
 
   const [userData, setUserData] = useState<IUserProfiles[]>([]); //接受数据
@@ -102,10 +120,20 @@ export const useAction = () => {
 
   const [selectUserData, setSelectUserData] = useState<
     IMonitorNotificationsDto[]
-  >(isAdd ? initUserData : editDetailData.monitorNotifications); //接口
+  >(isAdd ? initUserData : editDetailData?.monitorNotifications ?? []); //接口
+
+  useEffect(() => {
+    setSelectUserData(
+      isAdd ? initUserData : editDetailData?.monitorNotifications ?? []
+    );
+  }, [editDetailData]);
 
   const editDetailUser = useMemo(() => {
-    if (!editDetailData || !editDetailData.monitorNotifications) {
+    if (
+      !editDetailData ||
+      !editDetailData.monitorNotifications ||
+      isEmpty(editDetailData.monitorNotifications)
+    ) {
       return [];
     }
 
@@ -134,6 +162,10 @@ export const useAction = () => {
     isAdd ? [] : editDetailUser
   );
 
+  useEffect(() => {
+    setSelectUserValue(isAdd ? [] : editDetailUser);
+  }, [editDetailData]);
+
   const userDisplayList: IOptionsNumberDto[] = useMemo(() => {
     return userData
       ? userData.map((item) => {
@@ -145,37 +177,13 @@ export const useAction = () => {
       : [];
   }, [userData]); //显示
 
-  const [monitorTypeId, setMonitorTypeId] = useState<number | null>(
-    isAdd ? Number(id) : editDetailData.monitorTypeId
-  );
-
   const [monitorType, setMonitorType] = useState<IOptionsNumberDto[]>([]);
 
   const [deviceList, setDeviceList] = useState<IOptionsNumberDto[]>([]);
 
-  const [selectDeviceId, setSelectDeviceId] = useState<number[] | undefined>(
-    isAdd ? undefined : editDetailData.equipmentIds
-  ); // 选择设备 id
-
-  const [timeSetting, setTimeSetting] = useState<
-    [Dayjs | null, Dayjs | null] | null
-  >(
-    isAdd
-      ? null
-      : [dayjs(editDetailData.startTime), dayjs(editDetailData.endTime)]
-  );
-
-  const [duration, setDuration] = useState<string>(
-    isAdd ? "" : editDetailData.duration.toString()
-  ); // 持续时长
-
-  const [durationTimeType, setDurationTimeType] = useState<TimeType | null>(
-    null
-  ); // 持续时长类型
-
-  const totalDuration = useMemo(() => {
+  const totalDuration = (duration: number, unit: TimeType) => {
     let count: number = 0;
-    switch (durationTimeType) {
+    switch (unit) {
       case TimeType.Second:
         count = Number(duration);
         break;
@@ -190,17 +198,7 @@ export const useAction = () => {
     }
 
     return count;
-  }, [durationTimeType, duration]);
-
-  const [title, setTitle] = useState<string>(isAdd ? "" : editDetailData.title);
-
-  const [notificationContent, setNotificationContent] = useState<string>(
-    isAdd ? "" : editDetailData.notificationContent
-  );
-
-  const [broadcastContent, setBroadcastContent] = useState<string>(
-    isAdd ? "" : editDetailData.broadcastContent ?? ""
-  );
+  };
 
   const onDeleteNoticeUserItem = (index: number) => {
     const newSelectUserList = clone(selectUserValue);
@@ -229,49 +227,56 @@ export const useAction = () => {
     const filterSelectUserData = selectUserData.filter(
       (x) => !isEmpty(x.recipientIds)
     );
+    form.validateFields().then(async (values) => {
+      console.log(values);
 
-    if (!monitorTypeId) return;
-    const data: IMonitorSettingsDto = {
-      title: title,
-      duration: totalDuration,
-      notificationContent: notificationContent,
-      monitorTypeId: monitorTypeId,
-      weekDays: selectWeekday,
-      monitorNotifications: filterSelectUserData,
-      equipmentIds: selectDeviceId ?? [],
-      startTime:
-        timeSetting && timeSetting[0] !== null ? timeSetting[0].valueOf() : 0,
-      endTime:
-        timeSetting && timeSetting[1] !== null ? timeSetting[1].valueOf() : 0,
-      timeZone: "America/Los_Angeles",
-    };
-    if (broadcastContent) {
-      data.broadcastContent = broadcastContent;
-    }
+      // const { price, description } = values;
+      // if (!monitorTypeId) return;
+      const data: IMonitorSettingsCreateOrUpdateDto = {
+        title: values.title,
+        duration: totalDuration(values.time, values.timeType),
+        notificationContent: values.content,
+        monitorTypeId: values.exceptionType,
+        weekDays: values.repeatEveryWeek,
+        monitorNotifications: filterSelectUserData,
+        equipmentIds: values.deviceSelect,
+        startTime: Math.round(values.timeSetting[0] / 1000),
+        endTime: Math.round(values.timeSetting[1] / 1000),
+        timeZone: "America/Los_Angeles",
+      };
+      if (
+        (isAdd && !!values.broadcastContent) ||
+        (!isAdd && values.broadcastContent !== editDetailData?.broadcastContent)
+      ) {
+        data.broadcastContent = values.broadcastContent;
+      }
 
-    if (!isAdd && id) {
-      data.id = Number(id);
-    }
+      if (!isAdd && id) {
+        data.id = Number(id);
+      }
+      if (!isAdd && !data.id) {
+        message.error("id 丢失，请重新打开");
+      }
+      isAdd
+        ? MonitorSettingCreate(data)
+            .then(() => {
+              message.success(`创建成功`);
+              navigate("/monitor");
+            })
+            .catch((err) => {
+              message.error(`创建失败：${err}`);
+            })
+        : MonitorSettingUpdate(data)
+            .then(() => {
+              message.success(`编辑成功`);
+              navigate("/monitor");
+            })
+            .catch((err) => {
+              message.error(`编辑失败：${err}`);
+            });
 
-    console.log("data", data);
-
-    // isAdd
-    //   ? MonitorSettingCreate(data)
-    //       .then(() => {
-    //         message.success(`创建成功`);
-    //         navigate("/monitor");
-    //       })
-    //       .catch((err) => {
-    //         message.error(`创建失败：${err}`);
-    //       })
-    //   : MonitorSettingUpdate(data)
-    //       .then(() => {
-    //         message.success(`编辑成功`);
-    //         navigate("/monitor");
-    //       })
-    //       .catch((err) => {
-    //         message.error(`编辑失败：${err}`);
-    //       });
+      console.log("data", data);
+    });
   };
 
   const onChangeUserType = (
@@ -338,10 +343,26 @@ export const useAction = () => {
   }, []);
 
   useEffect(() => {
-    if (!isAdd) {
-      setSelectUserValue(editDetailUser);
+    if (!id) {
+      message.error("id 丢失，请重新进入加载");
+      return;
     }
-  }, [editDetailUser, isAdd]);
+    GetMonitorSettingDetail({ settingId: Number(id) })
+      .then((res) => {
+        serEditDetailData(res);
+      })
+      .catch((err) => {
+        console.log(err);
+
+        // message.error(err);
+      });
+  }, [isAdd, id]);
+
+  // useEffect(() => {
+  //   if (!isAdd) {
+  //     setSelectUserValue(editDetailUser);
+  //   }
+  // }, [editDetailUser, isAdd]);
 
   return {
     cronList,
@@ -351,17 +372,6 @@ export const useAction = () => {
     onChangeNoticeUserList,
     onSubmit,
     navigate,
-    setDuration,
-    duration,
-    durationTimeType,
-    setDurationTimeType,
-    monitorTypeId,
-    setMonitorTypeId,
-    deviceList,
-    selectDeviceId,
-    setSelectDeviceId,
-    timeSetting,
-    setTimeSetting,
     form,
     type,
     KEYS,
@@ -371,12 +381,9 @@ export const useAction = () => {
     notifyType,
     selectUserData,
     onChangeUserType,
-    title,
-    setTitle,
+    editDetailData,
     monitorType,
-    notificationContent,
-    setNotificationContent,
-    broadcastContent,
-    setBroadcastContent,
+    deviceList,
+    isAdd,
   };
 };

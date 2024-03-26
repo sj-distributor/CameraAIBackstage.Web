@@ -6,6 +6,7 @@ import { IOpenOrStopStatus, IOptionDto } from "./props";
 import {
   GetMonitorSettingPage,
   GetMonitorType,
+  GetUserList,
   MonitorSettingDelete,
   MonitorSettingDisable,
   MonitorSettingEnable,
@@ -15,6 +16,7 @@ import {
   IMonitorSettingRequest,
   IMonitorSettingsDto,
   IMonitorTypeResponse,
+  IUserProfiles,
 } from "@/services/dtos/monitor";
 import { App } from "antd";
 
@@ -56,11 +58,16 @@ export const useAction = () => {
 
   const [data, setData] = useState<IMonitorSettingsDto[]>([]);
 
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const [switchLoading, setSwitchLoading] = useState<boolean>(false);
+
   const [count, setCount] = useState<number>(0);
 
   const source = { ns: "monitor" };
 
   const onChangeStatus = (id: number, value: boolean) => {
+    setSwitchLoading(true);
     value
       ? MonitorSettingEnable({ settingId: id })
           .then(() => {
@@ -69,13 +76,15 @@ export const useAction = () => {
           .catch((err) => {
             message.error(`绑定失败:${err}`);
           })
+          .finally(() => setSwitchLoading(false))
       : MonitorSettingDisable({ settingId: id })
           .then(() => {
             initGetPageData();
           })
           .catch((err) => {
             message.error(`解绑失败:${err}`);
-          });
+          })
+          .finally(() => setSwitchLoading(false));
   };
 
   const onFilterStatus = (value: IOpenOrStopStatus) => {
@@ -115,23 +124,30 @@ export const useAction = () => {
         message.error(err);
         setCount(0);
         setData([]);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   const onDelete = () => {
+    setLoading(true);
     MonitorSettingDelete({ settingId: isDeleteIndex })
       .then(() => {
         setIsDeleteOpen(false);
+        setLoading(true);
         initGetPageData();
       })
       .catch((err) => {
         message.error(`删除失败：${err}`);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
+    setLoading(true);
     initGetPageData();
   }, [pageDto, isActive, selectWarningTypeId]);
+
+  const [userData, setUserData] = useState<IUserProfiles[]>([]); //接受数据
 
   useEffect(() => {
     GetMonitorType()
@@ -140,6 +156,14 @@ export const useAction = () => {
       })
       .catch(() => {
         setWarningTypeData([]);
+      });
+
+    GetUserList({ PageSize: 2147483647, PageIndex: 1 })
+      .then((res) => {
+        setUserData(res.userProfiles);
+      })
+      .catch(() => {
+        setUserData([]);
       });
   }, []);
 
@@ -161,5 +185,8 @@ export const useAction = () => {
     selectWarningTypeId,
     count,
     onDelete,
+    loading,
+    switchLoading,
+    userData,
   };
 };

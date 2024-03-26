@@ -2,6 +2,7 @@ import {
   IMonitorSettingIdDto,
   IMonitorSettingRequest,
   IMonitorSettingResponse,
+  IMonitorSettingsCreateOrUpdateDto,
   IMonitorSettingsDto,
   IMonitorTypeResponse,
   IUserListResponse,
@@ -28,7 +29,20 @@ export const GetMonitorSettingPage = async (data: IMonitorSettingRequest) => {
   return response.data;
 };
 
-export const MonitorSettingUpdate = async (data: IMonitorSettingsDto) => {
+export const GetMonitorSettingDetail = async (data: IMonitorSettingIdDto) => {
+  const response = await api.get<IMonitorSettingsCreateOrUpdateDto>(
+    "/api/CameraAi/monitor/setting/detail",
+    {
+      params: data,
+    }
+  );
+
+  return response.data;
+};
+
+export const MonitorSettingUpdate = async (
+  data: IMonitorSettingsCreateOrUpdateDto
+) => {
   const response = await api.post("/api/CameraAi/monitor/setting/update", {
     data: data,
   });
@@ -36,7 +50,9 @@ export const MonitorSettingUpdate = async (data: IMonitorSettingsDto) => {
   return response.data;
 };
 
-export const MonitorSettingCreate = async (data: IMonitorSettingsDto) => {
+export const MonitorSettingCreate = async (
+  data: IMonitorSettingsCreateOrUpdateDto
+) => {
   const response = await api.post("/api/CameraAi/monitor/setting/create", {
     data: data,
   });

@@ -18,7 +18,7 @@ export const AddSelectType = () => {
               className="hover:bg-[#F6F8FC] py-[1.5rem] px-[1rem] rounded-lg text-[.875rem]"
               key={index}
               onClick={() =>
-                navigate(`/monitor/configuration/add/${item.id.toString()}`)
+                navigate(`/monitor/configuration/add/` + item.id.toString())
               }
             >
               {item.name}

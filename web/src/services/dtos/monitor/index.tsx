@@ -39,22 +39,59 @@ export interface IMonitorSettingResponse {
   monitorSettings: IMonitorSettingsDto[];
 }
 
-export interface IMonitorSettingsDto {
-  id?: number; // 更新填 id
-  title: string;
-  duration: number;
-  notificationContent: string; //通知内容
-  broadcastContent?: string; //广播内容
-  monitorTypeId: number; //预警类型 id
-  monitorTypeName?: string;
+export interface IMonitorSettingsDto extends IMonitorSettingsPublicDto {
+  equipments: IEquipmentsDto[];
+  periods: IPeriodsDto[];
+  notifications: INotificationsDto[];
+}
+
+export interface INotificationsDto {
+  id: number;
+  settingId: number;
+  recipientId: number;
+  notifyType: CameraAiNotificationType;
+  isDeleted: boolean;
+  createdDate: string;
+}
+
+export interface IEquipmentsDto {
+  id: number;
+  settingId: number;
+  equipmentId: number;
+  isDeleted: boolean;
+  createdDate: string;
+}
+
+export interface IPeriodsDto {
+  id: number;
+  settingId: number;
   startTime: number;
   endTime: number;
-  weekDays: DayOfWeek[];
-  equipmentIds: number[];
-  monitorNotifications: IMonitorNotificationsDto[];
+  weekDay: number;
+  timeZone: string;
+  isDeleted: boolean;
+  createdDate: string;
+}
+
+export interface IMonitorSettingsPublicDto {
+  id?: number; // 更新填 id
+  title: string;
+  duration: number | null;
+  notificationContent: string; //通知内容
+  broadcastContent?: string | null; //广播内容
+  monitorTypeId: number | null; //预警类型 id
+  startTime: number | null;
+  endTime: number | null;
   isActive?: boolean;
   isDeleted?: boolean;
   createdDate?: string;
+}
+
+export interface IMonitorSettingsCreateOrUpdateDto
+  extends IMonitorSettingsPublicDto {
+  weekDays: DayOfWeek[];
+  equipmentIds: number[];
+  monitorNotifications: IMonitorNotificationsDto[];
   timeZone: string;
 }
 

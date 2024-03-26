@@ -16,9 +16,14 @@ import { CustomModal } from "@/components/custom-modal";
 
 import downArrow from "../../assets/public/down-arrow.png";
 import KEYS from "../../i18n/language/keys/monitor-keys";
+import CONFIGURATION_KEYS from "../../i18n/language/keys/monitor-configuration-keys";
 import { useAction } from "./hook";
 import { IOpenOrStopStatus, IOptionDto } from "./props";
-import { IMonitorSettingsDto } from "@/services/dtos/monitor";
+import {
+  CameraAiNotificationType,
+  IMonitorSettingsDto,
+} from "@/services/dtos/monitor";
+import { isEmpty } from "ramda";
 
 export const Monitor = () => {
   const {
@@ -39,6 +44,9 @@ export const Monitor = () => {
     selectWarningTypeId,
     count,
     onDelete,
+    loading,
+    switchLoading,
+    userData,
   } = useAction();
 
   const columns: ColumnsType<IMonitorSettingsDto> = [
@@ -68,6 +76,7 @@ export const Monitor = () => {
               onChange={(value) => {
                 onChangeStatus(record.id!, value);
               }}
+              loading={switchLoading}
               className={`${
                 language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
               } text-[.625rem] customSwitch`}
@@ -85,6 +94,71 @@ export const Monitor = () => {
       title: `${t(KEYS.NOTIFICATION_OBJECT, source)}`,
       dataIndex: "notificationContent",
       width: "16.6%",
+      render: (_, record) => {
+        const handleTitle = (type: CameraAiNotificationType) => {
+          switch (type) {
+            case CameraAiNotificationType.Email:
+              return t(CONFIGURATION_KEYS.EMAIL, {
+                ns: "monitorConfiguration",
+              });
+            case CameraAiNotificationType.PhoneCall:
+              return t(CONFIGURATION_KEYS.ENTERPRISE_WECHAT, {
+                ns: "monitorConfiguration",
+              });
+            case CameraAiNotificationType.Sms:
+              return t(CONFIGURATION_KEYS.SHORT_MESSAGE, {
+                ns: "monitorConfiguration",
+              });
+            case CameraAiNotificationType.WorkWechat:
+              return t(CONFIGURATION_KEYS.TELEPHONE, {
+                ns: "monitorConfiguration",
+              });
+          }
+        };
+
+        const userNameList = [
+          {
+            recipientNames: ["TRACY.W", "TED.F", "KOKI.K", "AIMER.A"],
+            notifyType: CameraAiNotificationType.Email,
+          },
+          {
+            recipientNames: ["123", "123", "123", "123"],
+            notifyType: CameraAiNotificationType.PhoneCall,
+          },
+          {
+            recipientNames: ["123", "123", "123", "123"],
+            notifyType: CameraAiNotificationType.Sms,
+          },
+          {
+            recipientNames: ["123", "123", "123", "123"],
+            notifyType: CameraAiNotificationType.WorkWechat,
+          },
+        ];
+
+        return (
+          <div>
+            {userNameList.map(
+              (item, index) =>
+                !isEmpty(item.recipientNames) && (
+                  <div className="break-normal md:break-all" key={index}>
+                    <span className="text-nowrap">
+                      {handleTitle(item.notifyType)}：
+                    </span>
+                    {item.recipientNames.map((nameItem, nameIndex) => (
+                      <span
+                        className="break-normal md:break-all"
+                        key={nameIndex}
+                      >
+                        {nameItem}
+                        {nameIndex !== item.recipientNames.length - 1 && ","}
+                      </span>
+                    ))}
+                  </div>
+                )
+            )}
+          </div>
+        );
+      },
     },
     {
       title: `${t(KEYS.OPERATE, source)}`,
@@ -97,12 +171,12 @@ export const Monitor = () => {
             className="w-[6rem]"
             onClick={() => {
               navigate(
-                `/monitor/configuration/update/${
-                  record.id && record.id.toString()
-                }`,
-                {
-                  state: { data: record },
-                }
+                `/monitor/configuration/modify/` +
+                  (record.id && record.id.toString())
+
+                // {
+                //   state: { data: record },
+                // }
               );
             }}
           >
@@ -209,8 +283,9 @@ export const Monitor = () => {
               columns={columns}
               dataSource={data}
               className="pt-[1.125rem] tableHiddenScrollBar"
-              scroll={{ y: 580 }}
+              scroll={{ y: 580, x: 580 }}
               pagination={false}
+              loading={loading}
             />
             <div className="flex justify-between items-center pt-[16px]">
               <div className="text-[#929292] text-[.875rem]">
@@ -255,6 +330,7 @@ export const Monitor = () => {
         }}
         open={isDeleteOpen}
         className={"customModal"}
+        confirmLoading={loading}
       >
         <span className="pl-[2rem]">
           {t(KEYS.DELETE_CONFIRM_CONTENT, source)}
