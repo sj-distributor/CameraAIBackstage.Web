@@ -14,7 +14,14 @@ export const NewOrUpdatePermissions = () => {
     t,
     source,
     language,
+    rolePermissionByRoleIdData,
+    onChangeRoleData,
   } = useAction();
+
+  const { role, roleUsers, rolePermissions, rolePermissionUsers } =
+    rolePermissionByRoleIdData;
+
+  console.log(rolePermissionByRoleIdData);
 
   return (
     <div className="h-[20rem] bg-white rounded-b-md">
@@ -49,8 +56,12 @@ export const NewOrUpdatePermissions = () => {
               </div>
               <div>{t(KEYS.ROLE_NAME, source)}</div>
               <Input
+                value={role.name}
                 placeholder={t(KEYS.PLEASE_ENTER, source)}
                 className="h-[2rem] w-[48rem] ml-[.5625rem]"
+                onChange={(e) => {
+                  onChangeRoleData("role", e.target.value, "name");
+                }}
               />
             </div>
             <div className="flex mb-[2rem] pl-[5.3rem] mt-[1.5rem]">
@@ -60,8 +71,12 @@ export const NewOrUpdatePermissions = () => {
               <div>{t(KEYS.ROLE_DESCRIBE, source)}</div>
               <div className="max-h-[5rem]">
                 <TextArea
+                  value={role.description}
                   placeholder={t(KEYS.PLEASE_ENTER, source)}
                   className="h-[2.06rem] w-[48rem] ml-[.5625rem] overflow-auto max-h-[100%]"
+                  onChange={(e) => {
+                    onChangeRoleData("role", e.target.value, "description");
+                  }}
                 />
               </div>
             </div>
@@ -95,9 +110,9 @@ export const NewOrUpdatePermissions = () => {
                     items-center mb-[0.8rem] text-nowrap`}
                   key={index}
                 >
-                  {item.option.map((option) => (
+                  {item.option.map((option, index) => (
                     <Checkbox
-                      key={item.optionName}
+                      key={index}
                       value={item.option}
                       onChange={handleCheckBox}
                     >
@@ -136,7 +151,7 @@ export const NewOrUpdatePermissions = () => {
                   } items-center mb-[0.8rem] text-nowrap`}
                   key={index}
                 >
-                  {items.option.map((option) => (
+                  {items.option.map((option, index) => (
                     <Checkbox
                       key={index}
                       value={items.option}

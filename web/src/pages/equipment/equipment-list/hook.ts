@@ -288,7 +288,7 @@ export const useAction = () => {
   }, [pageDto]);
 
   useEffect(() => {
-    GetEquipmentTypePage({ PageIndex: 1, PageSize: 2147483647 })
+    GetEquipmentTypePage({ PageIndex: 1, PageSize: 7483647 })
       .then((res) => {
         const list = res.equipmentTypes.map((item) => {
           return { label: item.name, value: item.id };

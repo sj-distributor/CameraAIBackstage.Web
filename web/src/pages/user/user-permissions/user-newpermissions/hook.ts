@@ -1,12 +1,21 @@
+import { message } from "antd";
 import { CheckboxProps } from "antd/es/checkbox";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { CheckboxValueType } from "antd/es/checkbox/Group";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
+import { GetRolePermissionByRoleId } from "@/services/api/user-permission";
+import {
+  IRole,
+  IRolePermissionByRoleIdResponse,
+} from "@/services/dtos/user-permission";
 
 export const useAction = () => {
   const { t, language } = useAuth();
+
+  const { id } = useParams();
 
   const source = { ns: "userPermissions" };
 
@@ -14,12 +23,114 @@ export const useAction = () => {
 
   const navigate = useNavigate();
 
+  const isCreate = window.location.pathname.includes("new");
+
+  const [loaded, setIsLoaded] = useState<boolean>(isCreate);
+
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+
+  const initRolePermissionByRoleIdData: IRolePermissionByRoleIdResponse = {
+    role: {
+      name: "",
+      description: "",
+    },
+    roleUsers: [],
+    rolePermissions: [],
+    rolePermissionUsers: [],
+  };
+
+  const [rolePermissionByRoleIdData, setRolePermissionByRoleIdData] =
+    useState<IRolePermissionByRoleIdResponse>(initRolePermissionByRoleIdData);
+
   const AddRoleName = (e: []) => {
     console.log(e);
   };
 
   const handleCheckBox: CheckboxProps["onChange"] = (e) => {
     console.log(`checked = ${e.target.checked}`);
+  };
+
+  const onChangeRoleData = (
+    field: "role" | "roleUsers" | "rolePermissions" | "rolePermissionsUserIds",
+    value: number | string | string[] | CheckboxValueType[],
+    roleKey?: keyof IRole
+  ) => {
+    !isEdit && setIsEdit(true);
+
+    switch (field) {
+      case "role":
+        roleKey &&
+          setRolePermissionByRoleIdData((preValue) => ({
+            ...preValue,
+            role: {
+              ...preValue.role,
+              [roleKey]: value,
+            },
+          }));
+        break;
+
+      case "roleUsers":
+        setRolePermissionByRoleIdData((preValue) => ({
+          ...preValue,
+          roleUsers: [
+            ...(value as string[])
+              .filter((x) => !x.includes("-"))
+              .map((item) => ({
+                userId: item,
+              })),
+          ],
+        }));
+        break;
+
+      case "rolePermissions":
+        setRolePermissionByRoleIdData((preValue) => ({
+          ...preValue,
+          rolePermissions: formatRolePermission(value as CheckboxValueType[]),
+        }));
+
+        break;
+
+      case "rolePermissionsUserIds":
+        setRolePermissionByRoleIdData((preValue) => {
+          return {
+            ...preValue,
+            rolePermissionUsers: [
+              {
+                userIds: (value as string[]).filter((x) => !x.includes("-")),
+              },
+            ],
+          };
+        });
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const formatRolePermission = (list: CheckboxValueType[]) =>
+    list.map((item) => ({
+      permissionId: Number(item),
+      userIds: rolePermissionByRoleIdData.rolePermissionUsers
+        ? rolePermissionByRoleIdData?.rolePermissionUsers[0]?.userIds
+        : [],
+    }));
+
+  const onGetRoleDetail = () => {
+    setIsLoaded(false);
+
+    GetRolePermissionByRoleId(Number(id))
+      .then((response) => {
+        setRolePermissionByRoleIdData(
+          response ?? initRolePermissionByRoleIdData
+        );
+      })
+      .catch((error) => {
+        message.error(error.msg);
+
+        setRolePermissionByRoleIdData(initRolePermissionByRoleIdData);
+      })
+      .finally(() => setIsLoaded(true));
   };
 
   const frontendOptionsList = [
@@ -305,6 +416,10 @@ export const useAction = () => {
     },
   ];
 
+  useEffect(() => {
+    id && id !== "new" && onGetRoleDetail();
+  }, []);
+
   return {
     AddRoleName,
     checkList,
@@ -316,5 +431,7 @@ export const useAction = () => {
     t,
     source,
     language,
+    rolePermissionByRoleIdData,
+    onChangeRoleData,
   };
 };

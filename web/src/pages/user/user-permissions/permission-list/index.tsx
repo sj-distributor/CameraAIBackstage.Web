@@ -3,6 +3,7 @@ import { Button, ConfigProvider, Input, Pagination, Table } from "antd";
 import { Trans } from "react-i18next";
 
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
+import { IRole } from "@/services/dtos/user-permission";
 
 import search from "../../../../assets/public/search.png";
 import { OperateConfirmModal } from "../operate-confirm";
@@ -22,41 +23,50 @@ export const UserPermissions = () => {
     pageDto,
     setPageDto,
     onSelectedAllRow,
-    data,
-    selectedRowKeys,
+    onSelectedRow,
+    roleByPermissionData,
+    handleOperateDelete,
+    setRecord,
   } = useAction();
 
   const operateButtons = [
     {
       text: t(KEYS.ALLOT, source),
-      onClick: () => navigate("/user/permissions/distribute"),
+      onClick: (record: IRole) =>
+        navigate(`/user/permissions/distribute/${record.id}`),
     },
     {
       text: t(KEYS.EDIT, source),
-      onClick: () => navigate("/user/permissions/newOrUpdate"),
+      onClick: (record: IRole) =>
+        navigate(`/user/permissions/newOrUpdate/${record.id}`),
     },
     {
       text: t(KEYS.DELETE, source),
-      onClick: () => setISDeletePermissions(true),
+      onClick: (record: IRole) => {
+        setISDeletePermissions(true);
+        setRecord(record);
+      },
     },
   ];
 
   const columns = [
     {
       title: t(KEYS.ROLE_NAME, source),
-      dataIndex: "characterName",
+      dataIndex: "displayName",
+      key: "displayName",
       className: "w-[16rem]",
     },
     {
       title: t(KEYS.ROLE_DESCRIBE, source),
-      dataIndex: "roleDescription",
+      dataIndex: "description",
+      key: "description",
       className: "w-[62rem]",
     },
     {
       title: t(KEYS.OPERATION, source),
-      dataIndex: "operate",
+      key: "operate",
       className: "flex flex-items-center",
-      render: () => {
+      render: (_: string, record: IRole) => {
         return (
           <ConfigProvider
             theme={{
@@ -79,7 +89,7 @@ export const UserPermissions = () => {
                   key={index}
                   type="link"
                   className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
-                  onClick={item.onClick}
+                  onClick={() => item.onClick(record)}
                 >
                   {item.text}
                 </Button>
@@ -124,15 +134,19 @@ export const UserPermissions = () => {
         <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">
           <div className="overflow-auto no-scrollbar pb-[1.125rem]">
             <Table
-              rowKey={(record) => record.deviceId}
+              rowKey={(item) => item?.id ?? 0}
               columns={columns}
-              dataSource={data}
               pagination={false}
               sticky={true}
               loading={isTableLoading}
+              dataSource={roleByPermissionData.rolePermissionData.map(
+                (item) => item.role
+              )}
               rowSelection={{
                 type: "checkbox",
-                selectedRowKeys,
+                onSelect: (record, selected) => {
+                  onSelectedRow(record, selected);
+                },
                 onSelectAll: (selected) => onSelectedAllRow(selected),
               }}
             />
@@ -142,7 +156,7 @@ export const UserPermissions = () => {
               <Trans
                 i18nKey={KEYS.PAGINATION}
                 ns="userPermissions"
-                values={{ count: data.length }}
+                values={{ count: roleByPermissionData.count }}
                 components={{
                   span: <span className="text-[#2853E3] font-light mx-1" />,
                 }}
@@ -152,7 +166,7 @@ export const UserPermissions = () => {
               current={pageDto.pageIndex}
               pageSize={pageDto.pageSize}
               pageSizeOptions={[5, 10, 20]}
-              total={data.length}
+              total={roleByPermissionData.count}
               showQuickJumper
               showSizeChanger
               onChange={(page, pageSize) =>
@@ -166,6 +180,7 @@ export const UserPermissions = () => {
         isModelOpen={isDeletePermissions}
         setIsModelOpen={setISDeletePermissions}
         contentText={t(KEYS.CONFIRM_DELETE_ROLE, source)}
+        handleOperateConfirm={handleOperateDelete}
       />
     </div>
   );

@@ -1,7 +1,17 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { message } from "antd";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
+import {
+  GetRolesUserByRoleId,
+  PostDeleteRolesUsers,
+} from "@/services/api/user-permission";
+import {
+  IRoleIdRequestParams,
+  IUserByRoleIdData,
+  IUserByRoleIdResponse,
+} from "@/services/dtos/user-permission";
 
 export const useAction = () => {
   const data = [
@@ -37,6 +47,8 @@ export const useAction = () => {
     },
   ];
 
+  const { id } = useParams();
+
   const { t } = useAuth();
 
   const navigate = useNavigate();
@@ -54,17 +66,13 @@ export const useAction = () => {
 
   const [searchKeywordValue, setSearchKeywordValue] = useState<string>("");
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
-
-  const [selectedRows, setSelectedRows] = useState<
-    {
-      key: string;
-      characterName: string;
-      roleDescription: string;
-    }[]
-  >([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
 
   const [isTableLoading, setIsTableLoading] = useState<boolean>(false);
+
+  const [selectedRows, setSelectedRows] = useState<IUserByRoleIdData[]>([]);
+
+  const [record, setRecord] = useState<IUserByRoleIdData>();
 
   const [pageDto, setPageDto] = useState<{
     pageIndex: number;
@@ -74,17 +82,102 @@ export const useAction = () => {
     pageSize: 5,
   });
 
+  const initialUserByRoleIdData: IUserByRoleIdResponse = {
+    count: 0,
+    roleUsers: [],
+  };
+
+  const [userByRoleIdData, setUserByRoleIdData] =
+    useState<IUserByRoleIdResponse>(initialUserByRoleIdData);
+
+  const [userByRoleIdAllData, setUserByRoleIdAllData] =
+    useState<IUserByRoleIdResponse>(initialUserByRoleIdData);
+
   const onSelectedAllRow = (selected: boolean) => {
-    const selectedData = data.map((item) => item.key);
+    const selectedData = userByRoleIdAllData.roleUsers.map((item) => item.id);
 
     if (selected) {
       setSelectedRowKeys(selectedData);
-      setSelectedRows(data);
     } else {
       setSelectedRowKeys([]);
-      setSelectedRows([]);
     }
   };
+
+  const onSelectedRow = (
+    row: IUserByRoleIdData | IUserByRoleIdData[],
+    selected: boolean
+  ) => {
+    const rows = Array.isArray(row) ? row : [row];
+
+    setSelectedRows((prev) => {
+      if (selected) {
+        return [...prev, ...rows];
+      } else {
+        return prev.filter((item) => !rows.find((row) => row.id === item.id));
+      }
+    });
+  };
+
+  const handleOperateDelete = () => {
+    PostDeleteRolesUsers({
+      roleUserIds: isBatchDeleteUser ? selectedRowKeys : [record?.id ?? 0],
+    })
+      .then(() => {
+        initGetRolesUsersList({
+          PageIndex: pageDto.pageIndex,
+          PageSize: pageDto.pageSize,
+          KeyWord: searchKeywordValue,
+          RoleId: id,
+        });
+      })
+      .catch((error) => message.error(error.msg));
+  };
+
+  const initGetRolesUsersList = (prams: IRoleIdRequestParams) => {
+    setIsTableLoading(true);
+    GetRolesUserByRoleId(prams)
+      .then((res) => {
+        if (res) setUserByRoleIdData(res ?? initialUserByRoleIdData);
+      })
+      .catch((err) => {
+        message.error(err);
+      })
+      .finally(() => setIsTableLoading(false));
+  };
+
+  const getAllRolesUsersList = (prams: IRoleIdRequestParams) => {
+    GetRolesUserByRoleId(prams)
+      .then((res) => {
+        if (res) setUserByRoleIdAllData(res ?? initialUserByRoleIdData);
+      })
+      .catch((err) => {
+        message.error(err);
+      });
+  };
+
+  useEffect(() => {
+    initGetRolesUsersList({
+      PageIndex: pageDto.pageIndex,
+      PageSize: pageDto.pageSize,
+      KeyWord: searchKeywordValue,
+      RoleId: id,
+    });
+  }, [pageDto.pageIndex, pageDto.pageSize, searchKeywordValue]);
+
+  useEffect(() => {
+    getAllRolesUsersList({
+      PageIndex: 1,
+      PageSize: 2147483647,
+      KeyWord: searchKeywordValue,
+      RoleId: id,
+    });
+  }, [searchKeywordValue]);
+
+  useEffect(() => {
+    const newSelectedRowKeys = selectedRows.map((x) => x.id);
+
+    setSelectedRowKeys(newSelectedRowKeys);
+  }, [selectedRows]);
 
   return {
     t,
@@ -105,5 +198,9 @@ export const useAction = () => {
     setSearchValue,
     setSearchKeywordValue,
     searchValue,
+    userByRoleIdData,
+    setRecord,
+    handleOperateDelete,
+    onSelectedRow,
   };
 };

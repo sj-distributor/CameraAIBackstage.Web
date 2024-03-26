@@ -10,10 +10,12 @@ export const OperateConfirmModal = ({
   isModelOpen,
   setIsModelOpen,
   contentText,
+  handleOperateConfirm,
 }: {
   isModelOpen: boolean;
   setIsModelOpen: (value: SetStateAction<boolean>) => void;
   contentText: string;
+  handleOperateConfirm: () => void;
 }) => {
   const { t, source } = useAction();
 
@@ -26,7 +28,10 @@ export const OperateConfirmModal = ({
         </div>
       }
       onCancle={() => setIsModelOpen(false)}
-      onConfirm={() => setIsModelOpen(false)}
+      onConfirm={() => {
+        setIsModelOpen(false);
+        handleOperateConfirm();
+      }}
       open={isModelOpen}
       className="customModal"
     >
