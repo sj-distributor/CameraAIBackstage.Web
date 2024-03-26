@@ -121,7 +121,7 @@ export const WarningDetails = () => {
           );
         })}
       </div>
-      <div className="my-4 rounded-lg h-[62%] bg-[#ccc] w-full relative overflow-hidden">
+      <div className="my-4 rounded-lg h-[45%] bg-[#ccc] w-full relative overflow-hidden">
         <video
           ref={videoRef}
           onEnded={() => setIsPalyVideo(false)}

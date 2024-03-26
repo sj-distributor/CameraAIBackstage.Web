@@ -15,8 +15,14 @@ export const LicensePlateManagement = () => {
 
   const { t } = useAuth();
 
+  console.log(Boolean(showWarningDetails));
+
   return (
-    <div className="w-full flex-col justify-start no-scrollbar flex h-full">
+    <div
+      className={`w-full flex-col justify-start no-scrollbar flex h-full ${
+        showWarningDetails ? "" : "bg-white p-4 pb-0"
+      }`}
+    >
       <span className="text-[1.125rem] font-semibold tracking-tight">
         <span
           className={`mr-2 cursor-pointer ${

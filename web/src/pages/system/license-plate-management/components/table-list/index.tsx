@@ -415,7 +415,7 @@ export const LicensePlateManagementTable = (
               }}
             />
           </div>
-          <div>
+          <div className="pb-6 px-2">
             <Pagination
               current={1}
               pageSize={20}
