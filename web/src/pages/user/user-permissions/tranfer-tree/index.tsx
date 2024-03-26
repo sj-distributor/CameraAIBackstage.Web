@@ -3,6 +3,7 @@ import { Transfer, Tree } from "antd";
 import { TransferItem, TransferProps } from "antd/es/transfer";
 import { DataNode } from "antd/es/tree";
 import { Key, SetStateAction, useEffect, useState } from "react";
+import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
@@ -21,6 +22,8 @@ export const TransferTree = ({
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
+
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
 
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
@@ -29,14 +32,18 @@ export const TransferTree = ({
 
   const [targetAllData, setTargetAllData] = useState<ITreeData[]>([]);
 
-  const treeToFlat = (data) => {
-    return data.reduce(function (arr, { key, title, value, children = [] }) {
+  const treeToFlat = (data: ITreeData[]) => {
+    return data.reduce(function (
+      arr: ITreeData[],
+      { key, title, value, children = [] }
+    ): ITreeData[] {
       // 解构赋值+默认值
       return arr.concat(
         [{ key, title, value, children }],
         treeToFlat(children)
       ); // children部分进行递归
-    }, []);
+    },
+    []);
   };
 
   const onChange = (keys: string[]) => {
@@ -44,12 +51,10 @@ export const TransferTree = ({
 
     const allSelectedData = treeToFlat(data);
 
-    console.log(
-      allSelectedData.map((item) => item.key).filter((item) => Number(item))
-    );
-
     setTargetKeys(
-      allSelectedData.map((item) => item.key).filter((item) => Number(item))
+      allSelectedData
+        ?.filter((item) => Number(item.key))
+        .map((item) => item.key)
     );
   };
 
@@ -115,7 +120,7 @@ export const TransferTree = ({
   const [treeList, setTreeList] = useState(treeData);
 
   const arrayTreeFilter = (
-    data: ITreeData[],
+    data: ITreeData[] | undefined,
     predicate: any,
     filterText: string
   ) => {
@@ -129,13 +134,8 @@ export const TransferTree = ({
 
     for (const node of nodes) {
       if (predicate(node, filterText)) {
-        // 如果自己（节点）符合条件，直接加入到新的节点集
         newChildren.push(node);
-        // 并接着处理其 children,（因为父节点符合，子节点一定要在，所以这一步就不递归了）
-        // node.children = arrayTreeFilter(node.children, predicate, filterText);
       } else {
-        // 如果自己不符合条件，需要根据子集来判断它是否将其加入新节点集
-        // 根据递归调用 arrayTreeFilter() 的返回值来判断
         const subs = arrayTreeFilter(node.children, predicate, filterText);
 
         if ((subs && subs.length) || predicate(node, filterText)) {
@@ -172,6 +172,8 @@ export const TransferTree = ({
           setExpandedKeys(expkey);
         }, 500);
       }
+    } else {
+      setSearchKeyword(value);
     }
   };
 
@@ -228,7 +230,10 @@ export const TransferTree = ({
         onChange={onChange}
         selectAllLabels={[
           t(KEYS.TITLE, source),
-          t(KEYS.USER_HAS_BEEN_SELECTED, source),
+          t(KEYS.USER_HAS_BEEN_SELECTED, {
+            ...source,
+            count: targetAllData.length,
+          }),
         ]}
         showSearch
         className="tree-transfer"
@@ -262,23 +267,30 @@ export const TransferTree = ({
               </div>
             );
           } else {
-            return targetAllData?.map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  className="px-3 py-1 my-1 hover:bg-[#0000000a] cursor-pointer flex justify-between"
-                >
-                  <span>{item.title}</span>
-                  <CloseOutlined
-                    onClick={() =>
-                      setTargetKeys((prev) =>
-                        prev.filter((key) => key !== item.key)
-                      )
-                    }
-                  />
-                </div>
-              );
-            });
+            return targetAllData
+              ?.filter(
+                (item) =>
+                  item.title
+                    .toLowerCase()
+                    .indexOf(searchKeyword.toLowerCase()) !== -1
+              )
+              ?.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="px-3 py-1 my-1 hover:bg-[#0000000a] cursor-pointer flex justify-between"
+                  >
+                    <span>{item.title}</span>
+                    <CloseOutlined
+                      onClick={() =>
+                        setTargetKeys((prev) =>
+                          prev.filter((key) => key !== item.key)
+                        )
+                      }
+                    />
+                  </div>
+                );
+              });
           }
         }}
       </Transfer>
