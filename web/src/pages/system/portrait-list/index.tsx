@@ -136,11 +136,13 @@ export const PortraitList = () => {
                   </div>
                   <div className="p-[.625rem_.75rem] flex justify-end items-center bg-[#F6F8FC] portrait">
                     <Popconfirm
-                      title="刪除提醒"
-                      description="是否確認刪除?"
+                      title={t(KEYS.DELETE_TIP, { ns: "portraitList" })}
+                      description={t(KEYS.WHETHER_CONFIRM_DELETE, {
+                        ns: "portraitList",
+                      })}
                       onConfirm={() => handleDeletePortrait.run(item.id!)}
-                      okText="確認"
-                      cancelText="取消"
+                      okText={t(KEYS.CONFIRM, { ns: "portraitList" })}
+                      cancelText={t(KEYS.CANCEL, { ns: "portraitList" })}
                       rootClassName="portrait"
                     >
                       <div className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#F04E4E] border border-solid border-[#F04E4E] cursor-pointer mr-[1rem]">
@@ -157,13 +159,11 @@ export const PortraitList = () => {
                         });
 
                         setFileList(
-                          item.faces
-                            .map((item) => ({
-                              name: "",
-                              uid: item.faceId!,
-                              url: item.imageUrl,
-                            }))
-                            .filter((x) => !!x.url)
+                          item.faces.map((item) => ({
+                            name: "",
+                            uid: item.faceId!,
+                            url: item.imageUrl,
+                          }))
                         );
                       }}
                       className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#2853E3] border border-solid border-[#2853E3] cursor-pointer"
@@ -294,7 +294,7 @@ export const PortraitList = () => {
               className="!w-auto"
               accept=".jpg, .png"
             >
-              {fileList.length < 2 && uploadButton}
+              {fileList.length < 1 && uploadButton}
             </Upload>
             <div className="text-[.625rem] text-[#9696A7] w-[11.875rem] text-left">
               <div className="font-semibold">
@@ -304,7 +304,7 @@ export const PortraitList = () => {
             </div>
           </div>
           <Modal
-            title="图片预览"
+            title={t(KEYS.PICTUREPREVIEW, { ns: "portraitList" })}
             open={imageInformation.previewOpen}
             footer={null}
             onCancel={handleCancel}

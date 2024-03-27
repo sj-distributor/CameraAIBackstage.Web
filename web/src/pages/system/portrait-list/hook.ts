@@ -116,13 +116,37 @@ export const useAction = () => {
     async () => {
       const faces: IFaceDto[] = [];
 
-      for (const file of fileList) {
+      const replaceBase64 = (text: string) => {
+        return text
+          .replace("data:image/jpg;base64,", "")
+          .replace("data:image/jpeg;base64,", "")
+          .replace("data:image/png;base64,", "");
+      };
+
+      if (portraitModal.operationType === OperationTypeEnum.Add) {
         faces.push({
-          image: (await getBase64(file.originFileObj!))
-            .replace("data:image/jpg;base64,", "")
-            .replace("data:image/jpeg;base64,", "")
-            .replace("data:image/png;base64,", ""),
+          image: replaceBase64(await getBase64(fileList[0].originFileObj!)),
         });
+      } else {
+        const fileData = {
+          faceId: portraitModal.item.faces[0].faceId,
+          image: null,
+          imageUrl: portraitModal.item.faces[0].imageUrl,
+          isDeleted: false,
+        };
+
+        if (fileList[0].originFileObj) {
+          faces.push({
+            image: replaceBase64(await getBase64(fileList[0].originFileObj!)),
+          });
+
+          faces.push({
+            ...fileData,
+            isDeleted: true,
+          });
+        } else {
+          faces.push(fileData);
+        }
       }
 
       const params: IPortraitDto = { ...portraitModal.item, faces };
