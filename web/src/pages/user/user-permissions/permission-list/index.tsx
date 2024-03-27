@@ -38,7 +38,7 @@ export const UserPermissions = () => {
     {
       text: t(KEYS.EDIT, source),
       onClick: (record: IRole) =>
-        navigate(`/user/permissions/newOrUpdate/${record.id}`),
+        navigate(`/user/permissions/roles/${record.id}`),
     },
     {
       text: t(KEYS.DELETE, source),
@@ -124,7 +124,7 @@ export const UserPermissions = () => {
             <Button
               type="primary"
               className="h-[2.75rem] w-[7.25rem]"
-              onClick={() => navigate("/user/permissions/newOrUpdate")}
+              onClick={() => navigate("/user/permissions/roles/new")}
             >
               <PlusOutlined />
               {t(KEYS.ADD_ROLE, source)}

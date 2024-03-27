@@ -19,6 +19,11 @@ export interface IRolePermissionDetail {
   roleId?: number;
   permissionId?: number;
   userIds: (number | string)[];
+  description?: string;
+  lastModifiedDate?: string;
+  createdDate?: string;
+  roleName?: string;
+  permissionName?: string;
 }
 
 export interface IRolePermissionUser {

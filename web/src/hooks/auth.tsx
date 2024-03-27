@@ -67,7 +67,7 @@ export default ({ children }: { children: React.ReactNode }) => {
               element: <UserPermissions />,
             },
             {
-              path: "/user/permissions/newOrUpdate/:id?",
+              path: "/user/permissions/roles/:id?",
               element: <NewOrUpdatePermissions />,
             },
             {
