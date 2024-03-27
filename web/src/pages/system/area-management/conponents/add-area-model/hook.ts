@@ -27,13 +27,13 @@ export const useAction = (
   );
 
   const handleRemoveInput = (indexToRemove: number) => {
-    const updatedRegionAreaNames = [...regionDataItem.regionAreaNames!];
+    const updatedRegionAreaNames = [...regionDataItem.areaNames!];
 
     updatedRegionAreaNames.splice(indexToRemove, 1);
 
     setRegionDataItem({
       ...regionDataItem,
-      regionAreaNames: updatedRegionAreaNames,
+      areaNames: updatedRegionAreaNames,
     });
   };
 
@@ -43,13 +43,13 @@ export const useAction = (
     index?: number
   ) => {
     if (index !== undefined) {
-      const updatedRegionAreaNames = [...regionDataItem.regionAreaNames!];
+      const updatedRegionAreaNames = [...regionDataItem.areaNames!];
 
       updatedRegionAreaNames[index] = value;
 
       setRegionDataItem({
         ...regionDataItem,
-        regionAreaNames: updatedRegionAreaNames,
+        areaNames: updatedRegionAreaNames,
       });
     } else {
       setRegionDataItem({

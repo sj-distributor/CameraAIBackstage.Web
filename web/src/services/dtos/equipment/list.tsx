@@ -46,7 +46,7 @@ export interface IRegionDto {
   regionAreaNames: string[];
   principal: string;
   createdTime: string;
-  radio?: boolean; //自定义
+  radio?: boolean; // 自定义
 }
 
 export interface IEquipmentBindDto {
