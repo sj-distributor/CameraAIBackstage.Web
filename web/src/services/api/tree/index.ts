@@ -11,7 +11,7 @@ export const GetFoundationData = async (
   data: HierarchyDepthEnum | HierarchyStaffRangeEnum
 ) => {
   const response = await api.get<IFoundationResponse>(
-    `/api/HappyScore/department/staff/hierarchy/tree?${
+    `/api/HappyScore/department/staff/hierarchy/tree?StaffIdSource=0&${
       type === "HierarchyStaffRange"
         ? `HierarchyDepth=${HierarchyDepthEnum.Group}&` + type + "=" + data
         : type + "=" + data

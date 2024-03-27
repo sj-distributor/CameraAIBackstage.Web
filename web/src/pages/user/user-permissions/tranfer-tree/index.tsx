@@ -1,7 +1,6 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Transfer, Tree } from "antd";
 import { TransferItem, TransferProps } from "antd/es/transfer";
-import { DataNode } from "antd/es/tree";
 import { Key, SetStateAction, useEffect, useState } from "react";
 
 import { CustomModal } from "@/components/custom-modal";
@@ -12,14 +11,18 @@ import { ITreeData, useAction } from "./hook";
 export const TransferTree = ({
   isModelOpen,
   setIsModelOpen,
+  handelGetSelectedUsers,
 }: {
   isModelOpen: boolean;
   setIsModelOpen: (value: SetStateAction<boolean>) => void;
-  data: TransferItem[];
+  data?: TransferItem[];
+  handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
 }) => {
   const { t, source, treeData } = useAction();
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
+
+  const [isConfirmLoading, setIsConfirmLoading] = useState<boolean>(false);
 
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
@@ -51,9 +54,7 @@ export const TransferTree = ({
     const allSelectedData = treeToFlat(data);
 
     setTargetKeys(
-      allSelectedData
-        ?.filter((item) => Number(item.key))
-        .map((item) => item.key)
+      allSelectedData?.filter((item) => item.key).map((item) => item.key)
     );
   };
 
@@ -74,16 +75,6 @@ export const TransferTree = ({
       }
     });
   }, [SearchLists]);
-
-  const generateTree = (
-    treeNodes: DataNode[] = [],
-    targetKeys: string[] = []
-  ): DataNode[] =>
-    treeNodes.map(({ children, ...props }) => ({
-      ...props,
-      disabled: targetKeys.includes(props.key as string),
-      children: generateTree(children, targetKeys),
-    }));
 
   const isChecked = (selectedKeys: React.Key[], eventKey: React.Key) =>
     selectedKeys.includes(eventKey);
@@ -111,10 +102,6 @@ export const TransferTree = ({
   };
 
   const [copyTree, setCopyTree] = useState(JSON.stringify(treeData)); // 备份 treeData
-
-  const [copyExpandedKeys, setCopyExpandedKeys] = useState(
-    expandedKeysFun(treeData)
-  );
 
   const [treeList, setTreeList] = useState(treeData);
 
@@ -182,14 +169,11 @@ export const TransferTree = ({
   };
 
   useEffect(() => {
-    const expandedKey = expandedKeysFun(treeData);
-
     const cpData = JSON.stringify(treeData);
 
     setExpandedKeys([]);
     setCopyTree(cpData);
     setTreeList(treeData);
-    setCopyExpandedKeys(expandedKey);
 
     treeData && setArrTreeData(treeToFlat(treeData));
   }, [treeData]);
@@ -216,7 +200,18 @@ export const TransferTree = ({
         </div>
       }
       onCancle={() => setIsModelOpen(false)}
-      onConfirm={() => setIsModelOpen(false)}
+      confirmLoading={isConfirmLoading}
+      onConfirm={async () => {
+        const data = targetAllData.map((item) => item.key);
+
+        if (handelGetSelectedUsers && data.length > 0) {
+          const loading = await handelGetSelectedUsers(data);
+
+          setIsConfirmLoading(loading);
+
+          !loading && setIsModelOpen(false);
+        }
+      }}
       open={isModelOpen}
       className={"customDeviceModal"}
       modalWidth="42.5rem"

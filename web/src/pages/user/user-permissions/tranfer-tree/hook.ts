@@ -1,8 +1,9 @@
+import { message } from "antd";
+import { useEffect, useState } from "react";
+
 import { useAuth } from "@/hooks/use-auth";
 import { GetFoundationData } from "@/services/api/tree";
 import { HierarchyDepthEnum, IFoundationResponse } from "@/services/dtos/tree";
-import { message } from "antd";
-import { useEffect, useState } from "react";
 
 export interface IFoundationDetail {
   department: {
