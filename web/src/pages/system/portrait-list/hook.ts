@@ -116,7 +116,7 @@ export const useAction = () => {
     async () => {
       const faces: IFaceDto[] = [];
 
-      const replaceBase64 = (text: string) => {
+      const replacePrefix = (text: string) => {
         return text
           .replace("data:image/jpg;base64,", "")
           .replace("data:image/jpeg;base64,", "")
@@ -125,7 +125,7 @@ export const useAction = () => {
 
       if (portraitModal.operationType === OperationTypeEnum.Add) {
         faces.push({
-          image: replaceBase64(await getBase64(fileList[0].originFileObj!)),
+          image: replacePrefix(await getBase64(fileList[0].originFileObj!)),
         });
       } else {
         const fileData = {
