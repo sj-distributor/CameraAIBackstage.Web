@@ -137,7 +137,7 @@ export const useAction = () => {
 
         if (fileList[0].originFileObj) {
           faces.push({
-            image: replaceBase64(await getBase64(fileList[0].originFileObj!)),
+            image: replacePrefix(await getBase64(fileList[0].originFileObj!)),
           });
 
           faces.push({
