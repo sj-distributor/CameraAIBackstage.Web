@@ -79,7 +79,7 @@ export const useAction = () => {
 
   const initCronList = [
     { title: KEYS.MONDAY, value: DayOfWeek.Monday, isActive: false },
-    { title: KEYS.THURSDAY, value: DayOfWeek.Tuesday, isActive: false },
+    { title: KEYS.TUESDAY, value: DayOfWeek.Tuesday, isActive: false },
     { title: KEYS.WEDNESDAY, value: DayOfWeek.Wednesday, isActive: false },
     { title: KEYS.THURSDAY, value: DayOfWeek.Thursday, isActive: false },
     { title: KEYS.FRIDAY, value: DayOfWeek.Friday, isActive: false },
@@ -237,7 +237,6 @@ export const useAction = () => {
 
     // 构造一个 lable value 的 option
     const filterList = userData.reduce<IOptionsStringDto[]>((acc, item) => {
-      console.log(item.staffId);
       if (idList.includes(item.staffId)) {
         const newValue: IOptionsStringDto = {
           label: item.name,
