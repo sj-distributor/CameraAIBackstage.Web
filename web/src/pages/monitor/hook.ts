@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
 
-import { IOpenOrStopStatus, IOptionDto } from "./props";
+import { IMonitorOptionDto, IOpenOrStopStatus } from "./props";
 import {
   GetMonitorSettingPage,
-  GetMonitorType,
   MonitorSettingDelete,
   MonitorSettingDisable,
   MonitorSettingEnable,
@@ -14,7 +13,6 @@ import { IPageDto } from "@/services/dtos/public";
 import {
   IMonitorSettingRequest,
   IMonitorSettingsDto,
-  IMonitorTypeResponse,
 } from "@/services/dtos/monitor";
 import { App } from "antd";
 import { clone } from "ramda";
@@ -39,21 +37,9 @@ export const useAction = () => {
 
   const [isActive, setIsActive] = useState<boolean | undefined>(undefined);
 
-  const [selectWarningTypeId, setSelectWarningTypeId] = useState<
-    number | undefined
+  const [selectWarningType, setSelectWarningType] = useState<
+    IMonitorOptionDto[] | undefined
   >(undefined);
-
-  const [warningTypeData, setWarningTypeData] = useState<
-    IMonitorTypeResponse[]
-  >([]);
-
-  const warningTypeDataList: IOptionDto[] = useMemo(() => {
-    const list = warningTypeData.map((item) => {
-      return { lable: item.id, value: item.name };
-    });
-    list.unshift({ value: "全部", lable: -1 });
-    return list;
-  }, [warningTypeData]);
 
   const [data, setData] = useState<IMonitorSettingsDto[]>([]);
 
@@ -100,8 +86,8 @@ export const useAction = () => {
     }
   };
 
-  const onFilterType = (value: number) => {
-    setSelectWarningTypeId(value);
+  const onFilterType = (value: IMonitorOptionDto[]) => {
+    setSelectWarningType(value);
   };
 
   const initGetPageData = () => {
@@ -114,9 +100,9 @@ export const useAction = () => {
       data.IsActive = isActive;
     }
 
-    if (selectWarningTypeId) {
-      data.MonitorTypeId =
-        selectWarningTypeId === -1 ? undefined : selectWarningTypeId;
+    if (selectWarningType) {
+      const list = selectWarningType.map((item) => item.value);
+      data.MonitorType = list;
     }
 
     GetMonitorSettingPage(data)
@@ -149,17 +135,7 @@ export const useAction = () => {
   useEffect(() => {
     setLoading(true);
     initGetPageData();
-  }, [pageDto, isActive, selectWarningTypeId]);
-
-  useEffect(() => {
-    GetMonitorType()
-      .then((res) => {
-        setWarningTypeData(res);
-      })
-      .catch(() => {
-        setWarningTypeData([]);
-      });
-  }, []);
+  }, [pageDto, isActive, selectWarningType]);
 
   return {
     data,
@@ -175,10 +151,9 @@ export const useAction = () => {
     filterStatus,
     pageDto,
     setPageDto,
-    warningTypeDataList,
-    selectWarningTypeId,
     count,
     onDelete,
     loading,
+    selectWarningType,
   };
 };

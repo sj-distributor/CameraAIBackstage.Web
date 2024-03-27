@@ -3,19 +3,10 @@ import {
   IMonitorSettingRequest,
   IMonitorSettingResponse,
   IMonitorSettingsDto,
-  IMonitorTypeResponse,
   IUserListResponse,
 } from "@/services/dtos/monitor";
 import { IPageDto } from "@/services/dtos/public";
 import { api } from "../http-client";
-
-export const GetMonitorType = async () => {
-  const response = await api.get<IMonitorTypeResponse[]>(
-    "/api/CameraAi/monitor/types"
-  );
-
-  return response.data;
-};
 
 export const GetMonitorSettingPage = async (data: IMonitorSettingRequest) => {
   const response = await api.get<IMonitorSettingResponse>(

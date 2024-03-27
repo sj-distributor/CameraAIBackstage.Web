@@ -18,8 +18,9 @@ import downArrow from "../../assets/public/down-arrow.png";
 import KEYS from "../../i18n/language/keys/monitor-keys";
 import CONFIGURATION_KEYS from "../../i18n/language/keys/monitor-configuration-keys";
 import { useAction } from "./hook";
-import { IOpenOrStopStatus, IOptionDto } from "./props";
+import { IMonitorOptionDto, IOpenOrStopStatus } from "./props";
 import {
+  CameraAiMonitorType,
   CameraAiNotificationType,
   IMonitorSettingsDto,
 } from "@/services/dtos/monitor";
@@ -40,11 +41,10 @@ export const Monitor = () => {
     filterStatus,
     pageDto,
     setPageDto,
-    warningTypeDataList,
-    selectWarningTypeId,
     count,
     onDelete,
     loading,
+    selectWarningType,
   } = useAction();
 
   const columns: ColumnsType<IMonitorSettingsDto> = [
@@ -231,15 +231,29 @@ export const Monitor = () => {
                 className="w-[13.5rem] h-[2.75rem]"
                 placeholder={t(KEYS.ALERT_TYPE_FILTER, source)}
                 defaultActiveFirstOption
-                value={
-                  warningTypeDataList.find((x) => {
-                    x.lable === selectWarningTypeId;
-                  })?.value
-                }
+                value={selectWarningType}
+                mode="multiple"
                 onChange={(_, option) =>
-                  onFilterType((option as IOptionDto).lable)
+                  onFilterType(option as IMonitorOptionDto[])
                 }
-                options={warningTypeDataList}
+                options={[
+                  {
+                    value: CameraAiMonitorType.All,
+                    label: `${t(KEYS.ALL, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.People,
+                    label: `${t(KEYS.IDENTIFY_PEOPLE, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.Vehicles,
+                    label: `${t(KEYS.IDENTIFY_VEHICLES, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.AbnormalVehicles,
+                    label: `${t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source)}`,
+                  },
+                ]}
                 suffixIcon={<img src={downArrow} />}
               />
             </div>

@@ -19,6 +19,9 @@ import downArrow from "@/assets/public/down-arrow.png";
 import { useAction } from "./hook";
 import { IOptionsStringDto, TimeType } from "./props";
 import dayjs from "dayjs";
+import { CameraAiMonitorType } from "@/services/dtos/monitor";
+
+import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
 
 export const AddOrUpdateConfiguration = () => {
   const {
@@ -33,7 +36,6 @@ export const AddOrUpdateConfiguration = () => {
     notifyType,
     selectUserData,
     editDetailData,
-    monitorType,
     deviceList,
     isAdd,
     detailLoading,
@@ -147,14 +149,32 @@ export const AddOrUpdateConfiguration = () => {
                               },
                             ]}
                             initialValue={
-                              editDetailData?.monitorTypeId
-                                ? Number(editDetailData.monitorTypeId)
-                                : null
+                              editDetailData ? editDetailData.monitorType : null
                             }
                           >
                             <Select
                               suffixIcon={<img src={downArrow} />}
-                              options={monitorType}
+                              options={[
+                                {
+                                  value: CameraAiMonitorType.People,
+                                  label: `${t(MONITOR_KEY.IDENTIFY_PEOPLE, {
+                                    ns: "monitor",
+                                  })}`,
+                                },
+                                {
+                                  value: CameraAiMonitorType.Vehicles,
+                                  label: `${t(MONITOR_KEY.IDENTIFY_VEHICLES, {
+                                    ns: "monitor",
+                                  })}`,
+                                },
+                                {
+                                  value: CameraAiMonitorType.AbnormalVehicles,
+                                  label: `${t(
+                                    MONITOR_KEY.IDENTIFY_ABNORMAL_VEHICLES,
+                                    { ns: "monitor" }
+                                  )}`,
+                                },
+                              ]}
                               onChange={(value) => {
                                 form.setFieldValue("exceptionType", value);
                               }}

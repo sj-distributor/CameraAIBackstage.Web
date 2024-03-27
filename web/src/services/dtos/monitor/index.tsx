@@ -17,12 +17,11 @@ export enum CameraAiNotificationType {
   PhoneCall,
 }
 
-export interface IMonitorTypeResponse {
-  id: number;
-  name: string;
-  description: string;
-  isDeleted: boolean;
-  createdDate: string;
+export enum CameraAiMonitorType {
+  People, //識別人員
+  Vehicles, //識別車輛
+  AbnormalVehicles, //識別異常車輛
+  All = -1,
 }
 
 export interface IMonitorSettingIdDto {
@@ -31,7 +30,7 @@ export interface IMonitorSettingIdDto {
 
 export interface IMonitorSettingRequest extends IPageDto {
   IsActive?: boolean;
-  MonitorTypeId?: number;
+  MonitorType?: CameraAiMonitorType[];
 }
 
 export interface IMonitorSettingResponse {
@@ -45,7 +44,7 @@ export interface IMonitorSettingsPublicDto {
   duration: number | null;
   notificationContent: string; //通知内容
   broadcastContent?: string | null; //广播内容
-  monitorTypeId: number | null; //预警类型 id
+  monitorType: CameraAiMonitorType | null; //预警类型 id
   startTime: number | null;
   endTime: number | null;
   isActive?: boolean;

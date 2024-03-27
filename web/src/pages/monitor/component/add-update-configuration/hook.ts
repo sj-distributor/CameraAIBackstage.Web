@@ -22,7 +22,6 @@ import {
 } from "@/services/dtos/monitor";
 import {
   GetMonitorSettingDetail,
-  GetMonitorType,
   GetUserList,
   MonitorSettingCreate,
   MonitorSettingUpdate,
@@ -48,12 +47,12 @@ export const useAction = () => {
     weekDays: [],
     equipmentIds: [],
     monitorNotifications: [],
-    timeZone: "America/Los_Angeles",
+    timeZone: "Pacific Standard Time",
     title: "",
     duration: null,
     notificationContent: "", //通知内容
     broadcastContent: "", //广播内容
-    monitorTypeId: isAdd ? (id ? Number(id) : null) : null, //预警类型 id
+    monitorType: isAdd ? (id ? Number(id) : null) : null, //预警类型 id
     startTime: null,
     endTime: null,
   };
@@ -134,8 +133,6 @@ export const useAction = () => {
   const [selectUserData, setSelectUserData] = useState<
     IMonitorNotificationsDto[]
   >(isAdd ? initUserData : editDetailData?.monitorNotifications ?? []); //接口
-
-  const [monitorType, setMonitorType] = useState<IOptionsNumberDto[]>([]);
 
   const [deviceList, setDeviceList] = useState<IOptionsNumberDto[]>([]);
 
@@ -235,7 +232,7 @@ export const useAction = () => {
   const onChangeNoticeUserList = (option: IOptionsStringDto[]) => {
     const idList = option.map((idItem) => idItem.value);
 
-    // 构造一个 lable value 的 option
+    // 构造一个 label value 的 option
     const filterList = userData.reduce<IOptionsStringDto[]>((acc, item) => {
       if (idList.includes(item.staffId)) {
         const newValue: IOptionsStringDto = {
@@ -260,13 +257,13 @@ export const useAction = () => {
         title: values.title,
         duration: handleTotalDuration(values.time, values.timeType),
         notificationContent: values.content,
-        monitorTypeId: values.exceptionType,
+        monitorType: values.exceptionType,
         weekDays: values.repeatEveryWeek,
         monitorNotifications: filterSelectUserData,
         equipmentIds: values.deviceSelect,
         startTime: Math.round(values.timeSetting[0] / 1000),
         endTime: Math.round(values.timeSetting[1] / 1000),
-        timeZone: "America/Los_Angeles",
+        timeZone: "Pacific Standard Time",
       };
       if ((isAdd && !!values.broadcastContent) || !isAdd) {
         data.broadcastContent = values.broadcastContent;
@@ -362,17 +359,6 @@ export const useAction = () => {
   useEffect(() => {
     initGetUserList();
 
-    GetMonitorType()
-      .then((res) => {
-        const typeList = res.map((item) => {
-          return { label: item.name, value: item.id };
-        });
-        setMonitorType(typeList);
-      })
-      .catch(() => {
-        setMonitorType([]);
-      });
-
     GetEquipmentPage({ PageSize: 2147483647, PageIndex: 1 })
       .then((res) => {
         const newEquipmentList = res.equipments.map((item) => {
@@ -420,7 +406,6 @@ export const useAction = () => {
     notifyType,
     selectUserData,
     editDetailData,
-    monitorType,
     deviceList,
     isAdd,
     detailLoading,

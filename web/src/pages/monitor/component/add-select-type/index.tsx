@@ -1,4 +1,4 @@
-import { Collapse, CollapseProps, ConfigProvider, Spin } from "antd";
+import { Collapse, CollapseProps, ConfigProvider } from "antd";
 
 import cameraTag from "../../../../assets/monitor/camera-tag.png";
 import collapseDown from "../../../../assets/monitor/collapse-down.png";
@@ -6,23 +6,22 @@ import menuIcon from "../../../../assets/monitor/menu-icon.svg";
 import { useAction } from "./hook";
 
 export const AddSelectType = () => {
-  const { warningTypeData, token, navigate, KEYS, t, source, loading } =
-    useAction();
+  const { monitorTypeOption, token, navigate, KEYS, t, source } = useAction();
 
   const collapseItem: () => CollapseProps["items"] = () => [
     {
       key: "1",
       children: (
         <>
-          {warningTypeData.map((item, index) => (
+          {monitorTypeOption.map((item, index) => (
             <div
               className="hover:bg-[#F6F8FC] py-[1.5rem] px-[1rem] rounded-lg text-[.875rem]"
               key={index}
               onClick={() =>
-                navigate(`/monitor/configuration/add/` + item.id.toString())
+                navigate(`/monitor/configuration/add/` + item.value.toString())
               }
             >
-              {item.name}
+              {item.label}
             </div>
           ))}
         </>
@@ -71,22 +70,18 @@ export const AddSelectType = () => {
                 </span>
               </div>
               <div className="border border-[#E7E8EE] border-solid rounded-lg p-[2rem_1.5rem] h-full overflow-y-auto customScollbar shadow-md">
-                {loading ? (
-                  <Spin spinning={loading} className="flex justify-center" />
-                ) : (
-                  <Collapse
-                    bordered={false}
-                    activeKey={["1"]}
-                    expandIcon={() => (
-                      <div className="flex items-center font-semibold">
-                        <img src={collapseDown} />
-                        <img src={cameraTag} className="pl-4" />
-                      </div>
-                    )}
-                    style={{ background: token.colorBgContainer }}
-                    items={collapseItem()}
-                  />
-                )}
+                <Collapse
+                  bordered={false}
+                  activeKey={["1"]}
+                  expandIcon={() => (
+                    <div className="flex items-center font-semibold">
+                      <img src={collapseDown} />
+                      <img src={cameraTag} className="pl-4" />
+                    </div>
+                  )}
+                  style={{ background: token.colorBgContainer }}
+                  items={collapseItem()}
+                />
               </div>
             </div>
           </div>

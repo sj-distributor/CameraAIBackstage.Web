@@ -15,4 +15,8 @@ export default {
   OPERATION_CONFIRMATION: "OperationConfirmation",
   DELETE_CONFIRM_CONTENT: "DeleteConfirmContent",
   PAGINATION: "Pagination",
+  ALL: "All",
+  IDENTIFY_PEOPLE: "IdentifyPeople",
+  IDENTIFY_VEHICLES: "IdentifyVehicles",
+  IDENTIFY_ABNORMAL_VEHICLES: "identifyAbnormalVehicles",
 };
