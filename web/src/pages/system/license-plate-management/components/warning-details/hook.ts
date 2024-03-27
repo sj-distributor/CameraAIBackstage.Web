@@ -41,7 +41,7 @@ export const useAction = () => {
   const warningDetails = useMemo(() => {
     const details = {
       name: warningDemandData?.record?.faceName ?? "攝像頭001",
-      type: warningDemandData?.record?.monitorTypeId ?? "識別車輛",
+      type: warningDemandData?.record?.monitorType ?? "識別車輛",
       content:
         warningDemandData?.regionAndArea?.principal ??
         "攝像頭001，識別車輛（車牌LA12356），出現超過10秒",

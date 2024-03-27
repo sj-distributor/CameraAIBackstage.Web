@@ -7,7 +7,7 @@ export interface IGetVehicleMonitorRecordsRequest {
   PlateNumber?: string;
   EquipmentName?: string;
   EquipmentCodes?: string[];
-  MonitorTypeId?: number;
+  monitorType?: CameraAiMonitorType;
 }
 
 export interface IGetRegisteredVehicleListRequest {
@@ -50,7 +50,7 @@ export interface IWarningRecord {
   correlationId: string;
   equipmentCode: string;
   settingId: number;
-  monitorTypeId: number;
+  monitorType: CameraAiMonitorType;
   duration: number;
   exceptionReason: string;
   recordStatus: number;
@@ -88,7 +88,7 @@ export interface IVehicleMonitorRecordsItem {
   id: number;
   equipmentName: string;
   equipmentCode: string;
-  monitorTypeId: number;
+  monitorType: CameraAiMonitorType;
   correlationId: string;
   duration: number;
   recordStatus: CameraAiMonitorRecordStatus;
@@ -111,4 +111,10 @@ export enum CameraAiMonitorRecordStatus {
 export enum CameraAiMonitorRegisterType {
   Car,
   Face,
+}
+
+export enum CameraAiMonitorType {
+  People, // 識別人員
+  Vehicles, // 識別車輛
+  AbnormalVehicles, // 識別異常車輛
 }
