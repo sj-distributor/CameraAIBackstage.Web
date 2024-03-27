@@ -230,6 +230,7 @@ export const Monitor = () => {
               <Select
                 className="w-[13.5rem] h-[2.75rem]"
                 placeholder={t(KEYS.ALERT_TYPE_FILTER, source)}
+                // maxTagTextLength={216}
                 defaultActiveFirstOption
                 value={selectWarningType}
                 mode="multiple"

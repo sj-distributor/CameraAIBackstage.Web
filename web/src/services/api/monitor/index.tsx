@@ -9,11 +9,16 @@ import { IPageDto } from "@/services/dtos/public";
 import { api } from "../http-client";
 
 export const GetMonitorSettingPage = async (data: IMonitorSettingRequest) => {
+  const MonitorTypesValues = data.MonitorType?.map(
+    (value) => `MonitorTypes=${value}`
+  ).join("&");
+
   const response = await api.get<IMonitorSettingResponse>(
-    "/api/CameraAi/monitor/setting/page",
-    {
-      params: data,
-    }
+    `/api/CameraAi/monitor/setting/page?PageSize=${data.PageSize}&PageIndex=${
+      data.PageIndex
+    }${data.IsActive ? `&IsActive=${data.IsActive}` : ""}${
+      data.MonitorType ? `&${MonitorTypesValues}` : ""
+    }`
   );
 
   return response.data;

@@ -11,6 +11,7 @@ import {
 } from "@/services/api/monitor";
 import { IPageDto } from "@/services/dtos/public";
 import {
+  CameraAiMonitorType,
   IMonitorSettingRequest,
   IMonitorSettingsDto,
 } from "@/services/dtos/monitor";
@@ -87,6 +88,10 @@ export const useAction = () => {
   };
 
   const onFilterType = (value: IMonitorOptionDto[]) => {
+    // if () {
+    //   setSelectWarningType(undefined);
+    //   return;
+    // }
     setSelectWarningType(value);
   };
 
@@ -101,8 +106,7 @@ export const useAction = () => {
     }
 
     if (selectWarningType) {
-      const list = selectWarningType.map((item) => item.value);
-      data.MonitorType = list;
+      data.MonitorType = selectWarningType.map((item) => item.value);
     }
 
     GetMonitorSettingPage(data)
