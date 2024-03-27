@@ -534,6 +534,7 @@ export const AddOrUpdateConfiguration = () => {
                       </div>
 
                       <div className="flex flex-col p-[0rem_11rem_0rem_5.25rem]">
+                        {/* 暂时不做这块内容，注释 UI */}
                         {/* <span className="pb-[1rem] font-semibold">
                         {t(KEYS.LOUDSPEAKER, source)}
                       </span> */}
