@@ -57,6 +57,20 @@ export const useAction = () => {
     initialPermissionData
   );
 
+  const [rolePermissions, setRolePermissions] = useState<CheckboxValueType[]>(
+    []
+  );
+
+  const [roleFrontPermissions, setRoleFrontPermissions] = useState<
+    CheckboxValueType[]
+  >([]);
+
+  const [roleBackgroundPermissions, setRoleBackgroundPermissions] = useState<
+    CheckboxValueType[]
+  >([]);
+
+  console.log(rolePermissions);
+
   const AddRoleName = (e: []) => {
     console.log(e);
   };
@@ -95,9 +109,11 @@ export const useAction = () => {
       case "rolePermissions":
         setRolePermissionByRoleIdData((preValue) => ({
           ...preValue,
-          rolePermissions: formatRolePermission(value as CheckboxValueType[]),
+          rolePermissions: (value as CheckboxValueType[]).map((item) => ({
+            permissionId: Number(item),
+            userIds: [],
+          })),
         }));
-
         break;
 
       case "rolePermissionsUserIds":
@@ -263,6 +279,14 @@ export const useAction = () => {
     onGetPermission();
   }, []);
 
+  useEffect(() => {
+    setRolePermissions([...roleFrontPermissions, ...roleBackgroundPermissions]);
+  }, [roleFrontPermissions, roleBackgroundPermissions]);
+
+  useEffect(() => {
+    onChangeRoleData("rolePermissions", rolePermissions);
+  }, [rolePermissions]);
+
   return {
     AddRoleName,
     checkList,
@@ -278,5 +302,8 @@ export const useAction = () => {
     onCreateRole,
     onUpdateRole,
     isCreate,
+    setRolePermissions,
+    setRoleFrontPermissions,
+    setRoleBackgroundPermissions,
   };
 };

@@ -23,6 +23,8 @@ export const NewOrUpdatePermissions = () => {
     onCreateRole,
     onUpdateRole,
     isCreate,
+    setRoleFrontPermissions,
+    setRoleBackgroundPermissions,
   } = useAction();
 
   const { role, rolePermissions } = rolePermissionByRoleIdData;
@@ -167,9 +169,9 @@ export const NewOrUpdatePermissions = () => {
               </div>
               <Checkbox.Group
                 value={rolePermissions.map((item) => item.permissionId!)}
-                onChange={(checkedValue) => {
-                  onChangeRoleData("rolePermissions", checkedValue);
-                }}
+                onChange={(checkedValue) =>
+                  setRoleFrontPermissions(checkedValue)
+                }
               >
                 <Row gutter={[12, 12]}>
                   {Object.entries(frontRolePermission).map(
@@ -211,9 +213,9 @@ export const NewOrUpdatePermissions = () => {
               </div>
               <Checkbox.Group
                 value={rolePermissions.map((item) => item.permissionId!)}
-                onChange={(checkedValue) => {
-                  onChangeRoleData("rolePermissions", checkedValue);
-                }}
+                onChange={(checkedValue) =>
+                  setRoleBackgroundPermissions(checkedValue)
+                }
               >
                 <Row gutter={[12, 12]}>
                   {Object.entries(backGroundRolePermission).map(
@@ -246,11 +248,7 @@ export const NewOrUpdatePermissions = () => {
         <Button
           type="primary"
           className="w-[5rem] h-[2.5rem] mr-[1rem] bg-[#2853E3]"
-          onClick={() => {
-            console.log(isCreate);
-
-            isCreate ? onCreateRole() : onUpdateRole();
-          }}
+          onClick={() => (isCreate ? onCreateRole() : onUpdateRole())}
         >
           {t(KEYS.CONFIRM, source)}
         </Button>
