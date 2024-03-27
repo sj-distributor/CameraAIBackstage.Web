@@ -23,7 +23,7 @@ import {
   CameraAiNotificationType,
   IMonitorSettingsDto,
 } from "@/services/dtos/monitor";
-import { isEmpty, otherwise } from "ramda";
+import { isEmpty } from "ramda";
 
 export const Monitor = () => {
   const {
@@ -45,7 +45,6 @@ export const Monitor = () => {
     count,
     onDelete,
     loading,
-    switchLoading,
   } = useAction();
 
   const columns: ColumnsType<IMonitorSettingsDto> = [
@@ -75,7 +74,7 @@ export const Monitor = () => {
               onChange={(value) => {
                 onChangeStatus(record.id!, value);
               }}
-              loading={switchLoading}
+              loading={record.loading}
               className={`${
                 language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
               } text-[.625rem] customSwitch`}

@@ -388,10 +388,6 @@ export const useAction = () => {
   }, []);
 
   useEffect(() => {
-    if (!id) {
-      message.error("id 丢失，请重新进入加载");
-      return;
-    }
     if (isAdd) return; //新增不请求 detail
     setDetailLoading(true);
     GetMonitorSettingDetail({ settingId: Number(id) })

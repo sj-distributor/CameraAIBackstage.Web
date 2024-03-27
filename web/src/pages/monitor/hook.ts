@@ -17,6 +17,7 @@ import {
   IMonitorTypeResponse,
 } from "@/services/dtos/monitor";
 import { App } from "antd";
+import { clone } from "ramda";
 
 export const useAction = () => {
   const { t, language } = useAuth();
@@ -58,14 +59,20 @@ export const useAction = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [switchLoading, setSwitchLoading] = useState<boolean>(false);
-
   const [count, setCount] = useState<number>(0);
 
   const source = { ns: "monitor" };
 
   const onChangeStatus = (id: number, value: boolean) => {
-    setSwitchLoading(true);
+    const newList = clone(data);
+    newList.map((item) => {
+      if (item.id === id) {
+        item.loading = true;
+      }
+      return item;
+    });
+    setData(newList);
+
     value
       ? MonitorSettingEnable({ settingId: id })
           .then(() => {
@@ -74,15 +81,13 @@ export const useAction = () => {
           .catch((err) => {
             message.error(`绑定失败:${err}`);
           })
-          .finally(() => setSwitchLoading(false))
       : MonitorSettingDisable({ settingId: id })
           .then(() => {
             initGetPageData();
           })
           .catch((err) => {
             message.error(`解绑失败:${err}`);
-          })
-          .finally(() => setSwitchLoading(false));
+          });
   };
 
   const onFilterStatus = (value: IOpenOrStopStatus) => {
@@ -175,6 +180,5 @@ export const useAction = () => {
     count,
     onDelete,
     loading,
-    switchLoading,
   };
 };
