@@ -1,3 +1,5 @@
+import { IFoundationDetail } from "@/pages/user/user-permissions/tranfer-tree/hook";
+
 export enum HierarchyDepthEnum {
   Department,
   Corporation,

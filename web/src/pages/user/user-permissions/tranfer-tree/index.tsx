@@ -1,6 +1,6 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Transfer, Tree } from "antd";
-import { TransferItem, TransferProps } from "antd/es/transfer";
+import { TransferItem } from "antd/es/transfer";
 import { Key, SetStateAction, useEffect, useState } from "react";
 
 import { CustomModal } from "@/components/custom-modal";
@@ -143,7 +143,7 @@ export const TransferTree = ({
     return data.title.toLowerCase().indexOf(filterText.toLowerCase()) !== -1; // 我是一title过滤 ，你可以根据自己需求改动
   };
 
-  const handleSearch: TransferProps["onSearch"] = (dir: any, value: string) => {
+  const handleSearch: any = (dir: any, value: string) => {
     if (dir === "left") {
       if (value == "") {
         setTreeList(JSON.parse(copyTree));

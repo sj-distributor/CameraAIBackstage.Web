@@ -60,19 +60,19 @@ export const useAction = () => {
 
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const [searchKeywordValue, setSearchKeywordValue] = useState<string>("");
+  // const [searchKeywordValue, setSearchKeywordValue] = useState<string>("");
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
-  const [selectedRows, setSelectedRows] = useState<
-    {
-      key: string;
-      characterName: string;
-      roleDescription: string;
-    }[]
-  >([]);
+  // const [selectedRows, setSelectedRows] = useState<
+  //   {
+  //     key: string;
+  //     characterName: string;
+  //     roleDescription: string;
+  //   }[]
+  // >([]);
 
-  const [isTableLoading, setIsTableLoading] = useState<boolean>(false);
+  // const [isTableLoading, setIsTableLoading] = useState<boolean>(false);
 
   const [pageDto, setPageDto] = useState<{
     pageIndex: number;
@@ -90,10 +90,10 @@ export const useAction = () => {
 
     if (selected) {
       setSelectedRowKeys(selectedData);
-      setSelectedRows(data);
+      // setSelectedRows(data);
     } else {
       setSelectedRowKeys([]);
-      setSelectedRows([]);
+      // setSelectedRows([]);
     }
   };
 
@@ -101,12 +101,12 @@ export const useAction = () => {
     t,
     source,
     setSearchValue,
-    setSearchKeywordValue,
+    // setSearchKeywordValue,
     searchValue,
     isDeletePermissions,
     setISDeletePermissions,
     navigate,
-    isTableLoading,
+    // isTableLoading,
     pageDto,
     setPageDto,
     onSelectedAllRow,
