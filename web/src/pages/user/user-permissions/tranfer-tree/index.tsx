@@ -84,7 +84,7 @@ export const TransferTree = ({
     if (treeData && treeData.length == 0) {
       return [];
     }
-    // console.log(treeData)
+
     const arr: string[] = [];
 
     const expandedKeysFn = (treeData: ITreeData[]) => {
