@@ -112,17 +112,62 @@ export const useAction = () => {
     onFinally: () => setLoading(false),
   });
 
+  const checkValue = (data: IPortraitDto) => {
+    const finalCheckValue = { ...data, isQualified: true };
+
+    if (
+      fileList.length === 0 ||
+      Object.values(finalCheckValue).some((value) => !value)
+    ) {
+      throw new Error("請確認數據填寫完整");
+    } else {
+      message.info("running...");
+    }
+  };
+
   const handleCreateOrUpdatePortrait = useRequest(
     async () => {
+      try {
+        checkValue(portraitModal.item);
+      } catch (error) {
+        message.info((error as Error).message);
+
+        return Promise.reject();
+      }
+
       const faces: IFaceDto[] = [];
 
-      for (const file of fileList) {
+      const replacePrefix = (text: string) => {
+        return text
+          .replace("data:image/jpg;base64,", "")
+          .replace("data:image/jpeg;base64,", "")
+          .replace("data:image/png;base64,", "");
+      };
+
+      if (portraitModal.operationType === OperationTypeEnum.Add) {
         faces.push({
-          image: (await getBase64(file.originFileObj!))
-            .replace("data:image/jpg;base64,", "")
-            .replace("data:image/jpeg;base64,", "")
-            .replace("data:image/png;base64,", ""),
+          image: replacePrefix(await getBase64(fileList[0].originFileObj!)),
         });
+      } else {
+        const fileData = {
+          faceId: portraitModal.item.faces[0].faceId,
+          image: null,
+          imageUrl: portraitModal.item.faces[0].imageUrl,
+          isDeleted: false,
+        };
+
+        if (fileList[0].originFileObj) {
+          faces.push({
+            image: replacePrefix(await getBase64(fileList[0].originFileObj!)),
+          });
+
+          faces.push({
+            ...fileData,
+            isDeleted: true,
+          });
+        } else {
+          faces.push(fileData);
+        }
       }
 
       const params: IPortraitDto = { ...portraitModal.item, faces };
@@ -160,6 +205,7 @@ export const useAction = () => {
     {
       debounceWait: 300,
       manual: true,
+      onBefore: () => message.info("running..."),
       onSuccess: () => {
         message.success("success");
         handleGetPortraitData.run();

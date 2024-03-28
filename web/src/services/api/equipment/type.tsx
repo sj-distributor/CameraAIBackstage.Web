@@ -4,6 +4,7 @@ import {
   IEquipmentTypeList,
   IEquipmentTypeRequest,
 } from "@/services/dtos/equipment/type";
+
 import { api } from "../http-client";
 
 export const GetEquipmentTypePage = async (data: IPageDto) => {

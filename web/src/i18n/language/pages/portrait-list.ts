@@ -23,6 +23,13 @@ export default {
     [KEYS.UPLOAD_TIP_CONTENT]:
       "Suggest a 1:1 image ratio, file size less than 2MB",
     [KEYS.PAGINATION]: "<span>{{count}}</span> items",
+    [KEYS.DELETE_TIP]: "Delete tip",
+    [KEYS.WHETHER_CONFIRM_DELETE]: "Whether confirm delete?",
+    [KEYS.CONFIRM]: "Confirm",
+    [KEYS.CANCEL]: "Cancel",
+    [KEYS.PICTURE_PREVIEW]: "Picture preview",
+    [KEYS.COMPLETE_DATA]:
+      "Please confirm that all data is filled out completely",
   },
   ch: {
     [KEYS.PORTRAIT_LIST]: "人像列表",
@@ -45,5 +52,10 @@ export default {
     [KEYS.UPLOAD_TIP_CONTENT]:
       "建議圖片比例為1:1，文件大小小于2MB，保持視覺元素居中",
     [KEYS.PAGINATION]: "共 <span>{{count}}</span> 條",
+    [KEYS.DELETE_TIP]: "刪除提醒",
+    [KEYS.WHETHER_CONFIRM_DELETE]: "是否確認刪除?",
+    [KEYS.CONFIRM]: "確認",
+    [KEYS.CANCEL]: "取消",
+    [KEYS.COMPLETE_DATA]: "請確認數據填寫完整",
   },
 };
