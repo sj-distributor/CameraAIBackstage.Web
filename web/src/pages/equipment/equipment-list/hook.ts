@@ -175,9 +175,8 @@ export const useAction = () => {
   };
 
   const onAddOrUpdateSubmit = (isAdd: boolean) => {
-    form.validateFields();
-
     try {
+      form.validateFields();
       checkValue(form.getFieldsValue());
     } catch (error) {
       return Promise.reject();
