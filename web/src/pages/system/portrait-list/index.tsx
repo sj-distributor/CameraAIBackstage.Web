@@ -20,6 +20,7 @@ import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/portrait-list-keys";
+import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 import { OperationTypeEnum } from "@/services/dtos/portrait";
 
 import { useAction } from "./hook";
@@ -71,7 +72,9 @@ export const PortraitList = () => {
               }}
             />
           </div>
-          {myPermissions.includes("CanAddCameraAiPortrait") && (
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanAddCameraAiPortrait
+          ) && (
             <Button
               className="flex justify-center items-center w-[5.5rem] h-[2.75rem]"
               type="primary"
@@ -137,7 +140,9 @@ export const PortraitList = () => {
                     </div>
                   </div>
                   <div className="p-[.625rem_.75rem] flex justify-end items-center bg-[#F6F8FC] portrait">
-                    {myPermissions.includes("CanDeleteCameraAiPortrait") && (
+                    {myPermissions.includes(
+                      BackGroundRolePermissionEnum.CanDeleteCameraAiPortrait
+                    ) && (
                       <Popconfirm
                         title="刪除提醒"
                         description="是否確認刪除?"
@@ -152,7 +157,9 @@ export const PortraitList = () => {
                         </div>
                       </Popconfirm>
                     )}
-                    {myPermissions.includes("CanUpdateCameraAiPortrait") && (
+                    {myPermissions.includes(
+                      BackGroundRolePermissionEnum.CanUpdateCameraAiPortrait
+                    ) && (
                       <div
                         onClick={() => {
                           setPortraitModal({

@@ -23,6 +23,7 @@ import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/license-plate-management-keys";
+import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 
 import { IDataType } from "../../props";
 import { useAction } from "./hook";
@@ -37,7 +38,7 @@ export const LicensePlateManagementTable = (props: {
   const { setShowWarningDetails, setIsRegisteredVehicle, isRegisteredVehicle } =
     props;
 
-  const { t, language } = useAuth();
+  const { t, language, myPermissions } = useAuth();
 
   const {
     isUnbindOpen,
@@ -98,17 +99,30 @@ export const LicensePlateManagementTable = (props: {
       width: "26.6%",
       render: (_, record) => (
         <div>
-          <Button type="link" onClick={() => setIsRegisterOpen(true)}>
-            {t(isRegisteredVehicle ? KEYS.EDIT : KEYS.REGISTER, source)}
-          </Button>
-          {!isRegisteredVehicle && (
-            <Button
-              type="link"
-              onClick={() => setShowWarningDetails(record.deviceId)}
-            >
-              {t(KEYS.VIEW_DETAILS, source)}
+          {isRegisteredVehicle && (
+            <Button type="link" onClick={() => setIsRegisterOpen(true)}>
+              {t(KEYS.EDIT, source)}
             </Button>
           )}
+          {!isRegisteredVehicle &&
+            myPermissions.includes(
+              BackGroundRolePermissionEnum.CanRegisterCameraAiLicensePlate
+            ) && (
+              <Button type="link" onClick={() => setIsRegisterOpen(true)}>
+                {t(KEYS.REGISTER, source)}
+              </Button>
+            )}
+          {!isRegisteredVehicle &&
+            myPermissions.includes(
+              BackGroundRolePermissionEnum.CanViewDetailCameraAiLicensePlate
+            ) && (
+              <Button
+                type="link"
+                onClick={() => setShowWarningDetails(record.deviceId)}
+              >
+                {t(KEYS.VIEW_DETAILS, source)}
+              </Button>
+            )}
           <Button
             type="link"
             onClick={() => {
@@ -209,15 +223,18 @@ export const LicensePlateManagementTable = (props: {
               />
             )}
           </div>
-          {!isRegisteredVehicle && (
-            <Button
-              type="primary"
-              className="h-[2.75rem] max-w-max bg-[#2853E3] flex items-center"
-              onClick={() => setIsRegisteredVehicle(true)}
-            >
-              {t(KEYS.REGISTERED_VEHICLES, source)}
-            </Button>
-          )}
+          {!isRegisteredVehicle &&
+            myPermissions.includes(
+              BackGroundRolePermissionEnum.CanViewRegisteredCameraAiLicensePlate
+            ) && (
+              <Button
+                type="primary"
+                className="h-[2.75rem] max-w-max bg-[#2853E3] flex items-center"
+                onClick={() => setIsRegisteredVehicle(true)}
+              >
+                {t(KEYS.REGISTERED_VEHICLES, source)}
+              </Button>
+            )}
         </div>
         <Table
           rowKey={(record) => record.deviceId}

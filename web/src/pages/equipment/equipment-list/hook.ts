@@ -1,15 +1,8 @@
+import { useBoolean, useDebounce, useUpdateEffect } from "ahooks";
+import { App, Form } from "antd";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
-
-import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
-import {
-  IEquipmentCreateOrUpdateDto,
-  IEquipmentList,
-  IEquipmentPageRequest,
-  IPageDto,
-  IRegionDto,
-} from "@/services/dtos/equipment/list";
 import {
   GetEquipmentInfoById,
   GetEquipmentPage,
@@ -20,12 +13,19 @@ import {
   PostEquipmentUnBind,
   PostUpdateEquipment,
 } from "@/services/api/equipment/list";
-import { App, Form } from "antd";
 import { GetEquipmentTypePage } from "@/services/api/equipment/type";
-import { useBoolean, useDebounce, useUpdateEffect } from "ahooks";
+import {
+  IEquipmentCreateOrUpdateDto,
+  IEquipmentList,
+  IEquipmentPageRequest,
+  IPageDto,
+  IRegionDto,
+} from "@/services/dtos/equipment/list";
+
+import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
 
 export const useAction = () => {
-  const { t, language } = useAuth();
+  const { t, language, myPermissions } = useAuth();
 
   const [form] = Form.useForm();
 
@@ -58,7 +58,7 @@ export const useAction = () => {
 
   const [isAddOrUpdateOpen, setIsAddOrUpdateOpen] = useState<boolean>(false);
 
-  const [isAddOrEdit, setIsAddOrEdit] = useState<boolean>(false); //true:添加 false:編輯
+  const [isAddOrEdit, setIsAddOrEdit] = useState<boolean>(false); // true:添加 false:編輯
 
   const [clickEditId, setClickEditId] = useState<number>(0);
 
@@ -100,6 +100,7 @@ export const useAction = () => {
       PageSize: pageDto.PageSize,
       Keyword: searchKey,
     };
+
     if (isSearchOnline !== undefined && isSearchOnline !== IOnlineOrNot.All) {
       data.IsOnline = Boolean(isSearchOnline);
     }
@@ -160,6 +161,7 @@ export const useAction = () => {
       equipmentTypeId: equipmentTypeId,
       id: clickEditId,
     };
+
     setConfirmLoading(true);
     PostUpdateEquipment({
       equipment: data,
@@ -237,6 +239,7 @@ export const useAction = () => {
         const newList = res.regions.map((item) => {
           return { ...item, radio: false };
         });
+
         setRegionData(newList);
       })
       .catch((err) => {
@@ -251,6 +254,7 @@ export const useAction = () => {
   const onConfirmBind = () => {
     if (bindAreaId === null) {
       message.warning("请至少选一个设备");
+
       return;
     }
     setConfirmLoading(true);
@@ -293,6 +297,7 @@ export const useAction = () => {
         const list = res.equipmentTypes.map((item) => {
           return { label: item.name, value: item.id };
         });
+
         setEquipmentTypesOption(list);
       })
       .catch(() => {
@@ -352,5 +357,6 @@ export const useAction = () => {
     confirmLoading,
     pageDto,
     onConfirmUnBind,
+    myPermissions,
   };
 };

@@ -7,6 +7,7 @@ import { IRole } from "@/services/dtos/user-permission";
 
 import search from "../../../../assets/public/search.png";
 import { OperateConfirmModal } from "../operate-confirm";
+import { BackGroundRolePermissionEnum } from "../user-newpermissions/props";
 import { useAction } from "./hook";
 
 export const UserPermissions = () => {
@@ -35,13 +36,13 @@ export const UserPermissions = () => {
       text: t(KEYS.ALLOT, source),
       onClick: (record: IRole) =>
         navigate(`/user/permissions/distribute/${record.id}`),
-      permissions: "CanGrantCameraAiRole",
+      permissions: BackGroundRolePermissionEnum.CanGrantCameraAiRole,
     },
     {
       text: t(KEYS.EDIT, source),
       onClick: (record: IRole) =>
         navigate(`/user/permissions/roles/${record.id}`),
-      permissions: "CanUpdateCameraAiRole",
+      permissions: BackGroundRolePermissionEnum.CanUpdateCameraAiRole,
     },
     {
       text: t(KEYS.DELETE, source),
@@ -49,7 +50,7 @@ export const UserPermissions = () => {
         setISDeletePermissions(true);
         setRecord(record);
       },
-      permissions: "CanDeleteCameraAiRole",
+      permissions: BackGroundRolePermissionEnum.CanDeleteCameraAiRole,
     },
   ];
 
@@ -129,14 +130,18 @@ export const UserPermissions = () => {
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
-            <Button
-              type="primary"
-              className="h-[2.75rem] w-[7.25rem]"
-              onClick={() => navigate("/user/permissions/roles/new")}
-            >
-              <PlusOutlined />
-              {t(KEYS.ADD_ROLE, source)}
-            </Button>
+            {myPermissions.includes(
+              BackGroundRolePermissionEnum.CanAddCameraAiRole
+            ) && (
+              <Button
+                type="primary"
+                className="h-[2.75rem] w-[7.25rem]"
+                onClick={() => navigate("/user/permissions/roles/new")}
+              >
+                <PlusOutlined />
+                {t(KEYS.ADD_ROLE, source)}
+              </Button>
+            )}
           </div>
         </div>
         <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">

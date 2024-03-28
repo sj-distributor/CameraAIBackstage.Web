@@ -17,12 +17,13 @@ import type { ColumnsType } from "antd/es/table";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-list-keys";
+import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
+import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
 
 import downArrow from "../../../assets/public/down-arrow.png";
 import search from "../../../assets/public/search.png";
 import { useAction } from "./hook";
 import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
-import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
 
 export const EquipmentList = () => {
   const {
@@ -73,6 +74,7 @@ export const EquipmentList = () => {
     confirmLoading,
     pageDto,
     onConfirmUnBind,
+    myPermissions,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -153,27 +155,35 @@ export const EquipmentList = () => {
       width: "16.6%",
       render: (_, record) => (
         <div>
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => {
-              onGetEquipmentInformationById(record.id);
-              setIsAddOrEdit(false);
-              setIsAddOrUpdateOpen(true);
-            }}
-          >
-            {t(KEYS.EDIT, source)}
-          </Button>
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => {
-              setIsDeleteId(record.id);
-              setIsDeleteDeviceOpen(true);
-            }}
-          >
-            {t(KEYS.DELETE, source)}
-          </Button>
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanUpdateCameraAiEquipment
+          ) && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                onGetEquipmentInformationById(record.id);
+                setIsAddOrEdit(false);
+                setIsAddOrUpdateOpen(true);
+              }}
+            >
+              {t(KEYS.EDIT, source)}
+            </Button>
+          )}
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanDeleteCameraAiEquipment
+          ) && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                setIsDeleteId(record.id);
+                setIsDeleteDeviceOpen(true);
+              }}
+            >
+              {t(KEYS.DELETE, source)}
+            </Button>
+          )}
         </div>
       ),
     },
@@ -309,17 +319,21 @@ export const EquipmentList = () => {
                 suffixIcon={<img src={downArrow} />}
               />
             </div>
-            <Button
-              type="primary"
-              className="h-[2.75rem]"
-              onClick={() => {
-                setIsAddOrEdit(true);
-                setIsAddOrUpdateOpen(true);
-              }}
-            >
-              <PlusOutlined className="pr-[.5rem]" />
-              {t(KEYS.ADD_DEVICE, source)}
-            </Button>
+            {myPermissions.includes(
+              BackGroundRolePermissionEnum.CanAddCameraAiEquipment
+            ) && (
+              <Button
+                type="primary"
+                className="h-[2.75rem]"
+                onClick={() => {
+                  setIsAddOrEdit(true);
+                  setIsAddOrUpdateOpen(true);
+                }}
+              >
+                <PlusOutlined className="pr-[.5rem]" />
+                {t(KEYS.ADD_DEVICE, source)}
+              </Button>
+            )}
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
             <Table

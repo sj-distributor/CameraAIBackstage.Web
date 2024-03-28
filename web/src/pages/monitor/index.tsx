@@ -16,6 +16,7 @@ import { CustomModal } from "@/components/custom-modal";
 
 import downArrow from "../../assets/public/down-arrow.png";
 import KEYS from "../../i18n/language/keys/monitor-keys";
+import { BackGroundRolePermissionEnum } from "../user/user-permissions/user-newpermissions/props";
 import { useAction } from "./hook";
 import { IMonitorDataType, IOpenOrStopStatus, IWarningType } from "./props";
 
@@ -33,6 +34,7 @@ export const Monitor = () => {
     onFilterType,
     filterStatus,
     filterType,
+    myPermissions,
   } = useAction();
 
   const columns: ColumnsType<IMonitorDataType> = [
@@ -86,25 +88,33 @@ export const Monitor = () => {
       width: "16.6%",
       render: (_, _record, index) => (
         <div className="flex-wrap flex">
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() =>
-              navigate(`/monitor/configuration/update/${index.toString()}`)
-            }
-          >
-            {t(KEYS.EDIT, source)}
-          </Button>
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => {
-              setIsDeleteIndex(index);
-              setIsDeleteOpen(true);
-            }}
-          >
-            {t(KEYS.DELETE, source)}
-          </Button>
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanUpdateCameraAiMonitor
+          ) && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() =>
+                navigate(`/monitor/configuration/update/${index.toString()}`)
+              }
+            >
+              {t(KEYS.EDIT, source)}
+            </Button>
+          )}
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanDeleteCameraAiMonitor
+          ) && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                setIsDeleteIndex(index);
+                setIsDeleteOpen(true);
+              }}
+            >
+              {t(KEYS.DELETE, source)}
+            </Button>
+          )}
         </div>
       ),
     },
@@ -191,14 +201,18 @@ export const Monitor = () => {
                 suffixIcon={<img src={downArrow} />}
               />
             </div>
-            <Button
-              type="primary"
-              className="h-[2.75rem] w-[5.5rem]"
-              onClick={() => navigate("/monitor/add")}
-            >
-              <PlusOutlined className="pr-[.25rem]" />
-              {t(KEYS.NEW, source)}
-            </Button>
+            {myPermissions.includes(
+              BackGroundRolePermissionEnum.CanAddCameraAiMonitor
+            ) && (
+              <Button
+                type="primary"
+                className="h-[2.75rem] w-[5.5rem]"
+                onClick={() => navigate("/monitor/add")}
+              >
+                <PlusOutlined className="pr-[.25rem]" />
+                {t(KEYS.NEW, source)}
+              </Button>
+            )}
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
             <Table

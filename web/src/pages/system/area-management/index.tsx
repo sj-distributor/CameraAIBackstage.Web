@@ -4,6 +4,7 @@ import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/area-management-keys";
+import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 import { IRegionsDto } from "@/services/dtos/area-management";
 
 import { AddAreaModal } from "./conponents/add-area-model";
@@ -63,7 +64,9 @@ export const AreaManagement = () => {
       width: "20%",
       render: (_, record) => (
         <div className="h-[1.375rem]">
-          {myPermissions.includes("CanUpdateCameraAiArea") && (
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanUpdateCameraAiArea
+          ) && (
             <Button
               type="link"
               className="w-[6rem]"
@@ -78,7 +81,9 @@ export const AreaManagement = () => {
               {t(KEYS.EDIT, source)}
             </Button>
           )}
-          {myPermissions.includes("CanDeleteCameraAiArea") && (
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanDeleteCameraAiArea
+          ) && (
             <Button
               type="link"
               className="w-[6rem]"
@@ -123,7 +128,9 @@ export const AreaManagement = () => {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-          {myPermissions.includes("CanAddCameraAiArea") && (
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanAddCameraAiArea
+          ) && (
             <Button
               type="primary"
               className="w-[5.5rem] h-[2.2rem] text-center"

@@ -18,6 +18,7 @@ import { IUserDataItem, UserStatus } from "@/services/dtos/user";
 
 import search from "../../../assets/public/search.png";
 import { TransferTree } from "../user-permissions/tranfer-tree";
+import { BackGroundRolePermissionEnum } from "../user-permissions/user-newpermissions/props";
 import { useAction } from "./hook";
 
 export const UserList = () => {
@@ -47,6 +48,8 @@ export const UserList = () => {
     source,
     updateUserId,
     setUpdateUserId,
+    myPermissions,
+    language,
   } = useAction();
 
   const columns: TableProps<IUserDataItem>["columns"] = [
@@ -96,7 +99,9 @@ export const UserList = () => {
             unCheckedChildren=""
             loading={String(record.id) === updateUserId && isUpdateUserLoading}
             value={isQualified}
-            className="h-[1.35rem]"
+            className={`${
+              language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
+            } text-[.625rem] customSwitch`}
             onChange={(isQualified) => {
               setUpdateUserId(String(record.id));
               handelUpdateUserData({ ...record, isQualified });
@@ -105,40 +110,40 @@ export const UserList = () => {
         );
       },
     },
+    // {
+    //   title: t(KEYS.OPERATE, source),
+    //   dataIndex: "operate",
+    //   render: () => {
+    //     return (
+    //       <ConfigProvider
+    //         theme={{
+    //           components: {
+    //             Button: {
+    //               colorLink: "#2853E3",
+    //               colorLinkHover: "#5168e3",
+    //               colorPrimary: "#2853E3",
+    //               colorPrimaryHover: "#5168e3",
+    //               defaultBorderColor: "#2853E3",
+    //               defaultColor: "#2853E3",
+    //               linkHoverBg: "#F0F4FF",
+    //             },
+    //           },
+    //         }}
+    //       >
+    //         <Button
+    //           type="link"
+    //           disabled
+    //           onClick={() => setIsResetPassword(true)}
+    //         >
+    //           {t(KEYS.RESET_PASSWORD, source)}
+    //         </Button>
+    //       </ConfigProvider>
+    //     );
+    //   },
+    // },
     {
       title: t(KEYS.OPERATE, source),
       dataIndex: "operate",
-      render: () => {
-        return (
-          <ConfigProvider
-            theme={{
-              components: {
-                Button: {
-                  colorLink: "#2853E3",
-                  colorLinkHover: "#5168e3",
-                  colorPrimary: "#2853E3",
-                  colorPrimaryHover: "#5168e3",
-                  defaultBorderColor: "#2853E3",
-                  defaultColor: "#2853E3",
-                  linkHoverBg: "#F0F4FF",
-                },
-              },
-            }}
-          >
-            <Button
-              type="link"
-              disabled
-              onClick={() => setIsResetPassword(true)}
-            >
-              {t(KEYS.RESET_PASSWORD, source)}
-            </Button>
-          </ConfigProvider>
-        );
-      },
-    },
-    {
-      title: "",
-      dataIndex: "remove",
       render: (_, record) => {
         return (
           <ConfigProvider
@@ -156,16 +161,20 @@ export const UserList = () => {
               },
             }}
           >
-            <Button
-              type="link"
-              onClick={() => {
-                setIsDeleteUsers(false);
-                setDeleteUserKeys([String(record.id)]);
-                setIsRemoveUser(true);
-              }}
-            >
-              {t(KEYS.REMOVE, source)}
-            </Button>
+            {myPermissions.includes(
+              BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
+            ) && (
+              <Button
+                type="link"
+                onClick={() => {
+                  setIsDeleteUsers(false);
+                  setDeleteUserKeys([String(record.id)]);
+                  setIsRemoveUser(true);
+                }}
+              >
+                {t(KEYS.REMOVE, source)}
+              </Button>
+            )}
           </ConfigProvider>
         );
       },
@@ -180,7 +189,7 @@ export const UserList = () => {
         </span>
         <br />
         <div className="flex flex-row justify-between">
-          <div>
+          <div className="mb-[1rem]">
             <Input
               className="w-[17.5rem]"
               suffix={<img src={search} />}
@@ -203,24 +212,32 @@ export const UserList = () => {
               }
             />
           </div>
-          <div className="pb-[1.2rem]">
-            <Button
-              type="default"
-              className="h-[2.5rem] mr-[1rem] mt-[1.5rem]"
-              onClick={() => {
-                setIsDeleteUsers(true);
-                setIsRemoveUser(true);
-              }}
-            >
-              {t(KEYS.BATCH_REMOVE_USERS, source)}
-            </Button>
-            <Button
-              type="primary"
-              className="h-[2.5rem] w-[7.25rem]"
-              onClick={() => setIsAddUser(true)}
-            >
-              <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
-            </Button>
+          <div className="flex self-center">
+            {myPermissions.includes(
+              BackGroundRolePermissionEnum.CanBatchDeleteCameraAiUserAccount
+            ) && (
+              <Button
+                type="default"
+                className="h-[2.5rem] mr-[1rem]"
+                onClick={() => {
+                  setIsDeleteUsers(true);
+                  setIsRemoveUser(true);
+                }}
+              >
+                {t(KEYS.BATCH_REMOVE_USERS, source)}
+              </Button>
+            )}
+            {myPermissions.includes(
+              BackGroundRolePermissionEnum.CanAddCameraAiUserAccount
+            ) && (
+              <Button
+                type="primary"
+                className="h-[2.5rem] w-[7.25rem]"
+                onClick={() => setIsAddUser(true)}
+              >
+                <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
+              </Button>
+            )}
           </div>
         </div>
       </div>

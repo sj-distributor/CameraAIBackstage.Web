@@ -19,7 +19,7 @@ import {
 export const useAction = () => {
   const source = { ns: "userList" };
 
-  const { t } = useAuth();
+  const { t, myPermissions, language } = useAuth();
 
   const [isAddUser, setIsAddUser] = useState<boolean>(false);
 
@@ -143,5 +143,7 @@ export const useAction = () => {
     source,
     updateUserId,
     setUpdateUserId,
+    myPermissions,
+    language,
   };
 };

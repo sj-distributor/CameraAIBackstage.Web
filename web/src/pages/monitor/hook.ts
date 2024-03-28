@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { IMonitorDataType, IOpenOrStopStatus, IWarningType } from "./props";
 
 export const useAction = () => {
-  const { t, language } = useAuth();
+  const { t, language, myPermissions } = useAuth();
 
   const [data, setData] = useState<IMonitorDataType[]>([
     {
@@ -71,5 +71,6 @@ export const useAction = () => {
     onFilterType,
     filterStatus,
     filterType,
+    myPermissions,
   };
 };
