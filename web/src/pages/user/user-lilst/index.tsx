@@ -10,8 +10,10 @@ import {
   Table,
   TableProps,
 } from "antd";
+import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
+import KEYS from "@/i18n/language/keys/user-list-keys";
 import { IUserDataItem, UserStatus } from "@/services/dtos/user";
 
 import search from "../../../assets/public/search.png";
@@ -41,59 +43,62 @@ export const UserList = () => {
     isDeleteUserLoading,
     handelUpdateUserData,
     isUpdateUserLoading,
+    t,
+    source,
+    updateUserId,
+    setUpdateUserId,
   } = useAction();
-
-  console.log(isDeleteUsers);
 
   const columns: TableProps<IUserDataItem>["columns"] = [
     {
-      title: "用戶ID",
+      title: t(KEYS.USER_ID, source),
       dataIndex: "id",
     },
     {
-      title: "用戶名",
+      title: t(KEYS.NAME, source),
       dataIndex: "name",
     },
     {
-      title: "部門",
+      title: t(KEYS.DEPARTMENT, source),
       dataIndex: "department",
     },
     {
-      title: "組別",
+      title: t(KEYS.GROUP, source),
       dataIndex: "group",
     },
     {
-      title: "崗位",
+      title: t(KEYS.POSITION, source),
       dataIndex: "position",
     },
     {
-      title: "是否在職",
+      title: t(KEYS.POSITION_STATUS, source),
       dataIndex: "positionStatus",
     },
     {
-      title: "電話",
+      title: t(KEYS.PHONE, source),
       dataIndex: "phone",
     },
     {
-      title: "企業微信",
+      title: t(KEYS.WECHAT_NAME, source),
       dataIndex: "wechatName",
     },
     {
-      title: "關聯郵箱",
+      title: t(KEYS.EMAIL, source),
       dataIndex: "email",
     },
     {
-      title: "狀態",
+      title: t(KEYS.IS_QUALIFIED, source),
       dataIndex: "isQualified",
       render: (isQualified, record) => {
         return (
           <Switch
-            checkedChildren="啟用"
+            checkedChildren={t(KEYS.ENABLE, source)}
             unCheckedChildren=""
-            loading={isUpdateUserLoading}
+            loading={String(record.id) === updateUserId && isUpdateUserLoading}
             value={isQualified}
             className="h-[1.35rem]"
             onChange={(isQualified) => {
+              setUpdateUserId(String(record.id));
               handelUpdateUserData({ ...record, isQualified });
             }}
           />
@@ -101,7 +106,7 @@ export const UserList = () => {
       },
     },
     {
-      title: "操作",
+      title: t(KEYS.OPERATE, source),
       dataIndex: "operate",
       render: () => {
         return (
@@ -123,10 +128,9 @@ export const UserList = () => {
             <Button
               type="link"
               disabled
-              // className="w-[4.5rem] text-[0.8rem]"
               onClick={() => setIsResetPassword(true)}
             >
-              重置密碼
+              {t(KEYS.RESET_PASSWORD, source)}
             </Button>
           </ConfigProvider>
         );
@@ -160,7 +164,7 @@ export const UserList = () => {
                 setIsRemoveUser(true);
               }}
             >
-              移除
+              {t(KEYS.REMOVE, source)}
             </Button>
           </ConfigProvider>
         );
@@ -169,10 +173,10 @@ export const UserList = () => {
   ];
 
   return (
-    <div className="h-full flex flex-col bg-white px-4">
+    <div className="h-full flex flex-col bg-white px-4 flex-1">
       <div className="bg-whitew-full flex-col justify-start pt-[1rem] overflow-scroll no-scrollbar">
         <span className="text-[1.125rem] font-semibold tracking-tight">
-          用戶列表
+          {t(KEYS.USER_LIST, source)}
         </span>
         <br />
         <div className="flex flex-row justify-between">
@@ -180,16 +184,19 @@ export const UserList = () => {
             <Input
               className="w-[17.5rem]"
               suffix={<img src={search} />}
-              placeholder="搜索用戶名，部門"
+              placeholder={t(KEYS.SEARCH_PLACEHOLDER)}
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />
             <Select
               className="mx-[1rem] w-[13.5rem] mt-[1.7rem]"
-              placeholder="狀態"
+              placeholder={t(KEYS.STATUS)}
               options={[
-                { value: UserStatus.Enable, label: "啟用" },
-                { value: UserStatus.Disable, label: "非啟用" },
+                { value: UserStatus.Enable, label: t(KEYS.ENABLE, source) },
+                {
+                  value: UserStatus.Disable,
+                  label: t(KEYS.NOT_ENABLE, source),
+                },
               ]}
               onChange={(status) =>
                 setGetUserListRequest((prev) => ({ ...prev, Status: status }))
@@ -199,30 +206,31 @@ export const UserList = () => {
           <div className="pb-[1.2rem]">
             <Button
               type="default"
-              className="h-[2.5rem] w-[7.25rem] mr-[1rem] mt-[1.5rem]"
+              className="h-[2.5rem] mr-[1rem] mt-[1.5rem]"
               onClick={() => {
                 setIsDeleteUsers(true);
                 setIsRemoveUser(true);
               }}
             >
-              批量移除用戶
+              {t(KEYS.BATCH_REMOVE_USERS, source)}
             </Button>
             <Button
               type="primary"
               className="h-[2.5rem] w-[7.25rem]"
               onClick={() => setIsAddUser(true)}
             >
-              <PlusOutlined /> 添加用戶
+              <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
             </Button>
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-between flex-1">
+      <div className="flex flex-col justify-between flex-1 overflow-y-auto no-scrollbar">
         <Table
           rowKey={(record) => record.id}
           columns={columns}
           dataSource={userListData.userProfiles}
           pagination={false}
+          sticky
           scroll={{ x: 1160 }}
           loading={isGetUserListLoading}
           rowSelection={{
@@ -234,30 +242,33 @@ export const UserList = () => {
             },
           }}
         />
-        <div className="flex justify-between items-center py-[1rem]">
-          <div className="text-[#929292] text-[0.785rem]">
-            共{" "}
-            <span className="text-[#2853E3] font-light">
-              {userListData.count}
-            </span>
-            條
-          </div>
-          <div>
-            <Pagination
-              current={getUserListRequest.PageIndex}
-              total={userListData.count}
-              pageSize={getUserListRequest.PageSize}
-              pageSizeOptions={[10, 20, 50]}
-              onChange={(page, pageSize) =>
-                setGetUserListRequest((prev) => ({
-                  PageIndex: page,
-                  PageSize: pageSize,
-                }))
-              }
-              showSizeChanger
-              showQuickJumper
-            />
-          </div>
+      </div>
+      <div className="flex justify-between items-center py-[1rem]">
+        <div className="text-[#929292] text-[0.785rem]">
+          <Trans
+            i18nKey={KEYS.PAGINATION}
+            ns="userList"
+            values={{ count: userListData.count }}
+            components={{
+              span: <span className="text-[#2853E3] font-light mx-1" />,
+            }}
+          />
+        </div>
+        <div>
+          <Pagination
+            current={getUserListRequest.PageIndex}
+            total={userListData.count}
+            pageSize={getUserListRequest.PageSize}
+            pageSizeOptions={[10, 20, 50]}
+            onChange={(page, pageSize) =>
+              setGetUserListRequest((prev) => ({
+                PageIndex: page,
+                PageSize: pageSize,
+              }))
+            }
+            showSizeChanger
+            showQuickJumper
+          />
         </div>
       </div>
 
@@ -271,7 +282,7 @@ export const UserList = () => {
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            操作確認
+            {t(KEYS.OPERATION_CONFIRM)}
           </div>
         }
         onCancle={() => setIsRemoveUser(false)}
@@ -281,16 +292,17 @@ export const UserList = () => {
         className={"customModal"}
       >
         <span className="pl-[2rem]">
-          {isDeleteUsers
-            ? "請確認是否批量移除已選中的用戶？"
-            : "確認確認是否移除該用戶？"}
+          {t(
+            isDeleteUsers ? KEYS.DELETE_USERS_PROMPT : KEYS.DELETE_USER_PROMPT,
+            source
+          )}
         </span>
       </CustomModal>
 
       <CustomModal
         title={
           <div className="flex flex-row justify-between">
-            <div>修改密码</div>
+            <div>{t(KEYS.EDIT_PASSWORD, source)}</div>
             <CloseOutlined onClick={() => setIsClosed(true)} />
           </div>
         }
@@ -303,26 +315,30 @@ export const UserList = () => {
         <div>
           <div className="flex flex-col-reverse">
             <div className="flex justify-start items-center mb-[1rem]">
-              <span className="text-[0.8rem]">當前密碼</span>
+              <span className="text-[0.8rem]">
+                {t(KEYS.CURRENT_PASSWORD, source)}
+              </span>
               <Input
-                placeholder="請輸入"
+                placeholder={t(KEYS.PLEASE_ENTRE)}
                 className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
               />
             </div>
           </div>
           <div className="flex justify-start mb-[1rem] ml-[1rem] items-center">
-            <span className="text-[0.8rem]">新密碼</span>
-            <Select
-              className="h-[1.7rem] w-[23rem] ml-[0.5rem]"
-              mode="tags"
-              placeholder="請選擇"
-              defaultActiveFirstOption
+            <span className="text-[0.8rem]">
+              {t(KEYS.NEW_PASSWORD, source)}
+            </span>
+            <Input
+              placeholder={t(KEYS.PLEASE_ENTRE)}
+              className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
             />
           </div>
           <div className="flex justify-start items-center">
-            <span className="text-[0.8rem]">確認密碼</span>
+            <span className="text-[0.8rem]">
+              {t(KEYS.CONFIRM_PASSWORD, source)}
+            </span>
             <Input
-              placeholder="請輸入"
+              placeholder={t(KEYS.PLEASE_ENTRE)}
               className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
             />
           </div>

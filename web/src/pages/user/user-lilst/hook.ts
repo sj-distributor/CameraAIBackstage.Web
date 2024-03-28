@@ -2,6 +2,8 @@ import { useDebounce, useRequest } from "ahooks";
 import { message } from "antd";
 import { useEffect, useState } from "react";
 
+import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/user-list-keys";
 import {
   GetUserList,
   PostBatchDeleteUsers,
@@ -15,25 +17,17 @@ import {
 } from "@/services/dtos/user";
 
 export const useAction = () => {
-  const [isAddUser, setIsAddUser] = useState<boolean>(false);
+  const source = { ns: "userList" };
 
-  const [isDeleteUser, setIsDeleteUser] = useState<boolean>(false);
+  const { t } = useAuth();
+
+  const [isAddUser, setIsAddUser] = useState<boolean>(false);
 
   const [isClosed, setIsClosed] = useState<boolean>(false);
 
   const [isRemoveUser, setIsRemoveUser] = useState<boolean>(false);
 
   const [isResetPassword, setIsResetPassword] = useState<boolean>(false);
-
-  const [isSelectList, setIsSelectList] = useState<boolean>(false);
-
-  const [expandedKeys, setExpandedKeys] = useState<string[]>(["Janny"]);
-
-  const [checkedKeys, setCheckedKeys] = useState<string[]>(["Janny"]);
-
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
-
-  const [autoExpandParent, setAutoExpandParent] = useState(true);
 
   const [keyword, setKeyword] = useState<string>("");
 
@@ -48,18 +42,13 @@ export const useAction = () => {
 
   const [deleteUserKeys, setDeleteUserKeys] = useState<string[]>([""]);
 
+  const [updateUserId, setUpdateUserId] = useState<string>("");
+
   const [isDeleteUserLoading, setIsDeleteUserLoading] =
     useState<boolean>(false);
 
   const [getUserListRequest, setGetUserListRequest] =
     useState<IGetUserListRequest>({ PageIndex: 1, PageSize: 20 });
-
-  const rowSelection = {
-    getCheckboxProps: (record: { deviceId: string; name: string }) => ({
-      disabled: record.name === "Disabled User",
-      name: record.name,
-    }),
-  };
 
   const handelConfirmDeleteUsers = () => {
     if (deleteUserKeys.length < 1) return;
@@ -73,7 +62,7 @@ export const useAction = () => {
       .then(() => {
         setIsRemoveUser(false);
         handelGetUserList({ ...getUserListRequest, Keyword: filterKeyword });
-        message.success("移除用戶成功");
+        message.success(t(KEYS.REMOVE_USER_OK, source));
       })
       .catch((err) => {
         message.error(err.msg);
@@ -89,11 +78,11 @@ export const useAction = () => {
     try {
       const data = await PostCreateUsers(userIds);
 
-      data && message.success("添加用户成功");
+      data && message.success(t(KEYS.ADD_USER_OK, source));
       loading = false;
-    } catch (_) {
+    } catch (err) {
       loading = false;
-      message.error("添加用户失败");
+      message.error((err as Error).message);
     }
 
     return loading;
@@ -115,7 +104,7 @@ export const useAction = () => {
   const { run: handelUpdateUserData, loading: isUpdateUserLoading } =
     useRequest(PostUpdateUser, {
       manual: true,
-      onSuccess: (res) => {
+      onSuccess: () => {
         handelGetUserList({ ...getUserListRequest, Keyword: filterKeyword });
       },
       onError: (err) => {
@@ -130,29 +119,16 @@ export const useAction = () => {
   return {
     isAddUser,
     setIsAddUser,
-    isDeleteUser,
-    setIsDeleteUser,
-    isClosed,
+    handelGetSelectedUsers,
     setIsClosed,
     isRemoveUser,
     setIsRemoveUser,
     isResetPassword,
     setIsResetPassword,
-    isSelectList,
-    setIsSelectList,
-    rowSelection,
-    expandedKeys,
-    setExpandedKeys,
-    checkedKeys,
-    setCheckedKeys,
-    selectedKeys,
-    setSelectedKeys,
-    autoExpandParent,
-    setAutoExpandParent,
     getUserListRequest,
     setGetUserListRequest,
-    userListData,
     isGetUserListLoading,
+    userListData,
     keyword,
     setKeyword,
     isDeleteUsers,
@@ -160,8 +136,11 @@ export const useAction = () => {
     handelConfirmDeleteUsers,
     setDeleteUserKeys,
     isDeleteUserLoading,
-    handelGetSelectedUsers,
     handelUpdateUserData,
     isUpdateUserLoading,
+    t,
+    source,
+    updateUserId,
+    setUpdateUserId,
   };
 };
