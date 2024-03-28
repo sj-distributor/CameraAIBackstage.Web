@@ -118,3 +118,20 @@ export enum CameraAiMonitorType {
   Vehicles, // 識別車輛
   AbnormalVehicles, // 識別異常車輛
 }
+
+export interface IPlayBackGenerateRequest {
+  locationId: string;
+  equipmentCode: string;
+  startTime: string;
+  endTime: string;
+  taskId: string;
+  monitorTypes: number[];
+}
+
+export interface IGeneratePlayBackRequest {
+  locationId: string;
+  equipmentCode: string;
+  startTime: string;
+  endTime: string;
+  monitorTypes: number[];
+}

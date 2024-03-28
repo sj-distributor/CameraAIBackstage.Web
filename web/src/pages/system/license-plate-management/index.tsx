@@ -52,7 +52,7 @@ export const LicensePlateManagement = () => {
         )}
       </span>
       {showWarningDetails ? (
-        <WarningDetails />
+        <WarningDetails showWarningDetails={showWarningDetails} />
       ) : (
         <LicensePlateManagementTable
           isRegisteredVehicle={isRegisteredVehicle}

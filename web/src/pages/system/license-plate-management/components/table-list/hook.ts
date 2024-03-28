@@ -99,16 +99,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   const [registeredVehicleData, setRegisteredVehicleData] =
     useState<IGetRegisteredVehicleListResponse>({
       count: 0,
-      registers: [
-        {
-          id: 1,
-          type: CameraAiMonitorRegisterType.Car,
-          faceName: "string",
-          plateNumber: "string",
-          registeredRecordStatus: CameraAiMonitorRecordStatus.Verified,
-          createdTime: "2024-3-26",
-        },
-      ],
+      registers: [],
     });
 
   const [dateRange, setDateRange] = useState<RangeValue<Dayjs>>();
@@ -262,6 +253,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   } = useRequest(GetRegisteredVehicleList, {
     manual: true,
     onSuccess: (res) => {
+      console.log(res);
       res && setRegisteredVehicleData(res);
     },
     onError(error) {

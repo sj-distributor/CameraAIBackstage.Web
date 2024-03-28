@@ -1,5 +1,6 @@
 import "swiper/swiper-bundle.css";
 
+import { WarningFilled } from "@ant-design/icons";
 import { DatePicker, Popover } from "antd";
 import dayjs from "dayjs";
 import {
@@ -11,6 +12,7 @@ import {
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/license-plate-management-keys";
 
 import {
@@ -36,7 +38,7 @@ export enum WarningTypes {
   Man,
 }
 
-export const WarningDetails = () => {
+export const WarningDetails = (props: { showWarningDetails: string }) => {
   const {
     handleSetPalyVideo,
     isOpenSpeedList,
@@ -54,7 +56,13 @@ export const WarningDetails = () => {
     source,
     warningDetails,
     warningDetailList,
-  } = useAction();
+    isOpenExportVideoModal,
+    setIsOpenExportVideoModal,
+    handelGetPlayBackData,
+    setPalyBlackData,
+  } = useAction(props);
+
+  const { RangePicker } = DatePicker;
 
   const detailsTitle = {
     name: t(KEYS.DEVICE_NAME, source),
@@ -108,7 +116,48 @@ export const WarningDetails = () => {
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col flex-1 overflow-hidden">
+      <CustomModal
+        title={
+          <div>
+            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
+            確認導出視頻？
+          </div>
+        }
+        onCancle={() => {
+          setIsOpenExportVideoModal(false);
+        }}
+        onConfirm={() => {
+          handelGetPlayBackData();
+          setIsOpenExportVideoModal(false);
+        }}
+        open={isOpenExportVideoModal}
+        className={"customModal"}
+      >
+        <span className="pl-[2rem]">
+          <RangePicker
+            showTime={{ format: "HH:mm" }}
+            format="YYYY-MM-DD HH:mm"
+            onChange={(dates) => {
+              setPalyBlackData((prev) => ({
+                ...prev,
+                startTime:
+                  dates && dates?.length >= 1
+                    ? dates[0]
+                      ? dates[0].toISOString()
+                      : undefined
+                    : undefined,
+                endTime:
+                  dates && dates?.length >= 2
+                    ? dates[1]
+                      ? dates[1].toISOString()
+                      : undefined
+                    : undefined,
+              }));
+            }}
+          />
+        </span>
+      </CustomModal>
       <div className="text-[0.75rem] flex flex-wrap pt-[1.5rem] px-[1.5rem] bg-white rounded-lg mt-[1.5rem]">
         {warningDetailList?.map((item, index) => {
           return (
@@ -121,13 +170,14 @@ export const WarningDetails = () => {
           );
         })}
       </div>
-      <div className="my-4 rounded-lg h-[45%] bg-[#ccc] w-full relative overflow-hidden">
+      <div className="my-4 rounded-lg flex-1 bg-[#ccc] w-full relative overflow-hidden">
         <video
           ref={videoRef}
           onEnded={() => setIsPalyVideo(false)}
           onLoadedMetadata={handleLoadedMetadata}
           height={"100%"}
           width={"100%"}
+          className="object-fill"
           src="https://cdn-busybee.wiltechs.com/2097_1705455545.mp4"
         />
         <div className="bg-[#1f1f3970] h-[4.5rem] absolute bottom-0 w-full flex items-center px-[1.5rem] py-[0.625rem] justify-between">
@@ -150,25 +200,7 @@ export const WarningDetails = () => {
             <div
               className="mr-[1.5rem] cursor-pointer"
               onClick={() => {
-                const a = document.createElement("a");
-
-                const videoUrl =
-                  "https://cdn-busybee.wiltechs.com/2097_1705455545.mp4";
-
-                fetch(videoUrl)
-                  .then((response) => response.blob())
-                  .then((blob) => {
-                    const url = window.URL.createObjectURL(blob);
-
-                    a.href = url;
-                    a.download = videoUrl.split("com/")[1];
-                    a.click();
-
-                    window.URL.revokeObjectURL(url);
-                  })
-                  .catch((error) =>
-                    console.error("Error downloading video:", error)
-                  );
+                setIsOpenExportVideoModal(true);
               }}
             >
               {t(KEYS.EXPORT, source)}
@@ -215,7 +247,7 @@ export const WarningDetails = () => {
         ref={swiperRef}
         scrollbar={{ draggable: true, hide: true }}
         freeMode={true}
-        className="w-full h-24 bg-white rounded-lg relative"
+        className="w-full h-24 bg-white rounded-lg relative mb-4"
       >
         <div
           onClick={() => {
@@ -293,8 +325,11 @@ export const WarningDetails = () => {
                                 );
 
                                 return (
-                                  <div key={index} className={`w-1/5 h-max`}>
-                                    <div className="text-start text-[#5F6279] font-semibold text-[0.875rem] text-nowrap">
+                                  <div
+                                    key={index}
+                                    className={`w-1/5 h-max relative`}
+                                  >
+                                    <div className="text-start text-[#5F6279] font-semibold text-[0.875rem] text-nowrap absolute top-[-16px]">
                                       {dayjs(item).get("minute") % 5 === 0
                                         ? dayjs(item).format("hh:mm A")
                                         : ""}

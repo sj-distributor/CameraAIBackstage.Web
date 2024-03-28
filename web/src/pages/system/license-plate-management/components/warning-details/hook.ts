@@ -5,12 +5,19 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SwiperRef } from "swiper/react";
 
 import { useAuth } from "@/hooks/use-auth";
-import { GetWarningDemand } from "@/services/api/license-plate-management";
+import {
+  GetGenerateUrl,
+  GetWarningDemand,
+  PostGeneratePlayBack,
+  PostPlayBackGenerate,
+} from "@/services/api/license-plate-management";
 import { IGetWarningDemandResponse } from "@/services/dtos/license-plate-management";
 
 export type Speed = 0.5 | 1 | 1.25 | 1.5 | 2;
 
-export const useAction = () => {
+export const useAction = (props: { showWarningDetails: string }) => {
+  const { showWarningDetails } = props;
+
   const { t } = useAuth();
 
   const source = { ns: "licensePlateManagement" };
@@ -27,8 +34,27 @@ export const useAction = () => {
 
   const [videoDuration, setVideoDuration] = useState<number>(0);
 
+  const [isOpenExportVideoModal, setIsOpenExportVideoModal] =
+    useState<boolean>(false);
+
   const [warningDemandData, setWarningDemandData] =
     useState<IGetWarningDemandResponse>();
+
+  const [palybackData, setPalyBlackData] = useState<{
+    locationId: string;
+    equipmentCode: string;
+    startTime?: string;
+    endTime?: string;
+    monitorTypes: number[];
+    taskId: string;
+  }>({
+    locationId: "string",
+    equipmentCode: "string",
+    startTime: "2024-03-28T10:07:04.871Z",
+    endTime: "2024-03-28T10:07:04.871Z",
+    monitorTypes: [0],
+    taskId: "",
+  });
 
   const [timeAxisList, setTimeAxisList] = useState<
     {
@@ -37,6 +63,11 @@ export const useAction = () => {
   >();
 
   const [videoSpeed, setVideoSpeed] = useState<Speed>(1);
+
+  const [isPlayBackCallBackData, setIsPlayBackCallBackData] =
+    useState<boolean>(false);
+
+  const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
 
   const warningDetails = useMemo(() => {
     const details = {
@@ -51,11 +82,81 @@ export const useAction = () => {
         warningDemandData?.regionAndArea?.areaName ?? "廣東省中山市中山二路1號",
       duration:
         warningDemandData?.record?.duration ??
-        dayjs.unix(60).format("HH[h]mm[m]ss[s]"),
+        dayjs.unix(60).format("mm[m]ss[s]"),
     };
+
+    if (warningDemandData?.record && warningDemandData.regionAndArea) {
+      const {
+        monitorType,
+        equipmentCode,
+        replayTaskId,
+        occurrenceTime,
+        duration,
+      } = warningDemandData.record;
+
+      const endTime = dayjs(occurrenceTime)
+        .set("seconds", dayjs(occurrenceTime).get("seconds") + duration)
+        .toISOString();
+
+      const { locationId } = warningDemandData.regionAndArea;
+
+      const data = {
+        monitorType,
+        equipmentCode,
+        taskId: replayTaskId,
+        locationId,
+      };
+
+      setPalyBlackData((prev) => ({
+        ...prev,
+        ...data,
+      }));
+
+      const getUrlData = {
+        monitorTypes: [Number(monitorType)],
+        equipmentCode,
+        replayTaskId,
+        locationId,
+        endTime,
+        startTime: occurrenceTime,
+        taskId: replayTaskId,
+      };
+
+      PostPlayBackGenerate(getUrlData)
+        .then((res) => {
+          handelGetUrl(showWarningDetails);
+        })
+        .catch((err) => console.log(err));
+    }
 
     return details;
   }, [warningDemandData]);
+
+  const [detailsVideoUrl, setDetailsVideoUrl] = useState<string>("");
+
+  const handelGetUrl = (id: string) => {
+    if (detailsVideoUrl) return;
+    id &&
+      GetWarningDemand("19")
+        .then((res) => {
+          const { replayUrl } = res.record;
+
+          if (replayUrl) {
+            setDetailsVideoUrl(replayUrl);
+            setIsLoadingData(false);
+
+            return;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          // setTimeout(() => {
+          //   handelGetUrl(showWarningDetails);
+          // }, 5000);
+        });
+  };
 
   const warningDetailList = useMemo(() => {
     return Object.entries(warningDetails);
@@ -115,6 +216,75 @@ export const useAction = () => {
     }
   };
 
+  const handelGetPlayBackData = () => {
+    console.log(palybackData);
+    if (
+      palybackData.startTime &&
+      palybackData.endTime &&
+      palybackData.equipmentCode &&
+      palybackData.locationId &&
+      palybackData.monitorTypes &&
+      palybackData.taskId
+    ) {
+      const data = {
+        locationId: palybackData.locationId,
+        startTime: palybackData.startTime,
+        endTime: palybackData.endTime,
+        monitorTypes: palybackData.monitorTypes,
+        equipmentCode: "DTY8456",
+      };
+
+      PostGeneratePlayBack(data)
+        .then((res) => {
+          const { generateTaskId } = res;
+
+          message.info("視頻正在生成中，生成成功自動為您下載，請稍等");
+
+          generateTaskId && handelGetVideoPlayBackData(generateTaskId);
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
+  const handelGetVideoPlayBackData = (id: string) => {
+    if (isPlayBackCallBackData) return;
+
+    id &&
+      GetGenerateUrl(id)
+        .then((res) => {
+          const { generateUrl } = res;
+
+          if (generateUrl) {
+            handelDownloadUrl(generateUrl);
+            setIsPlayBackCallBackData(true);
+
+            return;
+          } else {
+            setInterval(() => handelGetVideoPlayBackData(id), 5000);
+          }
+        })
+        .catch(() => {});
+  };
+
+  const handelDownloadUrl = (url: string) => {
+    const a = document.createElement("a");
+
+    const videoUrl = url;
+
+    fetch(videoUrl)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+
+        a.href = url;
+        a.download = videoUrl.split("com/")[1];
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => console.error("Error downloading video:", error));
+  };
+
   const { run: handelGetWarningDemand } = useRequest(GetWarningDemand, {
     manual: true,
     onSuccess: (res) => {
@@ -126,8 +296,10 @@ export const useAction = () => {
   });
 
   useEffect(() => {
-    handelGetWarningDemand("1");
-  }, []);
+    handelGetWarningDemand("19");
+  }, [showWarningDetails]);
+
+  useEffect(() => {}, [isLoadingData]);
 
   return {
     handleSetPalyVideo,
@@ -151,5 +323,9 @@ export const useAction = () => {
     warningDetails,
     warningDemandData,
     warningDetailList,
+    isOpenExportVideoModal,
+    setIsOpenExportVideoModal,
+    handelGetPlayBackData,
+    setPalyBlackData,
   };
 };

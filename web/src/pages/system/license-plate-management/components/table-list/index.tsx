@@ -306,142 +306,140 @@ export const LicensePlateManagementTable = (
         },
       }}
     >
-      <div className="flex flex-col h-full">
-        <div className="flex flex-row pt-[1.625rem] justify-between">
-          <div className="flex flex-wrap gap-4">
-            <Input
-              className="w-[17.5rem] h-[2.5rem]"
-              suffix={<img src={search} />}
-              allowClear
-              placeholder={t(KEYS.SEARCH_VEHICLE_NUMBER, source)}
-              onChange={(e) => setPlateNumberKeyword(e.target.value)}
-              value={
-                !vehicleMonitorRecordsRequest.PlateNumber &&
-                !registeredVehicleRequest.PlateNumber
-                  ? undefined
-                  : plateNumberKeyword
-              }
-              onPressEnter={(e) => {
-                isRegisteredVehicle
-                  ? setRegisteredVehicleRequest((prev) => ({
-                      ...prev,
-                      PlateNumber: e.currentTarget.value,
-                    }))
-                  : setVehicleMonitorRecordsRequest((prev) => ({
-                      ...prev,
-                      PlateNumber: e.currentTarget.value,
-                    }));
-              }}
-            />
-            <RangePicker
-              className="w-[18.75rem] h-[2.5rem]"
-              presets={rangePresets}
-              value={dateRange}
-              onChange={onRangeChange}
-              renderExtraFooter={() => (
-                <div className="flex justify-between">
-                  {renderDateAndTime(dateRange ? dateRange[0] : null)}
-                  {renderDateAndTime(dateRange ? dateRange[1] : null)}
-                </div>
-              )}
-              allowClear
-              placeholder={[
-                t(LOG_KEYS.START_DATE, { ns: "operationLog" }),
-                t(LOG_KEYS.END_DATE, { ns: "operationLog" }),
-              ]}
-            />
-            {!isRegisteredVehicle && (
-              <Select
-                className="w-[13.5rem] h-[2.5rem]"
-                placeholder={t(KEYS.REGISTER_STATUS, source)}
-                allowClear
-                defaultActiveFirstOption
-                onChange={(status) => {
-                  setVehicleMonitorRecordsRequest((prev) => ({
+      <div className="flex flex-row pt-[1.625rem] justify-between">
+        <div className="flex flex-wrap gap-4">
+          <Input
+            className="w-[17.5rem] h-[2.5rem]"
+            suffix={<img src={search} />}
+            allowClear
+            placeholder={t(KEYS.SEARCH_VEHICLE_NUMBER, source)}
+            onChange={(e) => setPlateNumberKeyword(e.target.value)}
+            value={
+              !vehicleMonitorRecordsRequest.PlateNumber &&
+              !registeredVehicleRequest.PlateNumber
+                ? undefined
+                : plateNumberKeyword
+            }
+            onPressEnter={(e) => {
+              isRegisteredVehicle
+                ? setRegisteredVehicleRequest((prev) => ({
                     ...prev,
-                    Status: status,
+                    PlateNumber: e.currentTarget.value,
+                  }))
+                : setVehicleMonitorRecordsRequest((prev) => ({
+                    ...prev,
+                    PlateNumber: e.currentTarget.value,
                   }));
-                }}
-                options={statusOption}
-                suffixIcon={<img src={down} />}
-              />
+            }}
+          />
+          <RangePicker
+            className="w-[18.75rem] h-[2.5rem]"
+            presets={rangePresets}
+            value={dateRange}
+            onChange={onRangeChange}
+            renderExtraFooter={() => (
+              <div className="flex justify-between">
+                {renderDateAndTime(dateRange ? dateRange[0] : null)}
+                {renderDateAndTime(dateRange ? dateRange[1] : null)}
+              </div>
             )}
-          </div>
+            allowClear
+            placeholder={[
+              t(LOG_KEYS.START_DATE, { ns: "operationLog" }),
+              t(LOG_KEYS.END_DATE, { ns: "operationLog" }),
+            ]}
+          />
           {!isRegisteredVehicle && (
-            <Button
-              type="primary"
-              className="h-[2.5rem] max-w-max bg-[#2853E3] flex items-center"
-              onClick={() => setIsRegisteredVehicle(true)}
-            >
-              {t(KEYS.REGISTERED_VEHICLES, source)}
-            </Button>
-          )}
-        </div>
-        <div className="no-scrollbar overflow-y-auto flex-1 mt-[1.125rem]">
-          {isRegisteredVehicle ? (
-            <Table
-              rowKey={(record) => record.id}
-              columns={registeredColumns}
-              dataSource={registeredVehicleData.registers}
-              loading={isGetRegisteredVehicleList}
-              scroll={{ x: 1000 }}
-              sticky
-              pagination={false}
-            />
-          ) : (
-            <Table
-              rowKey={(record) => record.id}
-              columns={columns}
-              sticky
-              dataSource={vehicleMonitorRecordsData.records}
-              loading={isGetMonitorRecords}
-              scroll={{ x: 1000 }}
-              pagination={false}
+            <Select
+              className="w-[13.5rem] h-[2.5rem]"
+              placeholder={t(KEYS.REGISTER_STATUS, source)}
+              allowClear
+              defaultActiveFirstOption
+              onChange={(status) => {
+                setVehicleMonitorRecordsRequest((prev) => ({
+                  ...prev,
+                  Status: status,
+                }));
+              }}
+              options={statusOption}
+              suffixIcon={<img src={down} />}
             />
           )}
         </div>
-        <div className="flex justify-between items-center pt-[1rem]">
-          <div className="text-[#929292] text-[0.875rem] font-light">
-            <Trans
-              {...source}
-              i18nKey="TotalItems"
-              values={{
-                length: isRegisteredVehicle
-                  ? registeredVehicleData.count
-                  : vehicleMonitorRecordsData.count,
-              }}
-              components={{
-                span: <span className="text-[#2853E3]" />,
-              }}
-            />
-          </div>
-          <div className="pb-6 px-2">
-            <Pagination
-              current={1}
-              pageSize={20}
-              pageSizeOptions={[5, 10, 20]}
-              total={
-                isRegisteredVehicle
-                  ? registeredVehicleData.count
-                  : vehicleMonitorRecordsData.count
-              }
-              showQuickJumper
-              showSizeChanger
-              onChange={(page, pageSize) => {
-                isRegisteredVehicle
-                  ? setRegisteredVehicleRequest((prev) => ({
-                      ...prev,
-                      PageIndex: page,
-                      PageSize: pageSize,
-                    }))
-                  : setVehicleMonitorRecordsRequest((prev) => ({
-                      ...prev,
-                      PageIndex: page,
-                      PageSize: pageSize,
-                    }));
-              }}
-            />
-          </div>
+        {!isRegisteredVehicle && (
+          <Button
+            type="primary"
+            className="h-[2.5rem] max-w-max bg-[#2853E3] flex items-center"
+            onClick={() => setIsRegisteredVehicle(true)}
+          >
+            {t(KEYS.REGISTERED_VEHICLES, source)}
+          </Button>
+        )}
+      </div>
+      <div className="no-scrollbar overflow-y-auto flex-1 mt-[1.125rem]">
+        {isRegisteredVehicle ? (
+          <Table
+            rowKey={(record) => record.id}
+            columns={registeredColumns}
+            dataSource={registeredVehicleData.registers}
+            loading={isGetRegisteredVehicleList}
+            scroll={{ x: 1000 }}
+            sticky
+            pagination={false}
+          />
+        ) : (
+          <Table
+            rowKey={(record) => record.id}
+            columns={columns}
+            sticky
+            dataSource={vehicleMonitorRecordsData.records}
+            loading={isGetMonitorRecords}
+            scroll={{ x: 1000 }}
+            pagination={false}
+          />
+        )}
+      </div>
+      <div className="flex justify-between items-center pt-[1rem]">
+        <div className="text-[#929292] text-[0.875rem] font-light">
+          <Trans
+            {...source}
+            i18nKey="TotalItems"
+            values={{
+              length: isRegisteredVehicle
+                ? registeredVehicleData.count
+                : vehicleMonitorRecordsData.count,
+            }}
+            components={{
+              span: <span className="text-[#2853E3]" />,
+            }}
+          />
+        </div>
+        <div className="pb-4 px-2">
+          <Pagination
+            current={1}
+            pageSize={20}
+            pageSizeOptions={[5, 10, 20]}
+            total={
+              isRegisteredVehicle
+                ? registeredVehicleData.count
+                : vehicleMonitorRecordsData.count
+            }
+            showQuickJumper
+            showSizeChanger
+            onChange={(page, pageSize) => {
+              isRegisteredVehicle
+                ? setRegisteredVehicleRequest((prev) => ({
+                    ...prev,
+                    PageIndex: page,
+                    PageSize: pageSize,
+                  }))
+                : setVehicleMonitorRecordsRequest((prev) => ({
+                    ...prev,
+                    PageIndex: page,
+                    PageSize: pageSize,
+                  }));
+            }}
+          />
         </div>
       </div>
 
