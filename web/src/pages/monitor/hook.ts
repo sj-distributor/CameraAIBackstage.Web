@@ -88,10 +88,10 @@ export const useAction = () => {
   };
 
   const onFilterType = (value: IMonitorOptionDto[]) => {
-    // if () {
-    //   setSelectWarningType(undefined);
-    //   return;
-    // }
+    if (value.some((x) => x.value === CameraAiMonitorType.All)) {
+      setSelectWarningType(undefined);
+      return;
+    }
     setSelectWarningType(value);
   };
 

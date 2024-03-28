@@ -16,7 +16,7 @@ export const GetMonitorSettingPage = async (data: IMonitorSettingRequest) => {
   const response = await api.get<IMonitorSettingResponse>(
     `/api/CameraAi/monitor/setting/page?PageSize=${data.PageSize}&PageIndex=${
       data.PageIndex
-    }${data.IsActive ? `&IsActive=${data.IsActive}` : ""}${
+    }${data.IsActive !== undefined ? `&IsActive=${data.IsActive}` : ""}${
       data.MonitorType ? `&${MonitorTypesValues}` : ""
     }`
   );

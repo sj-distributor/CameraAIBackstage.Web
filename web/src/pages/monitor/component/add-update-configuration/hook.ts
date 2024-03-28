@@ -222,11 +222,33 @@ export const useAction = () => {
     }
   };
 
-  const onDeleteNoticeUserItem = (index: number) => {
+  const onDeleteNoticeUserItem = (staffId: string) => {
+    // 复制选择的用户列表
     const newSelectUserList = clone(selectUserValue);
 
-    newSelectUserList.splice(index, 1);
-    setSelectUserValue(selectUserValue);
+    // 在 newSelectUserList 中找到要删除的项并删除
+    const filteredUserList = newSelectUserList.filter(
+      (user) => user.value !== staffId
+    );
+
+    // 更新选择的用户列表状态
+    setSelectUserValue(filteredUserList);
+
+    // 在选择的用户数据列表中找到要删除的项并删除
+    const updatedUserData = selectUserData.map((item) => {
+      // 在 recipientIds 数组中找到要删除的 staffId 并删除
+      item.recipientIds = item.recipientIds.filter((id) => id !== staffId);
+
+      // 在 recipients 数组中找到要删除的 staffId 并删除
+      item.recipients = item.recipients.filter(
+        (recipient) => recipient.staffId !== staffId
+      );
+
+      return item;
+    });
+
+    // 更新选择的用户数据状态
+    setSelectUserData(updatedUserData);
   };
 
   const onChangeNoticeUserList = (option: IOptionsStringDto[]) => {
@@ -272,9 +294,7 @@ export const useAction = () => {
       if (!isAdd && id) {
         data.id = Number(id); // 编辑添加 id
       }
-      if (!isAdd && !data.id) {
-        message.error("id 丢失，请重新打开");
-      }
+
       setSubmitLoadin(true);
       isAdd
         ? MonitorSettingCreate(data)

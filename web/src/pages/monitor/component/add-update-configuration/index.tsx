@@ -433,10 +433,17 @@ export const AddOrUpdateConfiguration = () => {
                               {
                                 required: true,
                                 validator: () => {
+                                  const isAllComplete = selectUserValue.every(
+                                    (item) =>
+                                      selectUserData.some((x) =>
+                                        x.recipientIds.includes(item.value)
+                                      )
+                                  );
                                   if (
                                     selectUserData.some(
                                       (x) => !isEmpty(x.recipientIds)
-                                    )
+                                    ) &&
+                                    isAllComplete
                                   ) {
                                     return Promise.resolve();
                                   }
@@ -490,14 +497,14 @@ export const AddOrUpdateConfiguration = () => {
                                               >
                                                 <Checkbox
                                                   className="w-[1.125rem] h-[1.125rem]"
-                                                  defaultChecked={selectUserData
+                                                  checked={selectUserData
                                                     .find(
-                                                      (item) =>
-                                                        item.notifyType ===
+                                                      (x) =>
+                                                        x.notifyType ===
                                                         typeItem.type
                                                     )
-                                                    ?.recipientIds.includes(
-                                                      item.value
+                                                    ?.recipientIds.some(
+                                                      (x) => x === item.value
                                                     )}
                                                   onChange={(e) => {
                                                     onChangeUserNotificationType(
@@ -518,7 +525,7 @@ export const AddOrUpdateConfiguration = () => {
                                       <CloseOutlined
                                         className="w-[1rem] h-[1rem] text-[#5F6279] text-xs"
                                         onClick={() =>
-                                          onDeleteNoticeUserItem(index)
+                                          onDeleteNoticeUserItem(item.value)
                                         }
                                       />
                                     </div>
