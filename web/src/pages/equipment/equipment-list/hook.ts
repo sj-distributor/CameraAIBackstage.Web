@@ -154,7 +154,6 @@ export const useAction = () => {
       .then(() => {
         setIsAddOrUpdateOpen(false);
         initGetEquipmentList();
-        setIsBindingOpen(false);
         form.setFieldsValue(initialEquipmentData);
       })
       .catch((err) => message.error(`更新失敗：${err}`))
@@ -162,14 +161,6 @@ export const useAction = () => {
   };
 
   const handleCreate = () => {
-    try {
-      checkValue(form.getFieldsValue());
-    } catch (error) {
-      message.info((error as Error).message);
-
-      return Promise.reject();
-    }
-
     setConfirmLoading(true);
     PostCreateEquipment({
       equipment: form.getFieldsValue(),
