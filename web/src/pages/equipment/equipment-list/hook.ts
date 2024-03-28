@@ -140,12 +140,6 @@ export const useAction = () => {
     setClickEditId(id);
   };
 
-  const checkValue = (data: IEquipmentCreateOrUpdateDto) => {
-    if (Object.values(data).some((value) => !value)) {
-      throw new Error();
-    }
-  };
-
   const handleUpdate = () => {
     setConfirmLoading(true);
     PostUpdateEquipment({
@@ -175,11 +169,10 @@ export const useAction = () => {
   };
 
   const onAddOrUpdateSubmit = (isAdd: boolean) => {
-    try {
-      form.validateFields();
-      checkValue(form.getFieldsValue());
-    } catch (error) {
-      return Promise.reject();
+    form.validateFields();
+
+    if (Object.values(form.getFieldsValue()).some((value) => !value)) {
+      return;
     }
 
     isAdd ? handleCreate() : handleUpdate();
