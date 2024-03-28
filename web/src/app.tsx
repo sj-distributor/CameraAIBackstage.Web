@@ -10,8 +10,28 @@ function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    // 内部调试自行加个 token 值上去
-    localStorage.setItem((window as any).appSettings?.tokenKey, "");
+    const cookieString = document.cookie;
+
+    // 拆分成一个包含每个 Cookie 的数组
+    const cookiesArray = cookieString.split(";");
+
+    // 初始化目标 Cookie 值
+    let targetCookieValue = null;
+
+    // 遍历数组
+    for (const cookie of cookiesArray) {
+      // 去除空格
+      const trimmedCookie = cookie.trim();
+
+      // 如果该 Cookie 以 'param1=' 开头
+      if (trimmedCookie.startsWith("param1=")) {
+        // 截取 'param1=' 后面的字符串
+        targetCookieValue = trimmedCookie.substring("param1=".length);
+        break; // 找到目标 Cookie，退出循环
+      }
+    }
+    if (!targetCookieValue) return;
+    targetCookieValue && localStorage.setItem("tokenKey", targetCookieValue);
   }, [localStorage.getItem((window as any).appSettings?.tokenKey)]);
 
   useEffect(() => {
