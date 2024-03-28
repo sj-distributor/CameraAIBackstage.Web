@@ -18,6 +18,8 @@ import {
   RoleSystemSourceEnum,
 } from "@/services/dtos/user-permission";
 
+import { BackGroundRolePermissionEnum, FrontRolePermissionEnum } from "./props";
+
 export const useAction = () => {
   const { t, language } = useAuth();
 
@@ -57,9 +59,12 @@ export const useAction = () => {
     initialPermissionData
   );
 
-  const [rolePermissions, setRolePermissions] = useState<CheckboxValueType[]>(
-    []
-  );
+  const [permissionNoChangeData, setPermissionNoChangeData] =
+    useState<IRolePermissionByRoleIdResponse>(initRolePermissionByRoleIdData);
+
+  const [updateRolePermissions, setUpdateRolePermissions] = useState<
+    CheckboxValueType[]
+  >([]);
 
   const [roleFrontPermissions, setRoleFrontPermissions] = useState<
     CheckboxValueType[]
@@ -68,16 +73,6 @@ export const useAction = () => {
   const [roleBackgroundPermissions, setRoleBackgroundPermissions] = useState<
     CheckboxValueType[]
   >([]);
-
-  console.log(rolePermissions);
-
-  const AddRoleName = (e: []) => {
-    console.log(e);
-  };
-
-  const handleCheckBox: CheckboxProps["onChange"] = (e) => {
-    console.log(`checked = ${e.target.checked}`);
-  };
 
   const onChangeRoleData = (
     field: "role" | "roleUsers" | "rolePermissions" | "rolePermissionsUserIds",
@@ -141,12 +136,6 @@ export const useAction = () => {
 
     return undefined;
   };
-
-  const formatRolePermission = (list: CheckboxValueType[]) =>
-    list.map((item) => ({
-      permissionId: Number(item),
-      userIds: [],
-    }));
 
   const onGetPermission = () => {
     GetPermission()
@@ -214,14 +203,13 @@ export const useAction = () => {
 
     GetRolePermissionByRoleId(Number(id))
       .then((response) => {
+        setPermissionNoChangeData(response);
         setRolePermissionByRoleIdData(
           response ?? initRolePermissionByRoleIdData
         );
       })
       .catch((error) => {
         message.error(error.msg);
-
-        setRolePermissionByRoleIdData(initRolePermissionByRoleIdData);
       })
       .finally(() => setIsLoaded(true));
   };
@@ -238,7 +226,6 @@ export const useAction = () => {
     PostCreateRoles(filterCreateOrUpdateParam())
       .then(() => {
         message.success("创建成功");
-        navigate("/permission/settings");
       })
       .catch((error) => {
         message.error(error.msg);
@@ -265,7 +252,6 @@ export const useAction = () => {
     })
       .then(() => {
         message.success("更新成功");
-        navigate("/permission/settings");
       })
       .catch((error) => {
         message.error(error.msg);
@@ -280,18 +266,43 @@ export const useAction = () => {
   }, []);
 
   useEffect(() => {
-    setRolePermissions([...roleFrontPermissions, ...roleBackgroundPermissions]);
+    onChangeRoleData("rolePermissions", [
+      ...roleFrontPermissions,
+      ...roleBackgroundPermissions,
+    ]);
   }, [roleFrontPermissions, roleBackgroundPermissions]);
 
   useEffect(() => {
-    onChangeRoleData("rolePermissions", rolePermissions);
-  }, [rolePermissions]);
+    const frontPermission = permissionNoChangeData.rolePermissions.filter(
+      (permission) => {
+        return (
+          Object.values(FrontRolePermissionEnum).includes(
+            permission.permissionName
+          ) && permission
+        );
+      }
+    );
+
+    const backGroundPermission = permissionNoChangeData.rolePermissions.filter(
+      (permission) => {
+        return (
+          Object.values(BackGroundRolePermissionEnum).includes(
+            permission.permissionName
+          ) && permission
+        );
+      }
+    );
+
+    setRoleFrontPermissions(frontPermission.map((item) => item.permissionId!));
+
+    setRoleBackgroundPermissions(
+      backGroundPermission.map((item) => item.permissionId!)
+    );
+  }, [permissionNoChangeData.rolePermissions.length]);
 
   return {
-    AddRoleName,
     checkList,
     setCheckList,
-    handleCheckBox,
     navigate,
     t,
     source,
@@ -302,8 +313,11 @@ export const useAction = () => {
     onCreateRole,
     onUpdateRole,
     isCreate,
-    setRolePermissions,
+    setUpdateRolePermissions,
     setRoleFrontPermissions,
     setRoleBackgroundPermissions,
+    roleFrontPermissions,
+    roleBackgroundPermissions,
+    updateRolePermissions,
   };
 };

@@ -25,30 +25,12 @@ export const NewOrUpdatePermissions = () => {
     isCreate,
     setRoleFrontPermissions,
     setRoleBackgroundPermissions,
+    roleFrontPermissions,
+    roleBackgroundPermissions,
+    updateRolePermissions,
   } = useAction();
 
   const { role, rolePermissions } = rolePermissionByRoleIdData;
-
-  console.log(rolePermissions);
-
-  const frontPermission = rolePermissions.filter((permission) => {
-    return (
-      Object.values(FrontRolePermissionEnum).includes(
-        permission.permissionName
-      ) && permission
-    );
-  });
-
-  const backGroundPermission = rolePermissions.filter((permission) => {
-    return (
-      Object.values(BackGroundRolePermissionEnum).includes(
-        permission.permissionName
-      ) && permission
-    );
-  });
-
-  console.log("Front Permissions:", frontPermission);
-  console.log("BackGround Permissions:", backGroundPermission);
 
   const isEnglish = language === "en";
 
@@ -187,7 +169,7 @@ export const NewOrUpdatePermissions = () => {
                 </span>
               </div>
               <Checkbox.Group
-                value={frontPermission.map((item) => item.permissionId!)}
+                value={roleFrontPermissions}
                 onChange={(checkedValue) =>
                   setRoleFrontPermissions(checkedValue)
                 }
@@ -231,7 +213,7 @@ export const NewOrUpdatePermissions = () => {
                 </span>
               </div>
               <Checkbox.Group
-                value={rolePermissions.map((item) => item.permissionId!)}
+                value={roleBackgroundPermissions}
                 onChange={(checkedValue) =>
                   setRoleBackgroundPermissions(checkedValue)
                 }
@@ -267,7 +249,9 @@ export const NewOrUpdatePermissions = () => {
         <Button
           type="primary"
           className="w-[5rem] h-[2.5rem] mr-[1rem] bg-[#2853E3]"
-          onClick={() => (isCreate ? onCreateRole() : onUpdateRole())}
+          onClick={() => {
+            isCreate ? onCreateRole() : onUpdateRole();
+          }}
         >
           {t(KEYS.CONFIRM, source)}
         </Button>

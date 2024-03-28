@@ -91,9 +91,11 @@ export const UserPermissions = () => {
             <div className="flex justify-center items-center">
               {operateButtons.map((item, index) => (
                 <>
-                  {["CanGrantCameraAiRole", "CanUpdateCameraAiRole"].includes(
-                    item.permissions
-                  ) && (
+                  {[
+                    "CanGrantCameraAiRole",
+                    "CanUpdateCameraAiRole",
+                    "CanDeleteCameraAiRole",
+                  ].includes(item.permissions) && (
                     <Button
                       key={index}
                       type="link"

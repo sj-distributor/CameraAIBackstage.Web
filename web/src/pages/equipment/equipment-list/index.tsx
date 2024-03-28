@@ -135,8 +135,14 @@ export const EquipmentList = () => {
                 setBindId(record.id);
 
                 if (data[index].isBind && !value) {
-                  setIsUnbindOpen(true);
-                } else {
+                  myPermissions.includes(
+                    BackGroundRolePermissionEnum.CanUnBindCameraAiEquipment
+                  ) && setIsUnbindOpen(true);
+                } else if (
+                  myPermissions.includes(
+                    BackGroundRolePermissionEnum.CanBindCameraAiEquipment
+                  )
+                ) {
                   setIsBindingOpen(true);
                   onOpenBind();
                 }

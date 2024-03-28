@@ -103,8 +103,15 @@ export const UserList = () => {
               language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
             } text-[.625rem] customSwitch`}
             onChange={(isQualified) => {
-              setUpdateUserId(String(record.id));
-              handelUpdateUserData({ ...record, isQualified });
+              if (
+                myPermissions.includes(
+                  BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount ||
+                    BackGroundRolePermissionEnum.CanDisableCameraAiUserAccount
+                )
+              ) {
+                setUpdateUserId(String(record.id));
+                handelUpdateUserData({ ...record, isQualified });
+              }
             }}
           />
         );
