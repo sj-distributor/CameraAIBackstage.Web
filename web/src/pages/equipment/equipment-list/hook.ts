@@ -48,7 +48,7 @@ export const useAction = () => {
   const [dataTotalCount, setDataTotalCount] = useState<number>(0);
 
   const [pageDto, setPageDto] = useState<IPageDto>({
-    PageSize: 2147483647,
+    PageSize: 10,
     PageIndex: 1,
   });
 
