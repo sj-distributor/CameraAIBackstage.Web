@@ -6,7 +6,10 @@ import {
   GetAreaManagementPage,
   PostDeleteAreaId,
 } from "@/services/api/area-management";
-import { IAreaManagementPageResponse } from "@/services/dtos/area-management";
+import {
+  IAreaManagementPageResponse,
+  IRegionsDto,
+} from "@/services/dtos/area-management";
 
 import { IModifyModalDto } from "./props";
 

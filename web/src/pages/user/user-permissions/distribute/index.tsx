@@ -28,13 +28,13 @@ export const UserDistribute = () => {
     setIsAddNewUser,
     navigate,
     data,
-    // isTableLoading,
+    isTableLoading,
     pageDto,
     setPageDto,
     onSelectedAllRow,
     selectedRowKeys,
     setSearchValue,
-    // setSearchKeywordValue,
+    setSearchKeywordValue,
     searchValue,
   } = useAction();
 
@@ -106,7 +106,7 @@ export const UserDistribute = () => {
               suffix={
                 <img
                   src={search}
-                  // onClick={() => setSearchKeywordValue(searchValue)}
+                  onClick={() => setSearchKeywordValue(searchValue)}
                 />
               }
               value={searchValue}
@@ -133,12 +133,12 @@ export const UserDistribute = () => {
         <div className="flex flex-col h-[calc(100vh-17rem)] justify-between">
           <div className="overflow-auto no-scrollbar pb-[1.125rem]">
             <Table
-              rowKey={(record) => record.key}
+              rowKey={(record) => record.deviceId}
               columns={columns}
               dataSource={data}
               pagination={false}
               sticky={true}
-              // loading={isTableLoading}
+              loading={isTableLoading}
               rowSelection={{
                 type: "checkbox",
                 selectedRowKeys,
@@ -185,9 +185,6 @@ export const UserDistribute = () => {
         isModelOpen={isAddNewUser}
         setIsModelOpen={setIsAddNewUser}
         data={data}
-        handelGetSelectedUsers={function (): Promise<boolean> {
-          throw new Error("Function not implemented.");
-        }}
       />
     </div>
   );
