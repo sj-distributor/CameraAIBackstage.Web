@@ -20,8 +20,9 @@ export const useAction = () => {
 
   const initialRegionDataItem = {
     regionAddress: "",
-    regionAreaNames: [""],
+    areaNames: [""],
     principal: "",
+    locationId: "",
   };
 
   const initialRegionListDto = { count: 0, regions: [] };

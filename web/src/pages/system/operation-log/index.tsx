@@ -4,7 +4,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { DatePicker, Input, Pagination, Table, TableColumnsType } from "antd";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { Trans } from "react-i18next";
 
 import KEYS from "@/i18n/language/keys/operation-log-keys";
@@ -49,6 +49,9 @@ export const OperationLog = () => {
       title: t(KEYS.OPERATING_TIME, { ns: "operationLog" }),
       dataIndex: "createdTime",
       width: "25%",
+      render: (text) => {
+        return <div>{dayjs(text).format("YYYY-MM-DD HH:mm:ss")}</div>;
+      },
     },
   ];
 

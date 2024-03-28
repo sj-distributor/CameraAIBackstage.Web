@@ -28,8 +28,8 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
   const renderRequiredLabel = (translationKey: string) => {
     return (
       <div
-        className={`mr-2 mt-[0.4rem] whitespace-nowrap flex ${
-          language === "en" ? "w-[9.5rem] justify-end" : ""
+        className={`mr-2 mt-[0.4rem] whitespace-nowrap flex justify-end ${
+          language === "en" ? "w-[9.5rem]" : "w-[4.2rem]"
         }`}
       >
         <div className="text-red-500 mr-1 mt-[0.1rem]">*</div>
@@ -55,11 +55,10 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
       onConfirm={() => {
         if (
           regionDataItem?.regionAddress?.trim() === "" ||
+          !regionDataItem?.locationId?.trim() ||
           (operateModalParams.isEdit
             ? regionDataItem?.areaName?.trim() === ""
-            : regionDataItem?.regionAreaNames?.some(
-                (name) => name.trim() === ""
-              ))
+            : regionDataItem?.areaNames?.some((name) => name.trim() === ""))
         ) {
           setIsValueExist(true);
 
@@ -78,6 +77,23 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
       confirmLoading={isLoading}
     >
       <>
+        <div className={`flex ${!isValueExist ? "mb-[1.5rem]" : ""}`}>
+          {renderRequiredLabel(t(KEYS.WAREHOUSE_ID, source))}
+          <Input
+            placeholder={t(KEYS.PLEASE_INPUT, source)}
+            className="w-[24.9375rem] h-[2.0625rem]"
+            onChange={(e) =>
+              handleUpdateDataChange("locationId", e.target.value)
+            }
+            value={regionDataItem.locationId}
+            status={isValueExist ? "error" : undefined}
+          />
+        </div>
+        {isValueExist && (
+          <div className="ml-[4.7rem] text-red-500 mb-[0.8rem]">
+            {t(KEYS.REQUIRED_FIELDS, source)}
+          </div>
+        )}
         <div className={`flex ${!isValueExist ? "mb-[1.5rem]" : ""}`}>
           {renderRequiredLabel(KEYS.AREA_ADDRESS)}
           <Input
@@ -132,7 +148,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
           <div className="flex">
             {renderRequiredLabel(KEYS.MODAL_AREA_NAME)}
             <div>
-              {regionDataItem?.regionAreaNames?.map((field, index) => (
+              {regionDataItem?.areaNames?.map((field, index) => (
                 <div
                   className={`${index !== 0 ? "mt-[1.5rem]" : ""} ${
                     index !== 0 && isValueExist ? "mt-[0.8rem]" : ""
@@ -148,7 +164,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
                       value={field}
                       onChange={(e) =>
                         handleUpdateDataChange(
-                          "regionAreaNames",
+                          "areaNames",
                           e.target.value,
                           index
                         )
@@ -171,10 +187,7 @@ export const AddAreaModal = (props: IAddAreaModalProps) => {
                       onClick={() => {
                         setRegionDataItem({
                           ...regionDataItem,
-                          regionAreaNames: [
-                            ...regionDataItem.regionAreaNames!,
-                            "",
-                          ],
+                          areaNames: [...regionDataItem.areaNames!, ""],
                         });
                         setIsValueExist(false);
                       }}

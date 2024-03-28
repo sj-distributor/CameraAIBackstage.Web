@@ -155,8 +155,24 @@ code {
   margin-bottom: 0 !important;
 }
 
+.portraitUploadStyle .ant-upload-list-picture-card {
+  display: flex;
+}
+
+.portraitUploadStyle .ant-upload-list-item-container {
+  margin-bottom: 0 !important;
+}
+
 .teamNameSelect .ant-select-item-option-selected {
   border-radius: 2rem !important;
   color: #2853e4 !important;
   font-weight: 500 !important;
+}
+
+.tree-transfer .ant-transfer-list-body-customize-wrapper {
+  overflow-y: auto;
+}
+
+.portrait .ant-popover-content {
+  width: 13.75rem !important;
 }
