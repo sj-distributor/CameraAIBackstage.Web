@@ -25,6 +25,16 @@ import {
 import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
 
 export const useAction = () => {
+  const initialEquipmentData = {
+    equipmentCode: "",
+    equipmentName: "",
+    equipmentTypeId: null,
+    ipAddress: "",
+    brand: "",
+    username: "",
+    password: "",
+  };
+
   const { t, language } = useAuth();
 
   const [form] = Form.useForm();
@@ -76,20 +86,6 @@ export const useAction = () => {
     undefined
   );
 
-  const [equipmentId, setEquipmentId] = useState<string>("");
-
-  const [ipAddress, setIpAddress] = useState<string>("");
-
-  const [username, setUsername] = useState<string>("");
-
-  const [password, setPassword] = useState<string>("");
-
-  const [equipmentType, setEquipmentType] = useState<string>("");
-
-  const [equipmentName, setEquipmentName] = useState<string>("");
-
-  const [equipmentTypeId, setEquipmentTypeId] = useState<number | null>(null);
-
   const [equipmentTypesOption, setEquipmentTypesOption] = useState<
     IOptionDto[]
   >([]);
@@ -105,7 +101,6 @@ export const useAction = () => {
       PageIndex: pageDto.PageIndex,
       PageSize: pageDto.PageSize,
       Keyword: searchKey ? searchKey : undefined,
-      RegionId: "1",
     };
 
     if (isSearchOnline !== undefined && isSearchOnline !== IOnlineOrNot.All) {
@@ -133,26 +128,10 @@ export const useAction = () => {
     setEditLoading(true);
     await GetEquipmentInfoById({ EquipmentId: id })
       .then((res) => {
-        setEquipmentId(res.equipmentCode ?? "");
-        setEquipmentName(res.equipmentName ?? "");
-        setEquipmentType(res.equipmentType);
-        setEquipmentTypeId(res.equipmentTypeId ?? null);
-        form.setFieldsValue({
-          deviceId: res.equipmentCode,
-          deviceName: res.equipmentName,
-          deviceType: res.equipmentType,
-        });
+        form.setFieldsValue(res);
       })
       .catch((err) => {
-        setEquipmentId("");
-        setEquipmentName("");
-        setEquipmentType("");
-        setEquipmentTypeId(null);
-        form.setFieldsValue({
-          deviceId: "",
-          deviceName: "",
-          deviceType: "",
-        });
+        form.setFieldsValue(initialEquipmentData);
         message.error(`获取信息失败：${err}`);
       })
       .finally(() => {
@@ -161,77 +140,59 @@ export const useAction = () => {
     setClickEditId(id);
   };
 
-  const handleUpdate = () => {
-    const data: IEquipmentCreateOrUpdateDto = {
-      equipmentCode: equipmentId,
-      equipmentName: equipmentName,
-      equipmentTypeId: equipmentTypeId,
-      id: clickEditId,
-      ipAddress: ipAddress,
-      username: username,
-      password: password,
-    };
+  const checkValue = (data: IEquipmentCreateOrUpdateDto) => {
+    if (Object.values(data).some((value) => !value)) {
+      throw new Error("請確認數據填寫完整");
+    }
+  };
 
+  const handleUpdate = () => {
     setConfirmLoading(true);
     PostUpdateEquipment({
-      equipment: data,
+      equipment: { ...form.getFieldsValue(), id: clickEditId },
     })
       .then(() => {
         setIsAddOrUpdateOpen(false);
         initGetEquipmentList();
         setIsBindingOpen(false);
-        setEquipmentId("");
-        setEquipmentName("");
-        setEquipmentType("");
-        setEquipmentTypeId(null);
-        form.setFieldsValue({
-          deviceId: "",
-          deviceName: "",
-          deviceType: "",
-        });
+        form.setFieldsValue(initialEquipmentData);
       })
       .catch((err) => message.error(`更新失敗：${err}`))
       .finally(() => setConfirmLoading(false));
   };
 
   const handleCreate = () => {
+    try {
+      checkValue(form.getFieldsValue());
+    } catch (error) {
+      message.info((error as Error).message);
+
+      return Promise.reject();
+    }
+
     setConfirmLoading(true);
     PostCreateEquipment({
-      equipment: {
-        equipmentCode: equipmentId,
-        equipmentName: equipmentName,
-        equipmentTypeId: equipmentTypeId,
-        ipAddress: ipAddress,
-        username: username,
-        password: password,
-      },
+      equipment: form.getFieldsValue(),
     })
       .then(() => {
         setIsAddOrUpdateOpen(false);
         initGetEquipmentList();
-        setEquipmentId("");
-        setEquipmentName("");
-        setEquipmentType("");
-        setIpAddress("");
-        setUsername("");
-        setPassword("");
-        setEquipmentTypeId(null);
-        form.setFieldsValue({
-          deviceId: "",
-          deviceName: "",
-          deviceType: "",
-        });
+        form.setFieldsValue(initialEquipmentData);
       })
       .catch((err) => message.error(`新增失敗：${err}`))
       .finally(() => setConfirmLoading(false));
   };
 
   const onAddOrUpdateSubmit = (isAdd: boolean) => {
-    form.validateFields();
+    try {
+      checkValue(form.getFieldsValue());
+    } catch (error) {
+      message.info((error as Error).message);
 
-    if (equipmentId && equipmentName && equipmentType) {
-      isAdd ? handleCreate() : handleUpdate();
+      return Promise.reject();
     }
+
+    isAdd ? handleCreate() : handleUpdate();
   };
 
   const onDelete = () => {
@@ -344,12 +305,6 @@ export const useAction = () => {
     setIsSearchOnline,
     isSearchBind,
     setIsSearchBind,
-    equipmentId,
-    setEquipmentId,
-    equipmentType,
-    setEquipmentType,
-    equipmentName,
-    setEquipmentName,
     onAddOrUpdateSubmit,
     form,
     equipmentTypesOption,
@@ -362,7 +317,6 @@ export const useAction = () => {
     setIsAddOrEdit,
     onGetEquipmentInformationById,
     editLoding,
-    setEquipmentTypeId,
     language,
     onOpenBind,
     regionLoading,
@@ -371,5 +325,6 @@ export const useAction = () => {
     confirmLoading,
     pageDto,
     onConfirmUnBind,
+    initialEquipmentData,
   };
 };

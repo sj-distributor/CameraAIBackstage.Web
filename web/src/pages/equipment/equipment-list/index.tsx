@@ -22,7 +22,7 @@ import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
 import downArrow from "../../../assets/public/down-arrow.png";
 import search from "../../../assets/public/search.png";
 import { useAction } from "./hook";
-import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
+import { IBondOrNot, IOnlineOrNot } from "./props";
 
 export const EquipmentList = () => {
   const {
@@ -46,12 +46,6 @@ export const EquipmentList = () => {
     setIsSearchOnline,
     isSearchBind,
     setIsSearchBind,
-    equipmentId,
-    setEquipmentId,
-    equipmentType,
-    setEquipmentType,
-    equipmentName,
-    setEquipmentName,
     onAddOrUpdateSubmit,
     form,
     equipmentTypesOption,
@@ -64,7 +58,6 @@ export const EquipmentList = () => {
     setIsAddOrEdit,
     onGetEquipmentInformationById,
     editLoding,
-    setEquipmentTypeId,
     language,
     onOpenBind,
     regionLoading,
@@ -73,6 +66,7 @@ export const EquipmentList = () => {
     confirmLoading,
     pageDto,
     onConfirmUnBind,
+    initialEquipmentData,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -105,8 +99,11 @@ export const EquipmentList = () => {
     },
     {
       title: t(KEYS.DEVICE_TYPE, source),
-      dataIndex: "equipmentType",
+      dataIndex: "equipmentTypeId",
       width: "16.6%",
+      render: (value) => {
+        return equipmentTypesOption.find((x) => x.value === value)?.label;
+      },
     },
     {
       title: t(KEYS.DEVICE_NAME, source),
@@ -409,15 +406,7 @@ export const EquipmentList = () => {
         }
         onCancle={() => {
           setIsAddOrUpdateOpen(false);
-          setEquipmentId("");
-          setEquipmentName("");
-          setEquipmentType("");
-          setEquipmentTypeId(null);
-          form.setFieldsValue({
-            deviceId: "",
-            deviceName: "",
-            deviceType: "",
-          });
+          form.setFieldsValue(initialEquipmentData);
         }}
         onConfirm={() => {
           onAddOrUpdateSubmit(isAddOrEdit);
@@ -439,19 +428,19 @@ export const EquipmentList = () => {
             form={form}
           >
             <FormItem
-              name="deviceId"
+              name="equipmentCode"
               label={t(KEYS.DEVICE_ID, source)}
               rules={[{ required: true }]}
-              labelCol={{ span: language === "ch" ? 4 : 4 }}
+              labelCol={{ span: language === "ch" ? 4 : 6 }}
               wrapperCol={{ span: 15 }}
             >
               <Input placeholder={t(KEYS.PLEASE_INPUT, source)} />
             </FormItem>
             <FormItem
-              name="deviceType"
+              name="equipmentTypeId"
               label={t(KEYS.DEVICE_TYPE, source)}
               rules={[{ required: true }]}
-              labelCol={{ span: language === "ch" ? 4 : 4 }}
+              labelCol={{ span: language === "ch" ? 4 : 6 }}
               wrapperCol={{ span: 15 }}
             >
               <Select
@@ -463,10 +452,10 @@ export const EquipmentList = () => {
               />
             </FormItem>
             <FormItem
-              name="deviceName"
+              name="equipmentName"
               label={t(KEYS.DEVICE_NAME, source)}
               rules={[{ required: true }]}
-              labelCol={{ span: language === "ch" ? 4 : 4 }}
+              labelCol={{ span: language === "ch" ? 4 : 6 }}
               wrapperCol={{ span: 15 }}
             >
               <Input placeholder={t(KEYS.PLEASE_INPUT, source)} />
@@ -474,36 +463,40 @@ export const EquipmentList = () => {
 
             <FormItem
               name="ipAddress"
-              label="設備IP地址"
+              label={t(KEYS.DEVICE_IP_ADDRESS, source)}
               rules={[{ required: true }]}
-              labelCol={{ span: language === "ch" ? 4 : 4 }}
+              labelCol={{ span: language === "ch" ? 4 : 6 }}
               wrapperCol={{ span: 15 }}
             >
               <Input placeholder={t(KEYS.PLEASE_INPUT, source)} />
             </FormItem>
             <FormItem
               name="username"
-              label="設備用戶名"
+              label={t(KEYS.DEVICE_USER_NAME, source)}
               rules={[{ required: true }]}
-              labelCol={{ span: language === "ch" ? 4 : 4 }}
+              labelCol={{ span: language === "ch" ? 4 : 6 }}
               wrapperCol={{ span: 15 }}
             >
               <Input placeholder={t(KEYS.PLEASE_INPUT, source)} />
             </FormItem>
             <FormItem
               name="password"
-              label="設備密碼"
+              label={t(KEYS.DEVICE_PASSWORD, source)}
               rules={[{ required: true }]}
-              labelCol={{ span: language === "ch" ? 4 : 4 }}
+              labelCol={{ span: language === "ch" ? 4 : 6 }}
               wrapperCol={{ span: 15 }}
             >
-              <Input placeholder={t(KEYS.PLEASE_INPUT, source)} />
+              <Input
+                placeholder={t(KEYS.PLEASE_INPUT, source)}
+                type="password"
+                autoComplete="new-password"
+              />
             </FormItem>
 
             <FormItem
               name="brand"
-              label="設備品牌名稱"
-              labelCol={{ span: language === "ch" ? 4 : 4 }}
+              label={t(KEYS.DEVICE_BRAND_NAME, source)}
+              labelCol={{ span: language === "ch" ? 4 : 6 }}
               wrapperCol={{ span: 15 }}
               style={{ marginBottom: 0 }}
             >

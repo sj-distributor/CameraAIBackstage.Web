@@ -1,5 +1,5 @@
 export interface IEquipmentPageRequest extends IPageDto {
-  RegionId: string;
+  RegionId?: string;
   IsOnline?: boolean;
   IsBind?: boolean;
   Keyword?: string;
