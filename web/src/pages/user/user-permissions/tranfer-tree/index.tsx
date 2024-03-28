@@ -12,13 +12,15 @@ export const TransferTree = ({
   isModelOpen,
   setIsModelOpen,
   handelGetSelectedUsers,
+  staffIdSource,
 }: {
   isModelOpen: boolean;
   setIsModelOpen: (value: SetStateAction<boolean>) => void;
   data?: TransferItem[];
   handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
+  staffIdSource: number;
 }) => {
-  const { t, source, treeData } = useAction();
+  const { t, source, treeData } = useAction(staffIdSource);
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
@@ -202,6 +204,8 @@ export const TransferTree = ({
       onCancle={() => setIsModelOpen(false)}
       confirmLoading={isConfirmLoading}
       onConfirm={async () => {
+        console.log(targetAllData);
+
         const data = targetAllData.map((item) => item.key);
 
         if (handelGetSelectedUsers && data.length > 0) {

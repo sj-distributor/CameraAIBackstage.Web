@@ -1,7 +1,8 @@
 import {
   ICreateOrUpdateRole,
-  IDeleteRoleUsers,
+  ICreateRoleUsers,
   IDeleteRoles,
+  IDeleteRoleUsers,
   IMinePermissionResponse,
   IPermissionResponse,
   IRequestRoles,
@@ -91,4 +92,9 @@ export const GetRolesUserByRoleId = async (data: IRoleIdRequestParams) => {
 // 删除角色中的用户
 export const PostDeleteRolesUsers = async (data: IDeleteRoleUsers) => {
   await api.post("api/Security/role/users/delete", data);
+};
+
+// 创建角色中的用户
+export const PostCreateRolesUsers = async (data: ICreateRoleUsers) => {
+  await api.post("/api/Security/role/users/create", data);
 };

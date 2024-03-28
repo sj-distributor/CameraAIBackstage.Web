@@ -29,7 +29,26 @@ export const NewOrUpdatePermissions = () => {
 
   const { role, rolePermissions } = rolePermissionByRoleIdData;
 
-  console.log(rolePermissions.map((item) => item.permissionName));
+  console.log(rolePermissions);
+
+  const frontPermission = rolePermissions.filter((permission) => {
+    return (
+      Object.values(FrontRolePermissionEnum).includes(
+        permission.permissionName
+      ) && permission
+    );
+  });
+
+  const backGroundPermission = rolePermissions.filter((permission) => {
+    return (
+      Object.values(BackGroundRolePermissionEnum).includes(
+        permission.permissionName
+      ) && permission
+    );
+  });
+
+  console.log("Front Permissions:", frontPermission);
+  console.log("BackGround Permissions:", backGroundPermission);
 
   const isEnglish = language === "en";
 
@@ -114,7 +133,7 @@ export const NewOrUpdatePermissions = () => {
           </span>
           <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[10.9rem] border-2 mt-[1rem]">
             <div
-              className={`flex  pt-[2rem] ${
+              className={`flex pt-[2rem] ${
                 isEnglish ? "pl-[6.7rem]" : "pl-[5.3rem]"
               }`}
             >
@@ -168,7 +187,7 @@ export const NewOrUpdatePermissions = () => {
                 </span>
               </div>
               <Checkbox.Group
-                value={rolePermissions.map((item) => item.permissionId!)}
+                value={frontPermission.map((item) => item.permissionId!)}
                 onChange={(checkedValue) =>
                   setRoleFrontPermissions(checkedValue)
                 }

@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import {
   GetRolesUserByRoleId,
+  PostCreateRolesUsers,
   PostDeleteRolesUsers,
 } from "@/services/api/user-permission";
 import {
@@ -133,6 +134,37 @@ export const useAction = () => {
       .catch((error) => message.error(error.msg));
   };
 
+  const handelGetSelectedUsers = async (userIds: string[]) => {
+    let loading = true;
+
+    const initial = {
+      roleUsers: userIds
+        .filter((userId) => !isNaN(Number(userId)))
+        .map((items) => ({
+          roleId: Number(id),
+          userId: Number(items),
+        })),
+    };
+
+    try {
+      await PostCreateRolesUsers(initial);
+
+      await initGetRolesUsersList({
+        PageIndex: pageDto.pageIndex,
+        PageSize: pageDto.pageSize,
+        KeyWord: searchKeywordValue,
+        RoleId: id,
+      });
+
+      loading = false;
+    } catch (err) {
+      loading = false;
+      message.error((err as Error).message);
+    }
+
+    return loading;
+  };
+
   const initGetRolesUsersList = (prams: IRoleIdRequestParams) => {
     setIsTableLoading(true);
     GetRolesUserByRoleId(prams)
@@ -202,5 +234,6 @@ export const useAction = () => {
     setRecord,
     handleOperateDelete,
     onSelectedRow,
+    handelGetSelectedUsers,
   };
 };

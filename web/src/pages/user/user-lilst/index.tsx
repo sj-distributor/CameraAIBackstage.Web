@@ -183,7 +183,7 @@ export const UserList = () => {
 
   return (
     <div className="h-full flex flex-col bg-white px-4 flex-1">
-      <div className="bg-whitew-full flex-col justify-start pt-[1rem] overflow-scroll no-scrollbar">
+      <div className="bg-white w-full flex-col justify-start pt-[1rem] overflow-scroll no-scrollbar">
         <span className="text-[1.125rem] font-semibold tracking-tight">
           {t(KEYS.USER_LIST, source)}
         </span>
@@ -227,7 +227,7 @@ export const UserList = () => {
                 {t(KEYS.BATCH_REMOVE_USERS, source)}
               </Button>
             )}
-            {myPermissions.includes(
+            {["CanAddCameraAiUserAccount"].includes(
               BackGroundRolePermissionEnum.CanAddCameraAiUserAccount
             ) && (
               <Button
@@ -293,6 +293,7 @@ export const UserList = () => {
         isModelOpen={isAddUser}
         setIsModelOpen={setIsAddUser}
         handelGetSelectedUsers={handelGetSelectedUsers}
+        staffIdSource={0}
       />
 
       <CustomModal

@@ -42,6 +42,7 @@ export const UserDistribute = () => {
     setRecord,
     handleOperateDelete,
     onSelectedRow,
+    handelGetSelectedUsers,
   } = useAction();
 
   const columns = [
@@ -200,10 +201,12 @@ export const UserDistribute = () => {
         contentText={t(KEYS.CONFIRM_DELETE_USERS_IN_BATCHES, source)}
         handleOperateConfirm={handleOperateDelete}
       />
+
       <TransferTree
         isModelOpen={isAddNewUser}
         setIsModelOpen={setIsAddNewUser}
-        data={data}
+        handelGetSelectedUsers={handelGetSelectedUsers}
+        staffIdSource={1}
       />
     </div>
   );

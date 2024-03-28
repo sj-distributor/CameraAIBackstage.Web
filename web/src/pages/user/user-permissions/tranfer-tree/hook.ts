@@ -34,7 +34,7 @@ export interface ITreeSelectNode {
   children?: ITreeSelectNode[];
 }
 
-export const useAction = () => {
+export const useAction = (staffIdSource: number) => {
   const { t } = useAuth();
 
   const source = { ns: "userPermissions" };
@@ -72,7 +72,7 @@ export const useAction = () => {
   };
 
   const onGetFoundationData = () => {
-    GetFoundationData("HierarchyDepth", HierarchyDepthEnum.Group)
+    GetFoundationData("HierarchyDepth", HierarchyDepthEnum.Group, staffIdSource)
       .then((response) => {
         setTreeData(response ? convertToTreeData(response) : []);
       })

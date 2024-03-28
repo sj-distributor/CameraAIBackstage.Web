@@ -47,6 +47,15 @@ export interface IDeleteRoles {
 export interface IDeleteRoleUsers {
   roleUserIds: number[];
 }
+export interface ICreateRoleUsers {
+  roleUsers: ICreateRoleUsersDto[];
+}
+
+export interface ICreateRoleUsersDto {
+  id?: number;
+  roleId: number;
+  userId: number | string;
+}
 
 export interface IPermission {
   id: number;
