@@ -22,5 +22,6 @@ export default {
   WHETHER_CONFIRM_DELETE: "WhetherConfirmDelete",
   CONFIRM: "Confirm",
   CANCEL: "Cancel",
-  PICTUREPREVIEW: "PicturePreview",
+  PICTURE_PREVIEW: "PicturePreview",
+  COMPLETE_DATA: "CompleteData",
 };

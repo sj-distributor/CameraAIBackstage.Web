@@ -27,7 +27,9 @@ export default {
     [KEYS.WHETHER_CONFIRM_DELETE]: "Whether confirm delete?",
     [KEYS.CONFIRM]: "Confirm",
     [KEYS.CANCEL]: "Cancel",
-    [KEYS.PICTUREPREVIEW]: "Picture preview",
+    [KEYS.PICTURE_PREVIEW]: "Picture preview",
+    [KEYS.COMPLETE_DATA]:
+      "Please confirm that all data is filled out completely",
   },
   ch: {
     [KEYS.PORTRAIT_LIST]: "人像列表",
@@ -54,6 +56,6 @@ export default {
     [KEYS.WHETHER_CONFIRM_DELETE]: "是否確認刪除?",
     [KEYS.CONFIRM]: "確認",
     [KEYS.CANCEL]: "取消",
-    [KEYS.PICTUREPREVIEW]: "图片预览",
+    [KEYS.COMPLETE_DATA]: "請確認數據填寫完整",
   },
 };

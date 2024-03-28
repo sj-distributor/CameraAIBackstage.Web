@@ -112,8 +112,29 @@ export const useAction = () => {
     onFinally: () => setLoading(false),
   });
 
+  const checkValue = (data: IPortraitDto) => {
+    const finalCheckValue = { ...data, isQualified: true };
+
+    if (
+      fileList.length === 0 ||
+      Object.values(finalCheckValue).some((value) => !value)
+    ) {
+      throw new Error("請確認數據填寫完整");
+    } else {
+      message.info("running...");
+    }
+  };
+
   const handleCreateOrUpdatePortrait = useRequest(
     async () => {
+      try {
+        checkValue(portraitModal.item);
+      } catch (error) {
+        message.info((error as Error).message);
+
+        return Promise.reject();
+      }
+
       const faces: IFaceDto[] = [];
 
       const replacePrefix = (text: string) => {
@@ -184,6 +205,7 @@ export const useAction = () => {
     {
       debounceWait: 300,
       manual: true,
+      onBefore: () => message.info("running..."),
       onSuccess: () => {
         message.success("success");
         handleGetPortraitData.run();
