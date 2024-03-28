@@ -28,6 +28,7 @@ export const AreaManagement = () => {
     source,
     initialRegionDataItem,
     regionListDto,
+    myPermissions,
   } = useAction();
 
   const columns: TableColumnsType<IRegionsDto> = [
@@ -62,32 +63,36 @@ export const AreaManagement = () => {
       width: "20%",
       render: (_, record) => (
         <div className="h-[1.375rem]">
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => {
-              setOperateModalParams({
-                isOpen: true,
-                isEdit: true,
-                recordItem: record,
-              });
-            }}
-          >
-            {t(KEYS.EDIT, source)}
-          </Button>
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => {
-              setIsDeleteOpen(true);
-              setOperateModalParams((preValue) => ({
-                ...preValue,
-                recordItem: record,
-              }));
-            }}
-          >
-            {t(KEYS.DELETE, source)}
-          </Button>
+          {myPermissions.includes("CanUpdateCameraAiArea") && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                setOperateModalParams({
+                  isOpen: true,
+                  isEdit: true,
+                  recordItem: record,
+                });
+              }}
+            >
+              {t(KEYS.EDIT, source)}
+            </Button>
+          )}
+          {myPermissions.includes("CanDeleteCameraAiArea") && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                setIsDeleteOpen(true);
+                setOperateModalParams((preValue) => ({
+                  ...preValue,
+                  recordItem: record,
+                }));
+              }}
+            >
+              {t(KEYS.DELETE, source)}
+            </Button>
+          )}
         </div>
       ),
     },
@@ -118,19 +123,21 @@ export const AreaManagement = () => {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-          <Button
-            type="primary"
-            className="w-[5.5rem] h-[2.2rem] text-center"
-            onClick={() => {
-              setOperateModalParams({
-                isOpen: true,
-                isEdit: false,
-                recordItem: initialRegionDataItem,
-              });
-            }}
-          >
-            + {t(KEYS.ADD, source)}
-          </Button>
+          {myPermissions.includes("CanAddCameraAiArea") && (
+            <Button
+              type="primary"
+              className="w-[5.5rem] h-[2.2rem] text-center"
+              onClick={() => {
+                setOperateModalParams({
+                  isOpen: true,
+                  isEdit: false,
+                  recordItem: initialRegionDataItem,
+                });
+              }}
+            >
+              + {t(KEYS.ADD, source)}
+            </Button>
+          )}
         </div>
         <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">
           <div className="h-full overflow-auto no-scrollbar pb-[1.125rem]">

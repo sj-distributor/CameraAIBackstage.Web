@@ -43,7 +43,7 @@ export const PortraitList = () => {
     setFileList,
   } = useAction();
 
-  const { t } = useAuth();
+  const { t, myPermissions } = useAuth();
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -71,22 +71,24 @@ export const PortraitList = () => {
               }}
             />
           </div>
-          <Button
-            className="flex justify-center items-center w-[5.5rem] h-[2.75rem]"
-            type="primary"
-            onClick={() => {
-              setPortraitModal(() => ({
-                isOpen: true,
-                operationType: OperationTypeEnum.Add,
-                item: initialPortraitDto,
-              }));
+          {myPermissions.includes("CanAddCameraAiPortrait") && (
+            <Button
+              className="flex justify-center items-center w-[5.5rem] h-[2.75rem]"
+              type="primary"
+              onClick={() => {
+                setPortraitModal(() => ({
+                  isOpen: true,
+                  operationType: OperationTypeEnum.Add,
+                  item: initialPortraitDto,
+                }));
 
-              setFileList([]);
-            }}
-          >
-            <img src={add} className="mr-[.375rem]" />
-            {t(KEYS.ADD, { ns: "portraitList" })}
-          </Button>
+                setFileList([]);
+              }}
+            >
+              <img src={add} className="mr-[.375rem]" />
+              {t(KEYS.ADD, { ns: "portraitList" })}
+            </Button>
+          )}
         </div>
         {loading ? (
           <div className="grid mt-[12%]">
@@ -135,42 +137,46 @@ export const PortraitList = () => {
                     </div>
                   </div>
                   <div className="p-[.625rem_.75rem] flex justify-end items-center bg-[#F6F8FC] portrait">
-                    <Popconfirm
-                      title="刪除提醒"
-                      description="是否確認刪除?"
-                      onConfirm={() => handleDeletePortrait.run(item.id!)}
-                      okText="確認"
-                      cancelText="取消"
-                      rootClassName="portrait"
-                    >
-                      <div className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#F04E4E] border border-solid border-[#F04E4E] cursor-pointer mr-[1rem]">
-                        <img src={trash} className="mr-[.5rem]" />
-                        {t(KEYS.DELETE, { ns: "portraitList" })}
-                      </div>
-                    </Popconfirm>
-                    <div
-                      onClick={() => {
-                        setPortraitModal({
-                          isOpen: true,
-                          operationType: OperationTypeEnum.Edit,
-                          item,
-                        });
+                    {myPermissions.includes("CanDeleteCameraAiPortrait") && (
+                      <Popconfirm
+                        title="刪除提醒"
+                        description="是否確認刪除?"
+                        onConfirm={() => handleDeletePortrait.run(item.id!)}
+                        okText="確認"
+                        cancelText="取消"
+                        rootClassName="portrait"
+                      >
+                        <div className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#F04E4E] border border-solid border-[#F04E4E] cursor-pointer mr-[1rem]">
+                          <img src={trash} className="mr-[.5rem]" />
+                          {t(KEYS.DELETE, { ns: "portraitList" })}
+                        </div>
+                      </Popconfirm>
+                    )}
+                    {myPermissions.includes("CanUpdateCameraAiPortrait") && (
+                      <div
+                        onClick={() => {
+                          setPortraitModal({
+                            isOpen: true,
+                            operationType: OperationTypeEnum.Edit,
+                            item,
+                          });
 
-                        setFileList(
-                          item.faces
-                            .map((item) => ({
-                              name: "",
-                              uid: item.faceId!,
-                              url: item.imageUrl,
-                            }))
-                            .filter((x) => !!x.url)
-                        );
-                      }}
-                      className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#2853E3] border border-solid border-[#2853E3] cursor-pointer"
-                    >
-                      <img src={edit} className="mr-[.5rem]" />
-                      {t(KEYS.EDIT, { ns: "portraitList" })}
-                    </div>
+                          setFileList(
+                            item.faces
+                              .map((item) => ({
+                                name: "",
+                                uid: item.faceId!,
+                                url: item.imageUrl,
+                              }))
+                              .filter((x) => !!x.url)
+                          );
+                        }}
+                        className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#2853E3] border border-solid border-[#2853E3] cursor-pointer"
+                      >
+                        <img src={edit} className="mr-[.5rem]" />
+                        {t(KEYS.EDIT, { ns: "portraitList" })}
+                      </div>
+                    )}
                   </div>
                 </div>
               );

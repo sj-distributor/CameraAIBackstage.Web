@@ -1,8 +1,8 @@
+import { useBoolean } from "ahooks";
+import { App, Form } from "antd";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
-
-import { IPageDto } from "@/services/dtos/equipment/list";
 import {
   GetEquipmentTypeInfoById,
   GetEquipmentTypePage,
@@ -10,12 +10,11 @@ import {
   PostDeleteEquipmentType,
   PostUpdateEquipmentType,
 } from "@/services/api/equipment/type";
+import { IPageDto } from "@/services/dtos/equipment/list";
 import { IEquipmentTypeList } from "@/services/dtos/equipment/type";
-import { useBoolean } from "ahooks";
-import { App, Form } from "antd";
 
 export const useAction = () => {
-  const { t, language } = useAuth();
+  const { t, language, myPermissions } = useAuth();
 
   const [form] = Form.useForm();
 
@@ -190,5 +189,6 @@ export const useAction = () => {
     confirmLoading,
     language,
     pageDto,
+    myPermissions,
   };
 };

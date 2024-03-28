@@ -12,7 +12,7 @@ import {
 } from "@/services/dtos/user-permission";
 
 export const useAction = () => {
-  const { t } = useAuth();
+  const { t, myPermissions } = useAuth();
 
   const navigate = useNavigate();
 
@@ -153,5 +153,6 @@ export const useAction = () => {
     handleOperateDelete,
     setRecord,
     onSelectedRow,
+    myPermissions,
   };
 };

@@ -55,10 +55,11 @@ export const Home = () => {
 
   const myPermissions = [
     "CanViewCameraAiUserAccountPage",
-    // "CanViewCameraAiRoleUserPage",
-    // "CanViewCameraAiMonitorManagementPage",
-    // "CanAddCameraAiMonitor",
+    "CanViewCameraAiRoleUserPage",
+    "CanViewCameraAiMonitorManagementPage",
+    "CanAddCameraAiMonitor",
     "CanViewCameraAiAreaManagementPage",
+    "CanGrantCameraAiRole",
   ];
 
   const hasPermission = (permission: string | undefined) => {
@@ -109,31 +110,28 @@ export const Home = () => {
   const getMenu = () => {
     if (!routerList) return;
 
-    const items = permissionRouterList(routerList).reduce(
-      (accumulator, item) => {
-        if (item && item.path !== "") {
-          const menuItem: MenuItem | SubMenuType = {
-            label: item.name,
-            key: item.path,
-            icon: item.icon,
-          };
+    const items = routerList.reduce((accumulator, item) => {
+      if (item && item.path !== "") {
+        const menuItem: MenuItem | SubMenuType = {
+          label: item.name,
+          key: item.path,
+          icon: item.icon,
+        };
 
-          if (!!item.children && !item.path.includes("/monitor")) {
-            (menuItem as SubMenuType).children = item.children
-              .filter((child) => child.path !== "")
-              .map((child) => ({
-                label: child.name,
-                key: child.path,
-              }));
-          }
-
-          accumulator.push(menuItem);
+        if (!!item.children && !item.path.includes("/monitor")) {
+          (menuItem as SubMenuType).children = item.children
+            .filter((child) => child.path !== "")
+            .map((child) => ({
+              label: child.name,
+              key: child.path,
+            }));
         }
 
-        return accumulator;
-      },
-      [] as MenuItem[]
-    );
+        accumulator.push(menuItem);
+      }
+
+      return accumulator;
+    }, [] as MenuItem[]);
 
     return items;
   };

@@ -14,7 +14,7 @@ import {
 import { IModifyModalDto } from "./props";
 
 export const useAction = () => {
-  const { t } = useAuth();
+  const { t, myPermissions } = useAuth();
 
   const source = { ns: "areaManagement" };
 
@@ -111,5 +111,6 @@ export const useAction = () => {
     source,
     initialRegionDataItem,
     regionListDto,
+    myPermissions,
   };
 };
