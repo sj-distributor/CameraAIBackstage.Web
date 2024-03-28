@@ -287,8 +287,6 @@ export const AddOrUpdateConfiguration = () => {
                               source
                             )}`,
                             validator: (_, value) => {
-                              console.log(value);
-
                               if (isEmpty(value) || !value) {
                                 return Promise.reject();
                               }
