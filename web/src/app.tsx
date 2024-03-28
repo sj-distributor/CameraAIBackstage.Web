@@ -34,11 +34,11 @@ function App() {
 
     if (!targetCookieValue) return;
     targetCookieValue && localStorage.setItem("tokenKey", targetCookieValue);
-  }, [localStorage.getItem((window as any).appSettings?.tokenKey)]);
+  }, []);
 
   useEffect(() => {
     InitialAppSetting().then(() => setIsLoaded(true));
-  }, []);
+  }, [document.cookie]);
 
   return isLoaded ? (
     <ConfigProvider
