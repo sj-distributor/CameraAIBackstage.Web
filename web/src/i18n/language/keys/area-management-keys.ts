@@ -19,4 +19,5 @@ export default {
   OPERATION_CONFIRM: "OperationConfirm",
   EDIT_AREA: "EditArea",
   REQUIRED_FIELDS: "RequiredFields",
+  WAREHOUSE_ID: "WarehouseID",
 };
