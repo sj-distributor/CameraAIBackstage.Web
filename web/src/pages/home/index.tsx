@@ -55,9 +55,9 @@ export const Home = () => {
 
   const myPermissions = [
     "CanViewCameraAiUserAccountPage",
-    "CanViewCameraAiRoleUserPage",
-    "CanViewCameraAiMonitorManagementPage",
-    "CanAddCameraAiMonitor",
+    // "CanViewCameraAiRoleUserPage",
+    // "CanViewCameraAiMonitorManagementPage",
+    // "CanAddCameraAiMonitor",
     "CanViewCameraAiAreaManagementPage",
   ];
 
@@ -68,20 +68,13 @@ export const Home = () => {
   const permissionRouterList = (list: IRouterList[]) => {
     return list
       .map((item) => {
-        const initialResultItem = {
+        const result: IRouterList = {
           path: "",
           element: <></>,
-          name: "",
-          icon: <></>,
-          children: [],
         };
 
-        const result: IRouterList = initialResultItem;
-
         const isHave = item.children?.some((childItem) =>
-          childItem.path !== "/system/log"
-            ? hasPermission(childItem.permissions)
-            : true
+          childItem.permissions ? hasPermission(childItem.permissions) : true
         );
 
         if (hasPermission(item.permissions) || isHave) {
@@ -94,16 +87,12 @@ export const Home = () => {
               ? item.children &&
                 item.children
                   .map((childItem) =>
-                    (childItem.permissions &&
-                      myPermissions.includes(childItem.permissions)) ||
+                    hasPermission(childItem.permissions) ||
                     childItem.path === "/system/log"
                       ? childItem
                       : {
                           path: "",
                           element: <></>,
-                          name: "",
-                          icon: <></>,
-                          children: [],
                         }
                   )
                   .filter((childItem) => childItem)
