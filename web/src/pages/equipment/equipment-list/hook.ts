@@ -142,7 +142,7 @@ export const useAction = () => {
 
   const checkValue = (data: IEquipmentCreateOrUpdateDto) => {
     if (Object.values(data).some((value) => !value)) {
-      throw new Error("請確認數據填寫完整");
+      throw new Error();
     }
   };
 
@@ -175,11 +175,11 @@ export const useAction = () => {
   };
 
   const onAddOrUpdateSubmit = (isAdd: boolean) => {
+    form.validateFields();
+
     try {
       checkValue(form.getFieldsValue());
     } catch (error) {
-      message.info((error as Error).message);
-
       return Promise.reject();
     }
 
