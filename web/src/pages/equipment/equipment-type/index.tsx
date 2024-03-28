@@ -73,7 +73,7 @@ export const EquipmentType = () => {
       title: t(KEYS.OPERATE, source),
       dataIndex: "operate",
       width: "20%",
-      render: (_, record, index) => (
+      render: (_, record) => (
         <div>
           <Button
             type="link"

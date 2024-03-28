@@ -191,7 +191,11 @@ export const useAction = () => {
 
   const onOpenBind = () => {
     setRegionLoading(true);
-    GetRegionPage({ IsFilter: true })
+    GetRegionPage({
+      IsFilter: true,
+      PageSize: 2147483647,
+      PageIndex: 1,
+    })
       .then((res) => {
         const newList = res.regions.map((item) => {
           return { ...item, radio: false };

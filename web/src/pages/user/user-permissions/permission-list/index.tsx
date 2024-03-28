@@ -13,12 +13,12 @@ export const UserPermissions = () => {
     t,
     source,
     setSearchValue,
-    setSearchKeywordValue,
+    // setSearchKeywordValue,
     searchValue,
     isDeletePermissions,
     setISDeletePermissions,
     navigate,
-    isTableLoading,
+    // isTableLoading,
     pageDto,
     setPageDto,
     onSelectedAllRow,
@@ -105,7 +105,7 @@ export const UserPermissions = () => {
               suffix={
                 <img
                   src={search}
-                  onClick={() => setSearchKeywordValue(searchValue)}
+                  // onClick={() => setSearchKeywordValue(searchValue)}
                 />
               }
               value={searchValue}
@@ -124,12 +124,12 @@ export const UserPermissions = () => {
         <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">
           <div className="overflow-auto no-scrollbar pb-[1.125rem]">
             <Table
-              rowKey={(record) => record.deviceId}
+              rowKey={(record) => record.key}
               columns={columns}
               dataSource={data}
               pagination={false}
               sticky={true}
-              loading={isTableLoading}
+              // loading={isTableLoading}
               rowSelection={{
                 type: "checkbox",
                 selectedRowKeys,

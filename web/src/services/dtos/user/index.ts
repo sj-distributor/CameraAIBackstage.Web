@@ -1,7 +1,4 @@
-export interface IPageDto {
-  PageIndex: number;
-  PageSize: number;
-}
+import { IPageDto } from "../public";
 
 export enum UserStatus {
   Disable,
