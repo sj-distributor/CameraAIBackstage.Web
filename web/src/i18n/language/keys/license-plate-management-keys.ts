@@ -41,4 +41,10 @@ export default {
   REGISTERED_VEHICLES: "RegisteredVehicles",
   EDIT: "Edit",
   DELETE: "Delete",
+  REGISTERING_CAR_OK: "RegisteringCarOk",
+  ABNORMAL_CAUSE: "AbnormalCause",
+  OPERATION_CONFIRMATION: "OperationConfirmation",
+  CONFIRM_EDIT_REGISTER_CAR: "ConfirmEditRegisterCar",
+  CONFIRM_DELETE_REGISTER_CAR: "ConfirmDeleteRegisterCar",
+  REGISTER_STATUS: "RegisterStatus",
 };
