@@ -30,6 +30,8 @@ function App() {
         break; // 找到目标 Cookie，退出循环
       }
     }
+    console.log(targetCookieValue, cookieString);
+
     if (!targetCookieValue) return;
     targetCookieValue && localStorage.setItem("tokenKey", targetCookieValue);
   }, [localStorage.getItem((window as any).appSettings?.tokenKey)]);
