@@ -9,6 +9,7 @@ import {
   IRoleIdRequestParams,
   IRolePermissionByRoleIdResponse,
   IUserByRoleIdResponse,
+  RoleSystemSourceEnum,
 } from "@/services/dtos/user-permission";
 
 import { api } from "../http-client";
@@ -68,7 +69,8 @@ export const GetPermission = async () => {
 // 获取当前账户权限
 export const GetCurrentAccountPermission = async () => {
   const response = await api.get<IMinePermissionResponse>(
-    "/api/Security/mine/roles"
+    "/api/Security/mine/roles",
+    { params: { SystemSource: RoleSystemSourceEnum.CameraAi } }
   );
 
   return response.data;
