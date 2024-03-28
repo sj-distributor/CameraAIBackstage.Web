@@ -244,7 +244,7 @@ export const EquipmentList = () => {
           <div className="flex flex-row pt-[1.625rem] justify-between">
             <div>
               <Input
-                className="w-[17.5rem]"
+                className="w-[17.5rem] h-[2.75rem]"
                 suffix={<img src={search} />}
                 placeholder={t(
                   KEYS.SEARCH_DEVICE_ID_DEVICE_TYPE_DEVICE_NAME,
@@ -256,7 +256,7 @@ export const EquipmentList = () => {
                 }}
               />
               <Select
-                className="mx-[1rem] w-[13.5rem]"
+                className="mx-[1rem] w-[13.5rem] h-[2.75rem]"
                 placeholder={t(KEYS.IS_ONLINE, source)}
                 value={isSearchOnline}
                 onChange={(value) => {
@@ -282,7 +282,7 @@ export const EquipmentList = () => {
                 suffixIcon={<img src={downArrow} />}
               />
               <Select
-                className="w-[13.5rem]"
+                className="w-[13.5rem] h-[2.75rem]"
                 placeholder={t(KEYS.IS_BLIND, source)}
                 defaultActiveFirstOption
                 value={isSearchBind}

@@ -14,11 +14,10 @@ import {
   PostUpdateEquipment,
 } from "@/services/api/equipment/list";
 import { GetEquipmentTypePage } from "@/services/api/equipment/type";
+import { IPageDto } from "@/services/dtos/public";
 import {
-  IEquipmentCreateOrUpdateDto,
   IEquipmentList,
   IEquipmentPageRequest,
-  IPageDto,
   IRegionDto,
 } from "@/services/dtos/equipment/list";
 

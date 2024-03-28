@@ -1,3 +1,5 @@
+import { IPageDto } from "../public";
+
 export interface IEquipmentPageRequest extends IPageDto {
   RegionId?: string;
   IsOnline?: boolean;
@@ -6,11 +8,6 @@ export interface IEquipmentPageRequest extends IPageDto {
   EquipmentCode?: string;
   EquipmentName?: string;
   EquipmentTypeName?: string;
-}
-
-export interface IPageDto {
-  PageSize?: number;
-  PageIndex?: number;
 }
 
 export interface IEquipmentPageResponse {
