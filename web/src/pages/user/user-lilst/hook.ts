@@ -97,6 +97,7 @@ export const useAction = () => {
       },
       onError: (err) => {
         message.error(err.message);
+        setUserListData({ count: 0, userProfiles: [] });
       },
     }
   );
