@@ -1,8 +1,7 @@
 import { useUpdateEffect } from "ahooks";
-import { Form } from "antd";
-import { Dayjs } from "dayjs";
-import { clone } from "ramda";
-import { useMemo, useState } from "react";
+import { App, Form } from "antd";
+import { clone, isEmpty } from "ramda";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -12,9 +11,22 @@ import {
   ICronListDto,
   IOptionsNumberDto,
   IOptionsStringDto,
-  ISelectUserDto,
   TimeType,
 } from "./props";
+import {
+  CameraAiNotificationType,
+  DayOfWeek,
+  IMonitorNotificationsDto,
+  IMonitorSettingsDto,
+  IUserProfiles,
+} from "@/services/dtos/monitor";
+import {
+  GetMonitorSettingDetail,
+  GetUserList,
+  MonitorSettingCreate,
+  MonitorSettingUpdate,
+} from "@/services/api/monitor";
+import { GetEquipmentPage } from "@/services/api/equipment/list";
 
 export const useAction = () => {
   const { t } = useAuth();
@@ -25,89 +37,338 @@ export const useAction = () => {
 
   const [form] = Form.useForm();
 
-  const { type } = useParams();
+  const { type, id } = useParams();
 
-  const [cronList, setCronList] = useState<ICronListDto[]>([
-    { title: KEYS.MONDAY, value: false },
-    { title: KEYS.THURSDAY, value: false },
-    { title: KEYS.WEDNESDAY, value: false },
-    { title: KEYS.THURSDAY, value: false },
-    { title: KEYS.FRIDAY, value: false },
-    { title: KEYS.SATURDAY, value: false },
-    { title: KEYS.SUNDAY, value: false },
-  ]);
+  const { message } = App.useApp();
 
-  const selectWeekday = useMemo(() => {
-    return cronList.filter((x) => x.value);
-  }, [cronList]);
+  const isAdd = type === "add";
 
-  const [userList, setUserList] = useState<IOptionsStringDto[]>([
-    { label: "Ted.F", value: "Ted.F" },
-    { label: "Ivan.W", value: "Ivan.W" },
-    { label: "Winnie.X", value: "Winnie.X" },
-    { label: "Koki.K", value: "Koki.K" },
-  ]);
-
-  const [exceptionTypeList, setExceptionTypeList] = useState<
-    IOptionsNumberDto[]
-  >([
-    { label: "識別人員", value: 1 },
-    { label: "識別車輛", value: 2 },
-  ]);
-
-  const [selectExceptionId, setSelectExceptionId] = useState<number | null>(
-    null
-  );
-
-  const [deviceList, setDeviceList] = useState<IOptionsNumberDto[]>([
-    { label: "設備 1", value: 1 },
-    { label: "設備 2", value: 2 },
-  ]);
-
-  const [selectDeviceId, setSelectDeviceId] = useState<number | null>(null);
-
-  const [timeSetting, setTimeSetting] = useState<
-    [Dayjs | null, Dayjs | null] | null
-  >(null);
-
-  const [duration, setDuration] = useState<string>("");
-
-  const [durationTimeType, setDurationTimeType] = useState<TimeType | null>(
-    null
-  );
-
-  const [selectUserList, setSelectUserList] = useState<ISelectUserDto[]>([]);
-
-  const onDeleteNoticeUserItem = (index: number) => {
-    const newSelectUserList = clone(selectUserList);
-
-    newSelectUserList.splice(index, 1);
-    setSelectUserList(newSelectUserList);
+  const initConfigurationInfo = {
+    weekDays: [],
+    equipmentIds: [],
+    monitorNotifications: [],
+    timeZone: "Pacific Standard Time",
+    title: "",
+    duration: null,
+    notificationContent: "", //通知内容
+    broadcastContent: "", //广播内容
+    monitorType: isAdd ? (id ? Number(id) : null) : null, //预警类型 id
+    startTime: null,
+    endTime: null,
   };
 
-  const onChangeNoticeUserList = (value: string[]) => {
-    const newSelectList = clone(selectUserList);
+  const notifyType = [
+    {
+      title: t(KEYS.EMAIL, source),
+      type: CameraAiNotificationType.Email,
+    },
+    {
+      title: t(KEYS.ENTERPRISE_WECHAT, source),
+      type: CameraAiNotificationType.WorkWechat,
+    },
+    {
+      title: t(KEYS.SHORT_MESSAGE, source),
+      type: CameraAiNotificationType.Sms,
+    },
+    {
+      title: t(KEYS.TELEPHONE, source),
+      type: CameraAiNotificationType.PhoneCall,
+    },
+  ];
 
-    newSelectList.forEach((user, index) => {
-      if (!value.includes(user.name)) {
-        newSelectList.splice(index, 1);
-      }
-    });
+  const initCronList = [
+    { title: KEYS.MONDAY, value: DayOfWeek.Monday, isActive: false },
+    { title: KEYS.TUESDAY, value: DayOfWeek.Tuesday, isActive: false },
+    { title: KEYS.WEDNESDAY, value: DayOfWeek.Wednesday, isActive: false },
+    { title: KEYS.THURSDAY, value: DayOfWeek.Thursday, isActive: false },
+    { title: KEYS.FRIDAY, value: DayOfWeek.Friday, isActive: false },
+    { title: KEYS.SATURDAY, value: DayOfWeek.Saturday, isActive: false },
+    { title: KEYS.SUNDAY, value: DayOfWeek.Sunday, isActive: false },
+  ];
 
-    value.forEach((item) => {
-      if (!newSelectList.some((user) => user.name === item)) {
-        newSelectList.push({
-          name: item,
-          notificationTool: [],
+  const initUserData = [
+    {
+      notifyType: CameraAiNotificationType.Email,
+      recipientIds: [],
+      recipients: [],
+    },
+    {
+      notifyType: CameraAiNotificationType.PhoneCall,
+      recipientIds: [],
+      recipients: [],
+    },
+    {
+      notifyType: CameraAiNotificationType.Sms,
+      recipientIds: [],
+      recipients: [],
+    },
+    {
+      notifyType: CameraAiNotificationType.WorkWechat,
+      recipientIds: [],
+      recipients: [],
+    },
+  ];
+
+  const [editDetailData, serEditDetailData] = useState<
+    IMonitorSettingsDto | undefined
+  >(isAdd ? initConfigurationInfo : undefined);
+
+  const editCronList = initCronList.map((x) => {
+    if (editDetailData?.weekDays.includes(x.value)) {
+      x.isActive = true;
+    }
+    return x;
+  });
+
+  const [cronList, setCronList] = useState<ICronListDto[]>(
+    isAdd ? initCronList : editCronList
+  );
+
+  const selectWeekday: DayOfWeek[] = useMemo(() => {
+    return cronList.filter((x) => x.isActive).map((x) => x.value);
+  }, [cronList]);
+
+  const [userData, setUserData] = useState<IUserProfiles[]>([]); //接受数据
+
+  const [selectUserData, setSelectUserData] = useState<
+    IMonitorNotificationsDto[]
+  >(isAdd ? initUserData : editDetailData?.monitorNotifications ?? []); //接口
+
+  const [deviceList, setDeviceList] = useState<IOptionsNumberDto[]>([]);
+
+  const [detailLoading, setDetailLoading] = useState<boolean>(false);
+
+  const [submitLoading, setSubmitLoadin] = useState<boolean>(false);
+
+  const editDetailUser = useMemo(() => {
+    // 处理编辑数据中的 user列表
+    if (
+      !editDetailData ||
+      !editDetailData.monitorNotifications ||
+      isEmpty(editDetailData.monitorNotifications)
+    ) {
+      return [];
+    }
+
+    // 将所有recipientIds抽离出来
+    const editUser = editDetailData.monitorNotifications.reduce<string[]>(
+      (acc, item) => {
+        if (!isEmpty(item.recipientIds)) {
+          acc.push(...item.recipientIds);
+        }
+        return acc;
+      },
+      []
+    );
+
+    // 根据 userData 找对应的recipientIds的名字并凑成一个 option 回显
+    return userData.reduce<IOptionsStringDto[]>((acc, item) => {
+      if (editUser.includes(item.staffId)) {
+        acc.push({
+          label: item.name,
+          value: item.staffId,
         });
       }
+      return acc;
+    }, []);
+  }, [editDetailData, userData]);
+
+  //构造一个显示的 user option
+  const userOptions: IOptionsStringDto[] = useMemo(() => {
+    return userData
+      ? userData.map((item) => {
+          return {
+            label: item.name,
+            value: item.staffId,
+          };
+        })
+      : [];
+  }, [userData]);
+
+  const [selectUserValue, setSelectUserValue] = useState<IOptionsStringDto[]>(
+    isAdd ? [] : editDetailUser
+  );
+
+  const handleTotalDuration = (duration: number, unit: TimeType) => {
+    let count: number = 0;
+    // 转换秒数传参
+    switch (unit) {
+      case TimeType.Second:
+        count = Number(duration);
+        break;
+      case TimeType.Minute:
+        count = Number(duration) * 60;
+        break;
+      case TimeType.Hours:
+        count = Number(duration) * 60 * 60;
+        break;
+      default:
+        break;
+    }
+
+    return count;
+  };
+
+  const handleUnitConversion = (duration: number, isUnit: boolean) => {
+    const divisibleMinutes = duration % 60;
+    const divisibleHours = duration % 3600;
+
+    if (divisibleHours === 0) {
+      return isUnit ? TimeType.Hours : duration / 3600;
+    } else if (divisibleMinutes === 0) {
+      return isUnit ? TimeType.Minute : duration / 60;
+    } else {
+      return isUnit ? TimeType.Second : duration;
+    }
+  };
+
+  const onDeleteNoticeUserItem = (staffId: string) => {
+    // 复制选择的用户列表
+    const newSelectUserList = clone(selectUserValue);
+
+    // 在 newSelectUserList 中找到要删除的项并删除
+    const filteredUserList = newSelectUserList.filter(
+      (user) => user.value !== staffId
+    );
+
+    // 更新选择的用户列表状态
+    setSelectUserValue(filteredUserList);
+
+    // 在选择的用户数据列表中找到要删除的项并删除
+    const updatedUserData = selectUserData.map((item) => {
+      // 在 recipientIds 数组中找到要删除的 staffId 并删除
+      item.recipientIds = item.recipientIds.filter((id) => id !== staffId);
+
+      // 在 recipients 数组中找到要删除的 staffId 并删除
+      item.recipients = item.recipients.filter(
+        (recipient) => recipient.staffId !== staffId
+      );
+
+      return item;
     });
 
-    setSelectUserList(newSelectList);
+    // 更新选择的用户数据状态
+    setSelectUserData(updatedUserData);
+  };
+
+  const onChangeNoticeUserList = (option: IOptionsStringDto[]) => {
+    const idList = option.map((idItem) => idItem.value);
+
+    // 构造一个 label value 的 option
+    const filterList = userData.reduce<IOptionsStringDto[]>((acc, item) => {
+      if (idList.includes(item.staffId)) {
+        const newValue: IOptionsStringDto = {
+          label: item.name,
+          value: item.staffId,
+        };
+        acc.push(newValue);
+      }
+      return acc;
+    }, []);
+
+    setSelectUserValue(filterList);
   };
 
   const onSubmit = () => {
-    navigate("/monitor");
+    const filterSelectUserData = selectUserData.filter(
+      (x) => !isEmpty(x.recipientIds)
+    ); // 去除空的recipientIds的 userdata
+
+    form.validateFields().then(async (values) => {
+      const data: IMonitorSettingsDto = {
+        title: values.title,
+        duration: handleTotalDuration(values.time, values.timeType),
+        notificationContent: values.content,
+        monitorType: values.exceptionType,
+        weekDays: values.repeatEveryWeek,
+        monitorNotifications: filterSelectUserData,
+        equipmentIds: values.deviceSelect,
+        startTime: Math.round(values.timeSetting[0] / 1000),
+        endTime: Math.round(values.timeSetting[1] / 1000),
+        timeZone: "Pacific Standard Time",
+      };
+      if ((isAdd && !!values.broadcastContent) || !isAdd) {
+        data.broadcastContent = values.broadcastContent;
+      }
+
+      if (!isAdd && id) {
+        data.id = Number(id); // 编辑添加 id
+      }
+
+      setSubmitLoadin(true);
+      isAdd
+        ? MonitorSettingCreate(data)
+            .then(() => {
+              message.success(`创建成功`);
+              navigate("/monitor");
+            })
+            .catch((err) => {
+              message.error(`创建失败：${err}`);
+            })
+            .finally(() => setSubmitLoadin(false))
+        : MonitorSettingUpdate(data)
+            .then(() => {
+              message.success(`编辑成功`);
+              navigate("/monitor");
+            })
+            .catch((err) => {
+              message.error(`编辑失败：${err}`);
+            })
+            .finally(() => setSubmitLoadin(false));
+    });
+  };
+
+  // 切换用户的通知类型
+  const onChangeUserNotificationType = (
+    itemType: CameraAiNotificationType,
+    userId: string,
+    isChecked: boolean
+  ) => {
+    const newList = clone(selectUserData);
+
+    for (let i = 0; i < newList.length; i++) {
+      const userItem = newList[i];
+
+      // 找到这个notifyType，对recipientIds中的 userID 勾选：新增 取消勾选：删除
+      if (userItem.notifyType === itemType) {
+        if (!isChecked) {
+          // 取消勾选，从 recipientIds 中删除 userId
+          const deleteIndex = userItem.recipientIds.findIndex(
+            (x) => x === userId
+          );
+          userItem.recipientIds.splice(deleteIndex, 1);
+          userItem.recipients.splice(deleteIndex, 1);
+        } else {
+          // 新增勾选，向 recipientIds 中添加 userId
+          userItem.recipientIds.push(userId);
+          userItem.recipients.push({ staffId: userId });
+        }
+      }
+    }
+
+    // 检查是否找到了对应的 notifyType，如果没找到则添加新项
+    const foundItemIndex = newList.findIndex(
+      (item) => item.notifyType === itemType
+    );
+    if (foundItemIndex === -1) {
+      newList.push({
+        recipientIds: [userId],
+        recipients: [{ staffId: userId }],
+        notifyType: itemType,
+      });
+    }
+
+    setSelectUserData(newList);
+  };
+
+  const initGetUserList = () => {
+    GetUserList({ PageSize: 2147483647, PageIndex: 1 })
+      .then((res) => {
+        setUserData(res.userProfiles);
+      })
+      .catch(() => {
+        setUserData([]);
+      });
   };
 
   useUpdateEffect(() => {
@@ -115,36 +376,66 @@ export const useAction = () => {
     form.validateFields(["repeatEveryWeek"]);
   }, [form, selectWeekday]);
 
+  useEffect(() => {
+    initGetUserList();
+
+    GetEquipmentPage({ PageSize: 2147483647, PageIndex: 1 })
+      .then((res) => {
+        const newEquipmentList = res.equipments.map((item) => {
+          return { label: item.equipmentName ?? "", value: item.id };
+        });
+
+        setDeviceList(newEquipmentList);
+      })
+      .catch(() => {
+        setDeviceList([]);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (isAdd) return; //新增不请求 detail
+    setDetailLoading(true);
+    GetMonitorSettingDetail({ settingId: Number(id) })
+      .then((res) => {
+        serEditDetailData(res);
+      })
+      .catch((err) => {
+        message.error(err);
+      })
+      .finally(() => setDetailLoading(false));
+  }, [isAdd, id]);
+
+  useEffect(() => {
+    // 未设 initvalue 的自动更新值
+    setSelectUserValue(isAdd ? [] : editDetailUser);
+    setSelectUserData(
+      isAdd ? initUserData : editDetailData?.monitorNotifications ?? []
+    );
+    setCronList(isAdd ? initCronList : editCronList);
+  }, [isAdd, editDetailData]);
+
   return {
     cronList,
-    setCronList,
-    userList,
-    setUserList,
-    onDeleteNoticeUserItem,
-    onChangeNoticeUserList,
-    onSubmit,
-    selectUserList,
-    setSelectUserList,
-    navigate,
-    setDuration,
-    duration,
-    durationTimeType,
-    setDurationTimeType,
-    selectWeekday,
-    exceptionTypeList,
-    setExceptionTypeList,
-    selectExceptionId,
-    setSelectExceptionId,
-    deviceList,
-    setDeviceList,
-    selectDeviceId,
-    setSelectDeviceId,
-    timeSetting,
-    setTimeSetting,
+    userOptions,
     form,
     type,
     KEYS,
     t,
     source,
+    selectUserValue,
+    notifyType,
+    selectUserData,
+    editDetailData,
+    deviceList,
+    isAdd,
+    detailLoading,
+    submitLoading,
+    setCronList,
+    onDeleteNoticeUserItem,
+    onChangeNoticeUserList,
+    onSubmit,
+    navigate,
+    onChangeUserNotificationType,
+    handleUnitConversion,
   };
 };

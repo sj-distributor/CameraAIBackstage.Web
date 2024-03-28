@@ -1,5 +1,3 @@
-import { useBoolean } from "ahooks";
-import { App, Form } from "antd";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -10,7 +8,9 @@ import {
   PostDeleteEquipmentType,
   PostUpdateEquipmentType,
 } from "@/services/api/equipment/type";
-import { IPageDto } from "@/services/dtos/equipment/list";
+import { useBoolean } from "ahooks";
+import { App, Form } from "antd";
+import { IPageDto } from "@/services/dtos/public";
 import {
   CameraAiEquipmentTypeLabel,
   IEquipmentTypeList,

@@ -1,3 +1,5 @@
+import { CameraAiMonitorType } from "@/services/dtos/monitor";
+
 export interface IMonitorDataType {
   title: string;
   condition: boolean;
@@ -17,4 +19,9 @@ export enum IWarningType {
   IdentifyPersonnel,
   IdentifyVehicle,
   UnusualVehicle,
+}
+
+export interface IMonitorOptionDto {
+  label: string;
+  value: CameraAiMonitorType;
 }
