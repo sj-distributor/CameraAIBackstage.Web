@@ -18,4 +18,10 @@ export default {
   UPLOAD_TIP_TITLE: "UploadTipTitle",
   UPLOAD_TIP_CONTENT: "UploadTipContent",
   PAGINATION: "Pagination",
+  DELETE_TIP: "DeleteTip",
+  WHETHER_CONFIRM_DELETE: "WhetherConfirmDelete",
+  CONFIRM: "Confirm",
+  CANCEL: "Cancel",
+  PICTURE_PREVIEW: "PicturePreview",
+  COMPLETE_DATA: "CompleteData",
 };

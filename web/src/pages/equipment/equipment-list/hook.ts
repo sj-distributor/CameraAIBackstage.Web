@@ -1,14 +1,8 @@
+import { useBoolean, useDebounce, useUpdateEffect } from "ahooks";
+import { App, Form } from "antd";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
-
-import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
-import {
-  IEquipmentCreateOrUpdateDto,
-  IEquipmentList,
-  IEquipmentPageRequest,
-  IRegionDto,
-} from "@/services/dtos/equipment/list";
 import {
   GetEquipmentInfoById,
   GetEquipmentPage,
@@ -19,12 +13,27 @@ import {
   PostEquipmentUnBind,
   PostUpdateEquipment,
 } from "@/services/api/equipment/list";
-import { App, Form } from "antd";
 import { GetEquipmentTypePage } from "@/services/api/equipment/type";
-import { useBoolean, useDebounce, useUpdateEffect } from "ahooks";
 import { IPageDto } from "@/services/dtos/public";
+import {
+  IEquipmentList,
+  IEquipmentPageRequest,
+  IRegionDto,
+} from "@/services/dtos/equipment/list";
+
+import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
 
 export const useAction = () => {
+  const initialEquipmentData = {
+    equipmentCode: "",
+    equipmentName: "",
+    equipmentTypeId: null,
+    ipAddress: "",
+    brand: "",
+    username: "",
+    password: "",
+  };
+
   const { t, language } = useAuth();
 
   const [form] = Form.useForm();
@@ -58,7 +67,7 @@ export const useAction = () => {
 
   const [isAddOrUpdateOpen, setIsAddOrUpdateOpen] = useState<boolean>(false);
 
-  const [isAddOrEdit, setIsAddOrEdit] = useState<boolean>(false); //true:添加 false:編輯
+  const [isAddOrEdit, setIsAddOrEdit] = useState<boolean>(false); // true:添加 false:編輯
 
   const [clickEditId, setClickEditId] = useState<number>(0);
 
@@ -76,14 +85,6 @@ export const useAction = () => {
     undefined
   );
 
-  const [equipmentId, setEquipmentId] = useState<string>("");
-
-  const [equipmentType, setEquipmentType] = useState<string>("");
-
-  const [equipmentName, setEquipmentName] = useState<string>("");
-
-  const [equipmentTypeId, setEquipmentTypeId] = useState<number | null>(null);
-
   const [equipmentTypesOption, setEquipmentTypesOption] = useState<
     IOptionDto[]
   >([]);
@@ -98,8 +99,9 @@ export const useAction = () => {
     const data: IEquipmentPageRequest = {
       PageIndex: pageDto.PageIndex,
       PageSize: pageDto.PageSize,
-      Keyword: searchKey,
+      Keyword: searchKey ? searchKey : undefined,
     };
+
     if (isSearchOnline !== undefined && isSearchOnline !== IOnlineOrNot.All) {
       data.IsOnline = Boolean(isSearchOnline);
     }
@@ -125,26 +127,10 @@ export const useAction = () => {
     setEditLoading(true);
     await GetEquipmentInfoById({ EquipmentId: id })
       .then((res) => {
-        setEquipmentId(res.equipmentCode ?? "");
-        setEquipmentName(res.equipmentName ?? "");
-        setEquipmentType(res.equipmentType);
-        setEquipmentTypeId(res.equipmentTypeId ?? null);
-        form.setFieldsValue({
-          deviceId: res.equipmentCode,
-          deviceName: res.equipmentName,
-          deviceType: res.equipmentType,
-        });
+        form.setFieldsValue(res);
       })
       .catch((err) => {
-        setEquipmentId("");
-        setEquipmentName("");
-        setEquipmentType("");
-        setEquipmentTypeId(null);
-        form.setFieldsValue({
-          deviceId: "",
-          deviceName: "",
-          deviceType: "",
-        });
+        form.setFieldsValue(initialEquipmentData);
         message.error(`获取信息失败：${err}`);
       })
       .finally(() => {
@@ -154,29 +140,14 @@ export const useAction = () => {
   };
 
   const handleUpdate = () => {
-    const data: IEquipmentCreateOrUpdateDto = {
-      equipmentCode: equipmentId,
-      equipmentName: equipmentName,
-      equipmentTypeId: equipmentTypeId,
-      id: clickEditId,
-    };
     setConfirmLoading(true);
     PostUpdateEquipment({
-      equipment: data,
+      equipment: { ...form.getFieldsValue(), id: clickEditId },
     })
       .then(() => {
         setIsAddOrUpdateOpen(false);
         initGetEquipmentList();
-        setIsBindingOpen(false);
-        setEquipmentId("");
-        setEquipmentName("");
-        setEquipmentType("");
-        setEquipmentTypeId(null);
-        form.setFieldsValue({
-          deviceId: "",
-          deviceName: "",
-          deviceType: "",
-        });
+        form.setFieldsValue(initialEquipmentData);
       })
       .catch((err) => message.error(`更新失敗：${err}`))
       .finally(() => setConfirmLoading(false));
@@ -185,37 +156,25 @@ export const useAction = () => {
   const handleCreate = () => {
     setConfirmLoading(true);
     PostCreateEquipment({
-      equipment: {
-        equipmentCode: equipmentId,
-        equipmentName: equipmentName,
-        equipmentTypeId: equipmentTypeId,
-      },
+      equipment: form.getFieldsValue(),
     })
       .then(() => {
         setIsAddOrUpdateOpen(false);
         initGetEquipmentList();
-        setEquipmentId("");
-        setEquipmentName("");
-        setEquipmentType("");
-        setEquipmentTypeId(null);
-        form.setFieldsValue({
-          deviceId: "",
-          deviceName: "",
-          deviceType: "",
-        });
+        form.setFieldsValue(initialEquipmentData);
       })
       .catch((err) => message.error(`新增失敗：${err}`))
       .finally(() => setConfirmLoading(false));
   };
 
   const onAddOrUpdateSubmit = (isAdd: boolean) => {
-    form.validateFields(["deviceId"]);
-    form.validateFields(["deviceName"]);
-    form.validateFields(["deviceType"]);
+    form.validateFields();
 
-    if (equipmentId && equipmentName && equipmentType) {
-      isAdd ? handleCreate() : handleUpdate();
+    if (Object.values(form.getFieldsValue()).some((value) => !value)) {
+      return;
     }
+
+    isAdd ? handleCreate() : handleUpdate();
   };
 
   const onDelete = () => {
@@ -232,11 +191,12 @@ export const useAction = () => {
 
   const onOpenBind = () => {
     setRegionLoading(true);
-    GetRegionPage()
+    GetRegionPage({ IsFilter: true })
       .then((res) => {
         const newList = res.regions.map((item) => {
           return { ...item, radio: false };
         });
+
         setRegionData(newList);
       })
       .catch((err) => {
@@ -251,6 +211,7 @@ export const useAction = () => {
   const onConfirmBind = () => {
     if (bindAreaId === null) {
       message.warning("请至少选一个设备");
+
       return;
     }
     setConfirmLoading(true);
@@ -285,7 +246,7 @@ export const useAction = () => {
 
   useEffect(() => {
     initGetEquipmentList();
-  }, [pageDto]);
+  }, [pageDto.PageIndex, pageDto.PageSize]);
 
   useEffect(() => {
     GetEquipmentTypePage({ PageIndex: 1, PageSize: 2147483647 })
@@ -293,6 +254,7 @@ export const useAction = () => {
         const list = res.equipmentTypes.map((item) => {
           return { label: item.name, value: item.id };
         });
+
         setEquipmentTypesOption(list);
       })
       .catch(() => {
@@ -325,12 +287,6 @@ export const useAction = () => {
     setIsSearchOnline,
     isSearchBind,
     setIsSearchBind,
-    equipmentId,
-    setEquipmentId,
-    equipmentType,
-    setEquipmentType,
-    equipmentName,
-    setEquipmentName,
     onAddOrUpdateSubmit,
     form,
     equipmentTypesOption,
@@ -343,7 +299,6 @@ export const useAction = () => {
     setIsAddOrEdit,
     onGetEquipmentInformationById,
     editLoding,
-    setEquipmentTypeId,
     language,
     onOpenBind,
     regionLoading,
@@ -352,5 +307,6 @@ export const useAction = () => {
     confirmLoading,
     pageDto,
     onConfirmUnBind,
+    initialEquipmentData,
   };
 };

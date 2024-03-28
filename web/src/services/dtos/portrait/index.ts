@@ -1,6 +1,6 @@
 export interface IFaceDto {
   faceId?: string;
-  image: string;
+  image: string | null;
   imageUrl?: string;
   isDeleted?: boolean;
 }
