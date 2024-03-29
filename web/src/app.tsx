@@ -12,8 +12,11 @@ function App() {
   const [aPageData, setAPageData] = useState<string>("");
 
   useEffect(() => {
-    if (isLoaded && aPageData) {
-      localStorage.setItem((window as any).appSettings?.tokenKey, aPageData);
+    if (aPageData) {
+      localStorage.setItem(
+        (window as any).appSettings?.tokenKey ?? "tokenKey",
+        aPageData
+      );
       // localStorage.removeItem("aPageData");
     }
   }, [isLoaded, aPageData]);
