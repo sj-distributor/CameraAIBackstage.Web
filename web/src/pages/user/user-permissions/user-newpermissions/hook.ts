@@ -1,10 +1,10 @@
 import { message } from "antd";
-import { CheckboxProps } from "antd/es/checkbox";
 import { CheckboxValueType } from "antd/es/checkbox/Group";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/user-permissions-keys";
 import {
   GetPermission,
   GetRolePermissionByRoleId,
@@ -33,7 +33,7 @@ export const useAction = () => {
 
   const isCreate = window.location.pathname.includes("new");
 
-  const [loaded, setIsLoaded] = useState<boolean>(isCreate);
+  const [isLoaded, setIsLoaded] = useState<boolean>(isCreate);
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
@@ -163,7 +163,7 @@ export const useAction = () => {
     };
 
     if (Object.values(valueNotEmpty).some((value) => value === false)) {
-      throw new Error("請確認所有數據填寫完整");
+      throw new Error(t(KEYS.PLEASE_MAKE_SURE_ALL_DATA_INPUT, source));
     }
   };
 
@@ -225,7 +225,7 @@ export const useAction = () => {
 
     PostCreateRoles(filterCreateOrUpdateParam())
       .then(() => {
-        message.success("创建成功");
+        message.success(t(KEYS.CREATED_SUCCESSFULLY, source));
       })
       .catch((error) => {
         message.error(error.msg);
@@ -251,7 +251,7 @@ export const useAction = () => {
       },
     })
       .then(() => {
-        message.success("更新成功");
+        message.success(t(KEYS.UPDATE_SUCCESS, source));
       })
       .catch((error) => {
         message.error(error.msg);
@@ -277,7 +277,7 @@ export const useAction = () => {
       (permission) => {
         return (
           Object.values(FrontRolePermissionEnum).includes(
-            permission.permissionName
+            permission.permissionName as FrontRolePermissionEnum
           ) && permission
         );
       }
@@ -287,7 +287,7 @@ export const useAction = () => {
       (permission) => {
         return (
           Object.values(BackGroundRolePermissionEnum).includes(
-            permission.permissionName
+            permission.permissionName as BackGroundRolePermissionEnum
           ) && permission
         );
       }

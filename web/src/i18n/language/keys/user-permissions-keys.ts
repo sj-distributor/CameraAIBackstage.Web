@@ -60,4 +60,7 @@ export default {
   REMOVE_BINDING: "RemoveBinding",
   CLOSURE: "Closure",
   REGISTERED_VEHICLE: "RegisteredVehicle",
+  UPDATE_SUCCESS: "UpdateSuccess",
+  CREATED_SUCCESSFULLY: "CreatedSuccessfully",
+  PLEASE_MAKE_SURE_ALL_DATA_INPUT: "PleaseMakeSureAllDataIsFilledInCompletely",
 };

@@ -27,10 +27,9 @@ export const NewOrUpdatePermissions = () => {
     setRoleBackgroundPermissions,
     roleFrontPermissions,
     roleBackgroundPermissions,
-    updateRolePermissions,
   } = useAction();
 
-  const { role, rolePermissions } = rolePermissionByRoleIdData;
+  const { role } = rolePermissionByRoleIdData;
 
   const isEnglish = language === "en";
 

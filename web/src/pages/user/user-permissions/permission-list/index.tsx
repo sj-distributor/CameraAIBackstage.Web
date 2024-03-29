@@ -91,11 +91,7 @@ export const UserPermissions = () => {
             <div className="flex justify-center items-center">
               {operateButtons.map((item, index) => (
                 <>
-                  {[
-                    "CanGrantCameraAiRole",
-                    "CanUpdateCameraAiRole",
-                    "CanDeleteCameraAiRole",
-                  ].includes(item.permissions) && (
+                  {myPermissions.includes(item.permissions) && (
                     <Button
                       key={index}
                       type="link"
@@ -134,7 +130,7 @@ export const UserPermissions = () => {
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
-            {["CanAddCameraAiRole"].includes(
+            {myPermissions.includes(
               BackGroundRolePermissionEnum.CanAddCameraAiRole
             ) && (
               <Button
