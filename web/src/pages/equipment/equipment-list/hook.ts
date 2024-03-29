@@ -95,9 +95,9 @@ export const useAction = () => {
 
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
 
-  const initGetEquipmentList = () => {
+  const initGetEquipmentList = (PageIndex = pageDto.PageIndex) => {
     const data: IEquipmentPageRequest = {
-      PageIndex: pageDto.PageIndex,
+      PageIndex,
       PageSize: pageDto.PageSize,
       Keyword: searchKey ? searchKey : undefined,
     };
@@ -271,7 +271,8 @@ export const useAction = () => {
   }, []);
 
   useUpdateEffect(() => {
-    initGetEquipmentList();
+    initGetEquipmentList(1);
+    setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
   }, [debouncedValue, isSearchOnline, isSearchBind]);
 
   return {

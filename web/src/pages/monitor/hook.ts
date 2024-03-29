@@ -98,9 +98,9 @@ export const useAction = () => {
     setSelectWarningType(value);
   };
 
-  const initGetPageData = () => {
+  const initGetPageData = (PageSize = pageDto.PageSize) => {
     const data: IMonitorSettingRequest = {
-      PageSize: pageDto.PageSize,
+      PageSize,
       PageIndex: pageDto.PageIndex,
     };
 
@@ -142,7 +142,13 @@ export const useAction = () => {
   useEffect(() => {
     setLoading(true);
     initGetPageData();
-  }, [pageDto, isActive, selectWarningType]);
+  }, [pageDto]);
+
+  useEffect(() => {
+    setLoading(true);
+    setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
+    initGetPageData(1);
+  }, [, isActive, selectWarningType]);
 
   return {
     data,
