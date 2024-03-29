@@ -1,5 +1,6 @@
 import "swiper/swiper-bundle.css";
 
+import { WarningFilled } from "@ant-design/icons";
 import { DatePicker, Popover } from "antd";
 import dayjs from "dayjs";
 import {
@@ -11,7 +12,9 @@ import {
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/license-plate-management-keys";
+import { CameraAiMonitorType } from "@/services/dtos/license-plate-management";
 
 import {
   ArrowLeftIcon,
@@ -36,9 +39,8 @@ export enum WarningTypes {
   Man,
 }
 
-export const WarningDetails = () => {
+export const WarningDetails = (props: { showWarningDetails: string }) => {
   const {
-    detailsList,
     handleSetPalyVideo,
     isOpenSpeedList,
     isPalyVideo,
@@ -52,11 +54,19 @@ export const WarningDetails = () => {
     setVideoSpeed,
     timeAxisList,
     videoDuration,
-    details,
     source,
-  } = useAction();
+    warningDetails,
+    warningDetailList,
+    isOpenExportVideoModal,
+    setIsOpenExportVideoModal,
+    handelGetPlayBackData,
+    setPalyBlackData,
+    warningDetailDateLists,
+  } = useAction(props);
 
-  const DetailsTitle = {
+  const { RangePicker } = DatePicker;
+
+  const detailsTitle = {
     name: t(KEYS.DEVICE_NAME, source),
     type: t(KEYS.ALERT_TYPE, source),
     content: t(KEYS.ALERT_CONTENT, source),
@@ -77,12 +87,12 @@ export const WarningDetails = () => {
 
     return (
       <>
-        {warnData.map((item) => {
+        {warnData.map((item, index) => {
           const perMinuteWidth = swiperRef.current.swiper.width / 40;
 
           const left =
             (dayjs(item.startTime).diff(
-              dayjs(details.startTime).add(index * 40, "minute"),
+              dayjs(warningDetails.startTime).add(index * 40, "minute"),
               "minute"
             ) *
               perMinuteWidth) /
@@ -108,27 +118,69 @@ export const WarningDetails = () => {
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col flex-1 overflow-hidden">
+      <CustomModal
+        title={
+          <div>
+            <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
+            確認導出視頻？
+          </div>
+        }
+        onCancle={() => {
+          setIsOpenExportVideoModal(false);
+        }}
+        onConfirm={() => {
+          handelGetPlayBackData();
+          setIsOpenExportVideoModal(false);
+        }}
+        open={isOpenExportVideoModal}
+        className={"customModal"}
+      >
+        <span className="pl-[2rem]">
+          <RangePicker
+            showTime={{ format: "HH:mm" }}
+            format="YYYY-MM-DD HH:mm"
+            onChange={(dates) => {
+              setPalyBlackData((prev) => ({
+                ...prev,
+                startTime:
+                  dates && dates?.length >= 1
+                    ? dates[0]
+                      ? dates[0].toISOString()
+                      : undefined
+                    : undefined,
+                endTime:
+                  dates && dates?.length >= 2
+                    ? dates[1]
+                      ? dates[1].toISOString()
+                      : undefined
+                    : undefined,
+              }));
+            }}
+          />
+        </span>
+      </CustomModal>
       <div className="text-[0.75rem] flex flex-wrap pt-[1.5rem] px-[1.5rem] bg-white rounded-lg mt-[1.5rem]">
-        {detailsList.map((item, index) => {
+        {warningDetailList?.map((item, index) => {
           return (
             <div className="w-1/3 mb-[1.5rem]" key={index}>
               <span className="text-[#5F6279 font-regular">
-                {DetailsTitle[item[0] as keyof IDetailsDataDto]} ：
+                {detailsTitle[item[0] as keyof IDetailsDataDto]} ：
               </span>
               <span className="text-[#323444] text-semibold">{item[1]}</span>
             </div>
           );
         })}
       </div>
-      <div className="my-4 rounded-lg h-[62%] bg-[#ccc] w-full relative overflow-hidden">
+      <div className="my-4 rounded-lg flex-1 bg-[#ccc] w-full relative overflow-hidden">
         <video
           ref={videoRef}
           onEnded={() => setIsPalyVideo(false)}
           onLoadedMetadata={handleLoadedMetadata}
           height={"100%"}
           width={"100%"}
-          src="https://cdn-busybee.wiltechs.com/2097_1705455545.mp4"
+          className="object-fill"
+          src="https://video-builder.oss-cn-hongkong.aliyuncs.com/video/test-001.mp4"
         />
         <div className="bg-[#1f1f3970] h-[4.5rem] absolute bottom-0 w-full flex items-center px-[1.5rem] py-[0.625rem] justify-between">
           <div
@@ -140,15 +192,9 @@ export const WarningDetails = () => {
             {isPalyVideo ? <SuspendIcon /> : <PalyIcon />}
           </div>
           <div className="flex font-semibold text-white items-center">
-            <DatePicker
-              className="text-[0.75rem] border-0 bg-transparent videoDatePicker"
-              format="dddd,  hh:mm:ss A"
-              suffixIcon={false}
-              showToday={false}
-              placeholder="Thursday,  05:41:28 PM"
-              allowClear={false}
-              defaultValue={dayjs()}
-            />
+            <span style={{ userSelect: "none" }}>
+              {dayjs(warningDetails.startTime).format("dddd hh:mm:ss A")}
+            </span>
             <div className="cursor-pointer flex rounded ml-[1.5rem] items-center px-2 text-white border border-white border-solid">
               <GoIcon />
               <span className="text-[1.125rem]">Live</span>
@@ -158,25 +204,7 @@ export const WarningDetails = () => {
             <div
               className="mr-[1.5rem] cursor-pointer"
               onClick={() => {
-                const a = document.createElement("a");
-
-                const videoUrl =
-                  "https://cdn-busybee.wiltechs.com/2097_1705455545.mp4";
-
-                fetch(videoUrl)
-                  .then((response) => response.blob())
-                  .then((blob) => {
-                    const url = window.URL.createObjectURL(blob);
-
-                    a.href = url;
-                    a.download = videoUrl.split("com/")[1];
-                    a.click();
-
-                    window.URL.revokeObjectURL(url);
-                  })
-                  .catch((error) =>
-                    console.error("Error downloading video:", error)
-                  );
+                setIsOpenExportVideoModal(true);
               }}
             >
               {t(KEYS.EXPORT, source)}
@@ -187,7 +215,7 @@ export const WarningDetails = () => {
                 return (
                   <div
                     key={item}
-                    className="hover:bg-[#ccc] cursor-pointer py-1 px-4 rounded text-center"
+                    className="hover:bg-[#EBF1FF] hover:text-[#2866F1] cursor-pointer py-1 px-4 rounded text-center"
                     onClick={() => {
                       videoRef?.current &&
                         (videoRef.current.playbackRate = item);
@@ -211,9 +239,6 @@ export const WarningDetails = () => {
             </Popover>
           </div>
         </div>
-        <div className="absolute left-[1.5rem] top-[1rem] text-white">
-          2023-05-02 12:00:00
-        </div>
       </div>
 
       <Swiper
@@ -223,7 +248,7 @@ export const WarningDetails = () => {
         ref={swiperRef}
         scrollbar={{ draggable: true, hide: true }}
         freeMode={true}
-        className="w-full h-24 bg-white rounded-lg relative"
+        className="w-full h-24 bg-white rounded-lg relative mb-4"
       >
         <div
           onClick={() => {
@@ -234,37 +259,18 @@ export const WarningDetails = () => {
           <ArrowLeftIcon />
         </div>
         {timeAxisList?.map((item, index) => {
-          const warnData = {
-            man: [
-              {
-                startTime: "2023-05-02 12:02:00",
-                endTime: "2023-05-02 12:12:00",
-              },
-              {
-                startTime: "2023-05-02 12:14:00",
-                endTime: "2023-05-02 12:20:00",
-              },
-            ],
-            car: [
-              {
-                startTime: "2023-05-02 12:18:00",
-                endTime: "2023-05-02 12:21:00",
-              },
-            ],
-          };
-
-          const currentStartTime = dayjs(details.startTime).add(
+          const currentStartTime = dayjs(warningDetails.startTime).add(
             index + 1 * 40,
             "minute"
           );
 
-          const currentCarData = warnData.car.filter(
-            (item) => dayjs(item.startTime) < currentStartTime
-          );
+          const currentCarData = warningDetailDateLists[
+            CameraAiMonitorType.Vehicles
+          ].filter((item) => dayjs(item.startTime) < currentStartTime);
 
-          const currentManData = warnData.man.filter(
-            (item) => dayjs(item.startTime) < currentStartTime
-          );
+          const currentManData = warningDetailDateLists[
+            CameraAiMonitorType.People
+          ].filter((item) => dayjs(item.startTime) < currentStartTime);
 
           return (
             <SwiperSlide key={index} className="w-full">
@@ -286,7 +292,7 @@ export const WarningDetails = () => {
                   </div>
                   <div className="w-full flex">
                     {item.timeList.map((item, i) => {
-                      const startTime = dayjs(details.startTime);
+                      const startTime = dayjs(warningDetails.startTime);
 
                       const duration = dayjs(item[0]).diff(startTime, "second");
 
@@ -301,8 +307,11 @@ export const WarningDetails = () => {
                                 );
 
                                 return (
-                                  <div key={index} className={`w-1/5 h-max`}>
-                                    <div className="text-start text-[#5F6279] font-semibold text-[0.875rem] text-nowrap">
+                                  <div
+                                    key={index}
+                                    className={`w-1/5 h-max relative`}
+                                  >
+                                    <div className="text-start text-[#5F6279] font-semibold text-[0.875rem] text-nowrap absolute top-[-16px]">
                                       {dayjs(item).get("minute") % 5 === 0
                                         ? dayjs(item).format("hh:mm A")
                                         : ""}
