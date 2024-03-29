@@ -15,7 +15,7 @@ function App() {
     if (isLoaded) {
       localStorage.setItem((window as any).appSettings?.tokenKey, aPageData);
     }
-  }, [isLoaded]);
+  }, [isLoaded, aPageData]);
 
   useEffect(() => {
     const aPageData = localStorage.getItem("aPageData");
