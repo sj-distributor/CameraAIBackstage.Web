@@ -12,6 +12,7 @@ import {
 import FormItem from "antd/es/form/FormItem";
 import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
+import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-type-keys";
@@ -133,11 +134,11 @@ export const EquipmentType = () => {
       }}
     >
       <div>
-        <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem]">
+        <div className="bg-white h-[calc(100vh-5.5rem)] w-full flex-col justify-start p-[1.5rem]">
           <span className="text-[1.125rem] font-semibold tracking-tight">
             {t(KEYS.DEVICE_TYPE, source)}
           </span>
-          <div className="flex flex-row pt-[1.625rem] justify-end">
+          <div className="flex flex-row pt-[1.5rem] justify-end">
             {myPermissions.includes(
               BackGroundRolePermissionEnum.CanAddCameraAiEquipmentType
             ) ? (
@@ -156,7 +157,7 @@ export const EquipmentType = () => {
               <div className="h-[2.75rem]" />
             )}
           </div>
-          <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
+          <div className="flex flex-col h-[calc(100%-4.8rem)] justify-between pt-[1rem]">
             <Table
               loading={loading}
               rowKey={(record) => record.id}
@@ -167,12 +168,15 @@ export const EquipmentType = () => {
               pagination={false}
             />
             <div className="flex justify-between items-center py-[1rem]">
-              <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
-                共
-                <span className="text-[#2853E3] font-light">
-                  {totalListCount}
-                </span>
-                條
+              <div className="text-[#929292]">
+                <Trans
+                  i18nKey={KEYS.PAGINATION}
+                  ns="equipmentType"
+                  values={{ count: totalListCount }}
+                  components={{
+                    span: <span className="text-[#2853E3] font-light mx-1" />,
+                  }}
+                />
               </div>
               <div>
                 <Pagination
@@ -288,6 +292,7 @@ export const EquipmentType = () => {
                 onChange={(e) => {
                   setDescription(e.target.value);
                 }}
+                className="max-h-[15rem]"
               />
             </FormItem>
           </Form>

@@ -1,6 +1,7 @@
 import {
   CloseCircleOutlined,
   CloseOutlined,
+  SearchOutlined,
   WarningFilled,
 } from "@ant-design/icons";
 import {
@@ -169,15 +170,23 @@ export const LicensePlateManagementTable = (props: {
       }}
     >
       <div>
-        <div className="flex flex-row pt-[1.625rem] justify-between">
-          <div>
+        <div className="flex flex-row pt-[1.5rem] justify-between">
+          <div className="flex">
             <Input
-              className="w-[17.5rem]"
-              suffix={<img src={search} />}
+              className="w-[17.5rem] h-[2.5rem]"
+              suffix={
+                <SearchOutlined
+                  style={{
+                    color: "#666472",
+                    fontSize: "1.1rem",
+                    fontWeight: "700",
+                  }}
+                />
+              }
               placeholder={t(KEYS.SEARCH_VEHICLE_NUMBER, source)}
             />
             <Select
-              className="mx-4 w-[13.5rem]"
+              className="mx-4 w-[13.5rem] h-[2.5rem]"
               placeholder={t(KEYS.LAST_WEEK, source)}
               defaultActiveFirstOption
               options={[
@@ -202,7 +211,7 @@ export const LicensePlateManagementTable = (props: {
             />
             {!isRegisteredVehicle && (
               <Select
-                className="w-[13.5rem]"
+                className="w-[13.5rem] h-[2.5rem]"
                 placeholder={t(KEYS.UNREGISTERED, source)}
                 defaultActiveFirstOption
                 options={[
@@ -245,17 +254,17 @@ export const LicensePlateManagementTable = (props: {
           }
           dataSource={data}
           className="pt-[1.125rem] tableHiddenScrollBar"
-          scroll={{ y: 580 }}
+          scroll={{ y: 585 }}
           pagination={false}
         />
         <div className="flex justify-between items-center pt-[1rem]">
-          <div className="text-[#929292] text-[0.875rem] font-light">
+          <div className="text-[#929292] font-light">
             <Trans
               {...source}
               i18nKey="TotalItems"
               values={{ length: data.length.toString() }}
               components={{
-                span: <span className="text-[#2853E3]" />,
+                span: <span className="text-[#2853E3] font-light mx-1" />,
               }}
             />
           </div>

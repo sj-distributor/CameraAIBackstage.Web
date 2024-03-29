@@ -1,3 +1,4 @@
+import { useDebounce } from "ahooks";
 import { message } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,8 +20,6 @@ export const useAction = () => {
   const source = { ns: "userPermissions" };
 
   const [searchValue, setSearchValue] = useState<string>("");
-
-  const [searchKeywordValue, setSearchKeywordValue] = useState<string>("");
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
 
@@ -51,6 +50,8 @@ export const useAction = () => {
 
   const [roleByPermissionAllData, setRoleByPermissionAllData] =
     useState<IRoleByPermissionResponse>(initialRoleByPermissionData);
+
+  const filterKeyword = useDebounce(searchValue, { wait: 500 });
 
   const onSelectedAllRow = (selected: boolean) => {
     const selectedData = roleByPermissionAllData.rolePermissionData.map(
@@ -104,7 +105,7 @@ export const useAction = () => {
         initGetRolesList({
           PageIndex: pageDto.pageIndex,
           PageSize: pageDto.pageSize,
-          KeyWord: searchKeywordValue,
+          KeyWord: filterKeyword,
           systemSource: RoleSystemSourceEnum.CameraAi,
         });
       })
@@ -115,19 +116,19 @@ export const useAction = () => {
     initGetRolesList({
       PageIndex: pageDto.pageIndex,
       PageSize: pageDto.pageSize,
-      KeyWord: searchKeywordValue,
+      KeyWord: filterKeyword,
       systemSource: RoleSystemSourceEnum.CameraAi,
     });
-  }, [pageDto.pageIndex, pageDto.pageSize, searchKeywordValue]);
+  }, [pageDto.pageIndex, pageDto.pageSize, filterKeyword]);
 
   useEffect(() => {
     getRolesAllDataList({
       PageIndex: 1,
       PageSize: 2147483647,
-      KeyWord: searchKeywordValue,
+      KeyWord: filterKeyword,
       systemSource: RoleSystemSourceEnum.CameraAi,
     });
-  }, [searchKeywordValue]);
+  }, [filterKeyword]);
 
   useEffect(() => {
     const newSelectedRowKeys = selectedRows.map((x) => x.id ?? 0);
@@ -139,7 +140,6 @@ export const useAction = () => {
     t,
     source,
     setSearchValue,
-    setSearchKeywordValue,
     searchValue,
     isDeletePermissions,
     setISDeletePermissions,

@@ -105,7 +105,7 @@ export const NewOrUpdatePermissions = () => {
             title: t(KEYS.ADD_ROLE, source),
           },
         ]}
-        className="text-[1.125rem] font-semibold ml-[1.5rem] pt-[2rem] "
+        className="text-[1.125rem] font-semibold ml-[1.5rem] pt-[1.5rem] "
       />
       <div className="bg-white w-full h-[calc(100vh-13.5rem)] overflow-auto no-scrollbar">
         <div className="ml-[17rem] mt-[1rem]">

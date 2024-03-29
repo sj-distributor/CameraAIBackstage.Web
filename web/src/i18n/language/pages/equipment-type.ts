@@ -18,6 +18,7 @@ export default {
     [KEYS.OPERATION_CONFIRMATION]: "Operation Confirmation",
     [KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE]:
       "Please confirm whether to delete the type?",
+    [KEYS.PAGINATION]: "Total <span>{{count}}</span> Item",
   },
   ch: {
     [KEYS.DEVICE_TYPE_ID]: "設備類型ID",
@@ -33,5 +34,6 @@ export default {
     [KEYS.MODIFICATION_TYPE]: "修改類型",
     [KEYS.OPERATION_CONFIRMATION]: "操作確認",
     [KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE]: "請確認是否刪除類型？",
+    [KEYS.PAGINATION]: "共 <span>{{count}}</span> 條",
   },
 };

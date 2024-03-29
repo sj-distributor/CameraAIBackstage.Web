@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, Input, Pagination, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { Trans } from "react-i18next";
@@ -16,7 +16,6 @@ export const UserPermissions = () => {
     t,
     source,
     setSearchValue,
-    setSearchKeywordValue,
     searchValue,
     isDeletePermissions,
     setISDeletePermissions,
@@ -136,14 +135,17 @@ export const UserPermissions = () => {
           <span className="text-[1.125rem] font-semibold tracking-tight">
             {t(KEYS.ROLE_LIST, source)}
           </span>
-          <div className="flex justify-between mt-[1rem] mb-[0.5rem]">
+          <div className="flex justify-between mb-[1rem] mt-[1.5rem] ">
             <Input
-              className="w-[17.5rem]"
+              className="w-[17.5rem] h-[2.5rem]"
               placeholder={t(KEYS.SEARCHING_FOR_ROLE_NAMES, source)}
               suffix={
-                <img
-                  src={search}
-                  onClick={() => setSearchKeywordValue(searchValue)}
+                <SearchOutlined
+                  style={{
+                    color: "#666472",
+                    fontSize: "1.1rem",
+                    fontWeight: "700",
+                  }}
                 />
               }
               value={searchValue}
@@ -163,7 +165,7 @@ export const UserPermissions = () => {
             )}
           </div>
         </div>
-        <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">
+        <div className="flex flex-col h-[calc(100vh-15.4rem)] justify-between">
           <div className="overflow-auto no-scrollbar pb-[1.125rem]">
             <Table
               rowKey={(item) => item?.id ?? 0}

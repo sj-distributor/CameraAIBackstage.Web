@@ -1,4 +1,4 @@
-import { PlusOutlined, WarningFilled } from "@ant-design/icons";
+import { PlusOutlined, SearchOutlined, WarningFilled } from "@ant-design/icons";
 import {
   Button,
   ConfigProvider,
@@ -14,6 +14,7 @@ import {
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
+import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-list-keys";
@@ -253,15 +254,23 @@ export const EquipmentList = () => {
       }}
     >
       <div>
-        <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
+        <div className="bg-white h-[calc(100vh-5.5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
             {t(KEYS.DEVICE_LIST, source)}
           </span>
-          <div className="flex flex-row pt-[1.625rem] justify-between">
+          <div className="flex flex-row pt-[1.5rem] justify-between">
             <div className="flex">
               <Input
-                className="w-[17.5rem] h-[2.75rem]"
-                suffix={<img src={search} />}
+                className="w-[17.5rem] h-[2.5rem]"
+                suffix={
+                  <SearchOutlined
+                    style={{
+                      color: "#666472",
+                      fontSize: "1.1rem",
+                      fontWeight: "700",
+                    }}
+                  />
+                }
                 placeholder={t(
                   KEYS.SEARCH_DEVICE_ID_DEVICE_TYPE_DEVICE_NAME,
                   source
@@ -272,7 +281,7 @@ export const EquipmentList = () => {
                 }}
               />
               <Select
-                className="mx-[1rem] w-[13.5rem] h-[2.75rem]"
+                className="mx-[1rem] w-[13.5rem] h-[2.5rem]"
                 placeholder={t(KEYS.IS_ONLINE, source)}
                 value={isSearchOnline}
                 onChange={(value) => {
@@ -298,7 +307,7 @@ export const EquipmentList = () => {
                 suffixIcon={<img src={downArrow} />}
               />
               <Select
-                className="w-[13.5rem] h-[2.75rem]"
+                className="w-[13.5rem] h-[2.5rem]"
                 placeholder={t(KEYS.IS_BLIND, source)}
                 defaultActiveFirstOption
                 value={isSearchBind}
@@ -338,7 +347,7 @@ export const EquipmentList = () => {
               </Button>
             )}
           </div>
-          <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
+          <div className="flex flex-col h-[calc(100%-4.8rem)] justify-between pt-[1rem]">
             <Table
               loading={loading}
               rowKey={(record) => record.id}
@@ -349,12 +358,15 @@ export const EquipmentList = () => {
               pagination={false}
             />
             <div className="flex justify-between items-center py-[1rem]">
-              <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
-                共
-                <span className="text-[#2853E3] font-light">
-                  {dataTotalCount}
-                </span>
-                條
+              <div className="text-[#929292]">
+                <Trans
+                  i18nKey={KEYS.PAGINATION}
+                  ns="equipmentList"
+                  values={{ count: dataTotalCount }}
+                  components={{
+                    span: <span className="text-[#2853E3] font-light mx-1" />,
+                  }}
+                />
               </div>
               <div>
                 <Pagination

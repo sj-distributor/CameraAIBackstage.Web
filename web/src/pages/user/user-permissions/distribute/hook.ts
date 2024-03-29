@@ -13,6 +13,7 @@ import {
   IUserByRoleIdData,
   IUserByRoleIdResponse,
 } from "@/services/dtos/user-permission";
+import { useDebounce } from "ahooks";
 
 export const useAction = () => {
   const { id } = useParams();
@@ -31,8 +32,6 @@ export const useAction = () => {
   const [isAddNewUser, setIsAddNewUser] = useState<boolean>(false);
 
   const [searchValue, setSearchValue] = useState<string>("");
-
-  const [searchKeywordValue, setSearchKeywordValue] = useState<string>("");
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
 
@@ -60,6 +59,8 @@ export const useAction = () => {
 
   const [userByRoleIdAllData, setUserByRoleIdAllData] =
     useState<IUserByRoleIdResponse>(initialUserByRoleIdData);
+
+  const filterKeyword = useDebounce(searchValue, { wait: 500 });
 
   const onSelectedAllRow = (selected: boolean) => {
     const selectedData = userByRoleIdAllData.roleUsers.map((item) => item.id);
@@ -94,7 +95,7 @@ export const useAction = () => {
         initGetRolesUsersList({
           PageIndex: pageDto.pageIndex,
           PageSize: pageDto.pageSize,
-          KeyWord: searchKeywordValue,
+          KeyWord: filterKeyword,
           RoleId: id,
         });
       })
@@ -119,7 +120,7 @@ export const useAction = () => {
       await initGetRolesUsersList({
         PageIndex: pageDto.pageIndex,
         PageSize: pageDto.pageSize,
-        KeyWord: searchKeywordValue,
+        KeyWord: filterKeyword,
         RoleId: id,
       });
 
@@ -158,19 +159,19 @@ export const useAction = () => {
     initGetRolesUsersList({
       PageIndex: pageDto.pageIndex,
       PageSize: pageDto.pageSize,
-      KeyWord: searchKeywordValue,
+      KeyWord: filterKeyword,
       RoleId: id,
     });
-  }, [pageDto.pageIndex, pageDto.pageSize, searchKeywordValue]);
+  }, [pageDto.pageIndex, pageDto.pageSize, filterKeyword]);
 
   useEffect(() => {
     getAllRolesUsersList({
       PageIndex: 1,
       PageSize: 2147483647,
-      KeyWord: searchKeywordValue,
+      KeyWord: filterKeyword,
       RoleId: id,
     });
-  }, [searchKeywordValue]);
+  }, [filterKeyword]);
 
   useEffect(() => {
     const newSelectedRowKeys = selectedRows.map((x) => x.id);
@@ -194,7 +195,6 @@ export const useAction = () => {
     onSelectedAllRow,
     selectedRowKeys,
     setSearchValue,
-    setSearchKeywordValue,
     searchValue,
     userByRoleIdData,
     setRecord,
