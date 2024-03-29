@@ -18,7 +18,6 @@ import {
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
-import search from "antd/es/transfer/search";
 import dayjs, { Dayjs } from "dayjs";
 import { Trans } from "react-i18next";
 
