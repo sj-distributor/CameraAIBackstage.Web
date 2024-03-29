@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import {
   Breadcrumb,
   Button,
@@ -14,7 +14,6 @@ import KEYS from "@/i18n/language/keys/user-permissions-keys";
 import { HierarchyStaffIdSourceEnum } from "@/services/dtos/tree";
 import { IUserByRoleIdData } from "@/services/dtos/user-permission";
 
-import search from "../../../../assets/public/search.png";
 import { OperateConfirmModal } from "../operate-confirm";
 import { TransferTree } from "../tranfer-tree";
 import { useAction } from "./hook";
@@ -36,7 +35,6 @@ export const UserDistribute = () => {
     onSelectedAllRow,
     selectedRowKeys,
     setSearchValue,
-    setSearchKeywordValue,
     searchValue,
     userByRoleIdData,
     setRecord,
@@ -97,8 +95,8 @@ export const UserDistribute = () => {
 
   return (
     <div>
-      <div className="bg-white w-full h-[calc(100vh-7rem)] p-[1rem]">
-        <div className="flex-col justify-start pt-[1rem] pl-[.5rem] overflow-scroll no-scrollbar">
+      <div className="bg-white w-full h-[calc(100vh-5.5rem)] py-[1rem] px-[1.6rem]">
+        <div className="flex-col justify-start pt-[.5rem] pl-[.5rem] overflow-scroll no-scrollbar">
           <Breadcrumb
             items={[
               {
@@ -114,14 +112,17 @@ export const UserDistribute = () => {
             ]}
             className="text-[1.125rem] font-semibold"
           />
-          <div className="flex justify-between mt-[1.625rem] mb-[.625rem]">
+          <div className="flex justify-between mt-[1.625rem] mb-[1rem]">
             <Input
-              className="w-[17.5rem]"
+              className="w-[17.5rem] h-[2.5rem]"
               placeholder={t(KEYS.SEARCHING_FOR_ROLE_NAMES, source)}
               suffix={
-                <img
-                  src={search}
-                  onClick={() => setSearchKeywordValue(searchValue)}
+                <SearchOutlined
+                  style={{
+                    color: "#666472",
+                    fontSize: "1.1rem",
+                    fontWeight: "700",
+                  }}
                 />
               }
               value={searchValue}
@@ -140,12 +141,12 @@ export const UserDistribute = () => {
                 onClick={() => setIsAddNewUser(true)}
               >
                 <PlusOutlined />
-                {t(KEYS.ADD_ROLE, source)}
+                {t(KEYS.ADD_USER, source)}
               </Button>
             </div>
           </div>
         </div>
-        <div className="flex flex-col h-[calc(100vh-17rem)] justify-between">
+        <div className="flex flex-col h-[calc(100vh-15.5rem)] justify-between">
           <div className="overflow-auto no-scrollbar pb-[1.125rem]">
             <Table
               rowKey={(item) => item.id}

@@ -11,7 +11,10 @@ export default {
     [KEYS.USER_NAME]: "User Name",
     [KEYS.OPERATING_CONTENT]: "Operating Content",
     [KEYS.OPERATING_TIME]: "Operating Time",
-    [KEYS.PAGINATION]: "",
+    [KEYS.PAGINATION]: "Total <span>{{count}}</span> Item",
+    [KEYS.LAST_WEEK]: "Last week",
+    [KEYS.LAST_MONTH]: "Last month",
+    [KEYS.LAST_THREE_MONTH]: "Last three month",
   },
   ch: {
     [KEYS.OPERATION_LOG]: "操作日誌",
@@ -23,5 +26,8 @@ export default {
     [KEYS.OPERATING_CONTENT]: "操作內容",
     [KEYS.OPERATING_TIME]: "操作時間",
     [KEYS.PAGINATION]: "共 <span>{{count}}</span> 條",
+    [KEYS.LAST_WEEK]: "最近一週",
+    [KEYS.LAST_MONTH]: "最近一個月",
+    [KEYS.LAST_THREE_MONTH]: "最近三個月",
   },
 };

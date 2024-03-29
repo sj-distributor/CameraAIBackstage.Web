@@ -207,14 +207,14 @@ export const Monitor = () => {
       }}
     >
       <div>
-        <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
+        <div className="bg-white h-[calc(100vh-5.5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
             {t(KEYS.MONITOR, source)}
           </span>
-          <div className="flex flex-row pt-[1.625rem] justify-between flex-wrap">
+          <div className="flex flex-row pt-[1.5rem] justify-between flex-wrap">
             <div>
               <Select
-                className="mr-[1rem] w-[13.5rem] h-[2.75rem]"
+                className="mr-[1rem] w-[13.5rem] h-[2.5rem]"
                 placeholder={t(KEYS.STATUS, source)}
                 defaultActiveFirstOption
                 value={filterStatus}
@@ -238,7 +238,7 @@ export const Monitor = () => {
                 suffixIcon={<img src={downArrow} />}
               />
               <Select
-                className="w-[13.5rem] h-[2.75rem]"
+                className="w-[13.5rem] h-[2.5rem]"
                 placeholder={t(KEYS.ALERT_TYPE_FILTER, source)}
                 maxTagCount="responsive"
                 defaultActiveFirstOption
@@ -281,7 +281,7 @@ export const Monitor = () => {
               </Button>
             )}
           </div>
-          <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
+          <div className="flex flex-col h-[calc(100%-5.8rem)] justify-between pt-[1rem]">
             <Table
               rowKey={(record) => record.id?.toString() ?? ""}
               columns={columns}
@@ -291,7 +291,7 @@ export const Monitor = () => {
               pagination={false}
               loading={loading}
             />
-            <div className="flex justify-between items-center pt-[16px]">
+            <div className="flex justify-between items-center pt-[1rem]">
               <div className="text-[#929292] text-[.875rem]">
                 <Trans
                   {...source}
@@ -299,7 +299,7 @@ export const Monitor = () => {
                   ns="monitor"
                   values={{ count: count.toString() }}
                   components={{
-                    span: <span className="text-[#2853E3]" />,
+                    span: <span className="text-[#2853E3] font-light mx-1" />,
                   }}
                 />
               </div>

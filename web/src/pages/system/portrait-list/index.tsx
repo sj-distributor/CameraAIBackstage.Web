@@ -1,4 +1,4 @@
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, SearchOutlined } from "@ant-design/icons";
 import {
   Button,
   Empty,
@@ -16,7 +16,6 @@ import trash from "@/assets/portrait/trash.svg";
 import upload from "@/assets/portrait/upload.svg";
 import add from "@/assets/public/add.svg";
 import avatar from "@/assets/public/avatar.png";
-import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/portrait-list-keys";
@@ -64,9 +63,17 @@ export const PortraitList = () => {
         <div className="flex justify-between items-center m-[1.5rem_0_1rem]">
           <div>
             <Input
-              className="w-[17.5rem]"
+              className="w-[17.5rem] h-[2.5rem]"
               placeholder={t(KEYS.SEARCH, { ns: "portraitList" })}
-              suffix={<img src={search} />}
+              suffix={
+                <SearchOutlined
+                  style={{
+                    color: "#666472",
+                    fontSize: "1.1rem",
+                    fontWeight: "700",
+                  }}
+                />
+              }
               onChange={(event) => {
                 setPageData((pre) => ({ ...pre, keyword: event.target.value }));
               }}
@@ -201,7 +208,9 @@ export const PortraitList = () => {
             i18nKey={KEYS.PAGINATION}
             ns="portraitList"
             values={{ count: portraitData.count }}
-            components={{ span: <span className="text-[#2853E3]" /> }}
+            components={{
+              span: <span className="text-[#2853E3] font-light mx-1" />,
+            }}
           />
         </div>
         <Pagination

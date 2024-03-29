@@ -12,4 +12,5 @@ export default {
   MODIFICATION_TYPE: "ModifyType",
   OPERATION_CONFIRMATION: "OperationConfirmation",
   PLEASE_CONFIRM_WHETHER_TO_DELETE: "PleaseConfirmWhetherToDelete?",
+  PAGINATION: "Pagination",
 };

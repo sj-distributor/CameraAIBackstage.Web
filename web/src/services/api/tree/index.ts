@@ -1,5 +1,6 @@
 import {
   HierarchyDepthEnum,
+  HierarchyStaffIdSourceEnum,
   HierarchyStaffRangeEnum,
   IFoundationResponse,
 } from "@/services/dtos/tree";
@@ -9,7 +10,7 @@ import { api } from "../http-client";
 export const GetFoundationData = async (
   type: string,
   data: HierarchyDepthEnum | HierarchyStaffRangeEnum,
-  staffIdSource: number
+  staffIdSource: HierarchyStaffIdSourceEnum
 ) => {
   const response = await api.get<IFoundationResponse>(
     `/api/HappyScore/department/staff/hierarchy/tree?StaffIdSource=${staffIdSource}&${

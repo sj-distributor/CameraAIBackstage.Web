@@ -24,7 +24,6 @@ export const OperationLog = () => {
     rangePresets,
     onRangeChange,
     t,
-    setSearchKeywordValue,
     dateRange,
     operateLogsDto,
   } = useAction();
@@ -73,9 +72,9 @@ export const OperationLog = () => {
       <span className="text-[1.125rem] font-semibold tracking-tight">
         {t(KEYS.OPERATION_LOG, { ns: "operationLog" })}
       </span>
-      <div className="mt-[1.5rem] mb-[1.125rem] h-[2.5rem] flex items-center">
+      <div className="mt-[1.5rem] mb-[1rem] h-[2.5rem] flex items-center">
         <Input
-          className="w-[17.5rem] h-[2.2rem]"
+          className="w-[17.5rem] h-[2.5rem]"
           placeholder={t(KEYS.SEARCH_LICENSE_PLATE_NUMBER, {
             ns: "operationLog",
           })}
@@ -86,14 +85,13 @@ export const OperationLog = () => {
                 fontSize: "1.1rem",
                 fontWeight: "700",
               }}
-              onClick={() => setSearchKeywordValue(searchValue)}
             />
           }
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
         <RangePicker
-          className="ml-5 w-[18.75rem] h-[2.2rem]"
+          className="ml-5 w-[18.75rem] h-[2.5rem]"
           presets={rangePresets}
           onChange={onRangeChange}
           renderExtraFooter={() => (

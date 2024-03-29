@@ -17,7 +17,7 @@ export const LicensePlateManagement = () => {
 
   return (
     <div>
-      <div className="h-[calc(100vh-5rem)] w-full flex-col justify-start no-scrollbar">
+      <div className="h-[calc(100vh-5rem)] w-full flex-col justify-start no-scrollbar bg-white pt-[1.5rem] px-[1.5rem] ">
         <span className="text-[1.125rem] font-semibold tracking-tight">
           <span
             className={`mr-2 cursor-pointer ${

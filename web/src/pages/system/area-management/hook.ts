@@ -1,3 +1,4 @@
+import { useDebounce } from "ahooks";
 import { message } from "antd";
 import { useEffect, useState } from "react";
 
@@ -31,7 +32,7 @@ export const useAction = () => {
 
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const [searchIconValue, setSearchIconValue] = useState<string>("");
+  const filterKeyword = useDebounce(searchValue, { wait: 500 });
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -59,7 +60,7 @@ export const useAction = () => {
     GetAreaManagementPage({
       PageIndex: pageDto.pageIndex,
       PageSize: pageDto.pageSize,
-      Keyword: searchIconValue,
+      Keyword: filterKeyword,
     })
       .then((res) => {
         if (res) setRegionListDto({ count: res.count, regions: res.regions });
@@ -83,12 +84,8 @@ export const useAction = () => {
   };
 
   useEffect(() => {
-    if (searchValue === "") setSearchIconValue("");
-  }, [searchValue]);
-
-  useEffect(() => {
     initGetRegionList();
-  }, [searchIconValue, pageDto.pageSize, pageDto.pageIndex]);
+  }, [filterKeyword, pageDto.pageSize, pageDto.pageIndex]);
 
   return {
     searchValue,
@@ -97,7 +94,6 @@ export const useAction = () => {
     setPageDto,
     t,
     isRegionListLoading,
-    setSearchIconValue,
     setIsDeleteOpen,
     isDeleteOpen,
     initGetRegionList,
