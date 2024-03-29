@@ -1,5 +1,5 @@
 import { GlobalOutlined } from "@ant-design/icons";
-import { Dropdown, Layout, Menu, MenuProps, Select } from "antd";
+import { Avatar, Dropdown, Layout, Menu, MenuProps, Select } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { SubMenuType } from "antd/es/menu/hooks/useItems";
@@ -9,7 +9,6 @@ import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/home-menu-keys";
 import { IRouterList } from "@/services/dtos/routes";
 
-import avatar from "../../assets/public/avatar.png";
 import downArrow from "../../assets/public/down-arrow.png";
 import { useAction } from "./hook";
 
@@ -51,7 +50,8 @@ type MenuItem = Required<MenuProps>["items"][number];
 export const Home = () => {
   const { menuInformation, navigate, setMenuInformation } = useAction();
 
-  const { language, changeLanguage, t, routerList, myPermissions } = useAuth();
+  const { language, changeLanguage, t, routerList, myPermissions, roleName } =
+    useAuth();
 
   const hasPermission = (permission: string | undefined) => {
     return permission && myPermissions.includes(permission);
@@ -224,10 +224,25 @@ export const Home = () => {
             rootClassName="dropDownMenu"
           >
             <div className="flex items-center">
-              <div className="flex justify-center items-center mr-[2rem]">
-                <img src={avatar} className="mr-[.375rem]" />
-                Janny.K
-              </div>
+              {roleName.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex justify-center items-center ml-[2rem]"
+                >
+                  <Avatar
+                    style={{
+                      backgroundColor: "#2853E4",
+                      verticalAlign: "middle",
+                    }}
+                    size="default"
+                    className="mx-4"
+                  >
+                    {item.charAt(0)}
+                  </Avatar>
+                  {item}
+                </div>
+              ))}
+
               <a onClick={(e) => e.preventDefault()}>
                 <img src={downArrow} className="flex items-center" />
               </a>

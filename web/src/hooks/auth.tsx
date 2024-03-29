@@ -37,6 +37,7 @@ interface IAuthContextType {
   haveRoles: number[];
   myPermissions: string[];
   getMyPermission: () => void;
+  roleName: string[];
 }
 
 export const AuthContext = React.createContext<IAuthContextType>(null!);
@@ -53,6 +54,8 @@ export default ({ children }: { children: React.ReactNode }) => {
   const [haveRoles, setHaveRoles] = useState<number[]>([]);
 
   const [myPermissions, setMyPermissions] = useState<string[]>([]);
+
+  const [roleName, setRoleName] = useState<string[]>([]);
 
   const routerList: IRouterList[] = [
     {
@@ -221,6 +224,9 @@ export default ({ children }: { children: React.ReactNode }) => {
 
           setHaveRoles(roles);
           setMyPermissions(rolePermissions);
+          setRoleName(
+            response.rolePermissionData.map((item) => item.role.displayName!)
+          );
         } else {
           message.error(
             t(KEY.ABNORMAL_PERMISSION_DATA, { ns: "userPermissions" })
@@ -258,6 +264,7 @@ export default ({ children }: { children: React.ReactNode }) => {
     haveRoles,
     myPermissions,
     getMyPermission,
+    roleName,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
