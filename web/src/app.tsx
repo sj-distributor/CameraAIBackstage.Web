@@ -12,8 +12,9 @@ function App() {
   const [aPageData, setAPageData] = useState<string>("");
 
   useEffect(() => {
-    if (isLoaded) {
+    if (isLoaded && aPageData) {
       localStorage.setItem((window as any).appSettings?.tokenKey, aPageData);
+      // localStorage.removeItem("aPageData");
     }
   }, [isLoaded, aPageData]);
 
@@ -21,12 +22,13 @@ function App() {
     const aPageData = localStorage.getItem("aPageData");
     if (aPageData) {
       setAPageData(aPageData);
-      localStorage.removeItem("aPageData");
     } else {
       window.addEventListener("message", receiveMessage, false);
     }
 
     function receiveMessage(event: { origin: string; data: string }) {
+      console.log(event);
+
       if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
       if (event.data) {
         localStorage.setItem("aPageData", event.data);
