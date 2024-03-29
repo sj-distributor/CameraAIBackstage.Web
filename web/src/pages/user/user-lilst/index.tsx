@@ -234,7 +234,7 @@ export const UserList = () => {
                 {t(KEYS.BATCH_REMOVE_USERS, source)}
               </Button>
             )}
-            {["CanAddCameraAiUserAccount"].includes(
+            {myPermissions.includes(
               BackGroundRolePermissionEnum.CanAddCameraAiUserAccount
             ) && (
               <Button

@@ -204,8 +204,6 @@ export const TransferTree = ({
       onCancle={() => setIsModelOpen(false)}
       confirmLoading={isConfirmLoading}
       onConfirm={async () => {
-        console.log(targetAllData);
-
         const data = targetAllData.map((item) => item.key);
 
         if (handelGetSelectedUsers && data.length > 0) {

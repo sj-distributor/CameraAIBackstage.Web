@@ -63,4 +63,5 @@ export default {
   UPDATE_SUCCESS: "UpdateSuccess",
   CREATED_SUCCESSFULLY: "CreatedSuccessfully",
   PLEASE_MAKE_SURE_ALL_DATA_INPUT: "PleaseMakeSureAllDataIsFilledInCompletely",
+  ABNORMAL_PERMISSION_DATA: "AbnormalPermissionData",
 };

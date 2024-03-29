@@ -9,6 +9,7 @@ import { Navigate } from "react-router-dom";
 
 import { MonitorIcon, SystemIcon } from "@/assets/sider";
 import KEYS from "@/i18n/language/keys/home-menu-keys";
+import KEY from "@/i18n/language/keys/user-permissions-keys";
 import { EquipmentList } from "@/pages/equipment/equipment-list";
 import { EquipmentType } from "@/pages/equipment/equipment-type";
 import { Container } from "@/pages/main";
@@ -221,7 +222,9 @@ export default ({ children }: { children: React.ReactNode }) => {
           setHaveRoles(roles);
           setMyPermissions(rolePermissions);
         } else {
-          message.error("权限数据异常");
+          message.error(
+            t(KEY.ABNORMAL_PERMISSION_DATA, { ns: "userPermissions" })
+          );
         }
       })
       .catch((error) => {
