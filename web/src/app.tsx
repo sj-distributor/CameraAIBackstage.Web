@@ -4,7 +4,6 @@ import { BrowserRouter } from "react-router-dom";
 
 import { InitialAppSetting } from "./appsetting";
 import AuthProvider from "./hooks/auth";
-import { useAuth } from "./hooks/use-auth";
 import { Router } from "./routes";
 
 function App() {
