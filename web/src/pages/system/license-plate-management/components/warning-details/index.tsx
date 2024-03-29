@@ -14,6 +14,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/license-plate-management-keys";
+import { CameraAiMonitorType } from "@/services/dtos/license-plate-management";
 
 import {
   ArrowLeftIcon,
@@ -60,6 +61,7 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
     setIsOpenExportVideoModal,
     handelGetPlayBackData,
     setPalyBlackData,
+    warningDetailDateLists,
   } = useAction(props);
 
   const { RangePicker } = DatePicker;
@@ -257,37 +259,18 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
           <ArrowLeftIcon />
         </div>
         {timeAxisList?.map((item, index) => {
-          const warnData = {
-            man: [
-              {
-                startTime: "2023-05-02 12:02:00",
-                endTime: "2023-05-02 12:12:00",
-              },
-              {
-                startTime: "2023-05-02 12:14:00",
-                endTime: "2023-05-02 12:20:00",
-              },
-            ],
-            car: [
-              {
-                startTime: "2023-05-02 12:18:00",
-                endTime: "2023-05-02 12:21:00",
-              },
-            ],
-          };
-
           const currentStartTime = dayjs(warningDetails.startTime).add(
             index + 1 * 40,
             "minute"
           );
 
-          const currentCarData = warnData.car.filter(
-            (item) => dayjs(item.startTime) < currentStartTime
-          );
+          const currentCarData = warningDetailDateLists[
+            CameraAiMonitorType.Vehicles
+          ].filter((item) => dayjs(item.startTime) < currentStartTime);
 
-          const currentManData = warnData.man.filter(
-            (item) => dayjs(item.startTime) < currentStartTime
-          );
+          const currentManData = warningDetailDateLists[
+            CameraAiMonitorType.People
+          ].filter((item) => dayjs(item.startTime) < currentStartTime);
 
           return (
             <SwiperSlide key={index} className="w-full">

@@ -11,7 +11,12 @@ import {
   PostGeneratePlayBack,
   PostPlayBackGenerate,
 } from "@/services/api/license-plate-management";
-import { IGetWarningDemandResponse } from "@/services/dtos/license-plate-management";
+import {
+  CameraAiMonitorType,
+  IGetWarningDemandResponse,
+  IWarningRecord,
+} from "@/services/dtos/license-plate-management";
+import { clone } from "ramda";
 
 export type Speed = 0.5 | 1 | 1.25 | 1.5 | 2;
 
@@ -68,6 +73,40 @@ export const useAction = (props: { showWarningDetails: string }) => {
     useState<boolean>(false);
 
   const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
+
+  const handelGetWarningData = (data: IWarningRecord[]) => {
+    const getTimeList = (data: IWarningRecord[], type: CameraAiMonitorType) => {
+      return data
+        .filter((item) => item.monitorType === type)
+        .map((item) => {
+          const startTime = item.occurrenceTime;
+
+          const endTime = dayjs(startTime)
+            .set("seconds", dayjs(startTime).get("seconds") + item.duration)
+            .toISOString();
+
+          return { startTime, endTime };
+        });
+    };
+
+    const peopleWarningLists = getTimeList(data, CameraAiMonitorType.People);
+
+    const vehiclesWarningLists = getTimeList(
+      data,
+      CameraAiMonitorType.Vehicles
+    );
+
+    const abnormalVehiclesWarningLists = getTimeList(
+      data,
+      CameraAiMonitorType.AbnormalVehicles
+    );
+
+    return {
+      [CameraAiMonitorType.AbnormalVehicles]: abnormalVehiclesWarningLists,
+      [CameraAiMonitorType.People]: peopleWarningLists,
+      [CameraAiMonitorType.Vehicles]: vehiclesWarningLists,
+    };
+  };
 
   const warningDetails = useMemo(() => {
     const details = {
@@ -126,10 +165,22 @@ export const useAction = (props: { showWarningDetails: string }) => {
         .then((res) => {
           handelGetUrl(showWarningDetails);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => message.error(err.mag));
     }
 
     return details;
+  }, [warningDemandData]);
+
+  const warningDetailDateLists = useMemo(() => {
+    const warningDataList = warningDemandData?.record
+      ? handelGetWarningData([warningDemandData.record])
+      : {
+          [CameraAiMonitorType.AbnormalVehicles]: [],
+          [CameraAiMonitorType.People]: [],
+          [CameraAiMonitorType.Vehicles]: [],
+        };
+
+    return warningDataList;
   }, [warningDemandData]);
 
   const [detailsVideoUrl, setDetailsVideoUrl] = useState<string>("");
@@ -149,7 +200,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          message.error(err.mag);
         })
         .finally(() => {
           setTimeout(() => {
@@ -327,5 +378,6 @@ export const useAction = (props: { showWarningDetails: string }) => {
     setIsOpenExportVideoModal,
     handelGetPlayBackData,
     setPalyBlackData,
+    warningDetailDateLists,
   };
 };
