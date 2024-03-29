@@ -1,12 +1,5 @@
 import { GlobalOutlined } from "@ant-design/icons";
-import {
-  ConfigProvider,
-  Dropdown,
-  Layout,
-  Menu,
-  MenuProps,
-  Select,
-} from "antd";
+import { Dropdown, Layout, Menu, MenuProps, Select } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { SubMenuType } from "antd/es/menu/hooks/useItems";
