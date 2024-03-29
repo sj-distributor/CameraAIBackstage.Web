@@ -36,8 +36,8 @@ export const NewOrUpdatePermissions = () => {
   const getFrontSpanValue = (key: string) => {
     switch (key) {
       case FrontRolePermissionEnum.CanSwitchCameraAiBackEnd:
-      case FrontRolePermissionEnum.CanExportExcelCameraAiLiveMonitor:
-      case FrontRolePermissionEnum.CanExportVideoCameraAi:
+      case FrontRolePermissionEnum.CanExportCameraAiRealtimeVideo:
+      case FrontRolePermissionEnum.CanExportCameraAiPlaybackVideo:
         return isEnglish ? 19 : 21;
       case FrontRolePermissionEnum.CanMarkCameraAiWarning:
         return isEnglish ? 9 : 13;
@@ -57,10 +57,10 @@ export const NewOrUpdatePermissions = () => {
         case BackGroundRolePermissionEnum.CanViewCameraAiRoleUserPage:
         case BackGroundRolePermissionEnum.CanViewCameraAiEquipmentPage:
         case BackGroundRolePermissionEnum.CanViewCameraAiAreaManagementPage:
-        case BackGroundRolePermissionEnum.CanDeleteCameraAiRole:
+        case BackGroundRolePermissionEnum.CanDeleteRoles:
           return 5;
         case BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount:
-        case BackGroundRolePermissionEnum.CanUpdateCameraAiRole:
+        case BackGroundRolePermissionEnum.CanUpdatePermissionsOfRole:
         case BackGroundRolePermissionEnum.CanBindCameraAiEquipment:
         case BackGroundRolePermissionEnum.CanDisableCameraAiMonitor:
           return 3;
@@ -74,7 +74,7 @@ export const NewOrUpdatePermissions = () => {
       }
     } else {
       switch (key) {
-        case BackGroundRolePermissionEnum.CanDeleteCameraAiRole:
+        case BackGroundRolePermissionEnum.CanDeleteRoles:
           return 12;
         case BackGroundRolePermissionEnum.CanDeleteCameraAiEquipment:
         case BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount:

@@ -91,12 +91,12 @@ export default ({ children }: { children: React.ReactNode }) => {
             {
               path: "/user/permissions/roles/:id?",
               element: <NewOrUpdatePermissions />,
-              permissions: "CanUpdateCameraAiRole",
+              permissions: "CanUpdatePermissionsOfRole",
             },
             {
               path: "/user/permissions/distribute/:id?",
               element: <UserDistribute />,
-              permissions: "CanGrantCameraAiRole",
+              permissions: "CanCreateRoleUser",
             },
           ],
         },

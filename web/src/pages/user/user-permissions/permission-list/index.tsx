@@ -37,13 +37,13 @@ export const UserPermissions = () => {
       text: t(KEYS.ALLOT, source),
       onClick: (record: IRole) =>
         navigate(`/user/permissions/distribute/${record.id}`),
-      permissions: BackGroundRolePermissionEnum.CanGrantCameraAiRole,
+      permissions: BackGroundRolePermissionEnum.CanCreateRoleUser,
     },
     {
       text: t(KEYS.EDIT, source),
       onClick: (record: IRole) =>
         navigate(`/user/permissions/roles/${record.id}`),
-      permissions: BackGroundRolePermissionEnum.CanUpdateCameraAiRole,
+      permissions: BackGroundRolePermissionEnum.CanUpdatePermissionsOfRole,
     },
     {
       text: t(KEYS.DELETE, source),
@@ -51,7 +51,7 @@ export const UserPermissions = () => {
         setISDeletePermissions(true);
         setRecord(record);
       },
-      permissions: BackGroundRolePermissionEnum.CanDeleteCameraAiRole,
+      permissions: BackGroundRolePermissionEnum.CanDeleteRoles,
     },
   ];
 
@@ -90,20 +90,38 @@ export const UserPermissions = () => {
             }}
           >
             <div className="flex justify-center items-center">
-              {operateButtons.map((item, index) => (
+              {record.id === 1 ? (
+                myPermissions.includes(
+                  BackGroundRolePermissionEnum.CanCreateRoleUser
+                ) && (
+                  <Button
+                    type="link"
+                    className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
+                    onClick={() =>
+                      navigate(`/user/permissions/distribute/${record.id}`)
+                    }
+                  >
+                    {t(KEYS.ALLOT, source)}
+                  </Button>
+                )
+              ) : (
                 <>
-                  {myPermissions.includes(item.permissions) && (
-                    <Button
-                      key={index}
-                      type="link"
-                      className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
-                      onClick={() => item.onClick(record)}
-                    >
-                      {item.text}
-                    </Button>
-                  )}
+                  {operateButtons.map((item, index) => (
+                    <>
+                      {myPermissions.includes(item.permissions) && (
+                        <Button
+                          key={index}
+                          type="link"
+                          className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
+                          onClick={() => item.onClick(record)}
+                        >
+                          {item.text}
+                        </Button>
+                      )}
+                    </>
+                  ))}
                 </>
-              ))}
+              )}
             </div>
           </ConfigProvider>
         );
@@ -132,7 +150,7 @@ export const UserPermissions = () => {
               onChange={(e) => setSearchValue(e.target.value)}
             />
             {myPermissions.includes(
-              BackGroundRolePermissionEnum.CanAddCameraAiRole
+              BackGroundRolePermissionEnum.CanGrantPermissionsIntoRole
             ) && (
               <Button
                 type="primary"

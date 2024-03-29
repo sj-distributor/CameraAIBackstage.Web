@@ -1,5 +1,12 @@
 import { GlobalOutlined } from "@ant-design/icons";
-import { Dropdown, Layout, Menu, MenuProps, Select } from "antd";
+import {
+  ConfigProvider,
+  Dropdown,
+  Layout,
+  Menu,
+  MenuProps,
+  Select,
+} from "antd";
 import { Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { SubMenuType } from "antd/es/menu/hooks/useItems";
@@ -51,16 +58,7 @@ type MenuItem = Required<MenuProps>["items"][number];
 export const Home = () => {
   const { menuInformation, navigate, setMenuInformation } = useAction();
 
-  const { language, changeLanguage, t, routerList } = useAuth();
-
-  const myPermissions = [
-    "CanViewCameraAiUserAccountPage",
-    "CanViewCameraAiRoleUserPage",
-    "CanViewCameraAiMonitorManagementPage",
-    "CanAddCameraAiMonitor",
-    "CanViewCameraAiAreaManagementPage",
-    "CanGrantCameraAiRole",
-  ];
+  const { language, changeLanguage, t, routerList, myPermissions } = useAuth();
 
   const hasPermission = (permission: string | undefined) => {
     return permission && myPermissions.includes(permission);
