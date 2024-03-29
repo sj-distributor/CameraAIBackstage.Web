@@ -144,11 +144,13 @@ export const PortraitList = () => {
                       BackGroundRolePermissionEnum.CanDeleteCameraAiPortrait
                     ) && (
                       <Popconfirm
-                        title="刪除提醒"
-                        description="是否確認刪除?"
+                        title={t(KEYS.DELETE_TIP, { ns: "portraitList" })}
+                        description={t(KEYS.WHETHER_CONFIRM_DELETE, {
+                          ns: "portraitList",
+                        })}
                         onConfirm={() => handleDeletePortrait.run(item.id!)}
-                        okText="確認"
-                        cancelText="取消"
+                        okText={t(KEYS.CONFIRM, { ns: "portraitList" })}
+                        cancelText={t(KEYS.CANCEL, { ns: "portraitList" })}
                         rootClassName="portrait"
                       >
                         <div className="flex items-center justify-center w-[5.5rem] h-[2.75rem] rounded-[.5rem] text-[#F04E4E] border border-solid border-[#F04E4E] cursor-pointer mr-[1rem]">
