@@ -215,7 +215,7 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
                 return (
                   <div
                     key={item}
-                    className="hover:bg-[#ccc] cursor-pointer py-1 px-4 rounded text-center"
+                    className="hover:bg-[#EBF1FF] hover:text-[#2866F1] cursor-pointer py-1 px-4 rounded text-center"
                     onClick={() => {
                       videoRef?.current &&
                         (videoRef.current.playbackRate = item);
