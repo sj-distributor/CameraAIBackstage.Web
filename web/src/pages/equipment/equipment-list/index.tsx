@@ -17,6 +17,7 @@ import type { ColumnsType } from "antd/es/table";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-list-keys";
+import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
 
 import downArrow from "../../../assets/public/down-arrow.png";
@@ -66,6 +67,7 @@ export const EquipmentList = () => {
     confirmLoading,
     pageDto,
     onConfirmUnBind,
+    myPermissions,
     initialEquipmentData,
   } = useAction();
 
@@ -130,8 +132,14 @@ export const EquipmentList = () => {
                 setBindId(record.id);
 
                 if (data[index].isBind && !value) {
-                  setIsUnbindOpen(true);
-                } else {
+                  myPermissions.includes(
+                    BackGroundRolePermissionEnum.CanUnBindCameraAiEquipment
+                  ) && setIsUnbindOpen(true);
+                } else if (
+                  myPermissions.includes(
+                    BackGroundRolePermissionEnum.CanBindCameraAiEquipment
+                  )
+                ) {
                   setIsBindingOpen(true);
                   onOpenBind();
                 }
@@ -150,27 +158,35 @@ export const EquipmentList = () => {
       width: "16.6%",
       render: (_, record) => (
         <div>
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => {
-              onGetEquipmentInformationById(record.id);
-              setIsAddOrEdit(false);
-              setIsAddOrUpdateOpen(true);
-            }}
-          >
-            {t(KEYS.EDIT, source)}
-          </Button>
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => {
-              setIsDeleteId(record.id);
-              setIsDeleteDeviceOpen(true);
-            }}
-          >
-            {t(KEYS.DELETE, source)}
-          </Button>
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanUpdateCameraAiEquipment
+          ) && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                onGetEquipmentInformationById(record.id);
+                setIsAddOrEdit(false);
+                setIsAddOrUpdateOpen(true);
+              }}
+            >
+              {t(KEYS.EDIT, source)}
+            </Button>
+          )}
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanDeleteCameraAiEquipment
+          ) && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                setIsDeleteId(record.id);
+                setIsDeleteDeviceOpen(true);
+              }}
+            >
+              {t(KEYS.DELETE, source)}
+            </Button>
+          )}
         </div>
       ),
     },
@@ -242,7 +258,7 @@ export const EquipmentList = () => {
             {t(KEYS.DEVICE_LIST, source)}
           </span>
           <div className="flex flex-row pt-[1.625rem] justify-between">
-            <div>
+            <div className="flex">
               <Input
                 className="w-[17.5rem] h-[2.75rem]"
                 suffix={<img src={search} />}
@@ -306,17 +322,21 @@ export const EquipmentList = () => {
                 suffixIcon={<img src={downArrow} />}
               />
             </div>
-            <Button
-              type="primary"
-              className="h-[2.75rem]"
-              onClick={() => {
-                setIsAddOrEdit(true);
-                setIsAddOrUpdateOpen(true);
-              }}
-            >
-              <PlusOutlined className="pr-[.5rem]" />
-              {t(KEYS.ADD_DEVICE, source)}
-            </Button>
+            {myPermissions.includes(
+              BackGroundRolePermissionEnum.CanAddCameraAiEquipment
+            ) && (
+              <Button
+                type="primary"
+                className="h-[2.75rem]"
+                onClick={() => {
+                  setIsAddOrEdit(true);
+                  setIsAddOrUpdateOpen(true);
+                }}
+              >
+                <PlusOutlined className="pr-[.5rem]" />
+                {t(KEYS.ADD_DEVICE, source)}
+              </Button>
+            )}
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
             <Table
@@ -330,10 +350,10 @@ export const EquipmentList = () => {
             />
             <div className="flex justify-between items-center py-[1rem]">
               <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
-                共{" "}
+                共
                 <span className="text-[#2853E3] font-light">
                   {dataTotalCount}
-                </span>{" "}
+                </span>
                 條
               </div>
               <div>

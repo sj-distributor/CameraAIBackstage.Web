@@ -1,25 +1,25 @@
+import { App } from "antd";
+import { clone } from "ramda";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
-
-import { IMonitorOptionDto, IOpenOrStopStatus } from "./props";
 import {
   GetMonitorSettingPage,
   MonitorSettingDelete,
   MonitorSettingDisable,
   MonitorSettingEnable,
 } from "@/services/api/monitor";
-import { IPageDto } from "@/services/dtos/public";
 import {
   CameraAiMonitorType,
   IMonitorSettingRequest,
   IMonitorSettingsDto,
 } from "@/services/dtos/monitor";
-import { App } from "antd";
-import { clone } from "ramda";
+import { IPageDto } from "@/services/dtos/public";
+
+import { IMonitorOptionDto, IOpenOrStopStatus } from "./props";
 
 export const useAction = () => {
-  const { t, language } = useAuth();
+  const { t, language, myPermissions } = useAuth();
 
   const { message } = App.useApp();
 
@@ -52,10 +52,12 @@ export const useAction = () => {
 
   const onChangeStatus = (id: number, value: boolean) => {
     const newList = clone(data);
+
     newList.map((item) => {
       if (item.id === id) {
         item.loading = true;
       }
+
       return item;
     });
     setData(newList);
@@ -90,6 +92,7 @@ export const useAction = () => {
   const onFilterType = (value: IMonitorOptionDto[]) => {
     if (value.some((x) => x.value === CameraAiMonitorType.All)) {
       setSelectWarningType(undefined);
+
       return;
     }
     setSelectWarningType(value);
@@ -153,6 +156,7 @@ export const useAction = () => {
     onFilterStatus,
     onFilterType,
     filterStatus,
+    myPermissions,
     pageDto,
     setPageDto,
     count,

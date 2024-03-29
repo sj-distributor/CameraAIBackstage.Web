@@ -1,3 +1,5 @@
+import { IFoundationDetail } from "@/pages/user/user-permissions/tranfer-tree/hook";
+
 export enum HierarchyDepthEnum {
   Department,
   Corporation,
@@ -11,4 +13,9 @@ export enum HierarchyStaffRangeEnum {
 
 export interface IFoundationResponse {
   staffDepartmentHierarchy: IFoundationDetail[];
+}
+
+export enum HierarchyStaffIdSourceEnum {
+  AllStaff,
+  AllTeamLeader,
 }

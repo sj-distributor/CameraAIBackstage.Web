@@ -7,18 +7,30 @@ import { Login } from "@/pages/login";
 import { IRouterList } from "@/services/dtos/routes";
 
 export const Router = () => {
-  const { routerList } = useAuth();
+  const { routerList, myPermissions } = useAuth();
 
   const AuthRoutes = (Routes: IRouterList[]) => {
-    return Routes.map((childrenItem, childrenIndex) => (
-      <Route
-        key={childrenIndex}
-        path={childrenItem.path}
-        element={childrenItem.element}
-      >
-        {childrenItem.children && AuthRoutes(childrenItem.children)}
-      </Route>
-    ));
+    return Routes.map((childrenItem, childrenIndex) => {
+      const hasPermission = childrenItem.permissions
+        ? [childrenItem.permissions].some((permission) =>
+            myPermissions.includes(permission)
+          )
+        : true; // 如果没有提供权限，则默认为true
+
+      if (!hasPermission) {
+        return null;
+      }
+
+      return (
+        <Route
+          key={childrenIndex}
+          path={childrenItem.path}
+          element={childrenItem.element}
+        >
+          {childrenItem.children && AuthRoutes(childrenItem.children)}
+        </Route>
+      );
+    }).filter(Boolean); // 过滤掉为null的元素;
   };
 
   return (

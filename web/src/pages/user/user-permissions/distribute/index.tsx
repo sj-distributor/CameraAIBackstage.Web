@@ -7,9 +7,12 @@ import {
   Pagination,
   Table,
 } from "antd";
+import dayjs from "dayjs";
 import { Trans } from "react-i18next";
 
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
+import { HierarchyStaffIdSourceEnum } from "@/services/dtos/tree";
+import { IUserByRoleIdData } from "@/services/dtos/user-permission";
 
 import search from "../../../../assets/public/search.png";
 import { OperateConfirmModal } from "../operate-confirm";
@@ -27,7 +30,6 @@ export const UserDistribute = () => {
     isAddNewUser,
     setIsAddNewUser,
     navigate,
-    data,
     isTableLoading,
     pageDto,
     setPageDto,
@@ -36,21 +38,31 @@ export const UserDistribute = () => {
     setSearchValue,
     setSearchKeywordValue,
     searchValue,
+    userByRoleIdData,
+    setRecord,
+    handleOperateDelete,
+    onSelectedRow,
+    handelGetSelectedUsers,
   } = useAction();
 
   const columns = [
     {
       title: t(KEYS.USER_NAME, source),
       dataIndex: "userName",
+      key: "userName",
     },
     {
       title: t(KEYS.UPDATE_TIME, source),
-      dataIndex: "updateTime",
+      dataIndex: "modifiedDate",
+      key: "modifiedDate",
+      render: (text: string) => {
+        return <div>{dayjs(text).format("YYYY-MM-DD HH:mm:ss")}</div>;
+      },
     },
     {
       title: t(KEYS.OPERATION, source),
-      dataIndex: "operate",
-      render: () => {
+      key: "operate",
+      render: (_: string, record: IUserByRoleIdData) => {
         return (
           <ConfigProvider
             theme={{
@@ -70,7 +82,10 @@ export const UserDistribute = () => {
             <Button
               type="link"
               className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
-              onClick={() => setIsDeletePermissions(true)}
+              onClick={() => {
+                setIsDeletePermissions(true);
+                setRecord(record);
+              }}
             >
               {t(KEYS.REMOVE, source)}
             </Button>
@@ -133,15 +148,18 @@ export const UserDistribute = () => {
         <div className="flex flex-col h-[calc(100vh-17rem)] justify-between">
           <div className="overflow-auto no-scrollbar pb-[1.125rem]">
             <Table
-              rowKey={(record) => record.deviceId}
+              rowKey={(item) => item.id}
               columns={columns}
-              dataSource={data}
+              dataSource={userByRoleIdData.roleUsers}
               pagination={false}
               sticky={true}
               loading={isTableLoading}
               rowSelection={{
                 type: "checkbox",
                 selectedRowKeys,
+                onSelect: (record, selected) => {
+                  onSelectedRow(record, selected);
+                },
                 onSelectAll: (selected) => onSelectedAllRow(selected),
               }}
             />
@@ -151,7 +169,7 @@ export const UserDistribute = () => {
               <Trans
                 i18nKey={KEYS.PAGINATION}
                 ns="userPermissions"
-                values={{ count: data.length }}
+                values={{ count: userByRoleIdData.count }}
                 components={{
                   span: <span className="text-[#2853E3] font-light mx-1" />,
                 }}
@@ -161,7 +179,7 @@ export const UserDistribute = () => {
               current={pageDto.pageIndex}
               pageSize={pageDto.pageSize}
               pageSizeOptions={[5, 10, 20]}
-              total={data.length}
+              total={userByRoleIdData.count}
               showQuickJumper
               showSizeChanger
               onChange={(page, pageSize) =>
@@ -175,16 +193,20 @@ export const UserDistribute = () => {
         isModelOpen={isDeletePermissions}
         setIsModelOpen={setIsDeletePermissions}
         contentText={t(KEYS.CONFIRM_DELETE_ROLE, source)}
+        handleOperateConfirm={handleOperateDelete}
       />
       <OperateConfirmModal
         isModelOpen={isBatchDeleteUser}
         setIsModelOpen={setIsBatchDeleteUser}
         contentText={t(KEYS.CONFIRM_DELETE_USERS_IN_BATCHES, source)}
+        handleOperateConfirm={handleOperateDelete}
       />
+
       <TransferTree
         isModelOpen={isAddNewUser}
         setIsModelOpen={setIsAddNewUser}
-        data={data}
+        handelGetSelectedUsers={handelGetSelectedUsers}
+        staffIdSource={HierarchyStaffIdSourceEnum.IntegerStaffId}
       />
     </div>
   );

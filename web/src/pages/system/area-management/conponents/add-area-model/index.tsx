@@ -1,5 +1,5 @@
 import { MinusCircleFilled, PlusCircleFilled } from "@ant-design/icons";
-import { Input, Select } from "antd";
+import { Input } from "antd";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/area-management-keys";

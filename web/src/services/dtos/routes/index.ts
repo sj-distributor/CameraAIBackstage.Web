@@ -4,4 +4,5 @@ export interface IRouterList {
   name?: string;
   icon?: JSX.Element;
   children?: IRouterList[];
+  permissions?: string;
 }

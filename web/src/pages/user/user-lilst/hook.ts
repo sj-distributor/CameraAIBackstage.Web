@@ -19,11 +19,9 @@ import {
 export const useAction = () => {
   const source = { ns: "userList" };
 
-  const { t } = useAuth();
+  const { t, myPermissions, language } = useAuth();
 
   const [isAddUser, setIsAddUser] = useState<boolean>(false);
-
-  const [isClosed, setIsClosed] = useState<boolean>(false);
 
   const [isRemoveUser, setIsRemoveUser] = useState<boolean>(false);
 
@@ -121,7 +119,6 @@ export const useAction = () => {
     isAddUser,
     setIsAddUser,
     handelGetSelectedUsers,
-    setIsClosed,
     isRemoveUser,
     setIsRemoveUser,
     isResetPassword,
@@ -143,5 +140,7 @@ export const useAction = () => {
     source,
     updateUserId,
     setUpdateUserId,
+    myPermissions,
+    language,
   };
 };
