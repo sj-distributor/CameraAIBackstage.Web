@@ -29,7 +29,6 @@ export const UserDistribute = () => {
     isAddNewUser,
     setIsAddNewUser,
     navigate,
-    data,
     isTableLoading,
     pageDto,
     setPageDto,

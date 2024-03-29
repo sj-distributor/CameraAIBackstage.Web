@@ -145,7 +145,7 @@ export const Monitor = () => {
       title: `${t(KEYS.OPERATE, source)}`,
       dataIndex: "operate",
       width: "16.6%",
-      render: (_, record, index) => (
+      render: (_, __, index) => (
         <div className="flex-wrap flex">
           {myPermissions.includes(
             BackGroundRolePermissionEnum.CanUpdateCameraAiMonitor

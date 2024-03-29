@@ -26,7 +26,6 @@ export const UserList = () => {
     isAddUser,
     setIsAddUser,
     handelGetSelectedUsers,
-    setIsClosed,
     isRemoveUser,
     setIsRemoveUser,
     isResetPassword,
@@ -260,7 +259,7 @@ export const UserList = () => {
           rowSelection={{
             type: "checkbox",
             onChange(selectedRowKeys) {
-              setDeleteUserKeys((prev) =>
+              setDeleteUserKeys(() =>
                 selectedRowKeys.map((item) => String(item))
               );
             },
@@ -285,7 +284,7 @@ export const UserList = () => {
             pageSize={getUserListRequest.PageSize}
             pageSizeOptions={[10, 20, 50]}
             onChange={(page, pageSize) =>
-              setGetUserListRequest((prev) => ({
+              setGetUserListRequest(() => ({
                 PageIndex: page,
                 PageSize: pageSize,
               }))
@@ -328,7 +327,7 @@ export const UserList = () => {
         title={
           <div className="flex flex-row justify-between">
             <div>{t(KEYS.EDIT_PASSWORD, source)}</div>
-            <CloseOutlined onClick={() => setIsClosed(true)} />
+            <CloseOutlined onClick={() => setIsResetPassword(false)} />
           </div>
         }
         onCancle={() => setIsResetPassword(false)}

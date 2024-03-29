@@ -1,4 +1,4 @@
-import { IPageDto } from "../public";
+import { IPageDto } from "../user";
 
 export interface IAreaManagementRegionRequest {
   RegionId: number;

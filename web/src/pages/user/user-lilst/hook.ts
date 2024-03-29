@@ -23,8 +23,6 @@ export const useAction = () => {
 
   const [isAddUser, setIsAddUser] = useState<boolean>(false);
 
-  const [isClosed, setIsClosed] = useState<boolean>(false);
-
   const [isRemoveUser, setIsRemoveUser] = useState<boolean>(false);
 
   const [isResetPassword, setIsResetPassword] = useState<boolean>(false);
@@ -121,7 +119,6 @@ export const useAction = () => {
     isAddUser,
     setIsAddUser,
     handelGetSelectedUsers,
-    setIsClosed,
     isRemoveUser,
     setIsRemoveUser,
     isResetPassword,

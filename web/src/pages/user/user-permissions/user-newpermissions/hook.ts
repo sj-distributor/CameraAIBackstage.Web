@@ -319,5 +319,6 @@ export const useAction = () => {
     roleFrontPermissions,
     roleBackgroundPermissions,
     updateRolePermissions,
+    isLoaded,
   };
 };

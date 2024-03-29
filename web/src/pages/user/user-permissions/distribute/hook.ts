@@ -15,39 +15,6 @@ import {
 } from "@/services/dtos/user-permission";
 
 export const useAction = () => {
-  const data = [
-    {
-      key: "001",
-      userName: "Janny",
-      updateTime: "2021-12-12 12:00",
-    },
-    {
-      key: "002",
-      userName: "Tom",
-      updateTime: "2021-12-12 12:00",
-    },
-    {
-      key: "003",
-      userName: "Tonny",
-      updateTime: "2021-12-12 12:00",
-    },
-    {
-      key: "004",
-      userName: "Bonni",
-      updateTime: "2021-12-12 12:00",
-    },
-    {
-      key: "005",
-      userName: "Bonni",
-      updateTime: "2021-12-12 12:00",
-    },
-    {
-      key: "006",
-      userName: "Rex",
-      updateTime: "2021-12-12 12:00",
-    },
-  ];
-
   const { id } = useParams();
 
   const { t } = useAuth();
@@ -221,7 +188,6 @@ export const useAction = () => {
     isAddNewUser,
     setIsAddNewUser,
     navigate,
-    data,
     isTableLoading,
     pageDto,
     setPageDto,
