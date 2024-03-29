@@ -9,10 +9,33 @@ import { Router } from "./routes";
 function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
+  const [aPageData, setAPageData] = useState<string>("");
+
   useEffect(() => {
-    // 内部调试自行加个 token 值上去
-    localStorage.setItem((window as any).appSettings?.tokenKey, "");
-  }, [localStorage.getItem((window as any).appSettings?.tokenKey)]);
+    if (aPageData) {
+      localStorage.setItem(
+        (window as any).appSettings?.tokenKey ?? "tokenKey",
+        aPageData
+      );
+      // localStorage.removeItem("aPageData");
+    }
+  }, [isLoaded, aPageData]);
+
+  useEffect(() => {
+    const aPageData = localStorage.getItem("aPageData");
+    if (aPageData) {
+      setAPageData(aPageData);
+    } else {
+      window.addEventListener("message", receiveMessage, false);
+    }
+
+    function receiveMessage(event: { origin: string; data: string }) {
+      if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
+      if (event.data) {
+        localStorage.setItem("aPageData", event.data);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     InitialAppSetting().then(() => setIsLoaded(true));
