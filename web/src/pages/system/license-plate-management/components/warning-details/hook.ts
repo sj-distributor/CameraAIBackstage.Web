@@ -70,8 +70,6 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
   const isPlayBackCallBackData = useRef<boolean>(false);
 
-  const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
-
   const handelGetWarningData = (data: IWarningRecord[]) => {
     const getTimeList = (data: IWarningRecord[], type: CameraAiMonitorType) => {
       return data
@@ -160,7 +158,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
       };
 
       PostPlayBackGenerate(getUrlData)
-        .then((res) => {
+        .then(() => {
           handelGetUrl(showWarningDetails);
         })
         .catch((err) => message.error(err.mag));
@@ -181,7 +179,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
     return warningDataList;
   }, [warningDemandData]);
 
-  const [detailsVideoUrl, setDetailsVideoUrl] = useState<string>("");
+  // const [detailsVideoUrl, setDetailsVideoUrl] = useState<string>("");
 
   const isGetdetailsVideoUrl = useRef<boolean>(false);
 
@@ -193,8 +191,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
           const { replayUrl } = res.record;
 
           if (replayUrl) {
-            setDetailsVideoUrl(replayUrl);
-            setIsLoadingData(false);
+            // setDetailsVideoUrl(replayUrl);
             isGetdetailsVideoUrl.current = true;
 
             return;

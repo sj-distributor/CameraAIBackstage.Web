@@ -3,7 +3,6 @@ import { message, TimeRangePickerProps } from "antd";
 import { useForm } from "antd/es/form/Form";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { RangeValue } from "rc-picker/lib/interface.d";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -16,8 +15,6 @@ import {
   PostRegisteringVehicles,
 } from "@/services/api/license-plate-management";
 import {
-  CameraAiMonitorRecordStatus,
-  CameraAiMonitorType,
   IGetRegisteredVehicleListRequest,
   IGetRegisteredVehicleListResponse,
   IGetVehicleMonitorRecordsRequest,
@@ -83,7 +80,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
       registers: [],
     });
 
-  const [dateRange, setDateRange] = useState<RangeValue<Dayjs>>();
+  const [dateRange, setDateRange] = useState<null | (Dayjs | null)[]>();
 
   const [plateNumberKeyword, setPlateNumberKeyword] = useState<string>("");
 

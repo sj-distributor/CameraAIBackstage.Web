@@ -18,7 +18,6 @@ import {
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
-import search from "antd/es/transfer/search";
 import dayjs, { Dayjs } from "dayjs";
 import { Trans } from "react-i18next";
 
@@ -357,7 +356,6 @@ export const LicensePlateManagementTable = (
           <RangePicker
             className="w-[18.75rem] h-[2.5rem]"
             presets={rangePresets}
-            value={dateRange}
             onChange={onRangeChange}
             renderExtraFooter={() => (
               <div className="flex justify-between">

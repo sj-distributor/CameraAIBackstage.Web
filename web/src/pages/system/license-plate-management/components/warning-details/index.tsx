@@ -83,7 +83,7 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
     type: WarningTypes;
     index: number;
   }) => {
-    const { warnData, index, type } = props;
+    const { warnData, type } = props;
 
     return (
       <>
