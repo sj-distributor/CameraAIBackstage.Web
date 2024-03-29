@@ -1,10 +1,39 @@
 import react from "@vitejs/plugin-react";
 import * as path from "path";
+import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
+import importToCDN, { autoComplete } from "vite-plugin-cdn-import";
+import VitePluginCompression from "vite-plugin-compression";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    importToCDN({
+      modules: [
+        autoComplete("react"),
+        autoComplete("react-dom"),
+        {
+          name: "dayjs",
+          var: "dayjs",
+          path: `dayjs.min.js`,
+        },
+        {
+          name: "antd",
+          var: "antd",
+          path: `dist/antd.min.js`,
+        },
+      ],
+    }),
+    react(),
+    VitePluginCompression({
+      algorithm: "gzip",
+      ext: ".gz",
+      verbose: true,
+      disable: false,
+      threshold: 10240,
+      deleteOriginFile: false,
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -22,5 +51,16 @@ export default defineConfig({
       },
     },
   },
-  build: { outDir: "build" },
+  build: {
+    outDir: "build",
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            return "vendor";
+          }
+        },
+      },
+    },
+  },
 });
