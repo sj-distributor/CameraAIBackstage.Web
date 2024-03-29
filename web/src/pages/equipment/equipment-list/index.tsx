@@ -258,7 +258,7 @@ export const EquipmentList = () => {
             {t(KEYS.DEVICE_LIST, source)}
           </span>
           <div className="flex flex-row pt-[1.625rem] justify-between">
-            <div>
+            <div className="flex">
               <Input
                 className="w-[17.5rem] h-[2.75rem]"
                 suffix={<img src={search} />}
