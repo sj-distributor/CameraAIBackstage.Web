@@ -25,7 +25,12 @@ function App() {
     }
 
     function receiveMessage(event: { origin: string; data: string }) {
-      console.log("123123", event);
+      console.log(
+        "123123",
+        event,
+        event.origin !== (window as any).appsettings.frontDeskDomain,
+        (window as any).appsettings.frontDeskDomain
+      );
 
       if (event.origin !== (window as any).appsettings.frontDeskDomain) return;
       if (event.data) {
