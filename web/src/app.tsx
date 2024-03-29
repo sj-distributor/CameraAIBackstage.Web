@@ -9,21 +9,24 @@ import { Router } from "./routes";
 function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
+  const [aPageData, setAPageData] = useState<string>("");
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem((window as any).appSettings?.tokenKey, aPageData);
+    }
+  }, [isLoaded]);
+
   useEffect(() => {
     const aPageData = localStorage.getItem("aPageData");
     if (aPageData) {
-      console.log("aPageData", aPageData);
-      if (isLoaded) {
-        localStorage.setItem((window as any).appSettings?.tokenKey, aPageData);
-      }
+      setAPageData(aPageData);
       localStorage.removeItem("aPageData");
     } else {
       window.addEventListener("message", receiveMessage, false);
     }
 
     function receiveMessage(event: { origin: string; data: string }) {
-      console.log("123123", event);
-
       if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
       if (event.data) {
         localStorage.setItem("aPageData", event.data);
@@ -33,7 +36,7 @@ function App() {
 
   useEffect(() => {
     InitialAppSetting().then(() => setIsLoaded(true));
-  }, [document.cookie]);
+  }, []);
 
   return isLoaded ? (
     <ConfigProvider
