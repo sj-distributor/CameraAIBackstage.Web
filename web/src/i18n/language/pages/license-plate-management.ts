@@ -45,6 +45,14 @@ export default {
     [KEYS.REGISTERED_VEHICLES]: "Registered vehicle",
     [KEYS.EDIT]: "Edit",
     [KEYS.DELETE]: "Delete",
+    [KEYS.REGISTERING_CAR_OK]: "Vehicle registration successful",
+    [KEYS.ABNORMAL_CAUSE]: "Abnormal cause",
+    [KEYS.OPERATION_CONFIRMATION]: "Operation Confirmation",
+    [KEYS.CONFIRM_EDIT_REGISTER_CAR]:
+      "Please confirm whether to continue editing the registered vehicle status?",
+    [KEYS.CONFIRM_DELETE_REGISTER_CAR]:
+      "Please confirm whether to continue deleting the vehicle registration information?",
+    [KEYS.REGISTER_STATUS]: "Registration status",
   },
 
   ch: {
@@ -90,5 +98,11 @@ export default {
     [KEYS.REGISTERED_VEHICLES]: "已登記車輛",
     [KEYS.EDIT]: "編輯",
     [KEYS.DELETE]: "刪除",
+    [KEYS.REGISTERING_CAR_OK]: "登記車輛成功",
+    [KEYS.ABNORMAL_CAUSE]: "異常原因",
+    [KEYS.OPERATION_CONFIRMATION]: "操作確認",
+    [KEYS.CONFIRM_EDIT_REGISTER_CAR]: "請確認是否繼續編輯登記車輛狀態？",
+    [KEYS.CONFIRM_DELETE_REGISTER_CAR]: "請確認是否繼續刪除該車輛登記信息？",
+    [KEYS.REGISTER_STATUS]: "登記狀態",
   },
 };

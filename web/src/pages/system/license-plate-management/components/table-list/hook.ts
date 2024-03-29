@@ -1,218 +1,384 @@
-import { useState } from "react";
+import { useDebounce, useRequest } from "ahooks";
+import { message, TimeRangePickerProps } from "antd";
+import { useForm } from "antd/es/form/Form";
+import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc";
+import { RangeValue } from "rc-picker/lib/interface.d";
+import { useEffect, useState } from "react";
 
-import { IDataType, IDeviceDataType } from "../../props";
+import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/license-plate-management-keys";
+import {
+  GetRegisteredVehicleList,
+  GetVehicleMonitorRecords,
+  PostDeleteRegisterCar,
+  PostEditRegisterCar,
+  PostRegisteringVehicles,
+} from "@/services/api/license-plate-management";
+import {
+  CameraAiMonitorRecordStatus,
+  CameraAiMonitorType,
+  IGetRegisteredVehicleListRequest,
+  IGetRegisteredVehicleListResponse,
+  IGetVehicleMonitorRecordsRequest,
+  IGetVehicleMonitorRecordsResponse,
+  IPostEditRegisterCarRequest,
+  IPostRegisteringCarRequest,
+  IRegisteredVehicleListItem,
+} from "@/services/dtos/license-plate-management";
 
-export const useAction = () => {
-  const [isUnbindOpen, setIsUnbindOpen] = useState<boolean>(false);
+import { ConfirmData, ILicensePlateManagementTableProps } from "./props";
+
+dayjs.extend(utc);
+
+export const useAction = (props: ILicensePlateManagementTableProps) => {
+  const { isRegisteredVehicle } = props;
+
+  const { t, language } = useAuth();
+
+  const [registerForm] = useForm();
+
+  const [confirmData, setConfirmData] = useState<ConfirmData>(
+    ConfirmData.DeleteRegisterCar
+  );
+
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false);
 
   const [isShowLicensePlateOpen, setIsShowLicensePlateOpen] =
     useState<boolean>(false);
 
+  const [licensePlateImageUrl, setLicensePlateImageUrl] = useState<string>("");
+
   const source = { ns: "licensePlateManagement" };
+
+  const [registerCarNumber, setRegisterCarNumber] = useState<string>("");
+
+  const [vehicleMonitorRecordsRequest, setVehicleMonitorRecordsRequest] =
+    useState<IGetVehicleMonitorRecordsRequest>({ PageIndex: 1, PageSize: 20 });
+
+  const [registeredVehicleRequest, setRegisteredVehicleRequest] =
+    useState<IGetRegisteredVehicleListRequest>({ PageIndex: 1, PageSize: 20 });
+
+  const [registeringCarRequest, setRegisteringCarRequest] = useState<
+    IPostRegisteringCarRequest | IRegisteredVehicleListItem
+  >({
+    recordId: "",
+    recordStatus: undefined,
+    exceptionReason: undefined,
+  });
 
   const [isRegisterOpen, setIsRegisterOpen] = useState<boolean>(false);
 
   const [isAddDeviceOpen, setIsAddDeviceOpen] = useState<boolean>(false);
 
-  const [isUnbindIndex, setIsUnbindIndex] = useState<number>(0);
+  const [vehicleMonitorRecordsData, setVehicleMonitorRecordsData] =
+    useState<IGetVehicleMonitorRecordsResponse>({
+      count: 0,
+      records: [],
+    });
 
-  const [isDeleteIndex, setIsDeleteIndex] = useState<number>(0);
+  const [registeredVehicleData, setRegisteredVehicleData] =
+    useState<IGetRegisteredVehicleListResponse>({
+      count: 0,
+      registers: [],
+    });
 
-  const [data, setData] = useState<IDataType[]>([
+  const [dateRange, setDateRange] = useState<RangeValue<Dayjs>>();
+
+  const [plateNumberKeyword, setPlateNumberKeyword] = useState<string>("");
+
+  const [isEditKeyword, setEditKeyword] = useState<boolean>(false);
+
+  const [deleteRegisterCarId, setDeleteRegisterCarId] = useState<string>("");
+
+  const rangePresets: TimeRangePickerProps["presets"] = [
     {
-      deviceId: "1",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: false,
-      operate: "2023-09-26  12:30",
+      label: t(KEYS.LAST_WEEK, source),
+      value: [dayjs().subtract(7, "d"), dayjs()],
     },
     {
-      deviceId: "2",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: false,
-      operate: "2023-09-26  12:30",
+      label: t(KEYS.LAST_MONTH, source),
+      value: [dayjs().subtract(1, "month"), dayjs()],
     },
     {
-      deviceId: "3",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: false,
-      operate: "2023-09-26  12:30",
+      label: t(KEYS.LAST_THREE_MONTHS, source),
+      value: [dayjs().subtract(3, "month"), dayjs()],
     },
+  ];
+
+  const onRangeChange = (dates: null | (Dayjs | null)[]) => {
+    if (dates && dates[0] && dates[1]) {
+      setDateRange([dates[0], dates[1]]);
+
+      const startTime = dates[0]
+        ? dates[0].utc().format("YYYY-MM-DDTHH:mm:ss")
+        : undefined;
+
+      const endTime = dates[1]
+        ? dates[1].utc().format("YYYY-MM-DDTHH:mm:ss")
+        : undefined;
+
+      isRegisteredVehicle
+        ? setRegisteredVehicleRequest((prev) => ({
+            ...prev,
+            StartTime: startTime,
+            EndTime: endTime,
+          }))
+        : setVehicleMonitorRecordsRequest((prev) => ({
+            ...prev,
+            StartTime: startTime,
+            EndTime: endTime,
+          }));
+    } else {
+      isRegisteredVehicle
+        ? setRegisteredVehicleRequest((prev) => ({
+            ...prev,
+            StartTime: undefined,
+            EndTime: undefined,
+          }))
+        : setVehicleMonitorRecordsRequest((prev) => ({
+            ...prev,
+            StartTime: undefined,
+            EndTime: undefined,
+          }));
+
+      setDateRange(undefined);
+    }
+  };
+
+  const handelSetPlateNumberKeyword = (key: string) => {
+    if (isRegisteredVehicle) {
+      setRegisteredVehicleRequest((prev) => ({
+        ...prev,
+        PlateNumber: key ? key : undefined,
+      }));
+      handelGetRegisteredVehicleList({
+        ...registeredVehicleRequest,
+        PlateNumber: key,
+      });
+    } else {
+      setVehicleMonitorRecordsRequest((prev) => ({
+        ...prev,
+        PlateNumber: key ? key : undefined,
+      }));
+      handelGetVehicleMonitorRecords({
+        ...vehicleMonitorRecordsRequest,
+        PlateNumber: key,
+      });
+    }
+  };
+
+  const handelRegisterOrEditCar = () => {
+    registerForm
+      .validateFields()
+      .then(() => {
+        if (isRegisteredVehicle) {
+          const {
+            id,
+            type,
+            faceName,
+            plateNumber,
+            registeredRecordStatus,
+            createdTime,
+          } = registeringCarRequest as IRegisteredVehicleListItem;
+
+          const data: IPostEditRegisterCarRequest = {
+            recordRegister: {
+              id,
+              type,
+              faceName,
+              plateNumber,
+              registeredRecordStatus,
+              createdTime,
+            },
+          };
+
+          handelEditRegisterCar(data);
+        } else {
+          const { recordId, recordStatus } =
+            registeringCarRequest as IPostRegisteringCarRequest;
+
+          const data: IPostRegisteringCarRequest = {
+            recordId,
+            recordStatus,
+          };
+
+          handelRegisteringCar(data);
+        }
+      })
+      .catch(() => {});
+  };
+
+  const handelConfirmOperate = () => {
+    switch (confirmData) {
+      case ConfirmData.DeleteRegisterCar:
+        deleteRegisterCarId && handelDeleteRegisterCar(deleteRegisterCarId);
+        break;
+      case ConfirmData.EditRegisterCar:
+        handelRegisterOrEditCar();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const filterKeyword = useDebounce(plateNumberKeyword, { wait: 500 });
+
+  // 已登記list
+  const {
+    run: handelGetRegisteredVehicleList,
+    loading: isGetRegisteredVehicleList,
+  } = useRequest(GetRegisteredVehicleList, {
+    manual: true,
+    onSuccess: (res) => {
+      res && setRegisteredVehicleData(res);
+    },
+    onError(error) {
+      message.error((error as unknown as { code: number; msg: string }).msg);
+      setRegisteredVehicleData({ count: 0, registers: [] });
+    },
+  });
+
+  // 車牌紀錄list
+  const { run: handelGetVehicleMonitorRecords, loading: isGetMonitorRecords } =
+    useRequest(GetVehicleMonitorRecords, {
+      manual: true,
+      onSuccess: (res) => {
+        res && setVehicleMonitorRecordsData(res);
+      },
+      onError(error) {
+        message.error((error as unknown as { code: number; msg: string }).msg);
+        setVehicleMonitorRecordsData({ count: 0, records: [] });
+      },
+    });
+
+  // 登記車牌
+  const { run: handelRegisteringCar, loading: isRegisteringCar } = useRequest(
+    PostRegisteringVehicles,
     {
-      deviceId: "4",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
+      manual: true,
+      onSuccess: () => {
+        message.success(t(KEYS.REGISTERING_CAR_OK, source));
+        handelGetVehicleMonitorRecords(vehicleMonitorRecordsRequest);
+        setIsRegisterOpen(false);
+      },
+      onError(error) {
+        message.error((error as unknown as { code: number; msg: string }).msg);
+      },
+    }
+  );
+
+  // 編輯已登記車牌
+  const { run: handelEditRegisterCar, loading: isEditRegisterCar } = useRequest(
+    PostEditRegisterCar,
     {
-      deviceId: "5",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "6",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "7",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "8",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "9",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "10",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
-    {
-      deviceId: "11",
-      isOnline: false,
-      deviceType: "",
-      equipmentName: "",
-      whetherToBind: true,
-      operate: "2023-09-26  12:30",
-    },
+      manual: true,
+      onSuccess: () => {
+        message.success(t(KEYS.REGISTERING_CAR_OK, source));
+        setIsRegisterOpen(false);
+      },
+      onError(error) {
+        message.error((error as unknown as { code: number; msg: string }).msg);
+      },
+    }
+  );
+
+  const { run: handelDeleteRegisterCar, loading: isDeleteRegisterCar } =
+    useRequest(PostDeleteRegisterCar, {
+      manual: true,
+      onSuccess: () => {
+        message.success("刪除成功");
+        setIsOpenConfirmModal(false);
+        handelGetRegisteredVehicleList(registeredVehicleRequest);
+      },
+      onError(error) {
+        message.error((error as unknown as { code: number; msg: string }).msg);
+      },
+    });
+
+  useEffect(() => {
+    !isRegisteredVehicle &&
+      handelGetVehicleMonitorRecords(vehicleMonitorRecordsRequest);
+  }, [
+    vehicleMonitorRecordsRequest.EndTime,
+    vehicleMonitorRecordsRequest.StartTime,
+    vehicleMonitorRecordsRequest.EquipmentCodes,
+    vehicleMonitorRecordsRequest.EquipmentName,
+    vehicleMonitorRecordsRequest.monitorType,
+    vehicleMonitorRecordsRequest.PageIndex,
+    vehicleMonitorRecordsRequest.PageSize,
+    vehicleMonitorRecordsRequest.Status,
+    isRegisteredVehicle,
   ]);
 
-  const [deviceData, setDeviceData] = useState<IDeviceDataType[]>([
-    {
-      radio: true,
-      areaId: "1",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "2",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "3",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "4",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "5",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "6",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "7",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "8",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "9",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "10",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "11",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
-    {
-      radio: true,
-      areaId: "12",
-      areaName: "",
-      areaAddress: "",
-      person: "",
-    },
+  useEffect(() => {
+    isRegisteredVehicle &&
+      handelGetRegisteredVehicleList(registeredVehicleRequest);
+  }, [
+    registeredVehicleRequest.EndTime,
+    registeredVehicleRequest.StartTime,
+    registeredVehicleRequest.PageIndex,
+    registeredVehicleRequest.PageSize,
+    registeredVehicleRequest.RegisterType,
+    registeredVehicleRequest.Status,
+    isRegisteredVehicle,
   ]);
+
+  useEffect(() => {
+    isRegisteredVehicle
+      ? setVehicleMonitorRecordsRequest({ PageIndex: 1, PageSize: 20 })
+      : setRegisteredVehicleRequest({ PageIndex: 1, PageSize: 20 });
+    setDateRange(undefined);
+  }, [isRegisteredVehicle]);
+
+  useEffect(() => {
+    isEditKeyword && handelSetPlateNumberKeyword(filterKeyword);
+  }, [filterKeyword]);
+
+  useEffect(() => {
+    setEditKeyword(true);
+  }, []);
 
   return {
-    isUnbindOpen,
-    setIsUnbindOpen,
+    t,
+    registerForm,
+    language,
+    plateNumberKeyword,
     isShowLicensePlateOpen,
-    setIsShowLicensePlateOpen,
     isRegisterOpen,
-    setIsRegisterOpen,
     isAddDeviceOpen,
-    setIsAddDeviceOpen,
-    isUnbindIndex,
-    setIsUnbindIndex,
-    isDeleteIndex,
-    setIsDeleteIndex,
-    data,
-    setData,
-    deviceData,
-    setDeviceData,
+    vehicleMonitorRecordsData,
     source,
+    isGetMonitorRecords,
+    dateRange,
+    rangePresets,
+    licensePlateImageUrl,
+    registeredVehicleData,
+    isGetRegisteredVehicleList,
+    registeredVehicleRequest,
+    vehicleMonitorRecordsRequest,
+    registerCarNumber,
+    isRegisteringCar,
+    registeringCarRequest,
+    isOpenConfirmModal,
+    confirmData,
+    isEditRegisterCar,
+    isDeleteRegisterCar,
+    setDeleteRegisterCarId,
+    setConfirmData,
+    setLicensePlateImageUrl,
+    onRangeChange,
+    setVehicleMonitorRecordsRequest,
+    setRegisteredVehicleRequest,
+    setPlateNumberKeyword,
+    setIsOpenConfirmModal,
+    setIsShowLicensePlateOpen,
+    setIsRegisterOpen,
+    setIsAddDeviceOpen,
+    setRegisterCarNumber,
+    setRegisteringCarRequest,
+    handelRegisteringCar,
+    handelConfirmOperate,
+    handelRegisterOrEditCar,
   };
 };
