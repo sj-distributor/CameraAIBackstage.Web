@@ -9,16 +9,13 @@ import { Router } from "./routes";
 function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  const doSomething = (token: string) => {
-    localStorage.setItem((window as any).appSettings?.tokenKey, token);
-  };
-
   useEffect(() => {
     const aPageData = localStorage.getItem("aPageData");
     if (aPageData) {
       console.log("aPageData", aPageData);
-
-      doSomething(aPageData); // 当能获取到数据时就说明是从A页面跳转过来的
+      if (isLoaded) {
+        localStorage.setItem((window as any).appSettings?.tokenKey, aPageData);
+      }
       localStorage.removeItem("aPageData");
     } else {
       window.addEventListener("message", receiveMessage, false);
@@ -32,7 +29,7 @@ function App() {
         localStorage.setItem("aPageData", event.data);
       }
     }
-  }, [localStorage.getItem("aPageData")]);
+  }, [localStorage.getItem("aPageData"), isLoaded]);
 
   useEffect(() => {
     InitialAppSetting().then(() => setIsLoaded(true));
