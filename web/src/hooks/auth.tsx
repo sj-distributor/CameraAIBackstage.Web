@@ -259,7 +259,7 @@ export default ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (token) getMyPermission();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     i18n.changeLanguage(language);
