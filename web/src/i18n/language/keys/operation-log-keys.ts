@@ -8,4 +8,7 @@ export default {
   OPERATING_CONTENT: "OperatingContent",
   OPERATING_TIME: "OperatingTime",
   PAGINATION: "Pagination",
+  LAST_WEEK: "LastWeek",
+  LAST_MONTH: "LastMonth",
+  LAST_THREE_MONTH: "LastThreeMonth",
 };

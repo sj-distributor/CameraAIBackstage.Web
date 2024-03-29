@@ -4,6 +4,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/operation-log-keys";
 import { GetOperateLogsPage } from "@/services/api/operate-log";
 import { IOperateLogsPageResponse } from "@/services/dtos/operate-log";
 
@@ -36,12 +37,18 @@ export const useAction = () => {
   };
 
   const rangePresets: TimeRangePickerProps["presets"] = [
-    { label: "最近一週", value: [dayjs().subtract(7, "d"), dayjs()] },
     {
-      label: "最近一個月",
+      label: t(KEYS.LAST_WEEK),
+      value: [dayjs().subtract(7, "d"), dayjs()],
+    },
+    {
+      label: t(KEYS.LAST_MONTH),
       value: [dayjs().subtract(1, "month"), dayjs()],
     },
-    { label: "最近三個月", value: [dayjs().subtract(3, "month"), dayjs()] },
+    {
+      label: t(KEYS.LAST_THREE_MONTH),
+      value: [dayjs().subtract(3, "month"), dayjs()],
+    },
   ];
 
   const initGetLogsList = () => {
