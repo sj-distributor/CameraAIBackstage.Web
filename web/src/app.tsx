@@ -42,7 +42,7 @@ function App() {
         localStorage.setItem("aPageData", event.data);
       }
     }
-  }, [localStorage.getItem("aPageData")]);
+  }, []);
 
   useEffect(() => {
     InitialAppSetting().then(() => setIsLoaded(true));
