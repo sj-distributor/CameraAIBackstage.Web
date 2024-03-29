@@ -18,7 +18,6 @@ export const AreaManagement = () => {
     setPageDto,
     t,
     isRegionListLoading,
-    setSearchIconValue,
     setIsDeleteOpen,
     isDeleteOpen,
     initGetRegionList,
@@ -109,9 +108,9 @@ export const AreaManagement = () => {
         <span className="text-[1.125rem] font-semibold tracking-tight">
           {t(KEYS.AREA_MANAGEMENT, source)}
         </span>
-        <div className="mt-[1.5rem] mb-[1.125rem] h-[2.5rem] flex justify-between">
+        <div className="mt-[1.5rem] mb-[1rem] h-[2.5rem] flex justify-between">
           <Input
-            className="w-[17.5rem] h-[2.2rem]"
+            className="w-[17.5rem] h-[2.5rem]"
             placeholder={t(KEYS.SEARCH_AREA_ID_AREA_ADDRESS, {
               ns: "areaManagement",
             })}
@@ -122,7 +121,6 @@ export const AreaManagement = () => {
                   fontSize: "1.1rem",
                   fontWeight: "700",
                 }}
-                onClick={() => setSearchIconValue(searchValue)}
               />
             }
             value={searchValue}
@@ -133,7 +131,7 @@ export const AreaManagement = () => {
           ) && (
             <Button
               type="primary"
-              className="w-[5.5rem] h-[2.2rem] text-center"
+              className="w-[5.5rem] h-[2.75rem] text-center"
               onClick={() => {
                 setOperateModalParams({
                   isOpen: true,

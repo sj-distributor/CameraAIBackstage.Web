@@ -1,3 +1,4 @@
+import { ConfigProvider } from "antd";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AuthStatus } from "@/hooks/auth-status";
@@ -7,7 +8,7 @@ import { Login } from "@/pages/login";
 import { IRouterList } from "@/services/dtos/routes";
 
 export const Router = () => {
-  const { routerList, myPermissions } = useAuth();
+  const { routerList, myPermissions, locale } = useAuth();
 
   const AuthRoutes = (Routes: IRouterList[]) => {
     return Routes.map((childrenItem, childrenIndex) => {
@@ -34,20 +35,22 @@ export const Router = () => {
   };
 
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="*" element={<Navigate to={"/user/list"} />} />
-      <Route element={<Home />}>
-        {routerList.map((item, index) => (
-          <Route
-            key={index}
-            path={item.path}
-            element={<AuthStatus>{item.element}</AuthStatus>}
-          >
-            {item.children && AuthRoutes(item.children)}
-          </Route>
-        ))}
-      </Route>
-    </Routes>
+    <ConfigProvider locale={locale}>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Navigate to={"/user/list"} />} />
+        <Route element={<Home />}>
+          {routerList.map((item, index) => (
+            <Route
+              key={index}
+              path={item.path}
+              element={<AuthStatus>{item.element}</AuthStatus>}
+            >
+              {item.children && AuthRoutes(item.children)}
+            </Route>
+          ))}
+        </Route>
+      </Routes>
+    </ConfigProvider>
   );
 };

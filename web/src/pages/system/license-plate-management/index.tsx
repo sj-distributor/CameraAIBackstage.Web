@@ -15,8 +15,6 @@ export const LicensePlateManagement = () => {
 
   const { t } = useAuth();
 
-  console.log(Boolean(showWarningDetails));
-
   return (
     <div
       className={`w-full flex-col justify-start no-scrollbar flex h-full ${

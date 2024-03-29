@@ -71,10 +71,10 @@ export const AddOrUpdateConfiguration = () => {
             className="text-[1.125rem] text-[#5F6279] cursor-pointer"
             onClick={() => navigate("/monitor")}
           >
-            {t(KEYS.MONITOR, source)}{" "}
+            {t(KEYS.MONITOR, source)}
           </span>
-          <span className="text-[1.125rem] font-semibold tracking-tight">
-            /{" "}
+          <span className="text-[1.125rem] font-semibold tracking-tight ">
+            <span className="mx-2 text-[#5F6279]"> /</span>
             {type === "add"
               ? `${t(KEYS.ADD, source)}`
               : `${t(KEYS.EDIT, source)}`}

@@ -16,6 +16,6 @@ export interface IFoundationResponse {
 }
 
 export enum HierarchyStaffIdSourceEnum {
-  AllStaff,
-  AllTeamLeader,
+  StringStaffId,
+  IntegerStaffId,
 }

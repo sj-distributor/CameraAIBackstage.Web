@@ -18,7 +18,7 @@ export default {
     [KEYS.ADD_AREA]: "Add District",
     [KEYS.PLEASE_INPUT]: "Please Input",
     [KEYS.PLEASE_SELECT]: "Please Select",
-    [KEYS.PAGINATION]: "",
+    [KEYS.PAGINATION]: "Total <span>{{count}}</span> Item",
     [KEYS.DELETE_TIPS]: "Please confirm whether to delete this district.",
     [KEYS.OPERATION_CONFIRM]: "Operation Confirmation",
     [KEYS.EDIT_AREA]: "Edit District",

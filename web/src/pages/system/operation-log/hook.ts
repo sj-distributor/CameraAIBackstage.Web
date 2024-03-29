@@ -1,8 +1,10 @@
+import { useDebounce } from "ahooks";
 import { message, TimeRangePickerProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/operation-log-keys";
 import { GetOperateLogsPage } from "@/services/api/operate-log";
 import { IOperateLogsPageResponse } from "@/services/dtos/operate-log";
 
@@ -13,7 +15,7 @@ export const useAction = () => {
 
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const [searchKeywordValue, setSearchKeywordValue] = useState<string>("");
+  const filterKeyword = useDebounce(searchValue, { wait: 500 });
 
   const [isTableLoading, setIsTableLoading] = useState<boolean>(false);
 
@@ -35,12 +37,18 @@ export const useAction = () => {
   };
 
   const rangePresets: TimeRangePickerProps["presets"] = [
-    { label: "最近一週", value: [dayjs().subtract(7, "d"), dayjs()] },
     {
-      label: "最近一個月",
+      label: t(KEYS.LAST_WEEK),
+      value: [dayjs().subtract(7, "d"), dayjs()],
+    },
+    {
+      label: t(KEYS.LAST_MONTH),
       value: [dayjs().subtract(1, "month"), dayjs()],
     },
-    { label: "最近三個月", value: [dayjs().subtract(3, "month"), dayjs()] },
+    {
+      label: t(KEYS.LAST_THREE_MONTH),
+      value: [dayjs().subtract(3, "month"), dayjs()],
+    },
   ];
 
   const initGetLogsList = () => {
@@ -50,7 +58,7 @@ export const useAction = () => {
       PageSize: pageDto.pageSize,
       StartTime: dateRange[0] ? dayjs(dateRange[0]).toISOString() : null,
       EndTime: dateRange[1] ? dayjs(dateRange[1]).toISOString() : null,
-      Keyword: searchKeywordValue,
+      Keyword: filterKeyword,
     })
       .then((res) => {
         if (res) setOperateLogsDto({ count: res.count, logs: res.logs });
@@ -63,17 +71,13 @@ export const useAction = () => {
   };
 
   useEffect(() => {
-    if (searchValue === "") setSearchKeywordValue("");
-  }, [searchValue]);
-
-  useEffect(() => {
     initGetLogsList();
   }, [
     pageDto.pageSize,
     pageDto.pageIndex,
     dateRange[0],
     dateRange[1],
-    searchKeywordValue,
+    filterKeyword,
   ]);
 
   return {
@@ -86,7 +90,6 @@ export const useAction = () => {
     rangePresets,
     onRangeChange,
     t,
-    setSearchKeywordValue,
     dateRange,
     operateLogsDto,
   };

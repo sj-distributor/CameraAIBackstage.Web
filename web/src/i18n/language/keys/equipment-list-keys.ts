@@ -38,4 +38,5 @@ export default {
   LOUD_SPEAKER: "LoudSpeaker",
   CLICK_TO_UNBIND: "ClickToUnbind",
   CLICK_TO_BIND: "ClickToBind",
+  PAGINATION: "Pagination",
 };

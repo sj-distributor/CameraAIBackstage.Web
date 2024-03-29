@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, Input, Pagination, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { Trans } from "react-i18next";
@@ -6,7 +6,6 @@ import { Trans } from "react-i18next";
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
 import { IRole } from "@/services/dtos/user-permission";
 
-import search from "../../../../assets/public/search.png";
 import { OperateConfirmModal } from "../operate-confirm";
 import { BackGroundRolePermissionEnum } from "../user-newpermissions/props";
 import { useAction } from "./hook";
@@ -16,7 +15,6 @@ export const UserPermissions = () => {
     t,
     source,
     setSearchValue,
-    setSearchKeywordValue,
     searchValue,
     isDeletePermissions,
     setISDeletePermissions,
@@ -37,13 +35,13 @@ export const UserPermissions = () => {
       text: t(KEYS.ALLOT, source),
       onClick: (record: IRole) =>
         navigate(`/user/permissions/distribute/${record.id}`),
-      permissions: BackGroundRolePermissionEnum.CanGrantCameraAiRole,
+      permissions: BackGroundRolePermissionEnum.CanCreateRoleUser,
     },
     {
       text: t(KEYS.EDIT, source),
       onClick: (record: IRole) =>
         navigate(`/user/permissions/roles/${record.id}`),
-      permissions: BackGroundRolePermissionEnum.CanUpdateCameraAiRole,
+      permissions: BackGroundRolePermissionEnum.CanUpdatePermissionsOfRole,
     },
     {
       text: t(KEYS.DELETE, source),
@@ -51,7 +49,7 @@ export const UserPermissions = () => {
         setISDeletePermissions(true);
         setRecord(record);
       },
-      permissions: BackGroundRolePermissionEnum.CanDeleteCameraAiRole,
+      permissions: BackGroundRolePermissionEnum.CanDeleteRoles,
     },
   ];
 
@@ -90,20 +88,38 @@ export const UserPermissions = () => {
             }}
           >
             <div className="flex justify-center items-center">
-              {operateButtons.map((item, index) => (
+              {record.id === 1 ? (
+                myPermissions.includes(
+                  BackGroundRolePermissionEnum.CanCreateRoleUser
+                ) && (
+                  <Button
+                    type="link"
+                    className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
+                    onClick={() =>
+                      navigate(`/user/permissions/distribute/${record.id}`)
+                    }
+                  >
+                    {t(KEYS.ALLOT, source)}
+                  </Button>
+                )
+              ) : (
                 <>
-                  {myPermissions.includes(item.permissions) && (
-                    <Button
-                      key={index}
-                      type="link"
-                      className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
-                      onClick={() => item.onClick(record)}
-                    >
-                      {item.text}
-                    </Button>
-                  )}
+                  {operateButtons.map((item, index) => (
+                    <>
+                      {myPermissions.includes(item.permissions) && (
+                        <Button
+                          key={index}
+                          type="link"
+                          className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
+                          onClick={() => item.onClick(record)}
+                        >
+                          {item.text}
+                        </Button>
+                      )}
+                    </>
+                  ))}
                 </>
-              ))}
+              )}
             </div>
           </ConfigProvider>
         );
@@ -118,21 +134,24 @@ export const UserPermissions = () => {
           <span className="text-[1.125rem] font-semibold tracking-tight">
             {t(KEYS.ROLE_LIST, source)}
           </span>
-          <div className="flex justify-between mt-[1rem] mb-[0.5rem]">
+          <div className="flex justify-between mb-[1rem] mt-[1.5rem] ">
             <Input
-              className="w-[17.5rem]"
+              className="w-[17.5rem] h-[2.5rem]"
               placeholder={t(KEYS.SEARCHING_FOR_ROLE_NAMES, source)}
               suffix={
-                <img
-                  src={search}
-                  onClick={() => setSearchKeywordValue(searchValue)}
+                <SearchOutlined
+                  style={{
+                    color: "#666472",
+                    fontSize: "1.1rem",
+                    fontWeight: "700",
+                  }}
                 />
               }
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
             {myPermissions.includes(
-              BackGroundRolePermissionEnum.CanAddCameraAiRole
+              BackGroundRolePermissionEnum.CanGrantPermissionsIntoRole
             ) && (
               <Button
                 type="primary"
@@ -145,7 +164,7 @@ export const UserPermissions = () => {
             )}
           </div>
         </div>
-        <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">
+        <div className="flex flex-col h-[calc(100vh-15.4rem)] justify-between">
           <div className="overflow-auto no-scrollbar pb-[1.125rem]">
             <Table
               rowKey={(item) => item?.id ?? 0}

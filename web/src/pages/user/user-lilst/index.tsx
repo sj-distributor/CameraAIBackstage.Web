@@ -1,4 +1,8 @@
-import { CloseOutlined, WarningFilled } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  SearchOutlined,
+  WarningFilled,
+} from "@ant-design/icons";
 import PlusOutlined from "@ant-design/icons/lib/icons/PlusOutlined";
 import {
   Button,
@@ -16,7 +20,6 @@ import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-list-keys";
 import { IUserDataItem, UserStatus } from "@/services/dtos/user";
 
-import search from "../../../assets/public/search.png";
 import { TransferTree } from "../user-permissions/tranfer-tree";
 import { BackGroundRolePermissionEnum } from "../user-permissions/user-newpermissions/props";
 import { useAction } from "./hook";
@@ -104,8 +107,9 @@ export const UserList = () => {
             onChange={(isQualified) => {
               if (
                 myPermissions.includes(
-                  BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount ||
-                    BackGroundRolePermissionEnum.CanDisableCameraAiUserAccount
+                  isQualified
+                    ? BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount
+                    : BackGroundRolePermissionEnum.CanDisableCameraAiUserAccount
                 )
               ) {
                 setUpdateUserId(String(record.id));
@@ -188,23 +192,30 @@ export const UserList = () => {
   ];
 
   return (
-    <div className="h-full flex flex-col bg-white px-4 flex-1">
-      <div className="bg-white w-full flex-col justify-start pt-[1rem] overflow-scroll no-scrollbar">
+    <div className="h-full flex flex-col bg-white px-4 flex-1 pl-[1.6rem]">
+      <div className="bg-white w-full flex-col justify-start pt-[1.5rem] overflow-scroll no-scrollbar">
         <span className="text-[1.125rem] font-semibold tracking-tight">
           {t(KEYS.USER_LIST, source)}
         </span>
-        <br />
-        <div className="flex flex-row justify-between">
-          <div className="mb-[1rem]">
+        <div className="flex justify-between">
+          <div className="mb-[1rem] mt-[1.5rem] flex items-end">
             <Input
-              className="w-[17.5rem]"
-              suffix={<img src={search} />}
+              className="w-[17.5rem] h-[2.5rem]"
+              suffix={
+                <SearchOutlined
+                  style={{
+                    color: "#666472",
+                    fontSize: "1.1rem",
+                    fontWeight: "700",
+                  }}
+                />
+              }
               placeholder={t(KEYS.SEARCH_PLACEHOLDER)}
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />
             <Select
-              className="mx-[1rem] w-[13.5rem] mt-[1.7rem]"
+              className="mx-[1rem] w-[13.5rem] h-[2.5rem]"
               placeholder={t(KEYS.STATUS)}
               options={[
                 { value: UserStatus.Enable, label: t(KEYS.ENABLE, source) },
@@ -218,13 +229,13 @@ export const UserList = () => {
               }
             />
           </div>
-          <div className="flex self-center">
+          <div className="flex self-end mb-[.8rem]">
             {myPermissions.includes(
               BackGroundRolePermissionEnum.CanBatchDeleteCameraAiUserAccount
             ) && (
               <Button
                 type="default"
-                className="h-[2.5rem] mr-[1rem]"
+                className="mr-[1rem] h-[2.75rem]"
                 onClick={() => {
                   setIsDeleteUsers(true);
                   setIsRemoveUser(true);
@@ -238,7 +249,7 @@ export const UserList = () => {
             ) && (
               <Button
                 type="primary"
-                className="h-[2.5rem] w-[7.25rem]"
+                className="w-[7.25rem] h-[2.75rem]"
                 onClick={() => setIsAddUser(true)}
               >
                 <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
@@ -247,7 +258,7 @@ export const UserList = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-between flex-1 overflow-y-auto no-scrollbar">
+      <div className="flex flex-col justify-between h-[calc(100vh-18.15rem)]  overflow-y-auto no-scrollbar">
         <Table
           rowKey={(record) => record.id}
           columns={columns}
@@ -267,7 +278,7 @@ export const UserList = () => {
         />
       </div>
       <div className="flex justify-between items-center py-[1rem]">
-        <div className="text-[#929292] text-[0.785rem]">
+        <div className="text-[#929292]">
           <Trans
             i18nKey={KEYS.PAGINATION}
             ns="userList"
@@ -306,7 +317,7 @@ export const UserList = () => {
         title={
           <div>
             <WarningFilled className="text-[#ED940F] pr-[.625rem]" />
-            {t(KEYS.OPERATION_CONFIRM)}
+            {t(KEYS.OPERATION_CONFIRM, source)}
           </div>
         }
         onCancle={() => setIsRemoveUser(false)}

@@ -75,7 +75,7 @@ export const useAction = () => {
 
   const [searchKey, setSearchKey] = useState<string>("");
 
-  const debouncedValue = useDebounce(searchKey, { wait: 800 });
+  const debouncedValue = useDebounce(searchKey, { wait: 500 });
 
   const [isSearchOnline, setIsSearchOnline] = useState<
     IOnlineOrNot | undefined

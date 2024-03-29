@@ -46,6 +46,7 @@ export default {
     [KEYS.CAMERA]: "Camera",
     [KEYS.CLICK_TO_UNBIND]: "Remove Binding",
     [KEYS.CLICK_TO_BIND]: "Device binding",
+    [KEYS.PAGINATION]: "Total <span>{{count}}</span> Item",
   },
   ch: {
     [KEYS.DEVICE_LIST]: "設備列表",
@@ -89,5 +90,6 @@ export default {
     [KEYS.CAMERA]: "攝像頭",
     [KEYS.CLICK_TO_UNBIND]: "點擊解除綁定",
     [KEYS.CLICK_TO_BIND]: "點擊綁定",
+    [KEYS.PAGINATION]: "共 <span>{{count}}</span> 條",
   },
 };
