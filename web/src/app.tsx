@@ -28,11 +28,11 @@ function App() {
       console.log(
         "123123",
         event,
-        event.origin !== (window as any).appsettings.frontDeskDomain,
+        event.origin !== (window as any).appsettings?.frontDeskDomain,
         (window as any).appsettings.frontDeskDomain
       );
 
-      if (event.origin !== (window as any).appsettings.frontDeskDomain) return;
+      if (event.origin !== (window as any).appsettings?.frontDeskDomain) return;
       if (event.data) {
         localStorage.setItem("aPageData", event.data);
       }
