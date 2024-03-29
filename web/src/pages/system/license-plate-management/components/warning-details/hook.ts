@@ -68,8 +68,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
   const [videoSpeed, setVideoSpeed] = useState<Speed>(1);
 
-  const [isPlayBackCallBackData, setIsPlayBackCallBackData] =
-    useState<boolean>(false);
+  const isPlayBackCallBackData = useRef<boolean>(false);
 
   const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
 
@@ -184,8 +183,10 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
   const [detailsVideoUrl, setDetailsVideoUrl] = useState<string>("");
 
+  const isGetdetailsVideoUrl = useRef<boolean>(false);
+
   const handelGetUrl = (id: string) => {
-    if (detailsVideoUrl) return;
+    if (isGetdetailsVideoUrl.current) return;
     id &&
       GetWarningDemand(showWarningDetails)
         .then((res) => {
@@ -194,6 +195,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
           if (replayUrl) {
             setDetailsVideoUrl(replayUrl);
             setIsLoadingData(false);
+            isGetdetailsVideoUrl.current = true;
 
             return;
           }
@@ -207,6 +209,13 @@ export const useAction = (props: { showWarningDetails: string }) => {
           }, 5000);
         });
   };
+
+  useEffect(() => {
+    return () => {
+      isGetdetailsVideoUrl.current = true;
+      isPlayBackCallBackData.current = true;
+    };
+  }, []);
 
   const warningDetailList = useMemo(() => {
     return Object.entries(warningDetails);
@@ -296,7 +305,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
   };
 
   const handelGetVideoPlayBackData = (id: string) => {
-    if (isPlayBackCallBackData) return;
+    if (isPlayBackCallBackData.current) return;
 
     id &&
       GetGenerateUrl(id)
@@ -305,11 +314,11 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
           if (generateUrl) {
             handelDownloadUrl(generateUrl);
-            setIsPlayBackCallBackData(true);
+            isPlayBackCallBackData.current = true;
 
             return;
           } else {
-            setInterval(() => handelGetVideoPlayBackData(id), 5000);
+            setTimeout(() => handelGetVideoPlayBackData(id), 5000);
           }
         })
         .catch(() => {});
