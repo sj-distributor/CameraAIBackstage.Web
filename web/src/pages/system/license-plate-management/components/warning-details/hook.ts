@@ -16,7 +16,6 @@ import {
   IGetWarningDemandResponse,
   IWarningRecord,
 } from "@/services/dtos/license-plate-management";
-import { clone } from "ramda";
 
 export type Speed = 0.5 | 1 | 1.25 | 1.5 | 2;
 
@@ -268,7 +267,6 @@ export const useAction = (props: { showWarningDetails: string }) => {
   };
 
   const handelGetPlayBackData = () => {
-    console.log(palybackData);
     if (
       palybackData.startTime &&
       palybackData.endTime &&
@@ -349,8 +347,6 @@ export const useAction = (props: { showWarningDetails: string }) => {
   useEffect(() => {
     handelGetWarningDemand(showWarningDetails);
   }, [showWarningDetails]);
-
-  useEffect(() => {}, [isLoadingData]);
 
   return {
     handleSetPalyVideo,
