@@ -59,18 +59,18 @@ code {
   border-left: 0.125rem solid #f7f7fc;
 }
 
-.menuStyle > .ant-menu-item:nth-child(3) {
+.menuStyle > .ant-menu-item {
   padding-left: 1.5rem !important;
   color: #9d9fb0 !important;
   font-weight: 500 !important;
 }
 
-.menuStyle > .ant-menu-item-selected:nth-child(3) {
+.menuStyle > .ant-menu-item-selected {
   color: #323444 !important;
   font-weight: 600 !important;
 }
 
-.menuStyle > .ant-menu-item:nth-child(3) .ant-menu-title-content {
+.menuStyle > .ant-menu-item .ant-menu-title-content {
   padding-left: 0;
   border-left: none;
 }
@@ -155,8 +155,24 @@ code {
   margin-bottom: 0 !important;
 }
 
+.portraitUploadStyle .ant-upload-list-picture-card {
+  display: flex;
+}
+
+.portraitUploadStyle .ant-upload-list-item-container {
+  margin-bottom: 0 !important;
+}
+
 .teamNameSelect .ant-select-item-option-selected {
   border-radius: 2rem !important;
   color: #2853e4 !important;
   font-weight: 500 !important;
+}
+
+.tree-transfer .ant-transfer-list-body-customize-wrapper {
+  overflow-y: auto;
+}
+
+.portrait .ant-popover-content {
+  width: 13.75rem !important;
 }

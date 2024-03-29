@@ -4,6 +4,7 @@ import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/area-management-keys";
+import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 import { IRegionsDto } from "@/services/dtos/area-management";
 
 import { AddAreaModal } from "./conponents/add-area-model";
@@ -28,12 +29,18 @@ export const AreaManagement = () => {
     source,
     initialRegionDataItem,
     regionListDto,
+    myPermissions,
   } = useAction();
 
   const columns: TableColumnsType<IRegionsDto> = [
     {
       title: t(KEYS.AREA_ID, source),
       dataIndex: "areaId",
+      width: "10%",
+    },
+    {
+      title: t(KEYS.WAREHOUSE_ID, source),
+      dataIndex: "locationId",
       width: "10%",
     },
     {
@@ -57,32 +64,40 @@ export const AreaManagement = () => {
       width: "20%",
       render: (_, record) => (
         <div className="h-[1.375rem]">
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => {
-              setOperateModalParams({
-                isOpen: true,
-                isEdit: true,
-                recordItem: record,
-              });
-            }}
-          >
-            {t(KEYS.EDIT, source)}
-          </Button>
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => {
-              setIsDeleteOpen(true);
-              setOperateModalParams((preValue) => ({
-                ...preValue,
-                recordItem: record,
-              }));
-            }}
-          >
-            {t(KEYS.DELETE, source)}
-          </Button>
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanUpdateCameraAiArea
+          ) && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                setOperateModalParams({
+                  isOpen: true,
+                  isEdit: true,
+                  recordItem: record,
+                });
+              }}
+            >
+              {t(KEYS.EDIT, source)}
+            </Button>
+          )}
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanDeleteCameraAiArea
+          ) && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                setIsDeleteOpen(true);
+                setOperateModalParams((preValue) => ({
+                  ...preValue,
+                  recordItem: record,
+                }));
+              }}
+            >
+              {t(KEYS.DELETE, source)}
+            </Button>
+          )}
         </div>
       ),
     },
@@ -113,19 +128,23 @@ export const AreaManagement = () => {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-          <Button
-            type="primary"
-            className="w-[5.5rem] h-[2.2rem] text-center"
-            onClick={() => {
-              setOperateModalParams({
-                isOpen: true,
-                isEdit: false,
-                recordItem: initialRegionDataItem,
-              });
-            }}
-          >
-            + {t(KEYS.ADD, source)}
-          </Button>
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanAddCameraAiArea
+          ) && (
+            <Button
+              type="primary"
+              className="w-[5.5rem] h-[2.2rem] text-center"
+              onClick={() => {
+                setOperateModalParams({
+                  isOpen: true,
+                  isEdit: false,
+                  recordItem: initialRegionDataItem,
+                });
+              }}
+            >
+              + {t(KEYS.ADD, source)}
+            </Button>
+          )}
         </div>
         <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">
           <div className="h-full overflow-auto no-scrollbar pb-[1.125rem]">

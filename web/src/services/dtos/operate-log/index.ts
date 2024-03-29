@@ -1,6 +1,6 @@
 import { Dayjs } from "dayjs";
 
-import { IPageDto } from "../area-management";
+import { IPageDto } from "../public";
 
 export interface IOperateLogsPageRequest extends IPageDto {
   StartTime?: Dayjs | null | string;

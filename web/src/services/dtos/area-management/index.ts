@@ -1,3 +1,5 @@
+import { IPageDto } from "../public";
+
 export interface IAreaManagementRegionRequest {
   RegionId: number;
   AreaId: number;
@@ -7,6 +9,7 @@ export interface IAreaManagementPageRequest extends IPageDto {
   RegionId?: string;
   RegionAddress?: string;
   Keyword?: string;
+  IsFilter?: boolean;
 }
 
 export interface IAreaManagementPageResponse {
@@ -23,12 +26,8 @@ export interface IRegionsDto {
   areaId?: number;
   areaName?: string;
   regionAddress: string;
-  regionAreaNames?: string[];
+  areaNames?: string[];
   principal: string;
   createdTime?: string;
-}
-
-export interface IPageDto {
-  PageSize: number;
-  PageIndex: number;
+  locationId: string;
 }

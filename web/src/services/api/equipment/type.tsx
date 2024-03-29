@@ -1,9 +1,10 @@
-import { IPageDto } from "@/services/dtos/equipment/list";
 import {
   IEquipmentTypeCreateOrUpdateRequest,
   IEquipmentTypeList,
   IEquipmentTypeRequest,
 } from "@/services/dtos/equipment/type";
+import { IPageDto } from "@/services/dtos/public";
+
 import { api } from "../http-client";
 
 export const GetEquipmentTypePage = async (data: IPageDto) => {

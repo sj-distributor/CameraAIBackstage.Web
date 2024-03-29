@@ -6,22 +6,20 @@ import {
   GetAreaManagementPage,
   PostDeleteAreaId,
 } from "@/services/api/area-management";
-import {
-  IAreaManagementPageResponse,
-  IRegionsDto,
-} from "@/services/dtos/area-management";
+import { IAreaManagementPageResponse } from "@/services/dtos/area-management";
 
 import { IModifyModalDto } from "./props";
 
 export const useAction = () => {
-  const { t } = useAuth();
+  const { t, myPermissions } = useAuth();
 
   const source = { ns: "areaManagement" };
 
   const initialRegionDataItem = {
     regionAddress: "",
-    regionAreaNames: [""],
+    areaNames: [""],
     principal: "",
+    locationId: "",
   };
 
   const initialRegionListDto = { count: 0, regions: [] };
@@ -110,5 +108,6 @@ export const useAction = () => {
     source,
     initialRegionDataItem,
     regionListDto,
+    myPermissions,
   };
 };

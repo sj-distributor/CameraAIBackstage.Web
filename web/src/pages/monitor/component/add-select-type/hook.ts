@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "../../../../i18n/language/keys/monitor-add-keys";
+import { CameraAiMonitorType } from "@/services/dtos/monitor";
+import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
+import { IMonitorOptionDto } from "../../props";
 
 export const useAction = () => {
   const { t } = useAuth();
@@ -12,17 +15,22 @@ export const useAction = () => {
   const navigate = useNavigate();
 
   const source = { ns: "monitorAdd" };
+  const monitorSource = { ns: "monitor" };
 
-  const text = [
-    { name: "識別人員", id: 1 },
-    { name: "識別人員", id: 2 },
-    { name: "識別人員", id: 3 },
-    { name: "識別人員", id: 4 },
-    { name: "識別人員", id: 5 },
-    { name: "識別人員", id: 6 },
-    { name: "識別人員", id: 7 },
-    { name: "識別人員", id: 8 },
+  const monitorTypeOption: IMonitorOptionDto[] = [
+    {
+      value: CameraAiMonitorType.People,
+      label: `${t(MONITOR_KEY.IDENTIFY_PEOPLE, monitorSource)}`,
+    },
+    {
+      value: CameraAiMonitorType.Vehicles,
+      label: `${t(MONITOR_KEY.IDENTIFY_VEHICLES, monitorSource)}`,
+    },
+    {
+      value: CameraAiMonitorType.AbnormalVehicles,
+      label: `${t(MONITOR_KEY.IDENTIFY_ABNORMAL_VEHICLES, monitorSource)}`,
+    },
   ];
 
-  return { text, token, navigate, KEYS, t, source };
+  return { monitorTypeOption, token, navigate, KEYS, t, source };
 };

@@ -1,306 +1,324 @@
-import { CheckboxProps } from "antd/es/checkbox";
-import { useState } from "react";
+import { message } from "antd";
+import { CheckboxValueType } from "antd/es/checkbox/Group";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/user-permissions-keys";
+import {
+  GetPermission,
+  GetRolePermissionByRoleId,
+  PostCreateRoles,
+  PostUpdateRoles,
+} from "@/services/api/user-permission";
+import {
+  IPermissionResponse,
+  IRole,
+  IRolePermissionByRoleIdResponse,
+  RoleSystemSourceEnum,
+} from "@/services/dtos/user-permission";
+
+import { BackGroundRolePermissionEnum, FrontRolePermissionEnum } from "./props";
 
 export const useAction = () => {
+  const { t, language } = useAuth();
+
+  const { id } = useParams();
+
+  const source = { ns: "userPermissions" };
+
   const [checkList, setCheckList] = useState([]);
 
-  const AddRoleName = (e: []) => {
-    console.log(e);
+  const navigate = useNavigate();
+
+  const isCreate = window.location.pathname.includes("new");
+
+  const [isLoaded, setIsLoaded] = useState<boolean>(isCreate);
+
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+
+  const initRolePermissionByRoleIdData: IRolePermissionByRoleIdResponse = {
+    role: {
+      name: "",
+      description: "",
+    },
+    roleUsers: [],
+    rolePermissions: [],
+    rolePermissionUsers: [],
   };
 
-  const handleCheckBox: CheckboxProps["onChange"] = (e) => {
-    console.log(`checked = ${e.target.checked}`);
+  const initialPermissionData: IPermissionResponse = {
+    count: 0,
+    permissions: [],
   };
 
-  const frontendOptionsList = [
-    {
-      optionName: "homePageList",
-      option: [
-        {
-          label: "首页",
-          value: "首页",
-        },
-        {
-          label: "切换后台",
-          value: "切換後台",
-        },
-      ],
-    },
-    {
-      optionName: "monitor",
-      option: [
-        {
-          label: "實時監控",
-          value: "實時監控",
-        },
-        {
-          label: "導出",
-          value: "導出",
-        },
-      ],
-    },
-    {
-      optionName: "videoPlayback",
-      option: [
-        {
-          label: "視頻回放",
-          value: "視頻回放",
-        },
-        {
-          label: "導出",
-          value: "導出",
-        },
-      ],
-    },
-    {
-      optionName: "alertList",
-      option: [
-        {
-          label: "預警列表",
-          value: "預警列表",
-        },
-        {
-          label: "導出",
-          value: "導出",
-        },
-        {
-          label: "查看詳情",
-          value: "查看詳情",
-        },
-        {
-          label: "標記",
-          value: "標記",
-        },
-      ],
-    },
-    {
-      optionName: "feedbackList",
-      option: [
-        {
-          label: "反饋列表",
-          value: "反饋列表",
-        },
-        {
-          label: "導出",
-          value: "導出",
-        },
-        {
-          label: "查看詳情",
-          value: "查看詳情",
-        },
-      ],
-    },
-  ];
+  const [rolePermissionByRoleIdData, setRolePermissionByRoleIdData] =
+    useState<IRolePermissionByRoleIdResponse>(initRolePermissionByRoleIdData);
 
-  const backendOptionsList = [
-    {
-      optionName: "userList",
-      option: [
-        {
-          label: "用戶列表",
-          value: "用戶列表",
-        },
-        {
-          label: "添加用戶",
-          value: "添加用戶",
-        },
-        {
-          label: "批量移除",
-          value: "批量移除",
-        },
-        {
-          label: "啟用",
-          value: "啟用",
-        },
-        {
-          label: "停用",
-          value: "停用",
-        },
-        {
-          label: "重置密碼",
-          value: "重置密碼",
-        },
-        {
-          label: "移除",
-          value: "移除",
-        },
-      ],
-    },
-    {
-      optionName: "permissionsList",
-      option: [
-        {
-          label: "角色權限",
-          value: "角色權限",
-        },
-        {
-          label: "新增角色",
-          value: "新增角色",
-        },
-        {
-          label: "分配",
-          value: "分配",
-        },
-        {
-          label: "編輯",
-          value: "編輯",
-        },
-        {
-          label: "删除",
-          value: "删除",
-        },
-      ],
-    },
-    {
-      optionName: "deviceList",
-      option: [
-        {
-          label: "設備列表",
-          value: "設備列表",
-        },
-        {
-          label: "添加設備",
-          value: "添加設備",
-        },
-        {
-          label: "編輯",
-          value: "編輯",
-        },
-        {
-          label: "綁定",
-          value: "綁定",
-        },
-        {
-          label: "解除綁定",
-          value: "解除綁定",
-        },
-        {
-          label: "刪除",
-          value: "刪除",
-        },
-      ],
-    },
-    {
-      optionName: "equipmentType",
-      option: [
-        {
-          label: "設備類型",
-          value: "設備類型",
-        },
-        {
-          label: "新增",
-          value: "新增",
-        },
-        {
-          label: "編輯",
-          value: "編輯",
-        },
-        {
-          label: "刪除",
-          value: "刪除",
-        },
-      ],
-    },
-    {
-      optionName: "monitorSet",
-      option: [
-        {
-          label: "監測管理",
-          value: "監測管理",
-        },
-        {
-          label: "新增",
-          value: "新增",
-        },
-        {
-          label: "啟用",
-          value: "啟用",
-        },
-        {
-          label: "關閉",
-          value: "關閉",
-        },
-        {
-          label: "編輯",
-          value: "編輯",
-        },
-        {
-          label: "刪除",
-          value: "刪除",
-        },
-      ],
-    },
-    {
-      optionName: " portraitSet",
-      option: [
-        {
-          label: "人像管理",
-          value: "人像管理",
-        },
-        {
-          label: "新增",
-          value: "新增",
-        },
-        {
-          label: "編輯",
-          value: "編輯",
-        },
-        {
-          label: "刪除",
-          value: "刪除",
-        },
-      ],
-    },
-    {
-      optionName: "licensePlateSet",
-      option: [
-        {
-          label: "車牌管理",
-          value: "車牌管理",
-        },
-        {
-          label: "已登記車輛",
-          value: "已登記車輛",
-        },
-        {
-          label: "登記",
-          value: "登記",
-        },
-        {
-          label: "詳情",
-          value: "詳情",
-        },
-      ],
-    },
-    {
-      optionName: "areaSet",
-      option: [
-        {
-          label: "區域管理",
-          value: "區域管理",
-        },
-        {
-          label: "新增",
-          value: "新增",
-        },
-        {
-          label: "編輯",
-          value: "編輯",
-        },
-        {
-          label: "刪除",
-          value: "刪除",
-        },
-      ],
-    },
-  ];
+  const [permissionData, setPermissionData] = useState<IPermissionResponse>(
+    initialPermissionData
+  );
+
+  const [permissionNoChangeData, setPermissionNoChangeData] =
+    useState<IRolePermissionByRoleIdResponse>(initRolePermissionByRoleIdData);
+
+  const [updateRolePermissions, setUpdateRolePermissions] = useState<
+    CheckboxValueType[]
+  >([]);
+
+  const [roleFrontPermissions, setRoleFrontPermissions] = useState<
+    CheckboxValueType[]
+  >([]);
+
+  const [roleBackgroundPermissions, setRoleBackgroundPermissions] = useState<
+    CheckboxValueType[]
+  >([]);
+
+  const onChangeRoleData = (
+    field: "role" | "roleUsers" | "rolePermissions" | "rolePermissionsUserIds",
+    value: number | string | string[] | CheckboxValueType[],
+    roleKey?: keyof IRole
+  ) => {
+    !isEdit && setIsEdit(true);
+
+    switch (field) {
+      case "role":
+        roleKey &&
+          setRolePermissionByRoleIdData((preValue) => ({
+            ...preValue,
+            role: {
+              ...preValue.role,
+              [roleKey]: value,
+              systemSource: RoleSystemSourceEnum.CameraAi,
+            },
+          }));
+        break;
+
+      case "roleUsers":
+        setRolePermissionByRoleIdData((preValue) => ({
+          ...preValue,
+          roleUsers: [],
+        }));
+        break;
+
+      case "rolePermissions":
+        setRolePermissionByRoleIdData((preValue) => ({
+          ...preValue,
+          rolePermissions: (value as CheckboxValueType[]).map((item) => ({
+            permissionId: Number(item),
+            userIds: [],
+          })),
+        }));
+        break;
+
+      case "rolePermissionsUserIds":
+        setRolePermissionByRoleIdData((preValue) => {
+          return {
+            ...preValue,
+            rolePermissionUsers: [],
+          };
+        });
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const findCheckboxIdValue = (permissionName: string) => {
+    const { permissions } = permissionData;
+
+    if (permissions.length > 0) {
+      const permission = permissions.find((x) => x.name === permissionName);
+
+      return permission?.id;
+    }
+
+    return undefined;
+  };
+
+  const onGetPermission = () => {
+    GetPermission()
+      .then((response) =>
+        setPermissionData(
+          response.count > 0 && response.permissions.length > 0
+            ? response
+            : initialPermissionData
+        )
+      )
+      .catch((error) => {
+        message.error(error.msg);
+
+        setPermissionData(initialPermissionData);
+      });
+  };
+
+  const checkValue = () => {
+    const { role, rolePermissions } = rolePermissionByRoleIdData;
+
+    const valueNotEmpty = {
+      roleName: !!role.name,
+      roleDescription: !!role.description,
+      rolePermissions: rolePermissions.length > 0,
+    };
+
+    if (Object.values(valueNotEmpty).some((value) => value === false)) {
+      throw new Error(t(KEYS.PLEASE_MAKE_SURE_ALL_DATA_INPUT, source));
+    }
+  };
+
+  const filterCreateOrUpdateParam = () => {
+    const { role, roleUsers, rolePermissions, rolePermissionUsers } =
+      rolePermissionByRoleIdData;
+
+    const userIds = rolePermissionUsers ? rolePermissionUsers[0]?.userIds : [];
+
+    const result = {
+      role: {
+        name: role.name,
+        description: role.description,
+        systemSource: RoleSystemSourceEnum.CameraAi,
+      },
+      roleUsers: roleUsers,
+      rolePermissions:
+        rolePermissions && rolePermissions.length > 0
+          ? rolePermissions.map((item) => {
+              return {
+                permissionId: item.permissionId,
+                userIds,
+              };
+            })
+          : [
+              {
+                userIds,
+              },
+            ],
+    };
+
+    return result;
+  };
+
+  const onGetRoleDetail = () => {
+    setIsLoaded(false);
+
+    GetRolePermissionByRoleId(Number(id))
+      .then((response) => {
+        setPermissionNoChangeData(response);
+        setRolePermissionByRoleIdData(
+          response ?? initRolePermissionByRoleIdData
+        );
+      })
+      .catch((error) => {
+        message.error(error.msg);
+      })
+      .finally(() => setIsLoaded(true));
+  };
+
+  const onCreateRole = () => {
+    try {
+      checkValue();
+    } catch (error) {
+      message.info((error as Error).message);
+
+      return;
+    }
+
+    PostCreateRoles(filterCreateOrUpdateParam())
+      .then(() => {
+        message.success(t(KEYS.CREATED_SUCCESSFULLY, source));
+      })
+      .catch((error) => {
+        message.error(error.msg);
+      });
+  };
+
+  const onUpdateRole = () => {
+    try {
+      checkValue();
+    } catch (error) {
+      message.info((error as Error).message);
+
+      return;
+    }
+
+    setIsLoaded(false);
+
+    PostUpdateRoles({
+      ...filterCreateOrUpdateParam(),
+      role: {
+        ...filterCreateOrUpdateParam().role,
+        id: rolePermissionByRoleIdData.role.id,
+      },
+    })
+      .then(() => {
+        message.success(t(KEYS.UPDATE_SUCCESS, source));
+      })
+      .catch((error) => {
+        message.error(error.msg);
+        setIsLoaded(true);
+      });
+  };
+
+  useEffect(() => {
+    id && id !== "new" && onGetRoleDetail();
+
+    onGetPermission();
+  }, []);
+
+  useEffect(() => {
+    onChangeRoleData("rolePermissions", [
+      ...roleFrontPermissions,
+      ...roleBackgroundPermissions,
+    ]);
+  }, [roleFrontPermissions, roleBackgroundPermissions]);
+
+  useEffect(() => {
+    const frontPermission = permissionNoChangeData.rolePermissions.filter(
+      (permission) => {
+        return (
+          Object.values(FrontRolePermissionEnum).includes(
+            permission.permissionName as FrontRolePermissionEnum
+          ) && permission
+        );
+      }
+    );
+
+    const backGroundPermission = permissionNoChangeData.rolePermissions.filter(
+      (permission) => {
+        return (
+          Object.values(BackGroundRolePermissionEnum).includes(
+            permission.permissionName as BackGroundRolePermissionEnum
+          ) && permission
+        );
+      }
+    );
+
+    setRoleFrontPermissions(frontPermission.map((item) => item.permissionId!));
+
+    setRoleBackgroundPermissions(
+      backGroundPermission.map((item) => item.permissionId!)
+    );
+  }, [permissionNoChangeData.rolePermissions.length]);
 
   return {
-    AddRoleName,
     checkList,
     setCheckList,
-    handleCheckBox,
-    frontendOptionsList,
-    backendOptionsList,
+    navigate,
+    t,
+    source,
+    language,
+    rolePermissionByRoleIdData,
+    onChangeRoleData,
+    findCheckboxIdValue,
+    onCreateRole,
+    onUpdateRole,
+    isCreate,
+    setUpdateRolePermissions,
+    setRoleFrontPermissions,
+    setRoleBackgroundPermissions,
+    roleFrontPermissions,
+    roleBackgroundPermissions,
+    updateRolePermissions,
+    isLoaded,
   };
 };

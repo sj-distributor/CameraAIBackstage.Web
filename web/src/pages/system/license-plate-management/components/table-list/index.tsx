@@ -23,8 +23,10 @@ import { Trans } from "react-i18next";
 import down from "@/assets/public/down-arrow.png";
 import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
+import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/license-plate-management-keys";
 import LOG_KEYS from "@/i18n/language/keys/operation-log-keys";
+import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 import {
   CameraAiMonitorRecordStatus,
   IPostRegisteringCarRequest,
@@ -46,6 +48,8 @@ export const LicensePlateManagementTable = (
     props;
 
   const { RangePicker } = DatePicker;
+
+  const { myPermissions } = useAuth();
 
   const {
     t,
@@ -156,26 +160,35 @@ export const LicensePlateManagementTable = (
       width: "26.6%",
       render: (_, record) => (
         <div>
-          <Button
-            type="link"
-            disabled={record.isRegistered}
-            onClick={() => {
-              setRegisterCarNumber(record.plateNumber);
-              setRegisteringCarRequest((prev) => ({
-                ...prev,
-                recordId: String(record.id),
-              }));
-              setIsRegisterOpen(true);
-            }}
-          >
-            {t(KEYS.REGISTER, source)}
-          </Button>
-          <Button
-            type="link"
-            onClick={() => setShowWarningDetails(String(record.id))}
-          >
-            {t(KEYS.VIEW_DETAILS, source)}
-          </Button>
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanRegisterCameraAiLicensePlate
+          ) && (
+            <Button
+              type="link"
+              disabled={record.isRegistered}
+              onClick={() => {
+                setRegisterCarNumber(record.plateNumber);
+                setRegisteringCarRequest((prev) => ({
+                  ...prev,
+                  recordId: String(record.id),
+                }));
+                setIsRegisterOpen(true);
+              }}
+            >
+              {t(KEYS.REGISTER, source)}
+            </Button>
+          )}
+          {!isRegisteredVehicle &&
+            myPermissions.includes(
+              BackGroundRolePermissionEnum.CanViewDetailCameraAiLicensePlate
+            ) && (
+              <Button
+                type="link"
+                onClick={() => setShowWarningDetails(String(record.id))}
+              >
+                {t(KEYS.VIEW_DETAILS, source)}
+              </Button>
+            )}
           <Button
             type="link"
             onClick={() => {

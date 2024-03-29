@@ -4,8 +4,10 @@ import {
   IEquipmentList,
   IEquipmentPageRequest,
   IEquipmentPageResponse,
+  IGetRegionPageRequest,
   IRegionPageResponse,
 } from "@/services/dtos/equipment/list";
+
 import { api } from "../http-client";
 
 export const GetEquipmentPage = async (data: IEquipmentPageRequest) => {
@@ -49,9 +51,10 @@ export const GetEquipmentInfoById = async (data: { EquipmentId: number }) => {
   return response.data;
 };
 
-export const GetRegionPage = async () => {
+export const GetRegionPage = async (data: IGetRegionPageRequest) => {
   const response = await api.get<IRegionPageResponse>(
-    "/api/CameraAi/region/page"
+    "/api/CameraAi/region/page",
+    { params: data }
   );
 
   return response.data;
