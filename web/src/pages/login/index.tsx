@@ -1,7 +1,6 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, Input } from "antd";
 
-import loginImage from "../../../src/assets/login.png";
 import { useAction } from "./hook";
 
 export const Login = () => {
