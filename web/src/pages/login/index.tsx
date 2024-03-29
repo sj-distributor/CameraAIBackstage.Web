@@ -1,6 +1,7 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, Input } from "antd";
 
+import loginImage from "../../../src/assets/login.png";
 import { useAction } from "./hook";
 
 export const Login = () => {
@@ -10,7 +11,7 @@ export const Login = () => {
     <div className="w-screen h-screen bg-[#2866F1] flex justify-end md:justify-normal overflow-hidden no-scrollbar">
       <div className="w-3/5 h-full hidden min-[1200px]:block">
         <img
-          src="/src/assets/login.png"
+          src="../src/assets/login.png"
           alt=""
           className="w-full h-full bg-cover img-no-darg"
         />
