@@ -205,7 +205,7 @@ export const UserList = () => {
               onChange={(e) => setKeyword(e.target.value)}
             />
             <Select
-              className="mx-[1rem] w-[13.5rem] mt-[1.7rem]"
+              className="mx-[1rem] w-[13.5rem] mt-[1.7rem] h-[2.125rem]"
               placeholder={t(KEYS.STATUS)}
               options={[
                 { value: UserStatus.Enable, label: t(KEYS.ENABLE, source) },
