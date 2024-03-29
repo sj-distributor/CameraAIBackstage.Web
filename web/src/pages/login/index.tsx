@@ -23,14 +23,14 @@ export const Login = () => {
         <div className="w-96 h-[440px] min-[1200px]:box-border box-content p-3 min-[1200px]:p-0 bg-white flex flex-col justify-center space-y-4 rounded-md min-[1200px]:rounded-none">
           <strong className="text-3xl select-none">Welcome,</strong>
           <Input
-            placeholder="Basic usage"
+            placeholder="請輸入帳號"
             size="large"
             prefix={<UserOutlined />}
             value={userInfo.userName}
             onChange={(e) => updateUserInfo("userName", e.target.value)}
           />
           <Input.Password
-            placeholder="Basic usage"
+            placeholder="請輸入密碼"
             size="large"
             prefix={<UserOutlined />}
             value={userInfo.password}
