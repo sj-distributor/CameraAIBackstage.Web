@@ -29,7 +29,7 @@ function App() {
         "123123",
         event,
         event.origin !== (window as any).appsettings?.frontDeskDomain,
-        (window as any).appsettings.frontDeskDomain
+        (window as any).appsettings?.frontDeskDomain
       );
 
       if (event.origin !== (window as any).appsettings?.frontDeskDomain) return;
