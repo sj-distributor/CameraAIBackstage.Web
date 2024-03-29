@@ -23,6 +23,7 @@ function App() {
 
   useEffect(() => {
     const aPageData = localStorage.getItem("aPageData");
+
     if (aPageData) {
       setAPageData(aPageData);
     } else {
