@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import { Trans } from "react-i18next";
 
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
+import { HierarchyStaffIdSourceEnum } from "@/services/dtos/tree";
 import { IUserByRoleIdData } from "@/services/dtos/user-permission";
 
 import search from "../../../../assets/public/search.png";
@@ -205,7 +206,7 @@ export const UserDistribute = () => {
         isModelOpen={isAddNewUser}
         setIsModelOpen={setIsAddNewUser}
         handelGetSelectedUsers={handelGetSelectedUsers}
-        staffIdSource={1}
+        staffIdSource={HierarchyStaffIdSourceEnum.IntegerStaffId}
       />
     </div>
   );
