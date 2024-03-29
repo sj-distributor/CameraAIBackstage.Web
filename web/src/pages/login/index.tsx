@@ -7,7 +7,7 @@ export const Login = () => {
   const { userInfo, loginLoading, handleOnLogin, updateUserInfo } = useAction();
 
   return (
-    <div className="w-screen h-screen bg-[#2866F1] flex justify-end md:justify-normal">
+    <div className="w-screen h-screen bg-[#2866F1] flex justify-end md:justify-normal overflow-hidden no-scrollbar">
       <div className="w-3/5 h-full hidden min-[1200px]:block">
         <img
           src="/src/assets/login.png"
