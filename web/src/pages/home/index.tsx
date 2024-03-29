@@ -224,24 +224,19 @@ export const Home = () => {
             rootClassName="dropDownMenu"
           >
             <div className="flex items-center">
-              {roleName.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex justify-center items-center ml-[2rem]"
+              <div className="flex justify-center items-center ml-[2rem]">
+                <Avatar
+                  style={{
+                    backgroundColor: "#2853E4",
+                    verticalAlign: "middle",
+                  }}
+                  size="default"
+                  className="mx-4"
                 >
-                  <Avatar
-                    style={{
-                      backgroundColor: "#2853E4",
-                      verticalAlign: "middle",
-                    }}
-                    size="default"
-                    className="mx-4"
-                  >
-                    {item.charAt(0)}
-                  </Avatar>
-                  {item}
-                </div>
-              ))}
+                  {roleName[0].charAt(0)}
+                </Avatar>
+                {roleName[0]}
+              </div>
 
               <a onClick={(e) => e.preventDefault()}>
                 <img src={downArrow} className="flex items-center" />
