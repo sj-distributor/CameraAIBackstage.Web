@@ -1,4 +1,5 @@
 import { ConfigProvider } from "antd";
+import { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AuthStatus } from "@/hooks/auth-status";
@@ -8,7 +9,37 @@ import { Login } from "@/pages/login";
 import { IRouterList } from "@/services/dtos/routes";
 
 export const Router = () => {
-  const { routerList, myPermissions, locale } = useAuth();
+  const { routerList, myPermissions, locale, signIn } = useAuth();
+
+  const [aPageData, setAPageData] = useState<string>("");
+
+  useEffect(() => {
+    if (aPageData) {
+      localStorage.setItem(
+        (window as any).appSettings?.tokenKey ?? "tokenKey",
+        aPageData
+      );
+      signIn(aPageData);
+      // localStorage.removeItem("aPageData");
+    }
+  }, [aPageData]);
+
+  useEffect(() => {
+    const aPageData = localStorage.getItem("aPageData");
+
+    if (aPageData) {
+      setAPageData(aPageData);
+    } else {
+      window.addEventListener("message", receiveMessage, false);
+    }
+
+    function receiveMessage(event: { origin: string; data: string }) {
+      if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
+      if (event.data) {
+        localStorage.setItem("aPageData", event.data);
+      }
+    }
+  }, []);
 
   const AuthRoutes = (Routes: IRouterList[]) => {
     return Routes.map((childrenItem, childrenIndex) => {

@@ -4,39 +4,11 @@ import { BrowserRouter } from "react-router-dom";
 
 import { InitialAppSetting } from "./appsetting";
 import AuthProvider from "./hooks/auth";
+import { useAuth } from "./hooks/use-auth";
 import { Router } from "./routes";
 
 function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-
-  const [aPageData, setAPageData] = useState<string>("");
-
-  useEffect(() => {
-    if (aPageData) {
-      localStorage.setItem(
-        (window as any).appSettings?.tokenKey ?? "tokenKey",
-        aPageData
-      );
-      // localStorage.removeItem("aPageData");
-    }
-  }, [isLoaded, aPageData]);
-
-  useEffect(() => {
-    const aPageData = localStorage.getItem("aPageData");
-
-    if (aPageData) {
-      setAPageData(aPageData);
-    } else {
-      window.addEventListener("message", receiveMessage, false);
-    }
-
-    function receiveMessage(event: { origin: string; data: string }) {
-      if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
-      if (event.data) {
-        localStorage.setItem("aPageData", event.data);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     InitialAppSetting().then(() => setIsLoaded(true));

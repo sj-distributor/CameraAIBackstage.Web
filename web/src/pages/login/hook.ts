@@ -33,7 +33,10 @@ export const useAction = () => {
         .then((res) => {
           if (res) {
             message.success("登录成功");
-            localStorage.setItem((window as any).appsettings?.tokenKey, res);
+            localStorage.setItem(
+              (window as any).appsettings?.tokenKey ?? "tokenKey",
+              res
+            );
             localStorage.setItem(
               (window as any).appsettings?.userNameKey,
               userInfo.userName
