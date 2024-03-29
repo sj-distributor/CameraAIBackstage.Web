@@ -425,7 +425,7 @@ export const LicensePlateManagementTable = (
         )}
       </div>
       <div className="flex justify-between items-center pt-[1rem]">
-        <div className="text-[#929292] text-[0.875rem] font-light">
+        <div className="text-[#929292] text-[0.875rem] font-light ml-2">
           <Trans
             {...source}
             i18nKey="TotalItems"
@@ -439,7 +439,7 @@ export const LicensePlateManagementTable = (
             }}
           />
         </div>
-        <div className="pb-4 px-2">
+        <div className="pb-[1.5rem] px-2">
           <Pagination
             current={
               isRegisteredVehicle
