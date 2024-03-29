@@ -36,8 +36,15 @@ api.interceptors.response.use(
         error.response.data.msg ?? "登录已过期，请重新登录",
         1,
         () => {
-          window.location.href =
-            (window as any).appSettings.frontDeskDomain ?? "";
+          const currentHostname = window.location.hostname;
+          console.log("currentHostname", currentHostname);
+
+          if (
+            currentHostname !== (window as any).appSettings?.frontDeskDomain
+          ) {
+            window.location.href =
+              (window as any).appSettings.frontDeskDomain ?? "";
+          }
         }
       );
     } else {
