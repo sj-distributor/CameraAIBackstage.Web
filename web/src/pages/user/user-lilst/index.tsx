@@ -104,8 +104,9 @@ export const UserList = () => {
             onChange={(isQualified) => {
               if (
                 myPermissions.includes(
-                  BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount ||
-                    BackGroundRolePermissionEnum.CanDisableCameraAiUserAccount
+                  isQualified
+                    ? BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount
+                    : BackGroundRolePermissionEnum.CanDisableCameraAiUserAccount
                 )
               ) {
                 setUpdateUserId(String(record.id));
