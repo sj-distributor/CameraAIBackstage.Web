@@ -1,9 +1,10 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, Input, Pagination, Table } from "antd";
+import { ColumnsType } from "antd/es/table";
 import { Trans } from "react-i18next";
 
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
-import { IRole } from "@/services/dtos/user-permission";
+import { IRole, IRolePermissionData } from "@/services/dtos/user-permission";
 
 import search from "../../../../assets/public/search.png";
 import { OperateConfirmModal } from "../operate-confirm";
@@ -54,7 +55,7 @@ export const UserPermissions = () => {
     },
   ];
 
-  const columns = [
+  const columns: ColumnsType<IRole> = [
     {
       title: t(KEYS.ROLE_NAME, source),
       dataIndex: "displayName",
@@ -71,7 +72,7 @@ export const UserPermissions = () => {
       title: t(KEYS.OPERATION, source),
       key: "operate",
       className: "flex flex-items-center",
-      render: (_: string, record: IRole) => {
+      render: (_, record) => {
         return (
           <ConfigProvider
             theme={{
