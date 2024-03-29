@@ -1,20 +1,94 @@
-import { Breadcrumb, Button, Checkbox, Input } from "antd";
+import { Breadcrumb, Button, Checkbox, Col, Input, Row } from "antd";
 import TextArea from "antd/es/input/TextArea";
 
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
 
 import { useAction } from "./hook";
+import {
+  backGroundRolePermission,
+  BackGroundRolePermissionEnum,
+  frontRolePermission,
+  FrontRolePermissionEnum,
+} from "./props";
 
 export const NewOrUpdatePermissions = () => {
   const {
-    handleCheckBox,
-    frontendOptionsList,
-    backendOptionsList,
     navigate,
     t,
     source,
     language,
+    rolePermissionByRoleIdData,
+    onChangeRoleData,
+    findCheckboxIdValue,
+    onCreateRole,
+    onUpdateRole,
+    isCreate,
+    setRoleFrontPermissions,
+    setRoleBackgroundPermissions,
+    roleFrontPermissions,
+    roleBackgroundPermissions,
   } = useAction();
+
+  const { role } = rolePermissionByRoleIdData;
+
+  const isEnglish = language === "en";
+
+  const getFrontSpanValue = (key: string) => {
+    switch (key) {
+      case FrontRolePermissionEnum.CanSwitchCameraAiBackEnd:
+      case FrontRolePermissionEnum.CanExportExcelCameraAiLiveMonitor:
+      case FrontRolePermissionEnum.CanExportVideoCameraAi:
+        return isEnglish ? 19 : 21;
+      case FrontRolePermissionEnum.CanMarkCameraAiWarning:
+        return isEnglish ? 9 : 13;
+      default:
+        return isEnglish ? 5 : 3;
+    }
+  };
+
+  const getBackgroundSpanValue = (key: string) => {
+    if (isEnglish) {
+      switch (key) {
+        case BackGroundRolePermissionEnum.CanViewCameraAiUserAccountPage:
+        case BackGroundRolePermissionEnum.CanViewCameraAiLicensePlateManagementPage:
+        case BackGroundRolePermissionEnum.CanViewCameraAiPortraitManagementPage:
+        case BackGroundRolePermissionEnum.CanViewCameraAiMonitorManagementPage:
+        case BackGroundRolePermissionEnum.CanViewCameraAiEquipmentTypePage:
+        case BackGroundRolePermissionEnum.CanViewCameraAiRoleUserPage:
+        case BackGroundRolePermissionEnum.CanViewCameraAiEquipmentPage:
+        case BackGroundRolePermissionEnum.CanViewCameraAiAreaManagementPage:
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiRole:
+          return 5;
+        case BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount:
+        case BackGroundRolePermissionEnum.CanUpdateCameraAiRole:
+        case BackGroundRolePermissionEnum.CanBindCameraAiEquipment:
+        case BackGroundRolePermissionEnum.CanDisableCameraAiMonitor:
+          return 3;
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiEquipmentType:
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiPortrait:
+        case BackGroundRolePermissionEnum.CanViewDetailCameraAiLicensePlate:
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiArea:
+          return 8;
+        default:
+          return 4;
+      }
+    } else {
+      switch (key) {
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiRole:
+          return 12;
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiEquipment:
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount:
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiMonitor:
+          return 9;
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiPortrait:
+        case BackGroundRolePermissionEnum.CanViewDetailCameraAiLicensePlate:
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiEquipmentType:
+          return 15;
+        default:
+          return 3;
+      }
+    }
+  };
 
   return (
     <div className="h-[20rem] bg-white rounded-b-md">
@@ -40,8 +114,8 @@ export const NewOrUpdatePermissions = () => {
           </span>
           <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[10.9rem] border-2 mt-[1rem]">
             <div
-              className={`flex  pt-[2rem] ${
-                language === "en" ? "pl-[6.7rem]" : "pl-[5.3rem]"
+              className={`flex pt-[2rem] ${
+                isEnglish ? "pl-[6.7rem]" : "pl-[5.3rem]"
               }`}
             >
               <div className="mt-[.1rem] mr-1 text-[#F04E4E] text-[1rem]">
@@ -49,8 +123,12 @@ export const NewOrUpdatePermissions = () => {
               </div>
               <div>{t(KEYS.ROLE_NAME, source)}</div>
               <Input
+                value={role.name}
                 placeholder={t(KEYS.PLEASE_ENTER, source)}
                 className="h-[2rem] w-[48rem] ml-[.5625rem]"
+                onChange={(e) => {
+                  onChangeRoleData("role", e.target.value, "name");
+                }}
               />
             </div>
             <div className="flex mb-[2rem] pl-[5.3rem] mt-[1.5rem]">
@@ -60,8 +138,12 @@ export const NewOrUpdatePermissions = () => {
               <div>{t(KEYS.ROLE_DESCRIBE, source)}</div>
               <div className="max-h-[5rem]">
                 <TextArea
+                  value={role.description}
                   placeholder={t(KEYS.PLEASE_ENTER, source)}
                   className="h-[2.06rem] w-[48rem] ml-[.5625rem] overflow-auto max-h-[100%]"
+                  onChange={(e) => {
+                    onChangeRoleData("role", e.target.value, "description");
+                  }}
                 />
               </div>
             </div>
@@ -76,7 +158,7 @@ export const NewOrUpdatePermissions = () => {
               <div className="flex justify-row mb-[1rem]">
                 <span
                   className={`${
-                    language === "en" ? "w-[13.8rem]" : "w-[9.5rem]"
+                    isEnglish ? "w-[14rem]" : "w-[8.5rem]"
                   } font-medium`}
                 >
                   {t(KEYS.VISIBLE_PAGES, source)}
@@ -85,27 +167,29 @@ export const NewOrUpdatePermissions = () => {
                   {t(KEYS.FUNCTION_PERMISSIONS, source)}
                 </span>
               </div>
-              {frontendOptionsList.map((item, index) => (
-                <div
-                  className={`grid ${
-                    language === "en"
-                      ? "grid-cols-[1.6fr,1.2fr,1fr,.7fr,1.1fr,1.1fr,1fr]"
-                      : "grid-cols-[repeat(7,1fr)]"
-                  }
-                    items-center mb-[0.8rem] text-nowrap`}
-                  key={index}
-                >
-                  {item.option.map((option) => (
-                    <Checkbox
-                      key={item.optionName}
-                      value={item.option}
-                      onChange={handleCheckBox}
-                    >
-                      {option.label}
-                    </Checkbox>
-                  ))}
-                </div>
-              ))}
+              <Checkbox.Group
+                value={roleFrontPermissions}
+                onChange={(checkedValue) =>
+                  setRoleFrontPermissions(checkedValue)
+                }
+              >
+                <Row gutter={[12, 12]}>
+                  {Object.entries(frontRolePermission).map(
+                    ([key, value], index) => {
+                      return (
+                        <Col span={getFrontSpanValue(key)} key={index}>
+                          <Checkbox
+                            // disabled={disabled(key)}
+                            value={findCheckboxIdValue(key)}
+                          >
+                            {t(value, source)}
+                          </Checkbox>
+                        </Col>
+                      );
+                    }
+                  )}
+                </Row>
+              </Checkbox.Group>
             </div>
           </div>
         </div>
@@ -113,12 +197,12 @@ export const NewOrUpdatePermissions = () => {
           <div className="font-medium">
             {t(KEYS.BACKGROUND_FUNCTION_PERMISSIONS, source)}
           </div>
-          <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[24rem] pr-[15.75rem] border-2 mt-[1rem]">
+          <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[23rem] pr-[15.75rem] border-2 my-[1rem]">
             <div className="flex flex-col w-[71.25rem] rounded pl-[4.9rem] pt-[2rem]">
               <div className="flex justify-row mb-[1.2rem]">
                 <span
                   className={`${
-                    language === "en" ? "w-[13.8rem]" : "w-[9.5rem]"
+                    isEnglish ? "w-[14rem]" : "w-[8.5rem]"
                   } font-medium`}
                 >
                   {t(KEYS.VISIBLE_PAGES, source)}
@@ -127,26 +211,29 @@ export const NewOrUpdatePermissions = () => {
                   {t(KEYS.FUNCTION_PERMISSIONS, source)}
                 </span>
               </div>
-              {backendOptionsList.map((items, index) => (
-                <div
-                  className={`grid ${
-                    language === "en"
-                      ? "grid-cols-[1.6fr,1.2fr,1fr,.7fr,1.1fr,1.1fr,1fr]"
-                      : "grid-cols-[repeat(7,1fr)]"
-                  } items-center mb-[0.8rem] text-nowrap`}
-                  key={index}
-                >
-                  {items.option.map((option) => (
-                    <Checkbox
-                      key={index}
-                      value={items.option}
-                      onChange={handleCheckBox}
-                    >
-                      {option.label}
-                    </Checkbox>
-                  ))}
-                </div>
-              ))}
+              <Checkbox.Group
+                value={roleBackgroundPermissions}
+                onChange={(checkedValue) =>
+                  setRoleBackgroundPermissions(checkedValue)
+                }
+              >
+                <Row gutter={[12, 12]}>
+                  {Object.entries(backGroundRolePermission).map(
+                    ([key, value], index) => {
+                      return (
+                        <Col span={getBackgroundSpanValue(key)} key={index}>
+                          <Checkbox
+                            // disabled={disabled(key)}
+                            value={findCheckboxIdValue(key)}
+                          >
+                            {t(value, source)}
+                          </Checkbox>
+                        </Col>
+                      );
+                    }
+                  )}
+                </Row>
+              </Checkbox.Group>
             </div>
           </div>
         </div>
@@ -161,6 +248,9 @@ export const NewOrUpdatePermissions = () => {
         <Button
           type="primary"
           className="w-[5rem] h-[2.5rem] mr-[1rem] bg-[#2853E3]"
+          onClick={() => {
+            isCreate ? onCreateRole() : onUpdateRole();
+          }}
         >
           {t(KEYS.CONFIRM, source)}
         </Button>

@@ -14,3 +14,8 @@ export enum HierarchyStaffRangeEnum {
 export interface IFoundationResponse {
   staffDepartmentHierarchy: IFoundationDetail[];
 }
+
+export enum HierarchyStaffIdSourceEnum {
+  AllStaff,
+  AllTeamLeader,
+}

@@ -12,13 +12,15 @@ export const TransferTree = ({
   isModelOpen,
   setIsModelOpen,
   handelGetSelectedUsers,
+  staffIdSource,
 }: {
   isModelOpen: boolean;
   setIsModelOpen: (value: SetStateAction<boolean>) => void;
   data?: TransferItem[];
   handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
+  staffIdSource: number;
 }) => {
-  const { t, source, treeData } = useAction();
+  const { t, source, treeData } = useAction(staffIdSource);
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
@@ -143,7 +145,7 @@ export const TransferTree = ({
     return data.title.toLowerCase().indexOf(filterText.toLowerCase()) !== -1; // 我是一title过滤 ，你可以根据自己需求改动
   };
 
-  const handleSearch: any = (dir: any, value: string) => {
+  const handleSearch = (dir: "left" | "right", value: string) => {
     if (dir === "left") {
       if (value == "") {
         setTreeList(JSON.parse(copyTree));

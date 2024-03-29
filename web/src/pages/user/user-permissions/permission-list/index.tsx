@@ -1,11 +1,14 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, Input, Pagination, Table } from "antd";
+import { ColumnsType } from "antd/es/table";
 import { Trans } from "react-i18next";
 
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
+import { IRole } from "@/services/dtos/user-permission";
 
 import search from "../../../../assets/public/search.png";
 import { OperateConfirmModal } from "../operate-confirm";
+import { BackGroundRolePermissionEnum } from "../user-newpermissions/props";
 import { useAction } from "./hook";
 
 export const UserPermissions = () => {
@@ -13,50 +16,63 @@ export const UserPermissions = () => {
     t,
     source,
     setSearchValue,
-    // setSearchKeywordValue,
+    setSearchKeywordValue,
     searchValue,
     isDeletePermissions,
     setISDeletePermissions,
     navigate,
-    // isTableLoading,
+    isTableLoading,
     pageDto,
     setPageDto,
     onSelectedAllRow,
-    data,
-    selectedRowKeys,
+    onSelectedRow,
+    roleByPermissionData,
+    handleOperateDelete,
+    setRecord,
+    myPermissions,
   } = useAction();
 
   const operateButtons = [
     {
       text: t(KEYS.ALLOT, source),
-      onClick: () => navigate("/user/permissions/distribute"),
+      onClick: (record: IRole) =>
+        navigate(`/user/permissions/distribute/${record.id}`),
+      permissions: BackGroundRolePermissionEnum.CanGrantCameraAiRole,
     },
     {
       text: t(KEYS.EDIT, source),
-      onClick: () => navigate("/user/permissions/newOrUpdate"),
+      onClick: (record: IRole) =>
+        navigate(`/user/permissions/roles/${record.id}`),
+      permissions: BackGroundRolePermissionEnum.CanUpdateCameraAiRole,
     },
     {
       text: t(KEYS.DELETE, source),
-      onClick: () => setISDeletePermissions(true),
+      onClick: (record: IRole) => {
+        setISDeletePermissions(true);
+        setRecord(record);
+      },
+      permissions: BackGroundRolePermissionEnum.CanDeleteCameraAiRole,
     },
   ];
 
-  const columns = [
+  const columns: ColumnsType<IRole> = [
     {
       title: t(KEYS.ROLE_NAME, source),
-      dataIndex: "characterName",
+      dataIndex: "displayName",
+      key: "displayName",
       className: "w-[16rem]",
     },
     {
       title: t(KEYS.ROLE_DESCRIBE, source),
-      dataIndex: "roleDescription",
+      dataIndex: "description",
+      key: "description",
       className: "w-[62rem]",
     },
     {
       title: t(KEYS.OPERATION, source),
-      dataIndex: "operate",
+      key: "operate",
       className: "flex flex-items-center",
-      render: () => {
+      render: (_, record) => {
         return (
           <ConfigProvider
             theme={{
@@ -75,14 +91,18 @@ export const UserPermissions = () => {
           >
             <div className="flex justify-center items-center">
               {operateButtons.map((item, index) => (
-                <Button
-                  key={index}
-                  type="link"
-                  className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
-                  onClick={item.onClick}
-                >
-                  {item.text}
-                </Button>
+                <>
+                  {myPermissions.includes(item.permissions) && (
+                    <Button
+                      key={index}
+                      type="link"
+                      className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
+                      onClick={() => item.onClick(record)}
+                    >
+                      {item.text}
+                    </Button>
+                  )}
+                </>
               ))}
             </div>
           </ConfigProvider>
@@ -105,34 +125,42 @@ export const UserPermissions = () => {
               suffix={
                 <img
                   src={search}
-                  // onClick={() => setSearchKeywordValue(searchValue)}
+                  onClick={() => setSearchKeywordValue(searchValue)}
                 />
               }
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
-            <Button
-              type="primary"
-              className="h-[2.75rem] w-[7.25rem]"
-              onClick={() => navigate("/user/permissions/newOrUpdate")}
-            >
-              <PlusOutlined />
-              {t(KEYS.ADD_ROLE, source)}
-            </Button>
+            {myPermissions.includes(
+              BackGroundRolePermissionEnum.CanAddCameraAiRole
+            ) && (
+              <Button
+                type="primary"
+                className="h-[2.75rem] w-[7.25rem]"
+                onClick={() => navigate("/user/permissions/roles/new")}
+              >
+                <PlusOutlined />
+                {t(KEYS.ADD_ROLE, source)}
+              </Button>
+            )}
           </div>
         </div>
         <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">
           <div className="overflow-auto no-scrollbar pb-[1.125rem]">
             <Table
-              rowKey={(record) => record.key}
+              rowKey={(item) => item?.id ?? 0}
               columns={columns}
-              dataSource={data}
               pagination={false}
               sticky={true}
-              // loading={isTableLoading}
+              loading={isTableLoading}
+              dataSource={roleByPermissionData.rolePermissionData.map(
+                (item) => item.role
+              )}
               rowSelection={{
                 type: "checkbox",
-                selectedRowKeys,
+                onSelect: (record, selected) => {
+                  onSelectedRow(record, selected);
+                },
                 onSelectAll: (selected) => onSelectedAllRow(selected),
               }}
             />
@@ -142,7 +170,7 @@ export const UserPermissions = () => {
               <Trans
                 i18nKey={KEYS.PAGINATION}
                 ns="userPermissions"
-                values={{ count: data.length }}
+                values={{ count: roleByPermissionData.count }}
                 components={{
                   span: <span className="text-[#2853E3] font-light mx-1" />,
                 }}
@@ -152,7 +180,7 @@ export const UserPermissions = () => {
               current={pageDto.pageIndex}
               pageSize={pageDto.pageSize}
               pageSizeOptions={[5, 10, 20]}
-              total={data.length}
+              total={roleByPermissionData.count}
               showQuickJumper
               showSizeChanger
               onChange={(page, pageSize) =>
@@ -166,6 +194,7 @@ export const UserPermissions = () => {
         isModelOpen={isDeletePermissions}
         setIsModelOpen={setISDeletePermissions}
         contentText={t(KEYS.CONFIRM_DELETE_ROLE, source)}
+        handleOperateConfirm={handleOperateDelete}
       />
     </div>
   );

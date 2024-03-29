@@ -1,58 +1,18 @@
-import { useState } from "react";
+import { message } from "antd";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
+import { GetRoles, PostDeleteRoles } from "@/services/api/user-permission";
+import {
+  IRequestRoles,
+  IRole,
+  IRoleByPermissionResponse,
+  RoleSystemSourceEnum,
+} from "@/services/dtos/user-permission";
 
 export const useAction = () => {
-  const data = [
-    {
-      key: "001",
-      characterName: "超級管理員",
-      roleDescription: "系統最高權限角色，擁有全部權限，不能刪除",
-    },
-    {
-      key: "002",
-      characterName: "管理員",
-      roleDescription: "管理員角色",
-    },
-    {
-      key: "003",
-      characterName: "普通員工1",
-      roleDescription: "系統默認角色",
-    },
-    {
-      key: "004",
-      characterName: "普通員工2",
-      roleDescription: "自定義角色1",
-    },
-    {
-      key: "005",
-      characterName: "倉務主管",
-      roleDescription: "自定義角色2",
-    },
-    {
-      key: "006",
-      characterName: "採購主管",
-      roleDescription: "自定義角色3",
-    },
-    {
-      key: "007",
-      characterName: "採購主管",
-      roleDescription: "自定義角色3",
-    },
-    {
-      key: "008",
-      characterName: "採購主管",
-      roleDescription: "自定義角色3",
-    },
-    {
-      key: "009",
-      characterName: "採購主管",
-      roleDescription: "自定義角色3",
-    },
-  ];
-
-  const { t } = useAuth();
+  const { t, myPermissions } = useAuth();
 
   const navigate = useNavigate();
 
@@ -60,19 +20,15 @@ export const useAction = () => {
 
   const [searchValue, setSearchValue] = useState<string>("");
 
-  // const [searchKeywordValue, setSearchKeywordValue] = useState<string>("");
+  const [searchKeywordValue, setSearchKeywordValue] = useState<string>("");
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
 
-  // const [selectedRows, setSelectedRows] = useState<
-  //   {
-  //     key: string;
-  //     characterName: string;
-  //     roleDescription: string;
-  //   }[]
-  // >([]);
+  const [isTableLoading, setIsTableLoading] = useState<boolean>(false);
 
-  // const [isTableLoading, setIsTableLoading] = useState<boolean>(false);
+  const [record, setRecord] = useState<IRole>();
+
+  const [selectedRows, setSelectedRows] = useState<IRole[]>([]);
 
   const [pageDto, setPageDto] = useState<{
     pageIndex: number;
@@ -85,32 +41,118 @@ export const useAction = () => {
   const [isDeletePermissions, setISDeletePermissions] =
     useState<boolean>(false);
 
+  const initialRoleByPermissionData: IRoleByPermissionResponse = {
+    count: 0,
+    rolePermissionData: [],
+  };
+
+  const [roleByPermissionData, setRoleByPermissionData] =
+    useState<IRoleByPermissionResponse>(initialRoleByPermissionData);
+
+  const [roleByPermissionAllData, setRoleByPermissionAllData] =
+    useState<IRoleByPermissionResponse>(initialRoleByPermissionData);
+
   const onSelectedAllRow = (selected: boolean) => {
-    const selectedData = data.map((item) => item.key);
+    const selectedData = roleByPermissionAllData.rolePermissionData.map(
+      (item) => item.role.id ?? 0
+    );
 
     if (selected) {
       setSelectedRowKeys(selectedData);
-      // setSelectedRows(data);
     } else {
       setSelectedRowKeys([]);
-      // setSelectedRows([]);
     }
   };
+
+  const onSelectedRow = (row: IRole | IRole[], selected: boolean) => {
+    const rows = Array.isArray(row) ? row : [row];
+
+    setSelectedRows((prev) => {
+      if (selected) {
+        return [...prev, ...rows];
+      } else {
+        return prev.filter((item) => !rows.find((row) => row.id === item.id));
+      }
+    });
+  };
+
+  const initGetRolesList = (prams: IRequestRoles) => {
+    setIsTableLoading(true);
+    GetRoles(prams)
+      .then((res) => {
+        if (res) setRoleByPermissionData(res ?? initialRoleByPermissionData);
+      })
+      .catch((err) => {
+        message.error(err);
+      })
+      .finally(() => setIsTableLoading(false));
+  };
+
+  const getRolesAllDataList = (prams: IRequestRoles) => {
+    GetRoles(prams)
+      .then((res) => {
+        if (res) setRoleByPermissionAllData(res ?? initialRoleByPermissionData);
+      })
+      .catch((err) => {
+        message.error(err);
+      });
+  };
+
+  const handleOperateDelete = () => {
+    PostDeleteRoles({ roleIds: [record?.id ?? 0] })
+      .then(() => {
+        initGetRolesList({
+          PageIndex: pageDto.pageIndex,
+          PageSize: pageDto.pageSize,
+          KeyWord: searchKeywordValue,
+          systemSource: RoleSystemSourceEnum.CameraAi,
+        });
+      })
+      .catch((error) => message.error(error.msg));
+  };
+
+  useEffect(() => {
+    initGetRolesList({
+      PageIndex: pageDto.pageIndex,
+      PageSize: pageDto.pageSize,
+      KeyWord: searchKeywordValue,
+      systemSource: RoleSystemSourceEnum.CameraAi,
+    });
+  }, [pageDto.pageIndex, pageDto.pageSize, searchKeywordValue]);
+
+  useEffect(() => {
+    getRolesAllDataList({
+      PageIndex: 1,
+      PageSize: 2147483647,
+      KeyWord: searchKeywordValue,
+      systemSource: RoleSystemSourceEnum.CameraAi,
+    });
+  }, [searchKeywordValue]);
+
+  useEffect(() => {
+    const newSelectedRowKeys = selectedRows.map((x) => x.id ?? 0);
+
+    setSelectedRowKeys(newSelectedRowKeys);
+  }, [selectedRows]);
 
   return {
     t,
     source,
     setSearchValue,
-    // setSearchKeywordValue,
+    setSearchKeywordValue,
     searchValue,
     isDeletePermissions,
     setISDeletePermissions,
     navigate,
-    // isTableLoading,
+    isTableLoading,
     pageDto,
     setPageDto,
     onSelectedAllRow,
-    data,
     selectedRowKeys,
+    roleByPermissionData,
+    handleOperateDelete,
+    setRecord,
+    onSelectedRow,
+    myPermissions,
   };
 };

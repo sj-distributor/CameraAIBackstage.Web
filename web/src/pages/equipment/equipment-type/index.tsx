@@ -15,6 +15,7 @@ import { ColumnsType } from "antd/es/table";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-type-keys";
+import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 import {
   CameraAiEquipmentTypeLabel,
   IEquipmentTypeList,
@@ -49,6 +50,7 @@ export const EquipmentType = () => {
     language,
     pageDto,
     setIsDeleteId,
+    myPermissions,
     typeLabel,
     setTypeLabel,
   } = useAction();
@@ -75,27 +77,35 @@ export const EquipmentType = () => {
       width: "20%",
       render: (_, record) => (
         <div>
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => {
-              setIsAddOrModifyOpen(true);
-              setIsAddOrUpdate(false);
-              onGetEquipmentTypeInfoById(record.id);
-            }}
-          >
-            {t(KEYS.EDIT, source)}
-          </Button>
-          <Button
-            type="link"
-            className="w-[6rem]"
-            onClick={() => {
-              setIsDeleteId(record.id);
-              setIsDeleteDeviceOpen(true);
-            }}
-          >
-            {t(KEYS.DELETE, source)}
-          </Button>
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanUpdateCameraAiEquipmentType
+          ) && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                setIsAddOrModifyOpen(true);
+                setIsAddOrUpdate(false);
+                onGetEquipmentTypeInfoById(record.id);
+              }}
+            >
+              {t(KEYS.EDIT, source)}
+            </Button>
+          )}
+          {myPermissions.includes(
+            BackGroundRolePermissionEnum.CanDeleteCameraAiEquipmentType
+          ) && (
+            <Button
+              type="link"
+              className="w-[6rem]"
+              onClick={() => {
+                setIsDeleteId(record.id);
+                setIsDeleteDeviceOpen(true);
+              }}
+            >
+              {t(KEYS.DELETE, source)}
+            </Button>
+          )}
         </div>
       ),
     },
@@ -123,22 +133,28 @@ export const EquipmentType = () => {
       }}
     >
       <div>
-        <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
+        <div className="bg-white h-[calc(100vh-7rem)] w-full flex-col justify-start p-[1.5rem]">
           <span className="text-[1.125rem] font-semibold tracking-tight">
             {t(KEYS.DEVICE_TYPE, source)}
           </span>
           <div className="flex flex-row pt-[1.625rem] justify-end">
-            <Button
-              type="primary"
-              className="h-[2.75rem]"
-              onClick={() => {
-                setIsAddOrModifyOpen(true);
-                setIsAddOrUpdate(true);
-              }}
-            >
-              <PlusOutlined className="pr-[.5rem]" />
-              {t(KEYS.ADD_TYPE, source)}
-            </Button>
+            {myPermissions.includes(
+              BackGroundRolePermissionEnum.CanAddCameraAiEquipmentType
+            ) ? (
+              <Button
+                type="primary"
+                className="h-[2.75rem]"
+                onClick={() => {
+                  setIsAddOrModifyOpen(true);
+                  setIsAddOrUpdate(true);
+                }}
+              >
+                <PlusOutlined className="pr-[.5rem]" />
+                {t(KEYS.ADD_TYPE, source)}
+              </Button>
+            ) : (
+              <div className="h-[2.75rem]" />
+            )}
           </div>
           <div className="flex flex-col h-[calc(100%-6rem)] justify-between pt-[1.125rem]">
             <Table
@@ -152,10 +168,10 @@ export const EquipmentType = () => {
             />
             <div className="flex justify-between items-center py-[1rem]">
               <div className="text-[#929292] text-[.875rem] whitespace-nowrap">
-                共{" "}
+                共
                 <span className="text-[#2853E3] font-light">
                   {totalListCount}
-                </span>{" "}
+                </span>
                 條
               </div>
               <div>

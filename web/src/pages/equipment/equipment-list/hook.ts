@@ -14,16 +14,18 @@ import {
   PostUpdateEquipment,
 } from "@/services/api/equipment/list";
 import { GetEquipmentTypePage } from "@/services/api/equipment/type";
-import { IPageDto } from "@/services/dtos/public";
 import {
   IEquipmentList,
   IEquipmentPageRequest,
   IRegionDto,
 } from "@/services/dtos/equipment/list";
+import { IPageDto } from "@/services/dtos/public";
 
 import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
 
 export const useAction = () => {
+  const { t, language, myPermissions } = useAuth();
+
   const initialEquipmentData = {
     equipmentCode: "",
     equipmentName: "",
@@ -33,8 +35,6 @@ export const useAction = () => {
     username: "",
     password: "",
   };
-
-  const { t, language } = useAuth();
 
   const [form] = Form.useForm();
 
@@ -193,8 +193,6 @@ export const useAction = () => {
     setRegionLoading(true);
     GetRegionPage({
       IsFilter: true,
-      PageSize: 2147483647,
-      PageIndex: 1,
     })
       .then((res) => {
         const newList = res.regions.map((item) => {
@@ -311,6 +309,7 @@ export const useAction = () => {
     confirmLoading,
     pageDto,
     onConfirmUnBind,
+    myPermissions,
     initialEquipmentData,
   };
 };

@@ -64,6 +64,11 @@ export default {
     [KEYS.REMOVE_BINDING]: "Remove Binding",
     [KEYS.CLOSURE]: "Closure",
     [KEYS.REGISTERED_VEHICLE]: "Registered vehicle",
+    [KEYS.UPDATE_SUCCESS]: "Update success",
+    [KEYS.CREATED_SUCCESSFULLY]: "Created successfully",
+    [KEYS.PLEASE_MAKE_SURE_ALL_DATA_INPUT]:
+      "Please make sure all data is filled in completely",
+    [KEYS.ABNORMAL_PERMISSION_DATA]: "Abnormal permission data",
   },
   ch: {
     [KEYS.USER_PERMISSIONS]: "用戶權限",
@@ -128,5 +133,9 @@ export default {
     [KEYS.REMOVE_BINDING]: "關閉",
     [KEYS.REGISTERED_VEHICLE]: "已登記車輛",
     [KEYS.CLOSURE]: "開關",
+    [KEYS.UPDATE_SUCCESS]: "更新成功",
+    [KEYS.CREATED_SUCCESSFULLY]: "创建成功",
+    [KEYS.PLEASE_MAKE_SURE_ALL_DATA_INPUT]: "請確認所有數據填寫完整",
+    [KEYS.ABNORMAL_PERMISSION_DATA]: "权限数据异常",
   },
 };

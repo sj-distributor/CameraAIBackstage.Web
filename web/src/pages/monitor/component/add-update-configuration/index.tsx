@@ -12,16 +12,15 @@ import {
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import TextArea from "antd/es/input/TextArea";
+import dayjs from "dayjs";
 import { clone, isEmpty } from "ramda";
 
 import downArrow from "@/assets/public/down-arrow.png";
-
-import { useAction } from "./hook";
-import { IOptionsStringDto, TimeType } from "./props";
-import dayjs from "dayjs";
 import { CameraAiMonitorType } from "@/services/dtos/monitor";
 
 import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
+import { useAction } from "./hook";
+import { IOptionsStringDto, TimeType } from "./props";
 
 export const AddOrUpdateConfiguration = () => {
   const {
@@ -223,6 +222,7 @@ export const AddOrUpdateConfiguration = () => {
                                     /[^0-9.]/g,
                                     ""
                                   );
+
                                   form.setFieldValue("time", sanitizedValue);
                                 }}
                               />
@@ -325,6 +325,7 @@ export const AddOrUpdateConfiguration = () => {
                                   ) {
                                     return Promise.resolve();
                                   }
+
                                   return Promise.reject(
                                     `${t(KEYS.SETTING_TIME_RULE_TIPS, source)}`
                                   );
@@ -357,6 +358,7 @@ export const AddOrUpdateConfiguration = () => {
                                     dates[1]?.format("HH:mm")
                                 ) {
                                   message.warning("不可选择相同时间的范围");
+
                                   return;
                                 } else {
                                   form.setFieldValue("timeSetting", dates);
@@ -439,6 +441,7 @@ export const AddOrUpdateConfiguration = () => {
                                         x.recipientIds.includes(item.value)
                                       )
                                   );
+
                                   if (
                                     selectUserData.some(
                                       (x) => !isEmpty(x.recipientIds)
@@ -447,6 +450,7 @@ export const AddOrUpdateConfiguration = () => {
                                   ) {
                                     return Promise.resolve();
                                   }
+
                                   return Promise.reject(
                                     `${t(KEYS.NOTIFY_USER_RULE_TIPS, source)}`
                                   );

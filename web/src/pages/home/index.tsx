@@ -7,6 +7,7 @@ import { Outlet } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/home-menu-keys";
+import { IRouterList } from "@/services/dtos/routes";
 
 import avatar from "../../assets/public/avatar.png";
 import downArrow from "../../assets/public/down-arrow.png";
@@ -52,31 +53,88 @@ export const Home = () => {
 
   const { language, changeLanguage, t, routerList } = useAuth();
 
+  const myPermissions = [
+    "CanViewCameraAiUserAccountPage",
+    "CanViewCameraAiRoleUserPage",
+    "CanViewCameraAiMonitorManagementPage",
+    "CanAddCameraAiMonitor",
+    "CanViewCameraAiAreaManagementPage",
+    "CanGrantCameraAiRole",
+  ];
+
+  const hasPermission = (permission: string | undefined) => {
+    return permission && myPermissions.includes(permission);
+  };
+
+  const permissionRouterList = (list: IRouterList[]) => {
+    return list
+      .map((item) => {
+        const result: IRouterList = {
+          path: "",
+          element: <></>,
+        };
+
+        const isHave = item.children?.some((childItem) =>
+          childItem.permissions ? hasPermission(childItem.permissions) : true
+        );
+
+        if (hasPermission(item.permissions) || isHave) {
+          result.path = item.path;
+          result.element = item.element;
+          result.name = item.name;
+          result.icon = item.icon;
+          result.children =
+            item.path !== "/monitor"
+              ? item.children &&
+                item.children
+                  .map((childItem) =>
+                    hasPermission(childItem.permissions) ||
+                    childItem.path === "/system/log"
+                      ? childItem
+                      : {
+                          path: "",
+                          element: <></>,
+                        }
+                  )
+                  .filter((childItem) => childItem)
+              : [];
+
+          return result;
+        }
+
+        return null;
+      })
+      .filter((item) => item !== null);
+  };
+
   const getMenu = () => {
     if (!routerList) return;
 
-    const items = routerList.reduce((accumulator, item) => {
-      if (item.path !== "") {
-        const menuItem: MenuItem | SubMenuType = {
-          label: item.name,
-          key: item.path,
-          icon: item.icon,
-        };
+    const items = permissionRouterList(routerList).reduce(
+      (accumulator, item) => {
+        if (item && item.path !== "") {
+          const menuItem: MenuItem | SubMenuType = {
+            label: item.name,
+            key: item.path,
+            icon: item.icon,
+          };
 
-        if (item.children && !item.path.includes("/monitor")) {
-          (menuItem as SubMenuType).children = item.children
-            .filter((child) => child.path !== "")
-            .map((child) => ({
-              label: child.name,
-              key: child.path,
-            }));
+          if (!!item.children && !item.path.includes("/monitor")) {
+            (menuItem as SubMenuType).children = item.children
+              .filter((child) => child.path !== "")
+              .map((child) => ({
+                label: child.name,
+                key: child.path,
+              }));
+          }
+
+          accumulator.push(menuItem);
         }
 
-        accumulator.push(menuItem);
-      }
-
-      return accumulator;
-    }, [] as MenuItem[]);
+        return accumulator;
+      },
+      [] as MenuItem[]
+    );
 
     return items;
   };
