@@ -50,8 +50,7 @@ type MenuItem = Required<MenuProps>["items"][number];
 export const Home = () => {
   const { menuInformation, navigate, setMenuInformation } = useAction();
 
-  const { language, changeLanguage, t, routerList, myPermissions, roleName } =
-    useAuth();
+  const { language, changeLanguage, t, routerList, myPermissions } = useAuth();
 
   const hasPermission = (permission: string | undefined) => {
     return permission && myPermissions.includes(permission);
@@ -233,9 +232,9 @@ export const Home = () => {
                   size="default"
                   className="mx-4"
                 >
-                  {roleName[0].charAt(0)}
+                  {"Admin".charAt(0)}
                 </Avatar>
-                {roleName[0]}
+                Admin
               </div>
 
               <a onClick={(e) => e.preventDefault()}>

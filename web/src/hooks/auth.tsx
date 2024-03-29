@@ -37,7 +37,9 @@ interface IAuthContextType {
   haveRoles: number[];
   myPermissions: string[];
   getMyPermission: () => void;
-  roleName: string[];
+  token: string;
+  signIn: (auth: string, callback?: VoidFunction) => void;
+  signOut: () => void;
 }
 
 export const AuthContext = React.createContext<IAuthContextType>(null!);
@@ -55,7 +57,22 @@ export default ({ children }: { children: React.ReactNode }) => {
 
   const [myPermissions, setMyPermissions] = useState<string[]>([]);
 
-  const [roleName, setRoleName] = useState<string[]>([]);
+  const tokenKey = (window as any).appsettings?.tokenKey as string;
+
+  const defaultToken = localStorage.getItem(tokenKey) ?? "";
+
+  const [token, setToken] = useState<string>(defaultToken);
+
+  const signIn = (auth: string, callback?: VoidFunction) => {
+    setToken(auth);
+    localStorage.setItem(tokenKey, auth);
+    callback && callback();
+  };
+
+  const signOut = () => {
+    setToken("");
+    localStorage.removeItem(tokenKey);
+  };
 
   const routerList: IRouterList[] = [
     {
@@ -224,9 +241,6 @@ export default ({ children }: { children: React.ReactNode }) => {
 
           setHaveRoles(roles);
           setMyPermissions(rolePermissions);
-          setRoleName(
-            response.rolePermissionData.map((item) => item.role.displayName!)
-          );
         } else {
           message.error(
             t(KEY.ABNORMAL_PERMISSION_DATA, { ns: "userPermissions" })
@@ -264,7 +278,9 @@ export default ({ children }: { children: React.ReactNode }) => {
     haveRoles,
     myPermissions,
     getMyPermission,
-    roleName,
+    token,
+    signIn,
+    signOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
