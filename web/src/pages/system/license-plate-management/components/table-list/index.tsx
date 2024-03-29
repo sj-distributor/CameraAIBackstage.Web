@@ -356,7 +356,6 @@ export const LicensePlateManagementTable = (
           <RangePicker
             className="w-[18.75rem] h-[2.5rem]"
             presets={rangePresets}
-            value={dateRange}
             onChange={onRangeChange}
             renderExtraFooter={() => (
               <div className="flex justify-between">
