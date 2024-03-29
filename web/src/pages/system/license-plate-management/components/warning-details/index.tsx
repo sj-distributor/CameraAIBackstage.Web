@@ -178,7 +178,7 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
           height={"100%"}
           width={"100%"}
           className="object-fill"
-          src="https://cdn-busybee.wiltechs.com/2097_1705455545.mp4"
+          src="https://video-builder.oss-cn-hongkong.aliyuncs.com/video/test-001.mp4"
         />
         <div className="bg-[#1f1f3970] h-[4.5rem] absolute bottom-0 w-full flex items-center px-[1.5rem] py-[0.625rem] justify-between">
           <div
@@ -190,7 +190,9 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
             {isPalyVideo ? <SuspendIcon /> : <PalyIcon />}
           </div>
           <div className="flex font-semibold text-white items-center">
-            <span style={{ userSelect: "none" }}>Saturday, 12:00:00 AM</span>
+            <span style={{ userSelect: "none" }}>
+              {dayjs(warningDetails.startTime).format("dddd hh:mm:ss A")}
+            </span>
             <div className="cursor-pointer flex rounded ml-[1.5rem] items-center px-2 text-white border border-white border-solid">
               <GoIcon />
               <span className="text-[1.125rem]">Live</span>
@@ -234,9 +236,6 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
               </div>
             </Popover>
           </div>
-        </div>
-        <div className="absolute left-[1.5rem] top-[1rem] text-white">
-          2023-05-02 12:00:00
         </div>
       </div>
 

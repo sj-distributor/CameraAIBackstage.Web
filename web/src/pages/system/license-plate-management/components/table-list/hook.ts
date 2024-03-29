@@ -17,7 +17,6 @@ import {
 } from "@/services/api/license-plate-management";
 import {
   CameraAiMonitorRecordStatus,
-  CameraAiMonitorRegisterType,
   CameraAiMonitorType,
   IGetRegisteredVehicleListRequest,
   IGetRegisteredVehicleListResponse,
@@ -75,25 +74,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   const [vehicleMonitorRecordsData, setVehicleMonitorRecordsData] =
     useState<IGetVehicleMonitorRecordsResponse>({
       count: 0,
-      records: [
-        {
-          id: 1,
-          equipmentName: "string",
-          equipmentCode: "string",
-          monitorType: CameraAiMonitorType.Vehicles,
-          correlationId: "string",
-          duration: 1,
-          recordStatus: CameraAiMonitorRecordStatus.Unmarked,
-          plateNumber: "string",
-          faceName: "string",
-          replayTaskId: "string",
-          replayUrl: "",
-          isRegistered: false,
-          licensePlateImageUrl: "",
-          occurrenceTime: "2024-03-14",
-          createdTime: "2024-03-14",
-        },
-      ],
+      records: [],
     });
 
   const [registeredVehicleData, setRegisteredVehicleData] =
@@ -225,9 +206,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
           handelRegisteringCar(data);
         }
       })
-      .catch(() => {
-        console.log("first");
-      });
+      .catch(() => {});
   };
 
   const handelConfirmOperate = () => {
@@ -236,7 +215,6 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
         deleteRegisterCarId && handelDeleteRegisterCar(deleteRegisterCarId);
         break;
       case ConfirmData.EditRegisterCar:
-        console.log("first");
         handelRegisterOrEditCar();
         break;
       default:
@@ -253,7 +231,6 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   } = useRequest(GetRegisteredVehicleList, {
     manual: true,
     onSuccess: (res) => {
-      console.log(res);
       res && setRegisteredVehicleData(res);
     },
     onError(error) {

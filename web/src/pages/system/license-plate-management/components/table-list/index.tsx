@@ -18,6 +18,7 @@ import {
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
+import search from "antd/es/transfer/search";
 import dayjs, { Dayjs } from "dayjs";
 import { Trans } from "react-i18next";
 
@@ -323,7 +324,15 @@ export const LicensePlateManagementTable = (
         <div className="flex flex-wrap gap-4">
           <Input
             className="w-[17.5rem] h-[2.5rem]"
-            suffix={<img src={search} />}
+            suffix={
+              <SearchOutlined
+                style={{
+                  color: "#666472",
+                  fontSize: "1.1rem",
+                  fontWeight: "700",
+                }}
+              />
+            }
             allowClear
             placeholder={t(KEYS.SEARCH_VEHICLE_NUMBER, source)}
             onChange={(e) => setPlateNumberKeyword(e.target.value)}
@@ -379,15 +388,18 @@ export const LicensePlateManagementTable = (
             />
           )}
         </div>
-        {!isRegisteredVehicle && (
-          <Button
-            type="primary"
-            className="h-[2.5rem] max-w-max bg-[#2853E3] flex items-center"
-            onClick={() => setIsRegisteredVehicle(true)}
-          >
-            {t(KEYS.REGISTERED_VEHICLES, source)}
-          </Button>
-        )}
+        {!isRegisteredVehicle &&
+          myPermissions.includes(
+            BackGroundRolePermissionEnum.CanViewRegisteredCameraAiLicensePlate
+          ) && (
+            <Button
+              type="primary"
+              className="h-[2.5rem] max-w-max bg-[#2853E3] flex items-center"
+              onClick={() => setIsRegisteredVehicle(true)}
+            >
+              {t(KEYS.REGISTERED_VEHICLES, source)}
+            </Button>
+          )}
       </div>
       <div className="no-scrollbar overflow-y-auto flex-1 mt-[1.125rem]">
         {isRegisteredVehicle ? (
@@ -429,14 +441,18 @@ export const LicensePlateManagementTable = (
         </div>
         <div className="pb-4 px-2">
           <Pagination
-            current={1}
-            pageSize={20}
-            pageSizeOptions={[5, 10, 20]}
-            total={
+            current={
               isRegisteredVehicle
-                ? registeredVehicleData.count
-                : vehicleMonitorRecordsData.count
+                ? registeredVehicleRequest.PageIndex
+                : vehicleMonitorRecordsRequest.PageIndex
             }
+            pageSize={
+              isRegisteredVehicle
+                ? registeredVehicleRequest.PageSize
+                : vehicleMonitorRecordsRequest.PageSize
+            }
+            pageSizeOptions={[5, 10, 20]}
+            total={13}
             showQuickJumper
             showSizeChanger
             onChange={(page, pageSize) => {

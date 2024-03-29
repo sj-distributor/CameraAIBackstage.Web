@@ -80,9 +80,9 @@ export const useAction = (props: { showWarningDetails: string }) => {
         warningDemandData?.record?.occurrenceTime ?? "2023-05-02 12:00:00",
       address:
         warningDemandData?.regionAndArea?.areaName ?? "廣東省中山市中山二路1號",
-      duration:
-        warningDemandData?.record?.duration ??
-        dayjs.unix(60).format("mm[m]ss[s]"),
+      duration: dayjs
+        .unix(warningDemandData?.record?.duration ?? 60)
+        .format("mm[m]ss[s]"),
     };
 
     if (warningDemandData?.record && warningDemandData.regionAndArea) {
@@ -137,7 +137,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
   const handelGetUrl = (id: string) => {
     if (detailsVideoUrl) return;
     id &&
-      GetWarningDemand("19")
+      GetWarningDemand(showWarningDetails)
         .then((res) => {
           const { replayUrl } = res.record;
 
@@ -152,9 +152,9 @@ export const useAction = (props: { showWarningDetails: string }) => {
           console.log(err);
         })
         .finally(() => {
-          // setTimeout(() => {
-          //   handelGetUrl(showWarningDetails);
-          // }, 5000);
+          setTimeout(() => {
+            handelGetUrl(showWarningDetails);
+          }, 5000);
         });
   };
 
@@ -231,7 +231,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
         startTime: palybackData.startTime,
         endTime: palybackData.endTime,
         monitorTypes: palybackData.monitorTypes,
-        equipmentCode: "DTY8456",
+        equipmentCode: palybackData.equipmentCode,
       };
 
       PostGeneratePlayBack(data)
@@ -296,7 +296,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
   });
 
   useEffect(() => {
-    handelGetWarningDemand("19");
+    handelGetWarningDemand(showWarningDetails);
   }, [showWarningDetails]);
 
   useEffect(() => {}, [isLoadingData]);
