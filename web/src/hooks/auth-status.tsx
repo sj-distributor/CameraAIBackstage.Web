@@ -1,12 +1,15 @@
-// import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
+
+import { useAuth } from "./use-auth";
 
 export const AuthStatus = (props: { children: JSX.Element }) => {
-  // 未接api，先注释
-  // const location = useLocation();
+  const location = useLocation();
 
-  // if (!localStorage.getItem("token")) {
-  //   return <Navigate to="/login" state={{ from: location }} replace={true} />;
-  // }
+  const { token } = useAuth();
+
+  if (!token) {
+    return <Navigate to="/login" state={{ from: location }} replace={true} />;
+  }
 
   return props.children;
 };

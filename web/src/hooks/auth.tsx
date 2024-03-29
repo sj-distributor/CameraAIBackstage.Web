@@ -5,7 +5,7 @@ import zhCN from "antd/es/locale/zh_CN";
 import { TFunction } from "i18next";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import { MonitorIcon, SystemIcon } from "@/assets/sider";
 import KEYS from "@/i18n/language/keys/home-menu-keys";
@@ -37,12 +37,17 @@ interface IAuthContextType {
   haveRoles: number[];
   myPermissions: string[];
   getMyPermission: () => void;
+  token: string;
+  signIn: (auth: string, callback?: VoidFunction) => void;
+  signOut: () => void;
 }
 
 export const AuthContext = React.createContext<IAuthContextType>(null!);
 
 export default ({ children }: { children: React.ReactNode }) => {
   const { i18n, t } = useTranslation();
+
+  const navigate = useNavigate();
 
   const [locale, setLocal] = React.useState<Locale>(enUS);
 
@@ -53,6 +58,25 @@ export default ({ children }: { children: React.ReactNode }) => {
   const [haveRoles, setHaveRoles] = useState<number[]>([]);
 
   const [myPermissions, setMyPermissions] = useState<string[]>([]);
+
+  const tokenKey =
+    ((window as any).appsettings?.tokenKey as string) ?? "tokenKey";
+
+  const defaultToken = localStorage.getItem(tokenKey) ?? "";
+
+  const [token, setToken] = useState<string>(defaultToken);
+
+  const signIn = (auth: string, callback?: VoidFunction) => {
+    setToken(auth);
+    localStorage.setItem(tokenKey, auth);
+    navigate("/user/list");
+    callback && callback();
+  };
+
+  const signOut = () => {
+    setToken("");
+    localStorage.removeItem(tokenKey);
+  };
 
   const routerList: IRouterList[] = [
     {
@@ -234,8 +258,8 @@ export default ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    getMyPermission();
-  }, []);
+    if (token) getMyPermission();
+  }, [token]);
 
   useEffect(() => {
     i18n.changeLanguage(language);
@@ -258,6 +282,9 @@ export default ({ children }: { children: React.ReactNode }) => {
     haveRoles,
     myPermissions,
     getMyPermission,
+    token,
+    signIn,
+    signOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

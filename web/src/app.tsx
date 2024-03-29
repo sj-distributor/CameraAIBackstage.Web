@@ -10,11 +10,6 @@ function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    // 内部调试自行加个 token 值上去
-    localStorage.setItem((window as any).appSettings?.tokenKey, "");
-  }, [localStorage.getItem((window as any).appSettings?.tokenKey)]);
-
-  useEffect(() => {
     InitialAppSetting().then(() => setIsLoaded(true));
   }, []);
 
