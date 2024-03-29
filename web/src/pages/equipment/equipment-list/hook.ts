@@ -14,11 +14,10 @@ import {
   PostUpdateEquipment,
 } from "@/services/api/equipment/list";
 import { GetEquipmentTypePage } from "@/services/api/equipment/type";
+import { IPageDto } from "@/services/dtos/public";
 import {
-  IEquipmentCreateOrUpdateDto,
   IEquipmentList,
   IEquipmentPageRequest,
-  IPageDto,
   IRegionDto,
 } from "@/services/dtos/equipment/list";
 
@@ -26,6 +25,16 @@ import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
 
 export const useAction = () => {
   const { t, language, myPermissions } = useAuth();
+
+  const initialEquipmentData = {
+    equipmentCode: "",
+    equipmentName: "",
+    equipmentTypeId: null,
+    ipAddress: "",
+    brand: "",
+    username: "",
+    password: "",
+  };
 
   const [form] = Form.useForm();
 
@@ -76,14 +85,6 @@ export const useAction = () => {
     undefined
   );
 
-  const [equipmentId, setEquipmentId] = useState<string>("");
-
-  const [equipmentType, setEquipmentType] = useState<string>("");
-
-  const [equipmentName, setEquipmentName] = useState<string>("");
-
-  const [equipmentTypeId, setEquipmentTypeId] = useState<number | null>(null);
-
   const [equipmentTypesOption, setEquipmentTypesOption] = useState<
     IOptionDto[]
   >([]);
@@ -98,7 +99,7 @@ export const useAction = () => {
     const data: IEquipmentPageRequest = {
       PageIndex: pageDto.PageIndex,
       PageSize: pageDto.PageSize,
-      Keyword: searchKey,
+      Keyword: searchKey ? searchKey : undefined,
     };
 
     if (isSearchOnline !== undefined && isSearchOnline !== IOnlineOrNot.All) {
@@ -126,26 +127,10 @@ export const useAction = () => {
     setEditLoading(true);
     await GetEquipmentInfoById({ EquipmentId: id })
       .then((res) => {
-        setEquipmentId(res.equipmentCode ?? "");
-        setEquipmentName(res.equipmentName ?? "");
-        setEquipmentType(res.equipmentType);
-        setEquipmentTypeId(res.equipmentTypeId ?? null);
-        form.setFieldsValue({
-          deviceId: res.equipmentCode,
-          deviceName: res.equipmentName,
-          deviceType: res.equipmentType,
-        });
+        form.setFieldsValue(res);
       })
       .catch((err) => {
-        setEquipmentId("");
-        setEquipmentName("");
-        setEquipmentType("");
-        setEquipmentTypeId(null);
-        form.setFieldsValue({
-          deviceId: "",
-          deviceName: "",
-          deviceType: "",
-        });
+        form.setFieldsValue(initialEquipmentData);
         message.error(`获取信息失败：${err}`);
       })
       .finally(() => {
@@ -155,30 +140,14 @@ export const useAction = () => {
   };
 
   const handleUpdate = () => {
-    const data: IEquipmentCreateOrUpdateDto = {
-      equipmentCode: equipmentId,
-      equipmentName: equipmentName,
-      equipmentTypeId: equipmentTypeId,
-      id: clickEditId,
-    };
-
     setConfirmLoading(true);
     PostUpdateEquipment({
-      equipment: data,
+      equipment: { ...form.getFieldsValue(), id: clickEditId },
     })
       .then(() => {
         setIsAddOrUpdateOpen(false);
         initGetEquipmentList();
-        setIsBindingOpen(false);
-        setEquipmentId("");
-        setEquipmentName("");
-        setEquipmentType("");
-        setEquipmentTypeId(null);
-        form.setFieldsValue({
-          deviceId: "",
-          deviceName: "",
-          deviceType: "",
-        });
+        form.setFieldsValue(initialEquipmentData);
       })
       .catch((err) => message.error(`更新失敗：${err}`))
       .finally(() => setConfirmLoading(false));
@@ -187,37 +156,25 @@ export const useAction = () => {
   const handleCreate = () => {
     setConfirmLoading(true);
     PostCreateEquipment({
-      equipment: {
-        equipmentCode: equipmentId,
-        equipmentName: equipmentName,
-        equipmentTypeId: equipmentTypeId,
-      },
+      equipment: form.getFieldsValue(),
     })
       .then(() => {
         setIsAddOrUpdateOpen(false);
         initGetEquipmentList();
-        setEquipmentId("");
-        setEquipmentName("");
-        setEquipmentType("");
-        setEquipmentTypeId(null);
-        form.setFieldsValue({
-          deviceId: "",
-          deviceName: "",
-          deviceType: "",
-        });
+        form.setFieldsValue(initialEquipmentData);
       })
       .catch((err) => message.error(`新增失敗：${err}`))
       .finally(() => setConfirmLoading(false));
   };
 
   const onAddOrUpdateSubmit = (isAdd: boolean) => {
-    form.validateFields(["deviceId"]);
-    form.validateFields(["deviceName"]);
-    form.validateFields(["deviceType"]);
+    form.validateFields();
 
-    if (equipmentId && equipmentName && equipmentType) {
-      isAdd ? handleCreate() : handleUpdate();
+    if (Object.values(form.getFieldsValue()).some((value) => !value)) {
+      return;
     }
+
+    isAdd ? handleCreate() : handleUpdate();
   };
 
   const onDelete = () => {
@@ -234,7 +191,7 @@ export const useAction = () => {
 
   const onOpenBind = () => {
     setRegionLoading(true);
-    GetRegionPage()
+    GetRegionPage({ IsFilter: true })
       .then((res) => {
         const newList = res.regions.map((item) => {
           return { ...item, radio: false };
@@ -289,7 +246,7 @@ export const useAction = () => {
 
   useEffect(() => {
     initGetEquipmentList();
-  }, [pageDto]);
+  }, [pageDto.PageIndex, pageDto.PageSize]);
 
   useEffect(() => {
     GetEquipmentTypePage({ PageIndex: 1, PageSize: 2147483647 })
@@ -330,12 +287,6 @@ export const useAction = () => {
     setIsSearchOnline,
     isSearchBind,
     setIsSearchBind,
-    equipmentId,
-    setEquipmentId,
-    equipmentType,
-    setEquipmentType,
-    equipmentName,
-    setEquipmentName,
     onAddOrUpdateSubmit,
     form,
     equipmentTypesOption,
@@ -348,7 +299,6 @@ export const useAction = () => {
     setIsAddOrEdit,
     onGetEquipmentInformationById,
     editLoding,
-    setEquipmentTypeId,
     language,
     onOpenBind,
     regionLoading,
@@ -358,5 +308,6 @@ export const useAction = () => {
     pageDto,
     onConfirmUnBind,
     myPermissions,
+    initialEquipmentData,
   };
 };

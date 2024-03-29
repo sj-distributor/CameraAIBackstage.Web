@@ -1,12 +1,13 @@
+import { IPageDto } from "../public";
+
 export interface IEquipmentPageRequest extends IPageDto {
+  RegionId?: string;
   IsOnline?: boolean;
   IsBind?: boolean;
   Keyword?: string;
-}
-
-export interface IPageDto {
-  PageSize?: number;
-  PageIndex?: number;
+  EquipmentCode?: string;
+  EquipmentName?: string;
+  EquipmentTypeName?: string;
 }
 
 export interface IEquipmentPageResponse {
@@ -34,11 +35,22 @@ export interface IEquipmentCreateOrUpdateDto {
   equipmentTypeId?: number | null;
   id?: number;
   areaId?: number;
+  ipAddress: string;
+  brand?: string;
+  username: string;
+  password: string;
 }
 
 export interface IRegionPageResponse {
   count: number;
   regions: IRegionDto[];
+}
+
+export interface IGetRegionPageRequest extends IPageDto {
+  RegionId?: string;
+  RegionAddress?: string;
+  Keyword?: string;
+  IsFilter?: boolean;
 }
 
 export interface IRegionDto {

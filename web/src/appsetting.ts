@@ -4,7 +4,7 @@ export interface IAppSettings {
 }
 
 export const InitialAppSetting = async () => {
-  await fetch("../../appsetting.json", {
+  await fetch("../../../appsetting.json", {
     headers: { "Content-Type": "application/json" },
   })
     .then((res) => res.json())

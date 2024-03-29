@@ -98,7 +98,7 @@ export const PortraitList = () => {
             <Spin />
           </div>
         ) : portraitData.portraits.length ? (
-          <div className="grid grid-cols-2 grid-rows-2 xl:grid-cols-3 xl:grid-rows-3 gap-[1rem]">
+          <div className="grid grid-cols-1 grid-rows-1 lg:grid-cols-2 lg:grid-rows-2 xl:grid-cols-3 xl:grid-rows-3 gap-[1rem]">
             {portraitData.portraits.map((item, index) => {
               return (
                 <div
@@ -307,7 +307,7 @@ export const PortraitList = () => {
               className="!w-auto"
               accept=".jpg, .png"
             >
-              {fileList.length < 2 && uploadButton}
+              {fileList.length < 1 && uploadButton}
             </Upload>
             <div className="text-[.625rem] text-[#9696A7] w-[11.875rem] text-left">
               <div className="font-semibold">
@@ -317,7 +317,7 @@ export const PortraitList = () => {
             </div>
           </div>
           <Modal
-            title="图片预览"
+            title={t(KEYS.PICTURE_PREVIEW, { ns: "portraitList" })}
             open={imageInformation.previewOpen}
             footer={null}
             onCancel={handleCancel}

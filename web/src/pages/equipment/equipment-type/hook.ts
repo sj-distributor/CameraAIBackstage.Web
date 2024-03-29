@@ -1,5 +1,3 @@
-import { useBoolean } from "ahooks";
-import { App, Form } from "antd";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -10,8 +8,13 @@ import {
   PostDeleteEquipmentType,
   PostUpdateEquipmentType,
 } from "@/services/api/equipment/type";
-import { IPageDto } from "@/services/dtos/equipment/list";
-import { IEquipmentTypeList } from "@/services/dtos/equipment/type";
+import { useBoolean } from "ahooks";
+import { App, Form } from "antd";
+import { IPageDto } from "@/services/dtos/public";
+import {
+  CameraAiEquipmentTypeLabel,
+  IEquipmentTypeList,
+} from "@/services/dtos/equipment/type";
 
 export const useAction = () => {
   const { t, language, myPermissions } = useAuth();
@@ -48,6 +51,10 @@ export const useAction = () => {
   const [typeName, setTypeName] = useState<string>("");
 
   const [description, setDescription] = useState<string>("");
+
+  const [typeLabel, setTypeLabel] = useState<CameraAiEquipmentTypeLabel>(
+    CameraAiEquipmentTypeLabel.Camera
+  );
 
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
 
@@ -91,6 +98,7 @@ export const useAction = () => {
       equipmentType: {
         name: typeName,
         description: description,
+        label: typeLabel ?? CameraAiEquipmentTypeLabel.Camera,
       },
     })
       .then(() => {
@@ -101,6 +109,7 @@ export const useAction = () => {
         });
         setTypeName("");
         setDescription("");
+        setTypeLabel(CameraAiEquipmentTypeLabel.Camera);
         initGetEquipmentTypeList();
       })
       .catch((err) => {
@@ -117,6 +126,7 @@ export const useAction = () => {
         name: typeName,
         description: description,
         id: clickEditId,
+        label: typeLabel,
       },
     })
       .then(() => {
@@ -127,6 +137,7 @@ export const useAction = () => {
         });
         setTypeName("");
         setDescription("");
+        setTypeLabel(CameraAiEquipmentTypeLabel.Camera);
         initGetEquipmentTypeList();
       })
       .catch((err) => {
@@ -190,5 +201,7 @@ export const useAction = () => {
     language,
     pageDto,
     myPermissions,
+    typeLabel,
+    setTypeLabel,
   };
 };
