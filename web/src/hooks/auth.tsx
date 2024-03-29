@@ -254,7 +254,7 @@ export default ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    getMyPermission();
+    if (token) getMyPermission();
   }, []);
 
   useEffect(() => {
