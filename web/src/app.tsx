@@ -12,6 +12,12 @@ function App() {
   const [aPageData, setAPageData] = useState<string>("");
 
   useEffect(() => {
+    console.log(
+      "isLoaded",
+      isLoaded,
+      aPageData,
+      (window as any).appSettings?.tokenKey
+    );
     if (isLoaded) {
       localStorage.setItem((window as any).appSettings?.tokenKey, aPageData);
     }
@@ -20,6 +26,8 @@ function App() {
   useEffect(() => {
     const aPageData = localStorage.getItem("aPageData");
     if (aPageData) {
+      console.log("aPageData", aPageData);
+
       setAPageData(aPageData);
       localStorage.removeItem("aPageData");
     } else {
@@ -27,6 +35,8 @@ function App() {
     }
 
     function receiveMessage(event: { origin: string; data: string }) {
+      console.log("event.data", event.data);
+
       if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
       if (event.data) {
         localStorage.setItem("aPageData", event.data);
