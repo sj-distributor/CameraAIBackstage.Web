@@ -425,7 +425,7 @@ export const LicensePlateManagementTable = (
         )}
       </div>
       <div className="flex justify-between items-center pt-[1rem]">
-        <div className="text-[#929292] text-[0.875rem] font-light ml-2">
+        <div className="text-[#929292] text-[0.875rem] font-light ml-2 mb-2">
           <Trans
             {...source}
             i18nKey="TotalItems"
