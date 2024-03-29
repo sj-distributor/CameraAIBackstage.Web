@@ -9,34 +9,29 @@ import { Router } from "./routes";
 function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  const doSomething = (token: string) => {
-    localStorage.set("tokenKey", token);
-  };
-
   useEffect(() => {
     const aPageData = localStorage.getItem("aPageData");
     if (aPageData) {
       console.log("aPageData", aPageData);
 
-      doSomething(aPageData); // 当能获取到数据时就说明是从A页面跳转过来的
+      // doSomething(aPageData); // 当能获取到数据时就说明是从A页面跳转过来的
       localStorage.removeItem("aPageData");
     } else {
       window.addEventListener("message", receiveMessage, false);
     }
 
     function receiveMessage(event: { origin: string; data: string }) {
-      console.log(
-        "123123",
-        event,
-        event.origin !== (window as any).appsettings?.frontDeskDomain,
-        (window as any).appsettings?.frontDeskDomain
-      );
+      console.log("123123", event);
 
-      if (event.origin !== (window as any).appsettings?.frontDeskDomain) return;
+      if (event.origin !== "http://localhost:3000") return;
       if (event.data) {
         localStorage.setItem("aPageData", event.data);
       }
     }
+
+    // function doSomething(aPageData) {
+    //   //处理业务逻辑
+    // }
   }, [localStorage.getItem("aPageData")]);
 
   useEffect(() => {
