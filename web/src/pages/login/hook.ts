@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Login } from "@/services/api/login";
 import { IUserInfo } from "@/services/dtos/login";
+import { message } from "antd";
 
 export const useAction = () => {
-  const { signIn, message } = useAuth();
+  const { signIn } = useAuth();
 
   const [userInfo, setUserInfo] = useState<IUserInfo>({
     userName: "",
@@ -38,7 +39,7 @@ export const useAction = () => {
               userInfo.userName
             );
 
-            signIn(res, userInfo.userName);
+            signIn(res);
           }
         })
         .catch(() => {
