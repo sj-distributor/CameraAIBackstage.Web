@@ -159,7 +159,10 @@ export const Home = () => {
   ];
 
   return (
-    <Layout style={layoutStyle}>
+    <Layout
+      style={layoutStyle}
+      className={`${language === "en" ? "englishMenu" : ""}`}
+    >
       <Sider style={siderStyle}>
         <Header style={siderHeaderStyle}>Camera AI後台管理系統</Header>
         <Menu

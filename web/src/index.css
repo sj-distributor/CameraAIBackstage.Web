@@ -176,3 +176,9 @@ code {
 .portrait .ant-popover-content {
   width: 13.75rem !important;
 }
+
+.englishMenu .ant-layout-sider.ant-layout-sider-dark {
+  flex: 0 0 18rem !important;
+  max-width: 18rem !important;
+  min-width: 18rem !important;
+}
