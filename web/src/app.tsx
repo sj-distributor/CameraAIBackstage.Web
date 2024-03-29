@@ -9,32 +9,30 @@ import { Router } from "./routes";
 function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
+  const doSomething = (token: string) => {
+    localStorage.set("tokenKey", token);
+  };
+
   useEffect(() => {
-    const cookieString = document.cookie;
+    const aPageData = localStorage.getItem("aPageData");
+    if (aPageData) {
+      console.log("aPageData", aPageData);
 
-    // 拆分成一个包含每个 Cookie 的数组
-    const cookiesArray = cookieString.split(";");
+      doSomething(aPageData); // 当能获取到数据时就说明是从A页面跳转过来的
+      localStorage.removeItem("aPageData");
+    } else {
+      window.addEventListener("message", receiveMessage, false);
+    }
 
-    // 初始化目标 Cookie 值
-    let targetCookieValue = null;
+    function receiveMessage(event: { origin: string; data: string }) {
+      console.log("123123", event);
 
-    // 遍历数组
-    for (const cookie of cookiesArray) {
-      // 去除空格
-      const trimmedCookie = cookie.trim();
-
-      // 如果该 Cookie 以 'param1=' 开头
-      if (trimmedCookie.startsWith("param1=")) {
-        // 截取 'param1=' 后面的字符串
-        targetCookieValue = trimmedCookie.substring("param1=".length);
-        break; // 找到目标 Cookie，退出循环
+      if (event.origin !== (window as any).appsettings.frontDeskDomain) return;
+      if (event.data) {
+        localStorage.setItem("aPageData", event.data);
       }
     }
-    console.log(targetCookieValue, cookieString);
-
-    if (!targetCookieValue) return;
-    targetCookieValue && localStorage.setItem("tokenKey", targetCookieValue);
-  }, []);
+  }, [localStorage.getItem("aPageData")]);
 
   useEffect(() => {
     InitialAppSetting().then(() => setIsLoaded(true));
