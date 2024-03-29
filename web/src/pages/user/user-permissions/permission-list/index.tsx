@@ -6,7 +6,6 @@ import { Trans } from "react-i18next";
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
 import { IRole } from "@/services/dtos/user-permission";
 
-import search from "../../../../assets/public/search.png";
 import { OperateConfirmModal } from "../operate-confirm";
 import { BackGroundRolePermissionEnum } from "../user-newpermissions/props";
 import { useAction } from "./hook";

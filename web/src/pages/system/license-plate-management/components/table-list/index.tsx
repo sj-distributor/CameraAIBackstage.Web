@@ -20,7 +20,6 @@ import { Dispatch, SetStateAction } from "react";
 import { Trans } from "react-i18next";
 
 import down from "@/assets/public/down-arrow.png";
-import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/license-plate-management-keys";

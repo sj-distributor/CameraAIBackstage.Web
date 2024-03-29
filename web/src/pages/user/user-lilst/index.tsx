@@ -20,7 +20,6 @@ import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-list-keys";
 import { IUserDataItem, UserStatus } from "@/services/dtos/user";
 
-import search from "../../../assets/public/search.png";
 import { TransferTree } from "../user-permissions/tranfer-tree";
 import { BackGroundRolePermissionEnum } from "../user-permissions/user-newpermissions/props";
 import { useAction } from "./hook";

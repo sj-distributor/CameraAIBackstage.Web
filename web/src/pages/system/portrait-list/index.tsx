@@ -16,7 +16,6 @@ import trash from "@/assets/portrait/trash.svg";
 import upload from "@/assets/portrait/upload.svg";
 import add from "@/assets/public/add.svg";
 import avatar from "@/assets/public/avatar.png";
-import search from "@/assets/public/search.png";
 import { CustomModal } from "@/components/custom-modal";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/portrait-list-keys";

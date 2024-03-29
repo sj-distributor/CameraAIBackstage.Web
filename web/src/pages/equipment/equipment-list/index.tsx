@@ -22,7 +22,6 @@ import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user
 import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
 
 import downArrow from "../../../assets/public/down-arrow.png";
-import search from "../../../assets/public/search.png";
 import { useAction } from "./hook";
 import { IBondOrNot, IOnlineOrNot } from "./props";
 

@@ -14,7 +14,6 @@ import KEYS from "@/i18n/language/keys/user-permissions-keys";
 import { HierarchyStaffIdSourceEnum } from "@/services/dtos/tree";
 import { IUserByRoleIdData } from "@/services/dtos/user-permission";
 
-import search from "../../../../assets/public/search.png";
 import { OperateConfirmModal } from "../operate-confirm";
 import { TransferTree } from "../tranfer-tree";
 import { useAction } from "./hook";
