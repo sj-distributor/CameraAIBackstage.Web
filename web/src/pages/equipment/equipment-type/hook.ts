@@ -1,3 +1,5 @@
+import { useBoolean } from "ahooks";
+import { App, Form } from "antd";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -8,13 +10,11 @@ import {
   PostDeleteEquipmentType,
   PostUpdateEquipmentType,
 } from "@/services/api/equipment/type";
-import { useBoolean } from "ahooks";
-import { App, Form } from "antd";
-import { IPageDto } from "@/services/dtos/public";
 import {
   CameraAiEquipmentTypeLabel,
   IEquipmentTypeList,
 } from "@/services/dtos/equipment/type";
+import { IPageDto } from "@/services/dtos/public";
 
 export const useAction = () => {
   const { t, language, myPermissions } = useAuth();

@@ -14,12 +14,12 @@ import {
   PostUpdateEquipment,
 } from "@/services/api/equipment/list";
 import { GetEquipmentTypePage } from "@/services/api/equipment/type";
-import { IPageDto } from "@/services/dtos/public";
 import {
   IEquipmentList,
   IEquipmentPageRequest,
   IRegionDto,
 } from "@/services/dtos/equipment/list";
+import { IPageDto } from "@/services/dtos/public";
 
 import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
 

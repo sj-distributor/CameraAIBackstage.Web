@@ -6,6 +6,7 @@ import {
   IUserListResponse,
 } from "@/services/dtos/monitor";
 import { IPageDto } from "@/services/dtos/public";
+
 import { api } from "../http-client";
 
 export const GetMonitorSettingPage = async (data: IMonitorSettingRequest) => {

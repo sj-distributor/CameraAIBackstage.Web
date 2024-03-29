@@ -145,7 +145,7 @@ export const Monitor = () => {
       title: `${t(KEYS.OPERATE, source)}`,
       dataIndex: "operate",
       width: "16.6%",
-      render: (_, __, index) => (
+      render: (_, record) => (
         <div className="flex-wrap flex">
           {myPermissions.includes(
             BackGroundRolePermissionEnum.CanUpdateCameraAiMonitor
@@ -153,9 +153,12 @@ export const Monitor = () => {
             <Button
               type="link"
               className="w-[6rem]"
-              onClick={() =>
-                navigate(`/monitor/configuration/update/${index.toString()}`)
-              }
+              onClick={() => {
+                navigate(
+                  `/monitor/configuration/modify/` +
+                    (record.id && record.id.toString())
+                );
+              }}
             >
               {t(KEYS.EDIT, source)}
             </Button>
@@ -167,7 +170,8 @@ export const Monitor = () => {
               type="link"
               className="w-[6rem]"
               onClick={() => {
-                setIsDeleteIndex(index);
+                if (!record.id) return;
+                setIsDeleteIndex(record.id);
                 setIsDeleteOpen(true);
               }}
             >
