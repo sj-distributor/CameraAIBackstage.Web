@@ -54,6 +54,10 @@ export default {
       "Please confirm whether to continue deleting the vehicle registration information?",
     [KEYS.REGISTER_STATUS]: "Registration status",
     [KEYS.GET_VIDEO_LOADING]: "Obtaining video resources...",
+    [KEYS.TIME_FROM]:
+      "Please choose a time from {{startTime}} to {{endTime}} o'clock",
+    [KEYS.GENERATED_TIPS]:
+      "After the video is generated, it will be automatically downloaded for you. Please wait",
   },
 
   ch: {
@@ -106,5 +110,7 @@ export default {
     [KEYS.CONFIRM_DELETE_REGISTER_CAR]: "請確認是否繼續刪除該車輛登記信息？",
     [KEYS.REGISTER_STATUS]: "登記狀態",
     [KEYS.GET_VIDEO_LOADING]: "视频资源获取中...",
+    [KEYS.TIME_FROM]: "請選擇{{startTime}}到{{endTime}}的時間",
+    [KEYS.GENERATED_TIPS]: "視頻生成后自動下載，請稍等",
   },
 };
