@@ -29,6 +29,8 @@ export const useAction = () => {
 
   const [selectedRows, setSelectedRows] = useState<IRole[]>([]);
 
+  const [isSearch, setIsSearch] = useState<boolean>(false);
+
   const [pageDto, setPageDto] = useState<{
     pageIndex: number;
     pageSize: number;
@@ -81,10 +83,22 @@ export const useAction = () => {
     setIsTableLoading(true);
     GetRoles(prams)
       .then((res) => {
-        if (res) setRoleByPermissionData(res ?? initialRoleByPermissionData);
+        setRoleByPermissionData((prev) => ({
+          ...prev,
+          count: res?.count ?? 0,
+          rolePermissionData: res?.rolePermissionData ?? [],
+        }));
+
+        setPageDto({ pageIndex: prams.PageIndex, pageSize: prams.PageSize });
       })
       .catch((err) => {
         message.error(err);
+        setRoleByPermissionData((prev) => ({
+          ...prev,
+          count: 0,
+          rolePermissionData: [],
+        }));
+        setPageDto({ pageIndex: prams.PageIndex, pageSize: prams.PageSize });
       })
       .finally(() => setIsTableLoading(false));
   };
@@ -92,10 +106,19 @@ export const useAction = () => {
   const getRolesAllDataList = (prams: IRequestRoles) => {
     GetRoles(prams)
       .then((res) => {
-        if (res) setRoleByPermissionAllData(res ?? initialRoleByPermissionData);
+        setRoleByPermissionData((prev) => ({
+          ...prev,
+          count: res?.count ?? 0,
+          rolePermissionData: res?.rolePermissionData ?? [],
+        }));
       })
       .catch((err) => {
         message.error(err);
+        setRoleByPermissionData((prev) => ({
+          ...prev,
+          count: 0,
+          rolePermissionData: [],
+        }));
       });
   };
 
@@ -119,16 +142,21 @@ export const useAction = () => {
       KeyWord: filterKeyword,
       systemSource: RoleSystemSourceEnum.CameraAi,
     });
-  }, [pageDto.pageIndex, pageDto.pageSize, filterKeyword]);
+  }, [pageDto.pageIndex, pageDto.pageSize]);
 
   useEffect(() => {
-    getRolesAllDataList({
-      PageIndex: 1,
-      PageSize: 2147483647,
-      KeyWord: filterKeyword,
-      systemSource: RoleSystemSourceEnum.CameraAi,
-    });
+    isSearch &&
+      getRolesAllDataList({
+        PageIndex: 1,
+        PageSize: 5,
+        KeyWord: filterKeyword,
+        systemSource: RoleSystemSourceEnum.CameraAi,
+      });
   }, [filterKeyword]);
+
+  useEffect(() => {
+    setIsSearch(true);
+  }, []);
 
   useEffect(() => {
     const newSelectedRowKeys = selectedRows.map((x) => x.id ?? 0);

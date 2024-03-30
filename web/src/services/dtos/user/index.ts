@@ -39,6 +39,7 @@ export interface IUserDataItem {
 export interface IGetUserListResponse {
   count: number;
   userProfiles: IUserDataItem[];
+  loading?: boolean;
 }
 
 export interface IUserProfileItem {
