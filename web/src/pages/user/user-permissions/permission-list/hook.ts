@@ -83,10 +83,19 @@ export const useAction = () => {
     setIsTableLoading(true);
     GetRoles(prams)
       .then((res) => {
-        if (res) setRoleByPermissionData(res ?? initialRoleByPermissionData);
+        setRoleByPermissionData((prev) => ({
+          ...prev,
+          count: res?.count ?? 0,
+          rolePermissionData: res?.rolePermissionData ?? [],
+        }));
       })
       .catch((err) => {
         message.error(err);
+        setRoleByPermissionData((prev) => ({
+          ...prev,
+          count: 0,
+          rolePermissionData: [],
+        }));
       })
       .finally(() => setIsTableLoading(false));
   };
@@ -94,10 +103,19 @@ export const useAction = () => {
   const getRolesAllDataList = (prams: IRequestRoles) => {
     GetRoles(prams)
       .then((res) => {
-        if (res) setRoleByPermissionAllData(res ?? initialRoleByPermissionData);
+        setRoleByPermissionData((prev) => ({
+          ...prev,
+          count: res?.count ?? 0,
+          rolePermissionData: res?.rolePermissionData ?? [],
+        }));
       })
       .catch((err) => {
         message.error(err);
+        setRoleByPermissionData((prev) => ({
+          ...prev,
+          count: 0,
+          rolePermissionData: [],
+        }));
       });
   };
 
