@@ -95,10 +95,13 @@ export const useAction = () => {
 
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
 
-  const initGetEquipmentList = (PageIndex = pageDto.PageIndex) => {
+  const initGetEquipmentList = (
+    PageIndex = pageDto.PageIndex,
+    PageSize = pageDto.PageSize
+  ) => {
     const data: IEquipmentPageRequest = {
       PageIndex,
-      PageSize: pageDto.PageSize,
+      PageSize,
       Keyword: searchKey ? searchKey : undefined,
     };
 
@@ -252,9 +255,10 @@ export const useAction = () => {
       .finally(() => setConfirmLoading(false));
   };
 
-  useEffect(() => {
-    initGetEquipmentList();
-  }, [pageDto.PageIndex, pageDto.PageSize]);
+  const onChangePage = (page: number, pageSize: number) => {
+    setPageDto({ PageIndex: page, PageSize: pageSize });
+    initGetEquipmentList(page, pageSize);
+  };
 
   useEffect(() => {
     GetEquipmentTypePage({ PageIndex: 1, PageSize: 2147483647 })
@@ -268,6 +272,7 @@ export const useAction = () => {
       .catch(() => {
         setEquipmentTypesOption([]);
       });
+    initGetEquipmentList();
   }, []);
 
   useUpdateEffect(() => {
@@ -289,7 +294,6 @@ export const useAction = () => {
     setIsDeleteId,
     data,
     t,
-    setPageDto,
     searchKey,
     setSearchKey,
     isSearchOnline,
@@ -318,5 +322,6 @@ export const useAction = () => {
     onConfirmUnBind,
     myPermissions,
     initialEquipmentData,
+    onChangePage,
   };
 };

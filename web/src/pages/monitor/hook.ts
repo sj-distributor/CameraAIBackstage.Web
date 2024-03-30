@@ -98,10 +98,13 @@ export const useAction = () => {
     setSelectWarningType(value);
   };
 
-  const initGetPageData = (PageSize = pageDto.PageSize) => {
+  const initGetPageData = (
+    PageIndex = pageDto.PageIndex,
+    PageSize = pageDto.PageSize
+  ) => {
     const data: IMonitorSettingRequest = {
+      PageIndex,
       PageSize,
-      PageIndex: pageDto.PageIndex,
     };
 
     if (isActive !== undefined) {
@@ -139,16 +142,17 @@ export const useAction = () => {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
+  const onChangePage = (page: number, pageSize: number) => {
+    setPageDto({ PageIndex: page, PageSize: pageSize });
     setLoading(true);
-    initGetPageData();
-  }, [pageDto]);
+    initGetPageData(page, pageSize);
+  };
 
   useEffect(() => {
     setLoading(true);
     setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
     initGetPageData(1);
-  }, [, isActive, selectWarningType]);
+  }, [isActive, selectWarningType]);
 
   return {
     data,
@@ -164,6 +168,7 @@ export const useAction = () => {
     filterStatus,
     myPermissions,
     pageDto,
+    onChangePage,
     setPageDto,
     count,
     onDelete,

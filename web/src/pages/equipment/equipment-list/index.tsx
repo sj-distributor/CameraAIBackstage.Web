@@ -40,7 +40,6 @@ export const EquipmentList = () => {
     setIsDeleteId,
     data,
     t,
-    setPageDto,
     searchKey,
     setSearchKey,
     isSearchOnline,
@@ -69,6 +68,7 @@ export const EquipmentList = () => {
     onConfirmUnBind,
     myPermissions,
     initialEquipmentData,
+    onChangePage,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -376,7 +376,7 @@ export const EquipmentList = () => {
                   showQuickJumper
                   showSizeChanger
                   onChange={(page, pageSize) => {
-                    setPageDto({ PageIndex: page, PageSize: pageSize });
+                    onChangePage(page, pageSize);
                   }}
                   className="flex flex-wrap justify-center"
                 />
