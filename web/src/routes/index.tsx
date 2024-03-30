@@ -1,6 +1,6 @@
 import { ConfigProvider } from "antd";
 import { useEffect, useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 
 import { AuthStatus } from "@/hooks/auth-status";
 import { useAuth } from "@/hooks/use-auth";
@@ -9,11 +9,11 @@ import { Login } from "@/pages/login";
 import { IRouterList } from "@/services/dtos/routes";
 
 export const Router = () => {
-  const { routerList, myPermissions, locale, signIn } = useAuth();
+  const { routerList, myPermissions, locale, signIn, defaultPath } = useAuth();
 
   const [aPageData, setAPageData] = useState<string>("");
 
-  const pathname = window.location.pathname;
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (aPageData) {
@@ -52,7 +52,9 @@ export const Router = () => {
         : true; // 如果没有提供权限，则默认为true
 
       if (!hasPermission) {
-        return null;
+        // navigate(defaultPath); // 未授权时进行导航
+
+        return null; // 返回null以过滤
       }
 
       return (
@@ -71,16 +73,7 @@ export const Router = () => {
     <ConfigProvider locale={locale}>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route
-          path="*"
-          element={
-            <Navigate
-              to={
-                pathname === "" || pathname === "/" ? "/system/log" : pathname
-              }
-            />
-          }
-        />
+        <Route path="*" element={<Navigate to={defaultPath} />} />
         <Route element={<Home />}>
           {routerList.map((item, index) => (
             <Route
