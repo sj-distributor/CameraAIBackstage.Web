@@ -20,7 +20,7 @@ export const OperationLog = () => {
     isTableLoading,
     pageDto,
     setSearchValue,
-    setPageDto,
+    onChangePage,
     rangePresets,
     onRangeChange,
     t,
@@ -136,9 +136,7 @@ export const OperationLog = () => {
             total={operateLogsDto.count}
             showQuickJumper
             showSizeChanger
-            onChange={(page, pageSize) =>
-              setPageDto({ pageIndex: page, pageSize })
-            }
+            onChange={(page, pageSize) => onChangePage(page, pageSize)}
           />
         </div>
       </div>
