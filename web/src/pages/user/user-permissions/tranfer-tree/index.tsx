@@ -211,6 +211,7 @@ export const TransferTree = ({
           />
         </div>
       }
+      destroyOnClose={true}
       onCancle={() => {
         handelResetSelectData();
         setIsModelOpen(false);
