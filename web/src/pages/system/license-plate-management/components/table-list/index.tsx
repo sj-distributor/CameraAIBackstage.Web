@@ -163,21 +163,21 @@ export const LicensePlateManagementTable = (
           {myPermissions.includes(
             BackGroundRolePermissionEnum.CanRegisterCameraAiLicensePlate
           ) && (
-            <Button
-              type="link"
-              disabled={record.isRegistered}
-              onClick={() => {
-                setRegisterCarNumber(record.plateNumber);
-                setRegisteringCarRequest((prev) => ({
-                  ...prev,
-                  recordId: String(record.id),
-                }));
-                setIsRegisterOpen(true);
-              }}
-            >
-              {t(KEYS.REGISTER, source)}
-            </Button>
-          )}
+              <Button
+                type="link"
+                disabled={record.isRegistered}
+                onClick={() => {
+                  setRegisterCarNumber(record.plateNumber);
+                  setRegisteringCarRequest((prev) => ({
+                    ...prev,
+                    recordId: String(record.id),
+                  }));
+                  setIsRegisterOpen(true);
+                }}
+              >
+                {t(KEYS.REGISTER, source)}
+              </Button>
+            )}
           {!isRegisteredVehicle &&
             myPermissions.includes(
               BackGroundRolePermissionEnum.CanViewDetailCameraAiLicensePlate
@@ -337,20 +337,20 @@ export const LicensePlateManagementTable = (
             onChange={(e) => setPlateNumberKeyword(e.target.value)}
             value={
               !vehicleMonitorRecordsRequest.PlateNumber &&
-              !registeredVehicleRequest.PlateNumber
+                !registeredVehicleRequest.PlateNumber
                 ? undefined
                 : plateNumberKeyword
             }
             onPressEnter={(e) => {
               isRegisteredVehicle
                 ? setRegisteredVehicleRequest((prev) => ({
-                    ...prev,
-                    PlateNumber: e.currentTarget.value,
-                  }))
+                  ...prev,
+                  PlateNumber: e.currentTarget.value,
+                }))
                 : setVehicleMonitorRecordsRequest((prev) => ({
-                    ...prev,
-                    PlateNumber: e.currentTarget.value,
-                  }));
+                  ...prev,
+                  PlateNumber: e.currentTarget.value,
+                }));
             }}
           />
           <RangePicker
@@ -380,6 +380,7 @@ export const LicensePlateManagementTable = (
                   ...prev,
                   PageIndex: 1,
                   Status: status,
+                  PageIndex: 1,
                 }));
               }}
               options={statusOption}
@@ -461,15 +462,15 @@ export const LicensePlateManagementTable = (
             onChange={(page, pageSize) => {
               isRegisteredVehicle
                 ? setRegisteredVehicleRequest((prev) => ({
-                    ...prev,
-                    PageIndex: page,
-                    PageSize: pageSize,
-                  }))
+                  ...prev,
+                  PageIndex: page,
+                  PageSize: pageSize,
+                }))
                 : setVehicleMonitorRecordsRequest((prev) => ({
-                    ...prev,
-                    PageIndex: page,
-                    PageSize: pageSize,
-                  }));
+                  ...prev,
+                  PageIndex: page,
+                  PageSize: pageSize,
+                }));
             }}
           />
         </div>
@@ -594,9 +595,9 @@ export const LicensePlateManagementTable = (
                   value={
                     isRegisteredVehicle
                       ? (registeringCarRequest as IRegisteredVehicleListItem)
-                          .registeredRecordStatus
+                        .registeredRecordStatus
                       : (registeringCarRequest as IPostRegisteringCarRequest)
-                          .recordStatus
+                        .recordStatus
                   }
                 />
               </div>
