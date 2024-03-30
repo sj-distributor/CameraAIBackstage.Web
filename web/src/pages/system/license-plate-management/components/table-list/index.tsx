@@ -345,10 +345,12 @@ export const LicensePlateManagementTable = (
               isRegisteredVehicle
                 ? setRegisteredVehicleRequest((prev) => ({
                   ...prev,
+                  PageIndex: 1,
                   PlateNumber: e.currentTarget.value,
                 }))
                 : setVehicleMonitorRecordsRequest((prev) => ({
                   ...prev,
+                  PageIndex: 1,
                   PlateNumber: e.currentTarget.value,
                 }));
             }}
@@ -378,7 +380,6 @@ export const LicensePlateManagementTable = (
               onChange={(status) => {
                 setVehicleMonitorRecordsRequest((prev) => ({
                   ...prev,
-                  PageIndex: 1,
                   Status: status,
                   PageIndex: 1,
                 }));
