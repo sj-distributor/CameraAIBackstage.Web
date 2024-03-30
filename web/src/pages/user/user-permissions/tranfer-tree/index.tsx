@@ -39,11 +39,11 @@ export const TransferTree = ({
   const treeToFlat = (data: ITreeData[]) => {
     return data.reduce(function (
       arr: ITreeData[],
-      { key, title, value, children = [] }
+      { key, title, value, isUser, children = [] }
     ): ITreeData[] {
       // 解构赋值+默认值
       return arr.concat(
-        [{ key, title, value, children }],
+        [{ key, title, value, children, isUser }],
         treeToFlat(children)
       ); // children部分进行递归
     },
@@ -56,7 +56,9 @@ export const TransferTree = ({
     const allSelectedData = treeToFlat(data);
 
     setTargetKeys(
-      allSelectedData?.filter((item) => item.key).map((item) => item.key)
+      allSelectedData
+        ?.filter((item) => item.key && item.isUser)
+        .map((item) => item.key)
     );
   };
 
@@ -188,8 +190,8 @@ export const TransferTree = ({
 
   useEffect(() => {
     if (arrTreeData.length) {
-      const selectedData = arrTreeData.filter((item) =>
-        targetKeys.includes(item.key)
+      const selectedData = arrTreeData.filter(
+        (item) => targetKeys.includes(item.key) && item.isUser
       );
 
       setTargetAllData(selectedData);

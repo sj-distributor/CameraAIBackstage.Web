@@ -22,6 +22,7 @@ export interface ITreeData {
   title: string;
   value?: string;
   key: string;
+  isUser?: boolean;
   parentId?: string;
   children?: ITreeData[];
 }
@@ -55,6 +56,7 @@ export const useAction = (staffIdSource: number) => {
         title: staff.userName,
         value: staff.id,
         key: staff.id,
+        isUser: true,
       }));
     }
 
