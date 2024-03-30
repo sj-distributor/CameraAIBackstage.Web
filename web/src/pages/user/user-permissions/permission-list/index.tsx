@@ -148,20 +148,22 @@ export const UserPermissions = () => {
                 />
               }
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+              }}
             />
             {myPermissions.includes(
               BackGroundRolePermissionEnum.CanGrantPermissionsIntoRole
             ) && (
-              <Button
-                type="primary"
-                className="h-[2.75rem] w-[7.25rem]"
-                onClick={() => navigate("/user/permissions/roles/new")}
-              >
-                <PlusOutlined />
-                {t(KEYS.ADD_ROLE, source)}
-              </Button>
-            )}
+                <Button
+                  type="primary"
+                  className="h-[2.75rem] w-[7.25rem]"
+                  onClick={() => navigate("/user/permissions/roles/new")}
+                >
+                  <PlusOutlined />
+                  {t(KEYS.ADD_ROLE, source)}
+                </Button>
+              )}
           </div>
         </div>
         <div className="flex flex-col h-[calc(100vh-15.4rem)] justify-between">

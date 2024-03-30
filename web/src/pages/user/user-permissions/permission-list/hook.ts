@@ -29,6 +29,8 @@ export const useAction = () => {
 
   const [selectedRows, setSelectedRows] = useState<IRole[]>([]);
 
+  const [isSearch, setIsSearch] = useState<boolean>(false);
+
   const [pageDto, setPageDto] = useState<{
     pageIndex: number;
     pageSize: number;
@@ -119,16 +121,21 @@ export const useAction = () => {
       KeyWord: filterKeyword,
       systemSource: RoleSystemSourceEnum.CameraAi,
     });
-  }, [pageDto.pageIndex, pageDto.pageSize, filterKeyword]);
+  }, [pageDto.pageIndex, pageDto.pageSize]);
 
   useEffect(() => {
-    getRolesAllDataList({
-      PageIndex: 1,
-      PageSize: 2147483647,
-      KeyWord: filterKeyword,
-      systemSource: RoleSystemSourceEnum.CameraAi,
-    });
+    isSearch &&
+      getRolesAllDataList({
+        PageIndex: 1,
+        PageSize: 5,
+        KeyWord: filterKeyword,
+        systemSource: RoleSystemSourceEnum.CameraAi,
+      });
   }, [filterKeyword]);
+
+  useEffect(() => {
+    setIsSearch(true);
+  }, []);
 
   useEffect(() => {
     const newSelectedRowKeys = selectedRows.map((x) => x.id ?? 0);
