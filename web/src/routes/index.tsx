@@ -1,6 +1,6 @@
 import { ConfigProvider } from "antd";
 import { useEffect, useState } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AuthStatus } from "@/hooks/auth-status";
 import { useAuth } from "@/hooks/use-auth";
@@ -12,8 +12,6 @@ export const Router = () => {
   const { routerList, myPermissions, locale, signIn, defaultPath } = useAuth();
 
   const [aPageData, setAPageData] = useState<string>("");
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (aPageData) {
