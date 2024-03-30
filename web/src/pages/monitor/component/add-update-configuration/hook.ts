@@ -398,7 +398,7 @@ export const useAction = () => {
   }, []);
 
   useEffect(() => {
-    if (isAdd) return; //新增不请求 detail
+    if (isAdd) return; // 新增不请求 detail
     setDetailLoading(true);
     GetMonitorSettingDetail({ settingId: Number(id) })
       .then((res) => {
@@ -406,6 +406,7 @@ export const useAction = () => {
       })
       .catch((err) => {
         message.error(err);
+        navigate("/monitor");
       })
       .finally(() => setDetailLoading(false));
   }, [isAdd, id]);
@@ -417,7 +418,7 @@ export const useAction = () => {
       isAdd ? initUserData : editDetailData?.monitorNotifications ?? []
     );
     setCronList(isAdd ? initCronList : editCronList);
-  }, [isAdd, editDetailData]);
+  }, [isAdd, editDetailData, editDetailUser]);
 
   return {
     cronList,

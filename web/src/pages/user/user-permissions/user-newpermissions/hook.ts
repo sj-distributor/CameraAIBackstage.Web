@@ -210,6 +210,7 @@ export const useAction = () => {
       })
       .catch((error) => {
         message.error(error.msg);
+        navigate("/user/permissions");
       })
       .finally(() => setIsLoaded(true));
   };

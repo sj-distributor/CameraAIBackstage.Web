@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const useAction = () => {
@@ -11,7 +11,11 @@ export const useAction = () => {
     selectedKeys: string[];
   }>({
     openKeys: ["/" + pathname.split("/")[1]],
-    selectedKeys: [pathname],
+    selectedKeys: [
+      pathname.includes("monitor")
+        ? "/" + pathname.split("/")[1]
+        : "/" + pathname.split("/")[1] + "/" + pathname.split("/")[2],
+    ],
   });
 
   return {

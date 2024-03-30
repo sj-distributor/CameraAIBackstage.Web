@@ -9,7 +9,7 @@ import { Login } from "@/pages/login";
 import { IRouterList } from "@/services/dtos/routes";
 
 export const Router = () => {
-  const { routerList, myPermissions, locale, signIn } = useAuth();
+  const { routerList, myPermissions, locale, signIn, defaultPath } = useAuth();
 
   const [aPageData, setAPageData] = useState<string>("");
 
@@ -52,7 +52,7 @@ export const Router = () => {
         : true; // 如果没有提供权限，则默认为true
 
       if (!hasPermission) {
-        return null;
+        return null; // 返回null以过滤
       }
 
       return (
@@ -67,6 +67,13 @@ export const Router = () => {
     }).filter(Boolean); // 过滤掉为null的元素;
   };
 
+  const pathsList = routerList
+    .flatMap((item) => [
+      item.path,
+      ...(item.children ? item.children.map((child) => child.path) : []),
+    ])
+    .filter((item) => item && !item.includes("id"));
+
   return (
     <ConfigProvider locale={locale}>
       <Routes>
@@ -76,7 +83,12 @@ export const Router = () => {
           element={
             <Navigate
               to={
-                pathname === "" || pathname === "/" ? "/system/log" : pathname
+                pathsList.includes(pathname) ||
+                pathname.startsWith("/monitor/configuration/") ||
+                pathname.startsWith("/user/permissions/roles/") ||
+                pathname.startsWith("/user/permissions/distribute/")
+                  ? pathname
+                  : defaultPath
               }
             />
           }
