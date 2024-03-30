@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SwiperRef } from "swiper/react";
 
 import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/license-plate-management-keys";
 import {
   GetGenerateUrl,
   GetWarningDemand,
@@ -298,11 +299,18 @@ export const useAction = (props: { showWarningDetails: string }) => {
         dayjs(palybackData.endTime) < startDate
       ) {
         message.info(
-          `請選擇從${startDate.format("YYYY-MM-DDTHH:mm:ss")}到${endDate.format(
+          `Please choose a time from ${startDate.format(
             "YYYY-MM-DDTHH:mm:ss"
-          )}內的時間`
+          )} to ${endDate.format("YYYY-MM-DDTHH:mm:ss")} o'clock`
         );
 
+        message.info(
+          t(KEYS.TIME_FROM, {
+            ...source,
+            startTime: startDate.format("YYYY-MM-DDTHH:mm:ss"),
+            endTime: endDate.format("YYYY-MM-DDTHH:mm:ss"),
+          })
+        );
         return;
       }
 
@@ -318,7 +326,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
         .then((res) => {
           const { generateTaskId } = res;
 
-          message.info("視頻正在生成中，生成成功自動為您下載，請稍等");
+          message.info(t(KEYS.GENERATED_TIPS, source));
 
           generateTaskId && handelGetVideoPlayBackData(generateTaskId);
         })

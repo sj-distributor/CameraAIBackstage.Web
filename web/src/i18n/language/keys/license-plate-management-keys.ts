@@ -48,4 +48,6 @@ export default {
   CONFIRM_DELETE_REGISTER_CAR: "ConfirmDeleteRegisterCar",
   REGISTER_STATUS: "RegisterStatus",
   GET_VIDEO_LOADING: "GetVideoLoading",
+  TIME_FROM: " TimeFrom",
+  GENERATED_TIPS: "GeneratedTips",
 };
