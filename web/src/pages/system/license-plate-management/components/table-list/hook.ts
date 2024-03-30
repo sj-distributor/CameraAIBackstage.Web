@@ -147,21 +147,17 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     if (isRegisteredVehicle) {
       setRegisteredVehicleRequest((prev) => ({
         ...prev,
+        PageIndex: 1,
+        PageSize: 20,
         PlateNumber: key ? key : undefined,
       }));
-      handelGetRegisteredVehicleList({
-        ...registeredVehicleRequest,
-        PlateNumber: key,
-      });
     } else {
       setVehicleMonitorRecordsRequest((prev) => ({
         ...prev,
+        PageIndex: 1,
+        PageSize: 20,
         PlateNumber: key ? key : undefined,
       }));
-      handelGetVehicleMonitorRecords({
-        ...vehicleMonitorRecordsRequest,
-        PlateNumber: key,
-      });
     }
   };
 
@@ -306,6 +302,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     vehicleMonitorRecordsRequest.PageSize,
     vehicleMonitorRecordsRequest.Status,
     isRegisteredVehicle,
+    vehicleMonitorRecordsRequest.PlateNumber,
   ]);
 
   useEffect(() => {
@@ -319,6 +316,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     registeredVehicleRequest.RegisterType,
     registeredVehicleRequest.Status,
     isRegisteredVehicle,
+    registeredVehicleRequest.PlateNumber,
   ]);
 
   useEffect(() => {
