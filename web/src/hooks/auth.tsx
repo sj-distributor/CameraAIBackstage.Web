@@ -1,3 +1,4 @@
+import { useUpdateEffect } from "ahooks";
 import { message } from "antd";
 import type { Locale } from "antd/es/locale";
 import enUS from "antd/es/locale/en_US";
@@ -25,6 +26,7 @@ import { PermissionsList } from "@/pages/user/user-permissions";
 import { UserDistribute } from "@/pages/user/user-permissions/distribute";
 import { UserPermissions } from "@/pages/user/user-permissions/permission-list";
 import { NewOrUpdatePermissions } from "@/pages/user/user-permissions/user-newpermissions";
+import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 import { GetCurrentAccountPermission } from "@/services/api/user-permission";
 import { IRouterList } from "@/services/dtos/routes";
 
@@ -40,6 +42,7 @@ interface IAuthContextType {
   token: string;
   signIn: (auth: string, callback?: VoidFunction) => void;
   signOut: () => void;
+  defaultPath: string;
 }
 
 export const AuthContext = React.createContext<IAuthContextType>(null!);
@@ -65,6 +68,8 @@ export default ({ children }: { children: React.ReactNode }) => {
   const defaultToken = localStorage.getItem(tokenKey) ?? "";
 
   const [token, setToken] = useState<string>(defaultToken);
+
+  const [defaultPath, setDefaultPath] = useState<string>("");
 
   const signIn = (auth: string, callback?: VoidFunction) => {
     setToken(auth);
@@ -273,6 +278,44 @@ export default ({ children }: { children: React.ReactNode }) => {
       : setLanguage("ch");
   }, []);
 
+  useUpdateEffect(() => {
+    const defaultPage = myPermissions.includes(
+      BackGroundRolePermissionEnum.CanViewCameraAiUserAccountPage
+    )
+      ? "/user/list"
+      : myPermissions.includes(
+          BackGroundRolePermissionEnum.CanViewCameraAiRoleUserPage
+        )
+      ? "/user/permissions"
+      : myPermissions.includes(
+          BackGroundRolePermissionEnum.CanViewCameraAiEquipmentPage
+        )
+      ? "/equipment/list"
+      : myPermissions.includes(
+          BackGroundRolePermissionEnum.CanViewCameraAiEquipmentTypePage
+        )
+      ? "/equipment/type"
+      : myPermissions.includes(
+          BackGroundRolePermissionEnum.CanViewCameraAiMonitorManagementPage
+        )
+      ? "/monitor"
+      : myPermissions.includes(
+          BackGroundRolePermissionEnum.CanViewCameraAiPortraitManagementPage
+        )
+      ? "/system/portrait"
+      : myPermissions.includes(
+          BackGroundRolePermissionEnum.CanViewCameraAiLicensePlateManagementPage
+        )
+      ? "/system/license"
+      : myPermissions.includes(
+          BackGroundRolePermissionEnum.CanViewCameraAiAreaManagementPage
+        )
+      ? "/system/area"
+      : "/system/log";
+
+    setDefaultPath(defaultPage);
+  }, [myPermissions]);
+
   const value = {
     language,
     t,
@@ -285,6 +328,7 @@ export default ({ children }: { children: React.ReactNode }) => {
     token,
     signIn,
     signOut,
+    defaultPath,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
