@@ -47,7 +47,7 @@ export const TransferTree = ({
         treeToFlat(children)
       ); // children部分进行递归
     },
-    []);
+      []);
   };
 
   const onChange = (keys: string[]) => {
@@ -170,6 +170,12 @@ export const TransferTree = ({
     setAutoExpandParent(true);
   };
 
+  const handelResetSelectData = () => {
+    setExpandedKeys([]);
+    setTargetAllData([]);
+    setTargetKeys([]);
+  };
+
   useEffect(() => {
     const cpData = JSON.stringify(treeData);
 
@@ -201,7 +207,10 @@ export const TransferTree = ({
           />
         </div>
       }
-      onCancle={() => setIsModelOpen(false)}
+      onCancle={() => {
+        handelResetSelectData();
+        setIsModelOpen(false);
+      }}
       confirmLoading={isConfirmLoading}
       onConfirm={async () => {
         const data = targetAllData.map((item) => item.key);
@@ -211,7 +220,10 @@ export const TransferTree = ({
 
           setIsConfirmLoading(loading);
 
-          !loading && setIsModelOpen(false);
+          if (!loading) {
+            handelResetSelectData();
+            setIsModelOpen(false);
+          }
         }
       }}
       open={isModelOpen}

@@ -107,9 +107,8 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
             <div
               key={index}
               style={{ left: `${left}rem`, width: `${width}rem` }}
-              className={`rounded-[2.875rem] ${
-                type === WarningTypes.Car ? "bg-[#2853E3]" : "bg-[#34A46E]"
-              } absolute h-4`}
+              className={`rounded-[2.875rem] ${type === WarningTypes.Car ? "bg-[#2853E3]" : "bg-[#34A46E]"
+                } absolute h-4`}
             />
           );
         })}
@@ -180,7 +179,9 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
           height={"100%"}
           width={"100%"}
           className="object-fill"
-          src="https://video-builder.oss-cn-hongkong.aliyuncs.com/video/test-001.mp4"
+          src={
+            "https://video-builder.oss-cn-hongkong.aliyuncs.com/video/test-001.mp4"
+          }
         />
         <div className="bg-[#1f1f3970] h-[4.5rem] absolute bottom-0 w-full flex items-center px-[1.5rem] py-[0.625rem] justify-between">
           <div
@@ -248,13 +249,13 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
         ref={swiperRef}
         scrollbar={{ draggable: true, hide: true }}
         freeMode={true}
-        className="w-full h-24 bg-white rounded-lg relative mb-4"
+        className="w-full h-24 bg-white rounded-lg relative mb-4 !px-[2.5rem]"
       >
         <div
           onClick={() => {
             swiperRef.current && swiperRef.current.swiper.slidePrev();
           }}
-          className="absolute cursor-pointer top-[1.8rem] z-[99] left-4 transform -translate-y-1/2 text-2xl"
+          className="absolute cursor-pointer top-[1.7rem] z-[99] left-1 transform -translate-y-1/2 text-2xl"
         >
           <ArrowLeftIcon />
         </div>
@@ -313,15 +314,14 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
                                   >
                                     <div className="text-start text-[#5F6279] font-semibold text-[0.875rem] text-nowrap absolute top-[-16px]">
                                       {dayjs(item).get("minute") % 5 === 0
-                                        ? dayjs(item).format("hh:mm A")
+                                        ? dayjs(item).utc().format("HH:mm A")
                                         : ""}
                                     </div>
                                     <div
-                                      className={`cursor-pointer h-2 w-px bg-[#ccc] ${
-                                        dayjs(item).get("minute") % 5 === 0
+                                      className={`cursor-pointer h-2 w-px bg-[#ccc] ${dayjs(item).get("minute") % 5 === 0
                                           ? "h-3"
                                           : "h-2 "
-                                      }`}
+                                        }`}
                                       onClick={() => {
                                         handleSetPalyVideo(duration);
                                       }}
@@ -344,7 +344,7 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
           onClick={() => {
             swiperRef.current && swiperRef.current.swiper.slideNext();
           }}
-          className="absolute cursor-pointer z-[99] top-[1.8rem] right-4 transform -translate-y-1/2 text-2xl"
+          className="absolute cursor-pointer z-[99] top-[1.7rem] right-1 transform -translate-y-1/2 text-2xl"
         >
           <ArrowRightIcon />
         </div>

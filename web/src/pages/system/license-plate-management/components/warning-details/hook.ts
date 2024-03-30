@@ -111,8 +111,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
       content:
         warningDemandData?.regionAndArea?.principal ??
         "攝像頭001，識別車輛（車牌LA12356），出現超過10秒",
-      startTime:
-        warningDemandData?.record?.occurrenceTime ?? "2023-05-02 12:00:00",
+      startTime: warningDemandData?.record?.occurrenceTime ?? "",
       address:
         warningDemandData?.regionAndArea?.areaName ?? "廣東省中山市中山二路1號",
       duration: dayjs
@@ -252,14 +251,16 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
       setVideoDuration(duration);
 
-      let initialTime = dayjs("2023-05-02 12:00:00").subtract(120, "second");
+      let initialTime = dayjs(warningDetails.startTime)
+        .subtract(120, "second")
+        .utc();
 
       const arr = Array.from({ length: Math.ceil(duration / 3000) }).map(() => {
         const timeList = Array.from({ length: 5 }).map(() => {
           const innerTimeList = Array.from({ length: 5 }).map(() => {
             initialTime = initialTime.add(120, "second");
 
-            return initialTime.format("YYYY-MM-DDTHH:mm:ss");
+            return initialTime.toISOString();
           });
 
           return innerTimeList;
@@ -353,6 +354,10 @@ export const useAction = (props: { showWarningDetails: string }) => {
   useEffect(() => {
     handelGetWarningDemand(showWarningDetails);
   }, [showWarningDetails]);
+
+  useEffect(() => {
+    handleLoadedMetadata();
+  }, [warningDetails.startTime]);
 
   return {
     handleSetPalyVideo,
