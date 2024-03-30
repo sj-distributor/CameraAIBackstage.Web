@@ -12,9 +12,7 @@ import { useAction } from "./hook";
 
 export const AreaManagement = () => {
   const {
-    searchValue,
     pageDto,
-    setSearchValue,
     setPageDto,
     t,
     isRegionListLoading,
@@ -123,8 +121,14 @@ export const AreaManagement = () => {
                 }}
               />
             }
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
+            value={pageDto.keyword}
+            onChange={(e) => {
+              setPageDto((pre) => ({
+                ...pre,
+                pageIndex: 1,
+                keyword: e.target.value,
+              }));
+            }}
           />
           {myPermissions.includes(
             BackGroundRolePermissionEnum.CanAddCameraAiArea
@@ -174,7 +178,7 @@ export const AreaManagement = () => {
               showQuickJumper
               showSizeChanger
               onChange={(page, pageSize) =>
-                setPageDto({ pageIndex: page, pageSize })
+                setPageDto((pre) => ({ ...pre, pageIndex: page, pageSize }))
               }
             />
           </div>
