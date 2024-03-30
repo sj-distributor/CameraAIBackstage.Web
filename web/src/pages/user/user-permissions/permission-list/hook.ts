@@ -88,6 +88,8 @@ export const useAction = () => {
           count: res?.count ?? 0,
           rolePermissionData: res?.rolePermissionData ?? [],
         }));
+
+        setPageDto({ pageIndex: prams.PageIndex, pageSize: prams.PageSize });
       })
       .catch((err) => {
         message.error(err);
@@ -96,6 +98,7 @@ export const useAction = () => {
           count: 0,
           rolePermissionData: [],
         }));
+        setPageDto({ pageIndex: prams.PageIndex, pageSize: prams.PageSize });
       })
       .finally(() => setIsTableLoading(false));
   };

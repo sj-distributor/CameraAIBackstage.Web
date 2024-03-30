@@ -149,6 +149,7 @@ export const UserPermissions = () => {
               }
               value={searchValue}
               onChange={(e) => {
+                setPageDto({ pageIndex: 1, pageSize: 5 });
                 setSearchValue(e.target.value);
               }}
             />
