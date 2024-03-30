@@ -179,9 +179,7 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
           height={"100%"}
           width={"100%"}
           className="object-fill"
-          src={
-            "https://video-builder.oss-cn-hongkong.aliyuncs.com/video/test-001.mp4"
-          }
+          src="https://video-builder.oss-cn-hongkong.aliyuncs.com/video/test-001.mp4"
         />
         <div className="bg-[#1f1f3970] h-[4.5rem] absolute bottom-0 w-full flex items-center px-[1.5rem] py-[0.625rem] justify-between">
           <div
