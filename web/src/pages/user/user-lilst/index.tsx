@@ -33,7 +33,6 @@ export const UserList = () => {
     setIsRemoveUser,
     isResetPassword,
     setIsResetPassword,
-    getUserListRequest,
     userListData,
     keyword,
     setKeyword,
@@ -230,10 +229,10 @@ export const UserList = () => {
               ]}
               onChange={(status) =>
                 handelGetUserList({
-                  PageIndex: 1,
+                  PageIndex: userListData.PageSize,
                   Status: status,
                   Keyword: filterKeyword,
-                  PageSize: getUserListRequest.PageSize,
+                  PageSize: userListData.PageSize,
                 })
               }
             />
