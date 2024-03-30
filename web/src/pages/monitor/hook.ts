@@ -98,10 +98,13 @@ export const useAction = () => {
     setSelectWarningType(value);
   };
 
-  const initGetPageData = () => {
+  const initGetPageData = (
+    PageIndex = pageDto.PageIndex,
+    PageSize = pageDto.PageSize
+  ) => {
     const data: IMonitorSettingRequest = {
-      PageSize: pageDto.PageSize,
-      PageIndex: pageDto.PageIndex,
+      PageIndex,
+      PageSize,
     };
 
     if (isActive !== undefined) {
@@ -131,7 +134,8 @@ export const useAction = () => {
       .then(() => {
         setIsDeleteOpen(false);
         setLoading(true);
-        initGetPageData();
+        setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
+        initGetPageData(1);
       })
       .catch((err) => {
         message.error(`删除失败：${err}`);
@@ -139,10 +143,17 @@ export const useAction = () => {
       .finally(() => setLoading(false));
   };
 
+  const onChangePage = (page: number, pageSize: number) => {
+    setPageDto({ PageIndex: page, PageSize: pageSize });
+    setLoading(true);
+    initGetPageData(page, pageSize);
+  };
+
   useEffect(() => {
     setLoading(true);
-    initGetPageData();
-  }, [pageDto, isActive, selectWarningType]);
+    setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
+    initGetPageData(1);
+  }, [isActive, selectWarningType]);
 
   return {
     data,
@@ -158,6 +169,7 @@ export const useAction = () => {
     filterStatus,
     myPermissions,
     pageDto,
+    onChangePage,
     setPageDto,
     count,
     onDelete,

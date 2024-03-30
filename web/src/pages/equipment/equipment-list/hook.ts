@@ -95,10 +95,13 @@ export const useAction = () => {
 
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
 
-  const initGetEquipmentList = () => {
+  const initGetEquipmentList = (
+    PageIndex = pageDto.PageIndex,
+    PageSize = pageDto.PageSize
+  ) => {
     const data: IEquipmentPageRequest = {
-      PageIndex: pageDto.PageIndex,
-      PageSize: pageDto.PageSize,
+      PageIndex,
+      PageSize,
       Keyword: searchKey ? searchKey : undefined,
     };
 
@@ -160,7 +163,8 @@ export const useAction = () => {
     })
       .then(() => {
         setIsAddOrUpdateOpen(false);
-        initGetEquipmentList();
+        initGetEquipmentList(1);
+        setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
         form.setFieldsValue(initialEquipmentData);
       })
       .catch((err) => message.error(`新增失敗：${err}`))
@@ -188,7 +192,8 @@ export const useAction = () => {
     setConfirmLoading(true);
     PostDeleteEquipment({ EquipmentId: isDeleteId })
       .then(() => {
-        initGetEquipmentList();
+        initGetEquipmentList(1);
+        setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
         setIsDeleteDeviceOpen(false);
       })
       .catch((error) => message.error(`刪除失敗：${error}`))
@@ -252,9 +257,10 @@ export const useAction = () => {
       .finally(() => setConfirmLoading(false));
   };
 
-  useEffect(() => {
-    initGetEquipmentList();
-  }, [pageDto.PageIndex, pageDto.PageSize]);
+  const onChangePage = (page: number, pageSize: number) => {
+    setPageDto({ PageIndex: page, PageSize: pageSize });
+    initGetEquipmentList(page, pageSize);
+  };
 
   useEffect(() => {
     GetEquipmentTypePage({ PageIndex: 1, PageSize: 2147483647 })
@@ -268,10 +274,12 @@ export const useAction = () => {
       .catch(() => {
         setEquipmentTypesOption([]);
       });
+    initGetEquipmentList();
   }, []);
 
   useUpdateEffect(() => {
-    initGetEquipmentList();
+    initGetEquipmentList(1);
+    setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
   }, [debouncedValue, isSearchOnline, isSearchBind]);
 
   return {
@@ -288,7 +296,6 @@ export const useAction = () => {
     setIsDeleteId,
     data,
     t,
-    setPageDto,
     searchKey,
     setSearchKey,
     isSearchOnline,
@@ -317,5 +324,6 @@ export const useAction = () => {
     onConfirmUnBind,
     myPermissions,
     initialEquipmentData,
+    onChangePage,
   };
 };
