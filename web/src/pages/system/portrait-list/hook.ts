@@ -208,7 +208,14 @@ export const useAction = () => {
       onBefore: () => message.info("running..."),
       onSuccess: () => {
         message.success("success");
-        handleGetPortraitData.run();
+        if (pageData.pageIndex > 1 && portraitData.portraits.length === 1) {
+          setPageData((pre) => ({
+            ...pre,
+            pageIndex: pre.pageIndex - 1,
+          }));
+        } else {
+          handleGetPortraitData.run();
+        }
       },
       onError: (error) => message.error((error as Error).message),
     }

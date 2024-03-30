@@ -56,7 +56,7 @@ export const PortraitList = () => {
 
   return (
     <div className="h-full grid grid-rows-[1fr,auto] ">
-      <div className="p-[1.5rem] bg-white box-border">
+      <div className="p-[1.5rem] bg-white box-border overflow-auto">
         <div className="text-[1.125rem] font-semibold">
           {t(KEYS.PORTRAIT_LIST, { ns: "portraitList" })}
         </div>
@@ -75,7 +75,11 @@ export const PortraitList = () => {
                 />
               }
               onChange={(event) => {
-                setPageData((pre) => ({ ...pre, keyword: event.target.value }));
+                setPageData((pre) => ({
+                  ...pre,
+                  pageIndex: 1,
+                  keyword: event.target.value,
+                }));
               }}
             />
           </div>

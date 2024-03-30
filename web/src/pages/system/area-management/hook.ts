@@ -1,4 +1,3 @@
-import { useDebounce } from "ahooks";
 import { message } from "antd";
 import { useEffect, useState } from "react";
 
@@ -30,10 +29,6 @@ export const useAction = () => {
   const [isRegionListLoading, setIsRegionListLoading] =
     useState<boolean>(false);
 
-  const [searchValue, setSearchValue] = useState<string>("");
-
-  const filterKeyword = useDebounce(searchValue, { wait: 500 });
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [regionListDto, setRegionListDto] =
@@ -42,6 +37,7 @@ export const useAction = () => {
   const [pageDto, setPageDto] = useState<{
     pageIndex: number;
     pageSize: number;
+    keyword?: string;
   }>({
     pageIndex: 1,
     pageSize: 5,
@@ -60,7 +56,7 @@ export const useAction = () => {
     GetAreaManagementPage({
       PageIndex: pageDto.pageIndex,
       PageSize: pageDto.pageSize,
-      Keyword: filterKeyword,
+      Keyword: pageDto.keyword,
     })
       .then((res) => {
         if (res) setRegionListDto({ count: res.count, regions: res.regions });
@@ -76,7 +72,16 @@ export const useAction = () => {
     PostDeleteAreaId({
       AreaId: areaId,
     })
-      .then(() => initGetRegionList())
+      .then(() => {
+        if (pageDto.pageIndex > 1 && regionListDto.regions.length === 1) {
+          setPageDto((pre) => ({
+            ...pre,
+            pageIndex: pre.pageIndex - 1,
+          }));
+        } else {
+          initGetRegionList();
+        }
+      })
       .catch((err) => {
         message.error(err);
       })
@@ -85,12 +90,10 @@ export const useAction = () => {
 
   useEffect(() => {
     initGetRegionList();
-  }, [filterKeyword, pageDto.pageSize, pageDto.pageIndex]);
+  }, [pageDto]);
 
   return {
-    searchValue,
     pageDto,
-    setSearchValue,
     setPageDto,
     t,
     isRegionListLoading,

@@ -13,6 +13,8 @@ export const Router = () => {
 
   const [aPageData, setAPageData] = useState<string>("");
 
+  const pathname = window.location.pathname;
+
   useEffect(() => {
     if (aPageData) {
       localStorage.setItem(
@@ -69,7 +71,16 @@ export const Router = () => {
     <ConfigProvider locale={locale}>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="*" element={<Navigate to={"/system/log"} />} />
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to={
+                pathname === "" || pathname === "/" ? "/system/log" : pathname
+              }
+            />
+          }
+        />
         <Route element={<Home />}>
           {routerList.map((item, index) => (
             <Route
