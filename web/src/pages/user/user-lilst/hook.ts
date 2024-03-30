@@ -14,7 +14,14 @@ import {
 import {
   IGetUserListRequest,
   IGetUserListResponse,
+  UserStatus,
 } from "@/services/dtos/user";
+
+export interface IDto extends IGetUserListResponse {
+  PageIndex: number;
+  PageSize: number;
+  Status?: UserStatus;
+}
 
 export const useAction = () => {
   const source = { ns: "userList" };
@@ -33,9 +40,13 @@ export const useAction = () => {
 
   const filterKeyword = useDebounce(keyword, { wait: 500 });
 
-  const [userListData, setUserListData] = useState<IGetUserListResponse>({
+  const [userListData, setUserListData] = useState<IDto>({
     count: 0,
     userProfiles: [],
+    loading: false,
+    PageIndex: 1,
+    PageSize: 20,
+    Status: undefined,
   });
 
   const [deleteUserKeys, setDeleteUserKeys] = useState<string[]>([""]);
@@ -46,7 +57,10 @@ export const useAction = () => {
     useState<boolean>(false);
 
   const [getUserListRequest, setGetUserListRequest] =
-    useState<IGetUserListRequest>({ PageIndex: 1, PageSize: 20 });
+    useState<IGetUserListRequest>({
+      PageIndex: 1,
+      PageSize: 20,
+    });
 
   const handelConfirmDeleteUsers = () => {
     if (deleteUserKeys.length < 1) return;
@@ -59,7 +73,12 @@ export const useAction = () => {
     deleteUserFun(data as string & string[])
       .then(() => {
         setIsRemoveUser(false);
-        handelGetUserList({ ...getUserListRequest, Keyword: filterKeyword });
+        handelGetUserList({
+          PageIndex: 1,
+          PageSize: userListData.PageSize,
+          Keyword: filterKeyword,
+          Status: userListData.Status,
+        });
         message.success(t(KEYS.REMOVE_USER_OK, source));
       })
       .catch((err) => {
@@ -74,9 +93,17 @@ export const useAction = () => {
     let loading = true;
 
     try {
-      const data = await PostCreateUsers(userIds);
+      await PostCreateUsers(userIds);
 
-      data && message.success(t(KEYS.ADD_USER_OK, source));
+      message.success(t(KEYS.ADD_USER_OK, source));
+
+      handelGetUserList({
+        PageIndex: 1,
+        PageSize: userListData.PageSize,
+        Keyword: filterKeyword,
+        Status: userListData.Status,
+      });
+
       loading = false;
     } catch (err) {
       loading = false;
@@ -86,25 +113,30 @@ export const useAction = () => {
     return loading;
   };
 
-  const { run: handelGetUserList, loading: isGetUserListLoading } = useRequest(
-    GetUserList,
-    {
-      manual: true,
-      onSuccess: (res) => {
-        res && setUserListData(res);
-      },
-      onError: (err) => {
-        message.error(err.message);
-        setUserListData({ count: 0, userProfiles: [] });
-      },
-    }
-  );
+  // const { run: handelGetUserList, loading: isGetUserListLoading } = useRequest(
+  //   GetUserList,
+  //   {
+  //     manual: true,
+  //     onSuccess: (res) => {
+  //       res && setUserListData(res);
+  //     },
+  //     onError: (err) => {
+  //       message.error(err.message);
+  //       setUserListData({ count: 0, userProfiles: [] });
+  //     },
+  //   }
+  // );
 
   const { run: handelUpdateUserData, loading: isUpdateUserLoading } =
     useRequest(PostUpdateUser, {
       manual: true,
       onSuccess: () => {
-        handelGetUserList({ ...getUserListRequest, Keyword: filterKeyword });
+        handelGetUserList({
+          PageIndex: 1,
+          PageSize: userListData.PageSize,
+          Keyword: filterKeyword,
+          Status: userListData.Status,
+        });
       },
       onError: (err) => {
         message.error(err.message);
@@ -112,8 +144,53 @@ export const useAction = () => {
     });
 
   useEffect(() => {
-    handelGetUserList({ ...getUserListRequest, Keyword: filterKeyword });
-  }, [getUserListRequest, filterKeyword]);
+    handelGetUserList({
+      PageIndex: 1,
+      PageSize: userListData.PageSize,
+      Keyword: filterKeyword,
+      Status: userListData.Status,
+    });
+  }, [filterKeyword]);
+
+  useEffect(() => {
+    handelGetUserList({
+      PageIndex: userListData.PageIndex,
+      PageSize: userListData.PageSize,
+    });
+  }, []);
+
+  const handelGetUserList = (data: IGetUserListRequest) => {
+    setUserListData((prev) => ({
+      ...prev,
+      loading: true,
+    }));
+
+    GetUserList(data)
+      .then((res) => {
+        setTimeout(() => {
+          setUserListData((prev) => ({
+            ...prev,
+            loading: false,
+            count: res?.count ?? 0,
+            userProfiles: res?.userProfiles ?? [],
+            PageIndex: data.PageIndex,
+            PageSize: data.PageSize,
+            keyword: data?.Keyword ?? "",
+            Status: data?.Status ?? undefined,
+          }));
+        }, 1000);
+      })
+      .catch(() => {
+        setTimeout(() => {
+          setUserListData((prev) => ({
+            ...prev,
+            loading: false,
+            count: 0,
+            userProfiles: [],
+          }));
+        }, 1000);
+      });
+  };
 
   return {
     isAddUser,
@@ -125,7 +202,6 @@ export const useAction = () => {
     setIsResetPassword,
     getUserListRequest,
     setGetUserListRequest,
-    isGetUserListLoading,
     userListData,
     keyword,
     setKeyword,
@@ -142,5 +218,7 @@ export const useAction = () => {
     setUpdateUserId,
     myPermissions,
     language,
+    handelGetUserList,
+    filterKeyword,
   };
 };

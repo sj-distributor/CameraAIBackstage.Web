@@ -34,8 +34,6 @@ export const UserList = () => {
     isResetPassword,
     setIsResetPassword,
     getUserListRequest,
-    setGetUserListRequest,
-    isGetUserListLoading,
     userListData,
     keyword,
     setKeyword,
@@ -52,6 +50,8 @@ export const UserList = () => {
     setUpdateUserId,
     myPermissions,
     language,
+    handelGetUserList,
+    filterKeyword,
   } = useAction();
 
   const columns: TableProps<IUserDataItem>["columns"] = [
@@ -212,11 +212,15 @@ export const UserList = () => {
               }
               placeholder={t(KEYS.SEARCH_PLACEHOLDER)}
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={(e) => {
+                setKeyword(e.target.value);
+              }}
             />
             <Select
               className="mx-[1rem] w-[13.5rem] h-[2.5rem]"
               placeholder={t(KEYS.STATUS)}
+              value={userListData.Status}
+              allowClear={true}
               options={[
                 { value: UserStatus.Enable, label: t(KEYS.ENABLE, source) },
                 {
@@ -225,7 +229,12 @@ export const UserList = () => {
                 },
               ]}
               onChange={(status) =>
-                setGetUserListRequest((prev) => ({ ...prev, Status: status }))
+                handelGetUserList({
+                  PageIndex: 1,
+                  Status: status,
+                  Keyword: filterKeyword,
+                  PageSize: getUserListRequest.PageSize,
+                })
               }
             />
           </div>
@@ -266,7 +275,7 @@ export const UserList = () => {
           pagination={false}
           sticky
           scroll={{ x: 1160 }}
-          loading={isGetUserListLoading}
+          loading={userListData.loading}
           rowSelection={{
             type: "checkbox",
             onChange(selectedRowKeys) {
@@ -290,15 +299,17 @@ export const UserList = () => {
         </div>
         <div>
           <Pagination
-            current={getUserListRequest.PageIndex}
+            current={userListData.PageIndex}
             total={userListData.count}
-            pageSize={getUserListRequest.PageSize}
+            pageSize={userListData.PageSize}
             pageSizeOptions={[10, 20, 50]}
             onChange={(page, pageSize) =>
-              setGetUserListRequest(() => ({
-                PageIndex: page,
+              handelGetUserList({
                 PageSize: pageSize,
-              }))
+                PageIndex: page,
+                Status: userListData.Status,
+                Keyword: filterKeyword,
+              })
             }
             showSizeChanger
             showQuickJumper
