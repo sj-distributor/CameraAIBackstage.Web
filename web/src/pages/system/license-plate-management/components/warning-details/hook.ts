@@ -299,12 +299,6 @@ export const useAction = (props: { showWarningDetails: string }) => {
         dayjs(palybackData.endTime) < startDate
       ) {
         message.info(
-          `Please choose a time from ${startDate.format(
-            "YYYY-MM-DDTHH:mm:ss"
-          )} to ${endDate.format("YYYY-MM-DDTHH:mm:ss")} o'clock`
-        );
-
-        message.info(
           t(KEYS.TIME_FROM, {
             ...source,
             startTime: startDate.format("YYYY-MM-DDTHH:mm:ss"),
