@@ -134,7 +134,8 @@ export const useAction = () => {
       .then(() => {
         setIsDeleteOpen(false);
         setLoading(true);
-        initGetPageData();
+        setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
+        initGetPageData(1);
       })
       .catch((err) => {
         message.error(`删除失败：${err}`);

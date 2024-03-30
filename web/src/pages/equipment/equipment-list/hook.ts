@@ -163,7 +163,8 @@ export const useAction = () => {
     })
       .then(() => {
         setIsAddOrUpdateOpen(false);
-        initGetEquipmentList();
+        initGetEquipmentList(1);
+        setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
         form.setFieldsValue(initialEquipmentData);
       })
       .catch((err) => message.error(`新增失敗：${err}`))
@@ -191,7 +192,8 @@ export const useAction = () => {
     setConfirmLoading(true);
     PostDeleteEquipment({ EquipmentId: isDeleteId })
       .then(() => {
-        initGetEquipmentList();
+        initGetEquipmentList(1);
+        setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
         setIsDeleteDeviceOpen(false);
       })
       .catch((error) => message.error(`刪除失敗：${error}`))
