@@ -50,8 +50,6 @@ export const Router = () => {
         : true; // 如果没有提供权限，则默认为true
 
       if (!hasPermission) {
-        // navigate(defaultPath); // 未授权时进行导航
-
         return null; // 返回null以过滤
       }
 
