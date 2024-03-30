@@ -282,10 +282,34 @@ export const useAction = (props: { showWarningDetails: string }) => {
       palybackData.monitorTypes &&
       palybackData.taskId
     ) {
+      const startDate = dayjs(warningDetails.startTime);
+
+      const duration = Number(warningDetails?.duration) ?? 0;
+
+      const endDate = startDate.set(
+        "seconds",
+        startDate.get("seconds") + duration
+      );
+
+      if (
+        dayjs(palybackData.startTime) < startDate ||
+        dayjs(palybackData.startTime) > endDate ||
+        dayjs(palybackData.endTime) > endDate ||
+        dayjs(palybackData.endTime) < startDate
+      ) {
+        message.info(
+          `請選擇從${startDate.format("YYYY-MM-DDTHH:mm:ss")}到${endDate.format(
+            "YYYY-MM-DDTHH:mm:ss"
+          )}內的時間`
+        );
+
+        return;
+      }
+
       const data = {
         locationId: palybackData.locationId,
-        startTime: palybackData.startTime,
-        endTime: palybackData.endTime,
+        startTime: dayjs(palybackData.startTime).format("YYYY_MM_DD_HH_mm_ss"),
+        endTime: dayjs(palybackData.endTime).format("YYYY_MM_DD_HH_mm_ss"),
         monitorTypes: palybackData.monitorTypes,
         equipmentCode: palybackData.equipmentCode,
       };
