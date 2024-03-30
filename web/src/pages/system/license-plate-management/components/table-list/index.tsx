@@ -582,6 +582,7 @@ export const LicensePlateManagementTable = (
                     });
                     setRegisteringCarRequest((prev) => ({
                       ...prev,
+                      PageIndex: 1,
                       recordStatus: status,
                       registeredRecordStatus: status,
                     }));
