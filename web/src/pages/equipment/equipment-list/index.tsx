@@ -74,7 +74,7 @@ export const EquipmentList = () => {
   const columns: ColumnsType<IEquipmentList> = [
     {
       title: t(KEYS.DEVICE_ID, source),
-      dataIndex: "id",
+      dataIndex: "equipmentCode",
       width: "16.6%",
     },
     {
