@@ -13,6 +13,8 @@ export const Router = () => {
 
   const [aPageData, setAPageData] = useState<string>("");
 
+  const pathname = window.location.pathname;
+
   useEffect(() => {
     if (aPageData) {
       localStorage.setItem(
@@ -65,11 +67,25 @@ export const Router = () => {
     }).filter(Boolean); // 过滤掉为null的元素;
   };
 
+  const pathsList = routerList
+    .flatMap((item) => [
+      item.path,
+      ...(item.children ? item.children.map((child) => child.path) : []),
+    ])
+    .filter((item) => item && !item.includes("id"));
+
   return (
     <ConfigProvider locale={locale}>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="*" element={<Navigate to={defaultPath} />} />
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to={pathsList.includes(pathname) ? pathname : defaultPath}
+            />
+          }
+        />
         <Route element={<Home />}>
           {routerList.map((item, index) => (
             <Route

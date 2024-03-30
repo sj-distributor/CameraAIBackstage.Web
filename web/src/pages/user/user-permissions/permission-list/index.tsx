@@ -105,10 +105,9 @@ export const UserPermissions = () => {
               ) : (
                 <>
                   {operateButtons.map((item, index) => (
-                    <>
+                    <div key={index}>
                       {myPermissions.includes(item.permissions) && (
                         <Button
-                          key={index}
                           type="link"
                           className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
                           onClick={() => item.onClick(record)}
@@ -116,7 +115,7 @@ export const UserPermissions = () => {
                           {item.text}
                         </Button>
                       )}
-                    </>
+                    </div>
                   ))}
                 </>
               )}
@@ -156,15 +155,15 @@ export const UserPermissions = () => {
             {myPermissions.includes(
               BackGroundRolePermissionEnum.CanGrantPermissionsIntoRole
             ) && (
-                <Button
-                  type="primary"
-                  className="h-[2.75rem] w-[7.25rem]"
-                  onClick={() => navigate("/user/permissions/roles/new")}
-                >
-                  <PlusOutlined />
-                  {t(KEYS.ADD_ROLE, source)}
-                </Button>
-              )}
+              <Button
+                type="primary"
+                className="h-[2.75rem] w-[7.25rem]"
+                onClick={() => navigate("/user/permissions/roles/new")}
+              >
+                <PlusOutlined />
+                {t(KEYS.ADD_ROLE, source)}
+              </Button>
+            )}
           </div>
         </div>
         <div className="flex flex-col h-[calc(100vh-15.4rem)] justify-between">
