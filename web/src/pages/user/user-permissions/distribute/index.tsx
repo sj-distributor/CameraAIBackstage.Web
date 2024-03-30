@@ -208,6 +208,7 @@ export const UserDistribute = () => {
         setIsModelOpen={setIsAddNewUser}
         handelGetSelectedUsers={handelGetSelectedUsers}
         staffIdSource={HierarchyStaffIdSourceEnum.IntegerStaffId}
+        disabledKeys={userByRoleIdData.roleUsers?.map((item) => item.userId)}
       />
     </div>
   );

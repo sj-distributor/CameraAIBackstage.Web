@@ -13,14 +13,16 @@ export const TransferTree = ({
   setIsModelOpen,
   handelGetSelectedUsers,
   staffIdSource,
+  disabledKeys,
 }: {
   isModelOpen: boolean;
   setIsModelOpen: (value: SetStateAction<boolean>) => void;
   data?: TransferItem[];
   handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
   staffIdSource: number;
+  disabledKeys?: string[];
 }) => {
-  const { t, source, treeData } = useAction(staffIdSource);
+  const { t, source, treeData } = useAction({ staffIdSource, disabledKeys });
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
@@ -39,11 +41,11 @@ export const TransferTree = ({
   const treeToFlat = (data: ITreeData[]) => {
     return data.reduce(function (
       arr: ITreeData[],
-      { key, title, value, isUser, children = [] }
+      { key, title, value, isUser, disabled, children = [] }
     ): ITreeData[] {
       // 解构赋值+默认值
       return arr.concat(
-        [{ key, title, value, children, isUser }],
+        [{ key, title, value, children, disabled, isUser }],
         treeToFlat(children)
       ); // children部分进行递归
     },
@@ -57,7 +59,7 @@ export const TransferTree = ({
 
     setTargetKeys(
       allSelectedData
-        ?.filter((item) => item.key && item.isUser)
+        ?.filter((item) => item.key && item.isUser && !item.disabled)
         .map((item) => item.key)
     );
   };
@@ -268,6 +270,9 @@ export const TransferTree = ({
                   className="h-full"
                   treeData={treeList}
                   onCheck={(_, { node: { key } }) => {
+                    setTargetKeys((prev) =>
+                      prev.filter((item) => !item.includes(key))
+                    );
                     onItemSelect(key as string, !isChecked(checkedKeys, key));
                   }}
                   onSelect={(_, { node: { key } }) => {

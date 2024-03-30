@@ -24,6 +24,7 @@ export interface ITreeData {
   key: string;
   isUser?: boolean;
   parentId?: string;
+  disabled?: boolean;
   children?: ITreeData[];
 }
 
@@ -32,15 +33,24 @@ export interface ITreeSelectNode {
   title: string;
   type: string;
   parent_id?: string;
+  disabled?: boolean;
   children?: ITreeSelectNode[];
 }
 
-export const useAction = (staffIdSource: number) => {
+export const useAction = (props: {
+  staffIdSource: number;
+  disabledKeys?: string[];
+}) => {
+  const { staffIdSource, disabledKeys } = props;
+
   const { t } = useAuth();
 
   const source = { ns: "userPermissions" };
 
   const [treeData, setTreeData] = useState<ITreeData[]>([]);
+
+  const [treeFoundationResponse, setTreeFoundationResponse] =
+    useState<IFoundationResponse>({ staffDepartmentHierarchy: [] });
 
   const convertDetailToTreeData = (detail: IFoundationDetail) => {
     const { department, staffs, childrens } = detail;
@@ -52,12 +62,15 @@ export const useAction = (staffIdSource: number) => {
     };
 
     if (staffs && staffs.length > 0) {
-      treeData.children = staffs.map((staff) => ({
-        title: staff.userName,
-        value: staff.id,
-        key: staff.id,
-        isUser: true,
-      }));
+      treeData.children = staffs.map((staff) => {
+        return {
+          title: staff.userName,
+          value: staff.id,
+          key: staff.id,
+          isUser: true,
+          disabled: disabledKeys?.some((item) => item == staff.id),
+        };
+      });
     }
 
     if (childrens && childrens.length > 0) {
@@ -77,6 +90,7 @@ export const useAction = (staffIdSource: number) => {
     GetFoundationData("HierarchyDepth", HierarchyDepthEnum.Group, staffIdSource)
       .then((response) => {
         setTreeData(response ? convertToTreeData(response) : []);
+        setTreeFoundationResponse(response);
       })
       .catch((error) => {
         message.error(error.msg);
@@ -87,6 +101,15 @@ export const useAction = (staffIdSource: number) => {
   useEffect(() => {
     onGetFoundationData();
   }, []);
+
+  useEffect(() => {
+    disabledKeys?.length &&
+      setTreeData(
+        treeFoundationResponse.staffDepartmentHierarchy
+          ? convertToTreeData(treeFoundationResponse)
+          : []
+      );
+  }, [disabledKeys]);
 
   return { t, source, treeData };
 };
