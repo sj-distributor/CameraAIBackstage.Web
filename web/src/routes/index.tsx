@@ -82,7 +82,14 @@ export const Router = () => {
           path="*"
           element={
             <Navigate
-              to={pathsList.includes(pathname) ? pathname : defaultPath}
+              to={
+                pathsList.includes(pathname) ||
+                pathname.startsWith("/monitor/configuration/") ||
+                pathname.startsWith("/user/permissions/roles/") ||
+                pathname.startsWith("/user/permissions/distribute/")
+                  ? pathname
+                  : defaultPath
+              }
             />
           }
         />
