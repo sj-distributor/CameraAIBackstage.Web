@@ -51,11 +51,14 @@ export const useAction = () => {
     },
   ];
 
-  const initGetLogsList = () => {
+  const initGetLogsList = (
+    PageIndex = pageDto.pageIndex,
+    PageSize = pageDto.pageSize
+  ) => {
     setIsTableLoading(true);
     GetOperateLogsPage({
-      PageIndex: pageDto.pageIndex,
-      PageSize: pageDto.pageSize,
+      PageIndex,
+      PageSize,
       StartTime: dateRange[0] ? dayjs(dateRange[0]).toISOString() : null,
       EndTime: dateRange[1] ? dayjs(dateRange[1]).toISOString() : null,
       Keyword: filterKeyword,
@@ -70,22 +73,22 @@ export const useAction = () => {
       .finally(() => setIsTableLoading(false));
   };
 
+  const onChangePage = (page: number, pageSize: number) => {
+    setPageDto({ pageIndex: page, pageSize: pageSize });
+    initGetLogsList(page, pageSize);
+  };
+
   useEffect(() => {
-    initGetLogsList();
-  }, [
-    pageDto.pageSize,
-    pageDto.pageIndex,
-    dateRange[0],
-    dateRange[1],
-    filterKeyword,
-  ]);
+    setPageDto((prev) => ({ ...prev, pageIndex: 1 }));
+    initGetLogsList(1);
+  }, [dateRange[0], dateRange[1], filterKeyword]);
 
   return {
     searchValue,
     isTableLoading,
     pageDto,
     setSearchValue,
-    setPageDto,
+    onChangePage,
     setIsTableLoading,
     rangePresets,
     onRangeChange,
