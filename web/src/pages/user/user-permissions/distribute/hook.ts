@@ -151,6 +151,7 @@ export const useAction = () => {
         if (res) setUserByRoleIdAllData(res ?? initialUserByRoleIdData);
       })
       .catch((err) => {
+        navigate("/user/permissions");
         message.error(err);
       });
   };

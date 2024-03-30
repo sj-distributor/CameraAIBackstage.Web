@@ -11,7 +11,7 @@ export const useAction = () => {
     selectedKeys: string[];
   }>({
     openKeys: ["/" + pathname.split("/")[1]],
-    selectedKeys: [pathname],
+    selectedKeys: ["/" + pathname.split("/")[1]],
   });
 
   return {
