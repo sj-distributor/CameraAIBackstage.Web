@@ -182,5 +182,6 @@ export const useAction = () => {
     setRecord,
     onSelectedRow,
     myPermissions,
+    setRoleByPermissionAllData,
   };
 };

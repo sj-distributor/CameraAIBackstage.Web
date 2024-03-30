@@ -118,11 +118,13 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
       isRegisteredVehicle
         ? setRegisteredVehicleRequest((prev) => ({
             ...prev,
+            PageIndex: 1,
             StartTime: startTime,
             EndTime: endTime,
           }))
         : setVehicleMonitorRecordsRequest((prev) => ({
             ...prev,
+            PageIndex: 1,
             StartTime: startTime,
             EndTime: endTime,
           }));
@@ -130,11 +132,13 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
       isRegisteredVehicle
         ? setRegisteredVehicleRequest((prev) => ({
             ...prev,
+            PageIndex: 1,
             StartTime: undefined,
             EndTime: undefined,
           }))
         : setVehicleMonitorRecordsRequest((prev) => ({
             ...prev,
+            PageIndex: 1,
             StartTime: undefined,
             EndTime: undefined,
           }));
@@ -147,21 +151,15 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     if (isRegisteredVehicle) {
       setRegisteredVehicleRequest((prev) => ({
         ...prev,
+        PageIndex: 1,
         PlateNumber: key ? key : undefined,
       }));
-      handelGetRegisteredVehicleList({
-        ...registeredVehicleRequest,
-        PlateNumber: key,
-      });
     } else {
       setVehicleMonitorRecordsRequest((prev) => ({
         ...prev,
+        PageIndex: 1,
         PlateNumber: key ? key : undefined,
       }));
-      handelGetVehicleMonitorRecords({
-        ...vehicleMonitorRecordsRequest,
-        PlateNumber: key,
-      });
     }
   };
 
@@ -286,7 +284,10 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
       onSuccess: () => {
         message.success("刪除成功");
         setIsOpenConfirmModal(false);
-        handelGetRegisteredVehicleList(registeredVehicleRequest);
+        handelGetRegisteredVehicleList({
+          ...registeredVehicleRequest,
+          PageIndex: 1,
+        });
       },
       onError(error) {
         message.error((error as unknown as { code: number; msg: string }).msg);
@@ -306,6 +307,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     vehicleMonitorRecordsRequest.PageSize,
     vehicleMonitorRecordsRequest.Status,
     isRegisteredVehicle,
+    vehicleMonitorRecordsRequest.PlateNumber,
   ]);
 
   useEffect(() => {
@@ -319,6 +321,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     registeredVehicleRequest.RegisterType,
     registeredVehicleRequest.Status,
     isRegisteredVehicle,
+    registeredVehicleRequest.PlateNumber,
   ]);
 
   useEffect(() => {
