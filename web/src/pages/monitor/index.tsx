@@ -42,7 +42,7 @@ export const Monitor = () => {
     filterStatus,
     myPermissions,
     pageDto,
-    setPageDto,
+    onChangePage,
     count,
     onDelete,
     loading,
@@ -312,7 +312,7 @@ export const Monitor = () => {
                   showQuickJumper
                   showSizeChanger
                   onChange={(page, pageSize) => {
-                    setPageDto({ PageIndex: page, PageSize: pageSize });
+                    onChangePage(page, pageSize);
                   }}
                 />
               </div>
