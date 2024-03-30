@@ -229,7 +229,7 @@ export const UserList = () => {
               ]}
               onChange={(status) =>
                 handelGetUserList({
-                  PageIndex: userListData.PageSize,
+                  PageIndex: userListData.PageIndex,
                   Status: status,
                   Keyword: filterKeyword,
                   PageSize: userListData.PageSize,
