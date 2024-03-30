@@ -151,8 +151,8 @@ export const useAction = (props: { showWarningDetails: string }) => {
         equipmentCode,
         replayTaskId,
         locationId,
-        endTime,
-        startTime: occurrenceTime,
+        endTime: dayjs(endTime).format("YYYY_MM_DD_HH_mm_ss"),
+        startTime: dayjs(occurrenceTime).format("YYYY_MM_DD_HH_mm_ss"),
         taskId: replayTaskId,
       };
 
@@ -187,9 +187,9 @@ export const useAction = (props: { showWarningDetails: string }) => {
     id &&
       GetWarningDemand(showWarningDetails)
         .then((res) => {
-          const { replayUrl } = res.record;
+          const { replayUrl, playbackStatus } = res.record;
 
-          if (replayUrl) {
+          if (replayUrl && playbackStatus === 2) {
             setDetailsVideoUrl(replayUrl);
             isGetdetailsVideoUrl.current = true;
 
@@ -298,7 +298,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
           generateTaskId && handelGetVideoPlayBackData(generateTaskId);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => message.error(err.mag));
     }
   };
 
