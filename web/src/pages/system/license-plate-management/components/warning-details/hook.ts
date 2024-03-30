@@ -178,7 +178,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
     return warningDataList;
   }, [warningDemandData]);
 
-  // const [detailsVideoUrl, setDetailsVideoUrl] = useState<string>("");
+  const [detailsVideoUrl, setDetailsVideoUrl] = useState<string>("");
 
   const isGetdetailsVideoUrl = useRef<boolean>(false);
 
@@ -190,7 +190,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
           const { replayUrl } = res.record;
 
           if (replayUrl) {
-            // setDetailsVideoUrl(replayUrl);
+            setDetailsVideoUrl(replayUrl);
             isGetdetailsVideoUrl.current = true;
 
             return;
@@ -378,6 +378,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
     swiperRef,
     t,
     source,
+    detailsVideoUrl,
     warningDetails,
     warningDemandData,
     warningDetailList,

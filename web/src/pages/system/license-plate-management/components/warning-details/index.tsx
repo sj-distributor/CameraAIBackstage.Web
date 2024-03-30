@@ -1,7 +1,7 @@
 import "swiper/swiper-bundle.css";
 
 import { WarningFilled } from "@ant-design/icons";
-import { DatePicker, Popover } from "antd";
+import { DatePicker, Popover, Spin } from "antd";
 import dayjs from "dayjs";
 import {
   A11y,
@@ -62,6 +62,7 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
     handelGetPlayBackData,
     setPalyBlackData,
     warningDetailDateLists,
+    detailsVideoUrl,
   } = useAction(props);
 
   const { RangePicker } = DatePicker;
@@ -171,74 +172,85 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
           );
         })}
       </div>
-      <div className="my-4 rounded-lg flex-1 bg-[#ccc] w-full relative overflow-hidden">
-        <video
-          ref={videoRef}
-          onEnded={() => setIsPalyVideo(false)}
-          onLoadedMetadata={handleLoadedMetadata}
-          height={"100%"}
-          width={"100%"}
-          className="object-fill"
-          src="https://video-builder.oss-cn-hongkong.aliyuncs.com/video/test-001.mp4"
-        />
-        <div className="bg-[#1f1f3970] h-[4.5rem] absolute bottom-0 w-full flex items-center px-[1.5rem] py-[0.625rem] justify-between">
-          <div
-            className="cursor-pointer"
-            onClick={() => {
-              handleSetPalyVideo();
-            }}
-          >
-            {isPalyVideo ? <SuspendIcon /> : <PalyIcon />}
-          </div>
-          <div className="flex font-semibold text-white items-center">
-            <span style={{ userSelect: "none" }}>
-              {dayjs(warningDetails.startTime).format("dddd hh:mm:ss A")}
-            </span>
-            <div className="cursor-pointer flex rounded ml-[1.5rem] items-center px-2 text-white border border-white border-solid">
-              <GoIcon />
-              <span className="text-[1.125rem]">Live</span>
-            </div>
-          </div>
-          <div className="flex text-white font-semibold">
+
+      {detailsVideoUrl ? (
+        <div className="my-4 rounded-lg flex-1 bg-[#ccc] w-full relative overflow-hidden">
+          <video
+            ref={videoRef}
+            onEnded={() => setIsPalyVideo(false)}
+            onLoadedMetadata={handleLoadedMetadata}
+            height={"100%"}
+            width={"100%"}
+            className="object-fill"
+            src={detailsVideoUrl}
+          />
+          <div className="bg-[#1f1f3970] h-[4.5rem] absolute bottom-0 w-full flex items-center px-[1.5rem] py-[0.625rem] justify-between">
             <div
-              className="mr-[1.5rem] cursor-pointer"
+              className="cursor-pointer"
               onClick={() => {
-                setIsOpenExportVideoModal(true);
+                handleSetPalyVideo();
               }}
             >
-              {t(KEYS.EXPORT, source)}
+              {isPalyVideo ? <SuspendIcon /> : <PalyIcon />}
             </div>
-
-            <Popover
-              content={[0.5, 1, 1.25, 1.5, 2].map((item) => {
-                return (
-                  <div
-                    key={item}
-                    className="hover:bg-[#EBF1FF] hover:text-[#2866F1] cursor-pointer py-1 px-4 rounded text-center"
-                    onClick={() => {
-                      videoRef?.current &&
-                        (videoRef.current.playbackRate = item);
-                      setVideoSpeed(item as Speed);
-
-                      setIsOpenSpeedList(false);
-                    }}
-                  >
-                    {item}x
-                  </div>
-                );
-              })}
-              trigger="click"
-              open={isOpenSpeedList}
-              arrow={false}
-              onOpenChange={handleOpenChange}
-            >
-              <div className="cursor-pointer">
-                {t(KEYS.SPEED_MULTIPLIER, source)}
+            <div className="flex font-semibold text-white items-center">
+              <span style={{ userSelect: "none" }}>
+                {dayjs(warningDetails.startTime).format("dddd hh:mm:ss A")}
+              </span>
+              <div className="cursor-pointer flex rounded ml-[1.5rem] items-center px-2 text-white border border-white border-solid">
+                <GoIcon />
+                <span className="text-[1.125rem]">Live</span>
               </div>
-            </Popover>
+            </div>
+            <div className="flex text-white font-semibold">
+              <div
+                className="mr-[1.5rem] cursor-pointer"
+                onClick={() => {
+                  setIsOpenExportVideoModal(true);
+                }}
+              >
+                {t(KEYS.EXPORT, source)}
+              </div>
+
+              <Popover
+                content={[0.5, 1, 1.25, 1.5, 2].map((item) => {
+                  return (
+                    <div
+                      key={item}
+                      className="hover:bg-[#EBF1FF] hover:text-[#2866F1] cursor-pointer py-1 px-4 rounded text-center"
+                      onClick={() => {
+                        videoRef?.current &&
+                          (videoRef.current.playbackRate = item);
+                        setVideoSpeed(item as Speed);
+
+                        setIsOpenSpeedList(false);
+                      }}
+                    >
+                      {item}x
+                    </div>
+                  );
+                })}
+                trigger="click"
+                open={isOpenSpeedList}
+                arrow={false}
+                onOpenChange={handleOpenChange}
+              >
+                <div className="cursor-pointer">
+                  {t(KEYS.SPEED_MULTIPLIER, source)}
+                </div>
+              </Popover>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="my-4 rounded-lg flex-1 bg-[#ccc] w-full overflow-hidden flex justify-center items-center">
+          <div>
+            <Spin tip={t(KEYS.GET_VIDEO_LOADING, source)}>
+              <div className="w-64" />
+            </Spin>
+          </div>
+        </div>
+      )}
 
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, FreeMode, A11y]}

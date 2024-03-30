@@ -53,6 +53,7 @@ export default {
     [KEYS.CONFIRM_DELETE_REGISTER_CAR]:
       "Please confirm whether to continue deleting the vehicle registration information?",
     [KEYS.REGISTER_STATUS]: "Registration status",
+    [KEYS.GET_VIDEO_LOADING]: "Obtaining video resources...",
   },
 
   ch: {
@@ -104,5 +105,6 @@ export default {
     [KEYS.CONFIRM_EDIT_REGISTER_CAR]: "請確認是否繼續編輯登記車輛狀態？",
     [KEYS.CONFIRM_DELETE_REGISTER_CAR]: "請確認是否繼續刪除該車輛登記信息？",
     [KEYS.REGISTER_STATUS]: "登記狀態",
+    [KEYS.GET_VIDEO_LOADING]: "视频资源获取中...",
   },
 };
