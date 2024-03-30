@@ -13,14 +13,16 @@ export const TransferTree = ({
   setIsModelOpen,
   handelGetSelectedUsers,
   staffIdSource,
+  disabledKeys,
 }: {
   isModelOpen: boolean;
   setIsModelOpen: (value: SetStateAction<boolean>) => void;
   data?: TransferItem[];
   handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
   staffIdSource: number;
+  disabledKeys?: string[];
 }) => {
-  const { t, source, treeData } = useAction(staffIdSource);
+  const { t, source, treeData } = useAction({ staffIdSource, disabledKeys });
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
@@ -39,15 +41,15 @@ export const TransferTree = ({
   const treeToFlat = (data: ITreeData[]) => {
     return data.reduce(function (
       arr: ITreeData[],
-      { key, title, value, children = [] }
+      { key, title, value, isUser, disabled, children = [] }
     ): ITreeData[] {
       // 解构赋值+默认值
       return arr.concat(
-        [{ key, title, value, children }],
+        [{ key, title, value, children, disabled, isUser }],
         treeToFlat(children)
       ); // children部分进行递归
     },
-    []);
+      []);
   };
 
   const onChange = (keys: string[]) => {
@@ -56,7 +58,9 @@ export const TransferTree = ({
     const allSelectedData = treeToFlat(data);
 
     setTargetKeys(
-      allSelectedData?.filter((item) => item.key).map((item) => item.key)
+      allSelectedData
+        ?.filter((item) => item.key && item.isUser && !item.disabled)
+        .map((item) => item.key)
     );
   };
 
@@ -170,6 +174,12 @@ export const TransferTree = ({
     setAutoExpandParent(true);
   };
 
+  const handelResetSelectData = () => {
+    setExpandedKeys([]);
+    setTargetAllData([]);
+    setTargetKeys([]);
+  };
+
   useEffect(() => {
     const cpData = JSON.stringify(treeData);
 
@@ -182,8 +192,8 @@ export const TransferTree = ({
 
   useEffect(() => {
     if (arrTreeData.length) {
-      const selectedData = arrTreeData.filter((item) =>
-        targetKeys.includes(item.key)
+      const selectedData = arrTreeData.filter(
+        (item) => targetKeys.includes(item.key) && item.isUser
       );
 
       setTargetAllData(selectedData);
@@ -201,7 +211,11 @@ export const TransferTree = ({
           />
         </div>
       }
-      onCancle={() => setIsModelOpen(false)}
+      destroyOnClose={true}
+      onCancle={() => {
+        handelResetSelectData();
+        setIsModelOpen(false);
+      }}
       confirmLoading={isConfirmLoading}
       onConfirm={async () => {
         const data = targetAllData.map((item) => item.key);
@@ -211,7 +225,10 @@ export const TransferTree = ({
 
           setIsConfirmLoading(loading);
 
-          !loading && setIsModelOpen(false);
+          if (!loading) {
+            handelResetSelectData();
+            setIsModelOpen(false);
+          }
         }
       }}
       open={isModelOpen}
@@ -254,6 +271,9 @@ export const TransferTree = ({
                   className="h-full"
                   treeData={treeList}
                   onCheck={(_, { node: { key } }) => {
+                    setTargetKeys((prev) =>
+                      prev.filter((item) => !item.includes(key))
+                    );
                     onItemSelect(key as string, !isChecked(checkedKeys, key));
                   }}
                   onSelect={(_, { node: { key } }) => {

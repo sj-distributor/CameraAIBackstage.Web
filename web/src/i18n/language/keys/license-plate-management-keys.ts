@@ -47,4 +47,5 @@ export default {
   CONFIRM_EDIT_REGISTER_CAR: "ConfirmEditRegisterCar",
   CONFIRM_DELETE_REGISTER_CAR: "ConfirmDeleteRegisterCar",
   REGISTER_STATUS: "RegisterStatus",
+  GET_VIDEO_LOADING: "GetVideoLoading",
 };

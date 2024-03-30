@@ -286,9 +286,14 @@ export const useAction = () => {
         startTime: Math.round(values.timeSetting[0] / 1000),
         endTime: Math.round(values.timeSetting[1] / 1000),
         timeZone: "Pacific Standard Time",
+        isActive: true,
       };
       if ((isAdd && !!values.broadcastContent) || !isAdd) {
         data.broadcastContent = values.broadcastContent;
+      }
+
+      if (!isAdd) {
+        data.isActive = editDetailData?.isActive ?? true;
       }
 
       if (!isAdd && id) {

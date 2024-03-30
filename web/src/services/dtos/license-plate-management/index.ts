@@ -62,6 +62,7 @@ export interface IWarningRecord {
   licensePlateImageUrl: string;
   occurrenceTime: string;
   createdTime: string;
+  playbackStatus: number;
 }
 
 export interface IWarningRegionAndArea {

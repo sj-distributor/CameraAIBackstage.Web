@@ -111,8 +111,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
       content:
         warningDemandData?.regionAndArea?.principal ??
         "攝像頭001，識別車輛（車牌LA12356），出現超過10秒",
-      startTime:
-        warningDemandData?.record?.occurrenceTime ?? "2023-05-02 12:00:00",
+      startTime: warningDemandData?.record?.occurrenceTime ?? "",
       address:
         warningDemandData?.regionAndArea?.areaName ?? "廣東省中山市中山二路1號",
       duration: dayjs
@@ -152,8 +151,8 @@ export const useAction = (props: { showWarningDetails: string }) => {
         equipmentCode,
         replayTaskId,
         locationId,
-        endTime,
-        startTime: occurrenceTime,
+        endTime: dayjs(endTime).format("YYYY_MM_DD_HH_mm_ss"),
+        startTime: dayjs(occurrenceTime).format("YYYY_MM_DD_HH_mm_ss"),
         taskId: replayTaskId,
       };
 
@@ -179,7 +178,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
     return warningDataList;
   }, [warningDemandData]);
 
-  // const [detailsVideoUrl, setDetailsVideoUrl] = useState<string>("");
+  const [detailsVideoUrl, setDetailsVideoUrl] = useState<string>("");
 
   const isGetdetailsVideoUrl = useRef<boolean>(false);
 
@@ -188,10 +187,10 @@ export const useAction = (props: { showWarningDetails: string }) => {
     id &&
       GetWarningDemand(showWarningDetails)
         .then((res) => {
-          const { replayUrl } = res.record;
+          const { replayUrl, playbackStatus } = res.record;
 
-          if (replayUrl) {
-            // setDetailsVideoUrl(replayUrl);
+          if (replayUrl && playbackStatus === 2) {
+            setDetailsVideoUrl(replayUrl);
             isGetdetailsVideoUrl.current = true;
 
             return;
@@ -252,14 +251,16 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
       setVideoDuration(duration);
 
-      let initialTime = dayjs("2023-05-02 12:00:00").subtract(120, "second");
+      let initialTime = dayjs(warningDetails.startTime)
+        .subtract(120, "second")
+        .utc();
 
       const arr = Array.from({ length: Math.ceil(duration / 3000) }).map(() => {
         const timeList = Array.from({ length: 5 }).map(() => {
           const innerTimeList = Array.from({ length: 5 }).map(() => {
             initialTime = initialTime.add(120, "second");
 
-            return initialTime.format("YYYY-MM-DDTHH:mm:ss");
+            return initialTime.toISOString();
           });
 
           return innerTimeList;
@@ -281,10 +282,34 @@ export const useAction = (props: { showWarningDetails: string }) => {
       palybackData.monitorTypes &&
       palybackData.taskId
     ) {
+      const startDate = dayjs(warningDetails.startTime);
+
+      const duration = Number(warningDetails?.duration) ?? 0;
+
+      const endDate = startDate.set(
+        "seconds",
+        startDate.get("seconds") + duration
+      );
+
+      if (
+        dayjs(palybackData.startTime) < startDate ||
+        dayjs(palybackData.startTime) > endDate ||
+        dayjs(palybackData.endTime) > endDate ||
+        dayjs(palybackData.endTime) < startDate
+      ) {
+        message.info(
+          `請選擇從${startDate.format("YYYY-MM-DDTHH:mm:ss")}到${endDate.format(
+            "YYYY-MM-DDTHH:mm:ss"
+          )}內的時間`
+        );
+
+        return;
+      }
+
       const data = {
         locationId: palybackData.locationId,
-        startTime: palybackData.startTime,
-        endTime: palybackData.endTime,
+        startTime: dayjs(palybackData.startTime).format("YYYY_MM_DD_HH_mm_ss"),
+        endTime: dayjs(palybackData.endTime).format("YYYY_MM_DD_HH_mm_ss"),
         monitorTypes: palybackData.monitorTypes,
         equipmentCode: palybackData.equipmentCode,
       };
@@ -297,7 +322,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
           generateTaskId && handelGetVideoPlayBackData(generateTaskId);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => message.error(err.mag));
     }
   };
 
@@ -354,6 +379,10 @@ export const useAction = (props: { showWarningDetails: string }) => {
     handelGetWarningDemand(showWarningDetails);
   }, [showWarningDetails]);
 
+  useEffect(() => {
+    handleLoadedMetadata();
+  }, [warningDetails.startTime]);
+
   return {
     handleSetPalyVideo,
     isOpenSpeedList,
@@ -373,6 +402,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
     swiperRef,
     t,
     source,
+    detailsVideoUrl,
     warningDetails,
     warningDemandData,
     warningDetailList,

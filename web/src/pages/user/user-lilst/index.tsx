@@ -100,9 +100,8 @@ export const UserList = () => {
             unCheckedChildren=""
             loading={String(record.id) === updateUserId && isUpdateUserLoading}
             value={isQualified}
-            className={`${
-              language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
-            } text-[.625rem] customSwitch`}
+            className={`${language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
+              } text-[.625rem] customSwitch`}
             onChange={(isQualified) => {
               if (
                 myPermissions.includes(
@@ -173,17 +172,17 @@ export const UserList = () => {
             {myPermissions.includes(
               BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
             ) && (
-              <Button
-                type="link"
-                onClick={() => {
-                  setIsDeleteUsers(false);
-                  setDeleteUserKeys([String(record.id)]);
-                  setIsRemoveUser(true);
-                }}
-              >
-                {t(KEYS.REMOVE, source)}
-              </Button>
-            )}
+                <Button
+                  type="link"
+                  onClick={() => {
+                    setIsDeleteUsers(false);
+                    setDeleteUserKeys([String(record.id)]);
+                    setIsRemoveUser(true);
+                  }}
+                >
+                  {t(KEYS.REMOVE, source)}
+                </Button>
+              )}
           </ConfigProvider>
         );
       },
@@ -229,7 +228,7 @@ export const UserList = () => {
               ]}
               onChange={(status) =>
                 handelGetUserList({
-                  PageIndex: userListData.PageIndex,
+                  PageIndex: 1,
                   Status: status,
                   Keyword: filterKeyword,
                   PageSize: userListData.PageSize,
@@ -241,28 +240,28 @@ export const UserList = () => {
             {myPermissions.includes(
               BackGroundRolePermissionEnum.CanBatchDeleteCameraAiUserAccount
             ) && (
-              <Button
-                type="default"
-                className="mr-[1rem] h-[2.75rem]"
-                onClick={() => {
-                  setIsDeleteUsers(true);
-                  setIsRemoveUser(true);
-                }}
-              >
-                {t(KEYS.BATCH_REMOVE_USERS, source)}
-              </Button>
-            )}
+                <Button
+                  type="default"
+                  className="mr-[1rem] h-[2.75rem]"
+                  onClick={() => {
+                    setIsDeleteUsers(true);
+                    setIsRemoveUser(true);
+                  }}
+                >
+                  {t(KEYS.BATCH_REMOVE_USERS, source)}
+                </Button>
+              )}
             {myPermissions.includes(
               BackGroundRolePermissionEnum.CanAddCameraAiUserAccount
             ) && (
-              <Button
-                type="primary"
-                className="w-[7.25rem] h-[2.75rem]"
-                onClick={() => setIsAddUser(true)}
-              >
-                <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
-              </Button>
-            )}
+                <Button
+                  type="primary"
+                  className="w-[7.25rem] h-[2.75rem]"
+                  onClick={() => setIsAddUser(true)}
+                >
+                  <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
+                </Button>
+              )}
           </div>
         </div>
       </div>
