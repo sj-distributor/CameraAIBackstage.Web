@@ -187,6 +187,10 @@ export const useAction = () => {
             loading: false,
             count: 0,
             userProfiles: [],
+            PageIndex: 0,
+            PageSize: 0,
+            keyword: "",
+            Status: undefined,
           }));
         }, 1000);
       });
