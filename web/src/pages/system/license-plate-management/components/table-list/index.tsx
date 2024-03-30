@@ -378,6 +378,7 @@ export const LicensePlateManagementTable = (
               onChange={(status) => {
                 setVehicleMonitorRecordsRequest((prev) => ({
                   ...prev,
+                  PageIndex: 1,
                   Status: status,
                 }));
               }}
@@ -450,7 +451,11 @@ export const LicensePlateManagementTable = (
                 : vehicleMonitorRecordsRequest.PageSize
             }
             pageSizeOptions={[5, 10, 20]}
-            total={13}
+            total={
+              isRegisteredVehicle
+                ? registeredVehicleData.count
+                : vehicleMonitorRecordsData.count
+            }
             showQuickJumper
             showSizeChanger
             onChange={(page, pageSize) => {
