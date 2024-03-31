@@ -367,7 +367,7 @@ export const useAction = () => {
   };
 
   const initGetUserList = () => {
-    GetUserList({ PageSize: 2147483647, PageIndex: 1 })
+    GetUserList({ PageSize: 2147483647, PageIndex: 1, Status: 1 })
       .then((res) => {
         setUserData(res.userProfiles);
       })

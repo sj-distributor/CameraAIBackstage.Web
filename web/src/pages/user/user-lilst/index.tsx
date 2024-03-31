@@ -92,26 +92,30 @@ export const UserList = () => {
     },
     {
       title: t(KEYS.IS_QUALIFIED, source),
-      dataIndex: "isQualified",
-      render: (isQualified, record) => {
+      dataIndex: "status",
+      render: (status, record) => {
         return (
           <Switch
             checkedChildren={t(KEYS.ENABLE, source)}
             unCheckedChildren=""
             loading={String(record.id) === updateUserId && isUpdateUserLoading}
-            value={isQualified}
-            className={`${language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
-              } text-[.625rem] customSwitch`}
-            onChange={(isQualified) => {
+            value={status}
+            className={`${
+              language === "ch" ? "w-[3.125rem]" : "w-[4rem]"
+            } text-[.625rem] customSwitch`}
+            onChange={(status) => {
               if (
                 myPermissions.includes(
-                  isQualified
+                  status
                     ? BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount
                     : BackGroundRolePermissionEnum.CanDisableCameraAiUserAccount
                 )
               ) {
                 setUpdateUserId(String(record.id));
-                handelUpdateUserData({ ...record, isQualified });
+                handelUpdateUserData({
+                  ...record,
+                  status: status ? UserStatus.Enable : UserStatus.Disable,
+                });
               }
             }}
           />
@@ -172,17 +176,17 @@ export const UserList = () => {
             {myPermissions.includes(
               BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
             ) && (
-                <Button
-                  type="link"
-                  onClick={() => {
-                    setIsDeleteUsers(false);
-                    setDeleteUserKeys([String(record.id)]);
-                    setIsRemoveUser(true);
-                  }}
-                >
-                  {t(KEYS.REMOVE, source)}
-                </Button>
-              )}
+              <Button
+                type="link"
+                onClick={() => {
+                  setIsDeleteUsers(false);
+                  setDeleteUserKeys([String(record.id)]);
+                  setIsRemoveUser(true);
+                }}
+              >
+                {t(KEYS.REMOVE, source)}
+              </Button>
+            )}
           </ConfigProvider>
         );
       },
@@ -240,28 +244,28 @@ export const UserList = () => {
             {myPermissions.includes(
               BackGroundRolePermissionEnum.CanBatchDeleteCameraAiUserAccount
             ) && (
-                <Button
-                  type="default"
-                  className="mr-[1rem] h-[2.75rem]"
-                  onClick={() => {
-                    setIsDeleteUsers(true);
-                    setIsRemoveUser(true);
-                  }}
-                >
-                  {t(KEYS.BATCH_REMOVE_USERS, source)}
-                </Button>
-              )}
+              <Button
+                type="default"
+                className="mr-[1rem] h-[2.75rem]"
+                onClick={() => {
+                  setIsDeleteUsers(true);
+                  setIsRemoveUser(true);
+                }}
+              >
+                {t(KEYS.BATCH_REMOVE_USERS, source)}
+              </Button>
+            )}
             {myPermissions.includes(
               BackGroundRolePermissionEnum.CanAddCameraAiUserAccount
             ) && (
-                <Button
-                  type="primary"
-                  className="w-[7.25rem] h-[2.75rem]"
-                  onClick={() => setIsAddUser(true)}
-                >
-                  <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
-                </Button>
-              )}
+              <Button
+                type="primary"
+                className="w-[7.25rem] h-[2.75rem]"
+                onClick={() => setIsAddUser(true)}
+              >
+                <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
+              </Button>
+            )}
           </div>
         </div>
       </div>
