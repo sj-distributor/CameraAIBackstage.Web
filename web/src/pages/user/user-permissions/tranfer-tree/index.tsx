@@ -52,8 +52,8 @@ export const TransferTree = ({
     []);
   };
 
-  const onChange = (key: string[]) => {
-    const data = arrTreeData.filter((item) => key.includes(item.key));
+  const onChange = (keys: string[]) => {
+    const data = arrTreeData.filter((item) => keys.includes(item.key));
 
     const allSelectedData = treeToFlat(data);
 
