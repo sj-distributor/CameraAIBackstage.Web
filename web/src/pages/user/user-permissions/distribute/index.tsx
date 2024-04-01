@@ -17,6 +17,7 @@ import { IUserByRoleIdData } from "@/services/dtos/user-permission";
 import { OperateConfirmModal } from "../operate-confirm";
 import { TransferTree } from "../tranfer-tree";
 import { useAction } from "./hook";
+import { ColumnsType } from "antd/es/table";
 
 export const UserDistribute = () => {
   const {
@@ -43,7 +44,7 @@ export const UserDistribute = () => {
     handelGetSelectedUsers,
   } = useAction();
 
-  const columns = [
+  const columns: ColumnsType<IUserByRoleIdData> = [
     {
       title: t(KEYS.USER_NAME, source),
       dataIndex: "userName",

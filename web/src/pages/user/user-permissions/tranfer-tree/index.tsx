@@ -49,7 +49,7 @@ export const TransferTree = ({
         treeToFlat(children)
       ); // children部分进行递归
     },
-      []);
+    []);
   };
 
   const onChange = (keys: string[]) => {
@@ -240,7 +240,9 @@ export const TransferTree = ({
         targetKeys={targetKeys}
         showSelectAll={false}
         dataSource={treeList}
-        onChange={onChange}
+        onChange={(targetKeys) => {
+          onChange(targetKeys as string[]);
+        }}
         selectAllLabels={[
           t(KEYS.TITLE, source),
           t(KEYS.USER_HAS_BEEN_SELECTED, {

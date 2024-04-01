@@ -155,7 +155,7 @@ export const UserList = () => {
     // },
     {
       title: t(KEYS.OPERATE, source),
-      dataIndex: "operate",
+      key: "operate",
       render: (_, record) => {
         return (
           <ConfigProvider
