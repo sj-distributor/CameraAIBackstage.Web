@@ -52,8 +52,8 @@ export const TransferTree = ({
     []);
   };
 
-  const onChange = (targetKeys: string[]) => {
-    const data = arrTreeData.filter((item) => targetKeys.includes(item.key));
+  const onChange = (key: string[]) => {
+    const data = arrTreeData.filter((item) => key.includes(item.key));
 
     const allSelectedData = treeToFlat(data);
 
@@ -240,7 +240,9 @@ export const TransferTree = ({
         targetKeys={targetKeys}
         showSelectAll={false}
         dataSource={treeList}
-        onChange={onChange}
+        onChange={(targetKeys) => {
+          onChange(targetKeys as string[]);
+        }}
         selectAllLabels={[
           t(KEYS.TITLE, source),
           t(KEYS.USER_HAS_BEEN_SELECTED, {

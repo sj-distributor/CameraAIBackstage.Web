@@ -232,7 +232,7 @@ export const LicensePlateManagementTable = (
     },
     {
       title: t(KEYS.OPERATION, source),
-      dataIndex: "operate",
+      key: "operate",
       width: "26.6%",
       render: (_, record) => (
         <div>

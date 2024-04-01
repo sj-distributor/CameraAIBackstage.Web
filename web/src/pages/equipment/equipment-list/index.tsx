@@ -154,7 +154,7 @@ export const EquipmentList = () => {
     },
     {
       title: t(KEYS.OPERATE, source),
-      dataIndex: "operate",
+      key: "operate",
       width: "16.6%",
       render: (_, record) => (
         <div>

@@ -74,7 +74,7 @@ export const EquipmentType = () => {
     },
     {
       title: t(KEYS.OPERATE, source),
-      dataIndex: "operate",
+      key: "operate",
       width: "20%",
       render: (_, record) => (
         <div>
