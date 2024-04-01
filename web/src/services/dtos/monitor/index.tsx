@@ -58,6 +58,7 @@ export interface IMonitorSettingsDto extends IMonitorSettingsPublicDto {
   monitorNotifications: IMonitorNotificationsDto[];
   timeZone: string;
   loading?: boolean; // 自定义
+  monitorTypeName: string;
 }
 
 export interface IMonitorNotificationsDto {

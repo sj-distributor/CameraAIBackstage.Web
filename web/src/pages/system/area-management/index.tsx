@@ -57,7 +57,7 @@ export const AreaManagement = () => {
     },
     {
       title: t(KEYS.OPERATE, source),
-      dataIndex: "operate",
+      key: "operate",
       width: "20%",
       render: (_, record) => (
         <div className="h-[1.375rem]">

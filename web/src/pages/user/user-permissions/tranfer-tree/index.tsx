@@ -49,11 +49,11 @@ export const TransferTree = ({
         treeToFlat(children)
       ); // children部分进行递归
     },
-      []);
+    []);
   };
 
-  const onChange = (keys: string[]) => {
-    const data = arrTreeData.filter((item) => keys.includes(item.key));
+  const onChange = (targetKeys: string[]) => {
+    const data = arrTreeData.filter((item) => targetKeys.includes(item.key));
 
     const allSelectedData = treeToFlat(data);
 
