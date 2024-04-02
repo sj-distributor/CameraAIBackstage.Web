@@ -41,6 +41,7 @@ export const useAction = () => {
               (window as any).appsettings?.userNameKey,
               userInfo.userName
             );
+            console.log(res);
 
             signIn(res);
           }

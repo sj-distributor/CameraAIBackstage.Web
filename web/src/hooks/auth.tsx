@@ -62,10 +62,12 @@ export default ({ children }: { children: React.ReactNode }) => {
 
   const [myPermissions, setMyPermissions] = useState<string[]>([]);
 
-  const tokenKey =
-    ((window as any).appsettings?.tokenKey as string) ?? "tokenKey";
+  const tokenKey: string = (window as any).appsettings?.tokenKey ?? "tokenKey";
+
+  console.log((window as any).appsettings?.tokenKey);
 
   const defaultToken = localStorage.getItem(tokenKey) ?? "";
+  console.log(defaultToken);
 
   const [token, setToken] = useState<string>(defaultToken);
 
