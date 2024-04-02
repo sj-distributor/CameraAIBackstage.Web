@@ -10,7 +10,7 @@ import { IRouterList } from "@/services/dtos/routes";
 
 export const Router = () => {
   const { routerList, myPermissions, locale, signIn, defaultPath } = useAuth();
-  console.log("Router", routerList, myPermissions, locale, defaultPath);
+
   const [aPageData, setAPageData] = useState<string>("");
 
   const pathname = window.location.pathname;

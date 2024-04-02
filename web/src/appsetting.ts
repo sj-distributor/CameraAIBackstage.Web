@@ -2,7 +2,6 @@ export interface IAppSettings {
   serverUrl: string;
   tokenKey: string;
 }
-const settings = (window as any).appsettings;
 
 export const InitialAppSetting = async () => {
   await fetch("../../../appsetting.json", {
@@ -14,5 +13,3 @@ export const InitialAppSetting = async () => {
     })
     .catch(() => {});
 };
-
-export default settings as IAppSettings;
