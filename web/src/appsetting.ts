@@ -1,5 +1,3 @@
-import { message } from "antd";
-
 export interface IAppSettings {
   serverUrl: string;
   tokenKey: string;
@@ -13,12 +11,8 @@ export const InitialAppSetting = async () => {
     .then((res) => res.json())
     .then((res: IAppSettings) => {
       (window as any).appSettings = res;
-      console.log(res);
     })
-    .catch((err) => {
-      console.log(err);
-      message.error(err);
-    });
+    .catch(() => {});
 };
 
 export default settings as IAppSettings;

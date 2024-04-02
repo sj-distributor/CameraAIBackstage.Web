@@ -1,5 +1,5 @@
 import { ConfigProvider } from "antd";
-// import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AuthStatus } from "@/hooks/auth-status";
@@ -9,45 +9,39 @@ import { Login } from "@/pages/login";
 import { IRouterList } from "@/services/dtos/routes";
 
 export const Router = () => {
-  const {
-    routerList,
-    myPermissions,
-    locale,
-    // signIn,
-    defaultPath,
-  } = useAuth();
+  const { routerList, myPermissions, locale, signIn, defaultPath } = useAuth();
   console.log("Router", routerList, myPermissions, locale, defaultPath);
-  // const [aPageData, setAPageData] = useState<string>("");
+  const [aPageData, setAPageData] = useState<string>("");
 
   const pathname = window.location.pathname;
 
-  // useEffect(() => {
-  //   if (aPageData) {
-  //     localStorage.setItem(
-  //       (window as any).appSettings?.tokenKey ?? "tokenKey",
-  //       aPageData
-  //     );
-  //     signIn(aPageData);
-  //     // localStorage.removeItem("aPageData");
-  //   }
-  // }, [aPageData]);
+  useEffect(() => {
+    if (aPageData) {
+      localStorage.setItem(
+        (window as any).appSettings?.tokenKey ?? "tokenKey",
+        aPageData
+      );
+      signIn(aPageData);
+      // localStorage.removeItem("aPageData");
+    }
+  }, [aPageData]);
 
-  // useEffect(() => {
-  //   const aPageData = localStorage.getItem("aPageData");
+  useEffect(() => {
+    const aPageData = localStorage.getItem("aPageData");
 
-  //   if (aPageData) {
-  //     setAPageData(aPageData);
-  //   } else {
-  //     window.addEventListener("message", receiveMessage, false);
-  //   }
+    if (aPageData) {
+      setAPageData(aPageData);
+    } else {
+      window.addEventListener("message", receiveMessage, false);
+    }
 
-  //   function receiveMessage(event: { origin: string; data: string }) {
-  //     if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
-  //     if (event.data) {
-  //       localStorage.setItem("aPageData", event.data);
-  //     }
-  //   }
-  // }, []);
+    function receiveMessage(event: { origin: string; data: string }) {
+      if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
+      if (event.data) {
+        localStorage.setItem("aPageData", event.data);
+      }
+    }
+  }, []);
 
   const AuthRoutes = (Routes: IRouterList[]) => {
     return Routes.map((childrenItem, childrenIndex) => {
@@ -79,15 +73,6 @@ export const Router = () => {
       ...(item.children ? item.children.map((child) => child.path) : []),
     ])
     .filter((item) => item && !item.includes("id"));
-  console.log(
-    "path",
-    pathsList.includes(pathname) ||
-      pathname.startsWith("/monitor/configuration/") ||
-      pathname.startsWith("/user/permissions/roles/") ||
-      pathname.startsWith("/user/permissions/distribute/")
-      ? pathname
-      : defaultPath
-  );
 
   return (
     <ConfigProvider locale={locale}>

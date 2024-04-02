@@ -26,7 +26,7 @@ function App() {
       </BrowserRouter>
     </ConfigProvider>
   ) : (
-    <div>Test No Loading</div>
+    <></>
   );
 }
 
