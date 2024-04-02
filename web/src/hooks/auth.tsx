@@ -71,7 +71,7 @@ export default ({ children }: { children: React.ReactNode }) => {
 
   const [token, setToken] = useState<string>(defaultToken);
 
-  const [defaultPath, setDefaultPath] = useState<string>("");
+  const [defaultPath, setDefaultPath] = useState<string>("/system/log");
 
   const signIn = (auth: string, callback?: VoidFunction) => {
     setToken(auth);

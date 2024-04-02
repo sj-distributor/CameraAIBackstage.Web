@@ -48,6 +48,8 @@ const siderHeaderStyle: React.CSSProperties = {
 type MenuItem = Required<MenuProps>["items"][number];
 
 export const Home = () => {
+  console.log("home");
+
   const { menuInformation, navigate, setMenuInformation } = useAction();
 
   const { language, changeLanguage, t, routerList, myPermissions } = useAuth();

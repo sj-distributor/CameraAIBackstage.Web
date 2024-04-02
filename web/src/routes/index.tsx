@@ -16,7 +16,7 @@ export const Router = () => {
     // signIn,
     defaultPath,
   } = useAuth();
-
+  console.log("Router", routerList, myPermissions, locale, defaultPath);
   // const [aPageData, setAPageData] = useState<string>("");
 
   const pathname = window.location.pathname;
@@ -79,6 +79,15 @@ export const Router = () => {
       ...(item.children ? item.children.map((child) => child.path) : []),
     ])
     .filter((item) => item && !item.includes("id"));
+  console.log(
+    "path",
+    pathsList.includes(pathname) ||
+      pathname.startsWith("/monitor/configuration/") ||
+      pathname.startsWith("/user/permissions/roles/") ||
+      pathname.startsWith("/user/permissions/distribute/")
+      ? pathname
+      : defaultPath
+  );
 
   return (
     <ConfigProvider locale={locale}>
