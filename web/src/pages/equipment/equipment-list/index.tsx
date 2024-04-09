@@ -527,6 +527,7 @@ export const EquipmentList = () => {
             <FormItem
               name="brand"
               label={t(KEYS.DEVICE_BRAND_NAME, source)}
+              rules={[{ required: true }]}
               labelCol={{ span: language === "ch" ? 4 : 6 }}
               wrapperCol={{ span: 15 }}
               style={{ marginBottom: 0 }}
