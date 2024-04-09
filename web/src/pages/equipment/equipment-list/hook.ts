@@ -174,13 +174,7 @@ export const useAction = () => {
   const onAddOrUpdateSubmit = (isAdd: boolean) => {
     form.validateFields();
 
-    const fieldValues = form.getFieldsValue();
-
-    const hasEmptyFields = Object.entries(fieldValues)
-      .filter(([key]) => key !== "brand")
-      .some(([, value]) => !value);
-
-    if (hasEmptyFields) {
+    if (Object.values(form.getFieldsValue()).some((value) => !value)) {
       return;
     }
 
