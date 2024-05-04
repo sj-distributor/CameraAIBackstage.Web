@@ -205,6 +205,8 @@ export const useAction = () => {
         });
 
         setRegionData(newList);
+
+        initGetEquipmentList();
       })
       .catch((err) => {
         message.error(`获取数据失败：${err}`);
