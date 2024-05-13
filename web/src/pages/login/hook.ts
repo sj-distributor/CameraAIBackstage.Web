@@ -1,6 +1,7 @@
 import { useDebounceFn } from "ahooks";
 import { message } from "antd";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 import { Login } from "@/services/api/login";
@@ -8,6 +9,8 @@ import { IUserInfo } from "@/services/dtos/login";
 
 export const useAction = () => {
   const { signIn } = useAuth();
+
+  const navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState<IUserInfo>({
     userName: "",
@@ -41,6 +44,8 @@ export const useAction = () => {
               (window as any).appsettings?.userNameKey,
               userInfo.userName
             );
+
+            navigate("/user/list");
 
             signIn(res);
           }
