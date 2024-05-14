@@ -93,13 +93,15 @@ export const Router = () => {
             />
           }
         />
-        <Route element={<Home />}>
+        <Route
+          element={
+            <AuthStatus>
+              <Home />
+            </AuthStatus>
+          }
+        >
           {routerList.map((item, index) => (
-            <Route
-              key={index}
-              path={item.path}
-              element={<AuthStatus>{item.element}</AuthStatus>}
-            >
+            <Route key={index} path={item.path} element={item.element}>
               {item.children && AuthRoutes(item.children)}
             </Route>
           ))}
