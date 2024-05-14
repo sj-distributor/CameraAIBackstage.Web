@@ -12,7 +12,6 @@ import {
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import TextArea from "antd/es/input/TextArea";
-import dayjs from "dayjs";
 import { clone, isEmpty } from "ramda";
 
 import downArrow from "@/assets/public/down-arrow.png";
