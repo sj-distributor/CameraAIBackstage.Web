@@ -334,11 +334,11 @@ export const AddOrUpdateConfiguration = () => {
                               },
                             ]}
                             initialValue={[
-                              editDetailData?.startTime !== null &&
-                              editDetailData
+                              editDetailData &&
+                              editDetailData?.startTime !== null
                                 ? secondsToTime(editDetailData.startTime)
                                 : null,
-                              editDetailData?.endTime !== null && editDetailData
+                              editDetailData && editDetailData?.endTime !== null
                                 ? secondsToTime(editDetailData.endTime)
                                 : null,
                             ]}
