@@ -92,7 +92,7 @@ export const useAction = () => {
         setPageDto({ pageIndex: prams.PageIndex, pageSize: prams.PageSize });
       })
       .catch((err) => {
-        message.error(err);
+        message.error(err.msg);
         setRoleByPermissionData((prev) => ({
           ...prev,
           count: 0,
