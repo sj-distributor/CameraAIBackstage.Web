@@ -46,6 +46,7 @@ export const AddOrUpdateConfiguration = () => {
     navigate,
     onChangeUserNotificationType,
     handleUnitConversion,
+    secondsToTime,
   } = useAction();
 
   const { message } = App.useApp();
@@ -333,15 +334,12 @@ export const AddOrUpdateConfiguration = () => {
                               },
                             ]}
                             initialValue={[
-                              editDetailData?.startTime &&
                               editDetailData?.startTime !== null &&
                               editDetailData
-                                ? dayjs.unix(editDetailData.startTime)
+                                ? secondsToTime(editDetailData.startTime)
                                 : null,
-                              editDetailData?.endTime &&
-                              editDetailData?.endTime !== null &&
-                              editDetailData
-                                ? dayjs.unix(editDetailData.endTime)
+                              editDetailData?.endTime !== null && editDetailData
+                                ? secondsToTime(editDetailData.endTime)
                                 : null,
                             ]}
                           >

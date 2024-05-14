@@ -29,6 +29,7 @@ import {
   MonitorSettingUpdate,
 } from "@/services/api/monitor";
 import { GetEquipmentPage } from "@/services/api/equipment/list";
+import dayjs from "dayjs";
 
 export const useAction = () => {
   const { t } = useAuth();
@@ -271,6 +272,14 @@ export const useAction = () => {
     setSelectUserValue(filterList);
   };
 
+  const secondsToTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+
+    const minutes = Math.floor((seconds % 3600) / 60);
+
+    return dayjs().hour(hours).minute(minutes);
+  };
+
   const timeToSeconds = (date: Moment) => {
     const hour = date.hour();
 
@@ -453,5 +462,6 @@ export const useAction = () => {
     navigate,
     onChangeUserNotificationType,
     handleUnitConversion,
+    secondsToTime,
   };
 };
