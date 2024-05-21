@@ -79,29 +79,27 @@ export const Router = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
+          path="*"
           element={
-            <AuthStatus>
-              <Home />
-            </AuthStatus>
+            <Navigate
+              to={
+                pathsList.includes(pathname) ||
+                pathname.startsWith("/monitor/configuration/") ||
+                pathname.startsWith("/user/permissions/roles/") ||
+                pathname.startsWith("/user/permissions/distribute/")
+                  ? pathname
+                  : defaultPath
+              }
+            />
           }
-        >
-          <Route
-            path="*"
-            element={
-              <Navigate
-                to={
-                  pathsList.includes(pathname) ||
-                  pathname.startsWith("/monitor/configuration/") ||
-                  pathname.startsWith("/user/permissions/roles/") ||
-                  pathname.startsWith("/user/permissions/distribute/")
-                    ? pathname
-                    : defaultPath
-                }
-              />
-            }
-          />
+        />
+        <Route element={<Home />}>
           {routerList.map((item, index) => (
-            <Route key={index} path={item.path} element={item.element}>
+            <Route
+              key={index}
+              path={item.path}
+              element={<AuthStatus>{item.element}</AuthStatus>}
+            >
               {item.children && AuthRoutes(item.children)}
             </Route>
           ))}
