@@ -247,7 +247,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
   };
 
   const handleLoadedMetadata = () => {
-    if (videoRef.current) {
+    if (videoRef.current && warningDetails.startTime) {
       const duration = videoRef.current.duration;
 
       setVideoDuration(duration);
