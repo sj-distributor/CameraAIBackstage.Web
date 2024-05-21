@@ -52,14 +52,12 @@ export const useAction = () => {
         })
         .catch(() => {
           message.error("登录失败，请重试");
-        });
+        })
+        .finally(() => setLoginLoading(false));
     } else {
+      setLoginLoading(false);
       message.warning("请输入正确的用户名和密码");
     }
-
-    setTimeout(() => {
-      setLoginLoading(false);
-    }, 1000);
   };
 
   const { run: handleOnLogin } = useDebounceFn(onLogin, {
