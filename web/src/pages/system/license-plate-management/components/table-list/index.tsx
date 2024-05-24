@@ -237,6 +237,7 @@ export const LicensePlateManagementTable = (
       render: (_, record) => (
         <div>
           <Button
+            disabled={!record.plateNumber}
             type="link"
             onClick={() => {
               setRegisterCarNumber(record.plateNumber);

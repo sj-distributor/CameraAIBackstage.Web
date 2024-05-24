@@ -55,6 +55,7 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
     timeAxisList,
     videoDuration,
     source,
+    warningDemandData,
     warningDetails,
     warningDetailList,
     isOpenExportVideoModal,
@@ -108,8 +109,9 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
             <div
               key={index}
               style={{ left: `${left}rem`, width: `${width}rem` }}
-              className={`rounded-[2.875rem] ${type === WarningTypes.Car ? "bg-[#2853E3]" : "bg-[#34A46E]"
-                } absolute h-4`}
+              className={`rounded-[2.875rem] ${
+                type === WarningTypes.Car ? "bg-[#2853E3]" : "bg-[#34A46E]"
+              } absolute h-4`}
             />
           );
         })}
@@ -311,32 +313,61 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
                         duration <= videoDuration && (
                           <div className="w-1/4 flex flex-col" key={i}>
                             <div className="flex items-end">
-                              {item.map((item, index) => {
-                                const duration = dayjs(item).diff(
-                                  startTime,
-                                  "second"
+                              {item.map((time, index) => {
+                                const duration = dayjs(time)
+                                  .utc()
+                                  .diff(startTime, "second");
+
+                                const endTime = startTime
+                                  .add(
+                                    Number(
+                                      warningDemandData?.record.duration ?? 0
+                                    ),
+                                    "second"
+                                  )
+                                  .add(2, "second");
+
+                                const endTimeIndex = item.findIndex(
+                                  (item) => dayjs(item) > endTime
                                 );
 
-                                return (
+                                const node = (
                                   <div
                                     key={index}
                                     className={`w-1/5 h-max relative`}
                                   >
                                     <div className="text-start text-[#5F6279] font-semibold text-[0.875rem] text-nowrap absolute top-[-16px]">
-                                      {dayjs(item).get("minute") % 5 === 0
-                                        ? dayjs(item).utc().format("HH:mm A")
+                                      {index === 0 || index === 4
+                                        ? dayjs(time).format("hh:mm A")
                                         : ""}
                                     </div>
                                     <div
-                                      className={`cursor-pointer h-2 w-px bg-[#ccc] ${dayjs(item).get("minute") % 5 === 0
+                                      className={`relative h-2 w-px bg-[#ccc] ${
+                                        index === 0 || index === 4
                                           ? "h-3"
                                           : "h-2 "
-                                        }`}
+                                      }`}
+                                    />
+                                    <span
+                                      className="absolute cursor-pointer w-2 h-2 top-1 left-[-4px]"
                                       onClick={() => {
                                         handleSetPalyVideo(duration);
                                       }}
                                     />
                                   </div>
+                                );
+
+                                return endTimeIndex ? (
+                                  index <= endTimeIndex ? (
+                                    node
+                                  ) : (
+                                    <div
+                                      key={index}
+                                      className={`w-1/5 h-max relative`}
+                                    />
+                                  )
+                                ) : (
+                                  node
                                 );
                               })}
                             </div>
