@@ -4,6 +4,8 @@ import { clone, isEmpty } from "ramda";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { Moment } from "moment";
+
 import { useAuth } from "@/hooks/use-auth";
 
 import KEYS from "../../../../i18n/language/keys/monitor-configuration-keys";
@@ -27,6 +29,7 @@ import {
   MonitorSettingUpdate,
 } from "@/services/api/monitor";
 import { GetEquipmentPage } from "@/services/api/equipment/list";
+import dayjs from "dayjs";
 
 export const useAction = () => {
   const { t } = useAuth();
@@ -269,6 +272,22 @@ export const useAction = () => {
     setSelectUserValue(filterList);
   };
 
+  const secondsToTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+
+    const minutes = Math.floor((seconds % 3600) / 60);
+
+    return dayjs().hour(hours).minute(minutes);
+  };
+
+  const timeToSeconds = (date: Moment) => {
+    const hour = date.hour();
+
+    const minute = date.minute();
+
+    return hour * 3600 + minute * 60;
+  };
+
   const onSubmit = () => {
     const filterSelectUserData = selectUserData.filter(
       (x) => !isEmpty(x.recipientIds)
@@ -283,8 +302,8 @@ export const useAction = () => {
         weekDays: values.repeatEveryWeek,
         monitorNotifications: filterSelectUserData,
         equipmentIds: values.deviceSelect,
-        startTime: Math.round(values.timeSetting[0] / 1000),
-        endTime: Math.round(values.timeSetting[1] / 1000),
+        startTime: timeToSeconds(values.timeSetting[0]),
+        endTime: timeToSeconds(values.timeSetting[1]),
         timeZone: "Pacific Standard Time",
         isActive: true,
       };
@@ -443,5 +462,6 @@ export const useAction = () => {
     navigate,
     onChangeUserNotificationType,
     handleUnitConversion,
+    secondsToTime,
   };
 };

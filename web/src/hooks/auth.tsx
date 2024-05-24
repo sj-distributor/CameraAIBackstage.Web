@@ -6,7 +6,7 @@ import zhCN from "antd/es/locale/zh_CN";
 import { TFunction } from "i18next";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { MonitorIcon, SystemIcon } from "@/assets/sider";
 import KEYS from "@/i18n/language/keys/home-menu-keys";
@@ -50,8 +50,6 @@ export const AuthContext = React.createContext<IAuthContextType>(null!);
 export default ({ children }: { children: React.ReactNode }) => {
   const { i18n, t } = useTranslation();
 
-  const navigate = useNavigate();
-
   const [locale, setLocal] = React.useState<Locale>(enUS);
 
   const localStorageLanguage = localStorage.getItem("language") ?? "";
@@ -74,7 +72,6 @@ export default ({ children }: { children: React.ReactNode }) => {
   const signIn = (auth: string, callback?: VoidFunction) => {
     setToken(auth);
     localStorage.setItem(tokenKey, auth);
-    navigate("/user/list");
     callback && callback();
   };
 
