@@ -150,11 +150,12 @@ export const AddOrUpdateConfiguration = () => {
                               ]}
                               initialValue={
                                 editDetailData
-                                  ? editDetailData.monitorType
+                                  ? editDetailData.monitorTypes
                                   : null
                               }
                             >
                               <Select
+                                mode="multiple"
                                 suffixIcon={<img src={downArrow} />}
                                 options={[
                                   {

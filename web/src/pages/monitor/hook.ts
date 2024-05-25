@@ -120,8 +120,8 @@ export const useAction = () => {
         setCount(res.count);
         setData(res.monitorSettings);
       })
-      .catch((err) => {
-        message.error(err);
+      .catch(() => {
+        message.error("獲取數據列表失敗");
         setCount(0);
         setData([]);
       })

@@ -55,7 +55,7 @@ export const useAction = () => {
     duration: null,
     notificationContent: "", //通知内容
     broadcastContent: "", //广播内容
-    monitorType: isAdd ? (id ? Number(id) : null) : null, //预警类型 id
+    monitorTypes: [],
     startTime: null,
     endTime: null,
   };
@@ -298,7 +298,7 @@ export const useAction = () => {
         title: values.title,
         duration: handleTotalDuration(values.time, values.timeType),
         notificationContent: values.content,
-        monitorType: values.exceptionType,
+        monitorTypes: values.exceptionType,
         weekDays: values.repeatEveryWeek,
         monitorNotifications: filterSelectUserData,
         equipmentIds: values.deviceSelect,

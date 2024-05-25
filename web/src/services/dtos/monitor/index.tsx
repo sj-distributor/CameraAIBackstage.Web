@@ -18,9 +18,9 @@ export enum CameraAiNotificationType {
 }
 
 export enum CameraAiMonitorType {
-  People, //識別人員
-  Vehicles, //識別車輛
-  AbnormalVehicles, //識別異常車輛
+  People, // 識別人員
+  Vehicles, // 識別車輛
+  AbnormalVehicles, // 識別異常車輛
   All = -1,
 }
 
@@ -42,9 +42,9 @@ export interface IMonitorSettingsPublicDto {
   id?: number; // 更新填 id
   title: string;
   duration: number | null;
-  notificationContent: string; //通知内容
-  broadcastContent?: string | null; //广播内容
-  monitorType: CameraAiMonitorType | null; //预警类型 id
+  notificationContent: string; // 通知内容
+  broadcastContent?: string | null; // 广播内容
+  monitorTypes: CameraAiMonitorType[]; // 预警类型 id
   startTime: number | null;
   endTime: number | null;
   isActive?: boolean;
@@ -58,7 +58,7 @@ export interface IMonitorSettingsDto extends IMonitorSettingsPublicDto {
   monitorNotifications: IMonitorNotificationsDto[];
   timeZone: string;
   loading?: boolean; // 自定义
-  monitorTypeName?: string;
+  monitorTypeNames?: string[];
 }
 
 export interface IMonitorNotificationsDto {

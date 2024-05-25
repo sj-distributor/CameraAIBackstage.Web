@@ -152,13 +152,13 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
       setRegisteredVehicleRequest((prev) => ({
         ...prev,
         PageIndex: 1,
-        PlateNumber: key ? key : undefined,
+        Name: key ? key : undefined,
       }));
     } else {
       setVehicleMonitorRecordsRequest((prev) => ({
         ...prev,
         PageIndex: 1,
-        PlateNumber: key ? key : undefined,
+        Name: key ? key : undefined,
       }));
     }
   };
@@ -168,21 +168,14 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
       .validateFields()
       .then(() => {
         if (isRegisteredVehicle) {
-          const {
-            id,
-            type,
-            faceName,
-            plateNumber,
-            registeredRecordStatus,
-            createdTime,
-          } = registeringCarRequest as IRegisteredVehicleListItem;
+          const { id, type, name, registeredRecordStatus, createdTime } =
+            registeringCarRequest as IRegisteredVehicleListItem;
 
           const data: IPostEditRegisterCarRequest = {
             recordRegister: {
               id,
               type,
-              faceName,
-              plateNumber,
+              name,
               registeredRecordStatus,
               createdTime,
             },
@@ -307,7 +300,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     vehicleMonitorRecordsRequest.PageSize,
     vehicleMonitorRecordsRequest.Status,
     isRegisteredVehicle,
-    vehicleMonitorRecordsRequest.PlateNumber,
+    vehicleMonitorRecordsRequest.Name,
   ]);
 
   useEffect(() => {
@@ -321,7 +314,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     registeredVehicleRequest.RegisterType,
     registeredVehicleRequest.Status,
     isRegisteredVehicle,
-    registeredVehicleRequest.PlateNumber,
+    registeredVehicleRequest.Name,
   ]);
 
   useEffect(() => {

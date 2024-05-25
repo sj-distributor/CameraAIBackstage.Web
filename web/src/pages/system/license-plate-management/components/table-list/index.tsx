@@ -135,7 +135,7 @@ export const LicensePlateManagementTable = (
     },
     {
       title: t(KEYS.LICENSE_PLATE_NUMBER, source),
-      dataIndex: "plateNumber",
+      dataIndex: "name",
       width: "16.6%",
     },
     {
@@ -167,7 +167,7 @@ export const LicensePlateManagementTable = (
               type="link"
               disabled={record.isRegistered}
               onClick={() => {
-                setRegisterCarNumber(record.plateNumber);
+                setRegisterCarNumber(record.name);
                 setRegisteringCarRequest((prev) => ({
                   ...prev,
                   recordId: String(record.id),
@@ -211,7 +211,7 @@ export const LicensePlateManagementTable = (
     },
     {
       title: t(KEYS.LICENSE_PLATE_NUMBER, source),
-      dataIndex: "plateNumber",
+      dataIndex: "name",
       width: "16.6%",
     },
     {
@@ -237,10 +237,10 @@ export const LicensePlateManagementTable = (
       render: (_, record) => (
         <div>
           <Button
-            disabled={!record.plateNumber}
+            disabled={!record.name}
             type="link"
             onClick={() => {
-              setRegisterCarNumber(record.plateNumber);
+              setRegisterCarNumber(record.name);
 
               setRegisteringCarRequest(record);
               setIsRegisterOpen(true);
@@ -337,8 +337,8 @@ export const LicensePlateManagementTable = (
             placeholder={t(KEYS.SEARCH_VEHICLE_NUMBER, source)}
             onChange={(e) => setPlateNumberKeyword(e.target.value)}
             value={
-              !vehicleMonitorRecordsRequest.PlateNumber &&
-              !registeredVehicleRequest.PlateNumber
+              !vehicleMonitorRecordsRequest.Name &&
+              !registeredVehicleRequest.Name
                 ? undefined
                 : plateNumberKeyword
             }
@@ -347,12 +347,12 @@ export const LicensePlateManagementTable = (
                 ? setRegisteredVehicleRequest((prev) => ({
                     ...prev,
                     PageIndex: 1,
-                    PlateNumber: e.currentTarget.value,
+                    Name: e.currentTarget.value,
                   }))
                 : setVehicleMonitorRecordsRequest((prev) => ({
                     ...prev,
                     PageIndex: 1,
-                    PlateNumber: e.currentTarget.value,
+                    Name: e.currentTarget.value,
                   }));
             }}
           />

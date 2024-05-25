@@ -87,8 +87,34 @@ export const Monitor = () => {
     },
     {
       title: `${t(KEYS.ALERT_TYPE, source)}`,
-      dataIndex: "monitorTypeName",
+      dataIndex: "monitorTypes",
       width: "16.6%",
+      render: (monitorTypes) => {
+        const getMonitorTypeName = (type: CameraAiMonitorType) => {
+          switch (type) {
+            case CameraAiMonitorType.People:
+              return t(KEYS.IDENTIFY_PEOPLE, source);
+
+            case CameraAiMonitorType.Vehicles:
+              return t(KEYS.IDENTIFY_VEHICLES, source);
+
+            case CameraAiMonitorType.AbnormalVehicles:
+              return t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source);
+          }
+        };
+
+        const monitorTypeNames = monitorTypes.map((type: CameraAiMonitorType) =>
+          getMonitorTypeName(type)
+        );
+
+        return (
+          <div>
+            {monitorTypeNames.map((item: string, index: number) => (
+              <div key={index}>{item}</div>
+            ))}
+          </div>
+        );
+      },
     },
     {
       title: `${t(KEYS.NOTIFICATION_OBJECT, source)}`,
