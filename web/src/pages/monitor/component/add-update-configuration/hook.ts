@@ -423,8 +423,8 @@ export const useAction = () => {
       .then((res) => {
         serEditDetailData(res);
       })
-      .catch((err) => {
-        message.error(err);
+      .catch(() => {
+        message.error("獲取詳情數據失敗");
         navigate("/monitor");
       })
       .finally(() => setDetailLoading(false));

@@ -66,9 +66,9 @@ export const useAction = () => {
       .then((res) => {
         if (res) setOperateLogsDto({ count: res.count, logs: res.logs });
       })
-      .catch((err) => {
+      .catch(() => {
         setOperateLogsDto(initOperateLogsDto);
-        message.error(err);
+        message.error("獲取操作日誌數據失敗");
       })
       .finally(() => setIsTableLoading(false));
   };

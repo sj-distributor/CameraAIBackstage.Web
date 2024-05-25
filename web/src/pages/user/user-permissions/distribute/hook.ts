@@ -139,8 +139,8 @@ export const useAction = () => {
       .then((res) => {
         if (res) setUserByRoleIdData(res ?? initialUserByRoleIdData);
       })
-      .catch((err) => {
-        message.error(err);
+      .catch(() => {
+        message.error("獲取用戶列表數據失敗");
       })
       .finally(() => setIsTableLoading(false));
   };
@@ -150,9 +150,9 @@ export const useAction = () => {
       .then((res) => {
         if (res) setUserByRoleIdAllData(res ?? initialUserByRoleIdData);
       })
-      .catch((err) => {
+      .catch(() => {
         navigate("/user/permissions");
-        message.error(err);
+        message.error("獲取全部用戶數據失敗");
       });
   };
 

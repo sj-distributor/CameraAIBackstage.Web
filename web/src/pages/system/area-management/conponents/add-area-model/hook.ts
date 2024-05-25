@@ -65,8 +65,8 @@ export const useAction = (
       regionAndArea: regionDataItem,
     })
       .then(() => initGetRegionList())
-      .catch((err) => {
-        message.error(err);
+      .catch(() => {
+        message.error("操作失敗");
       })
       .finally(() => setIsLoading(false));
   };
