@@ -107,7 +107,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
   const warningDetails = useMemo(() => {
     const details = {
-      name: warningDemandData?.record?.faceName ?? "攝像頭001",
+      name: warningDemandData?.record?.name ?? "攝像頭001",
       type: warningDemandData?.record?.monitorType ?? "識別車輛",
       content:
         warningDemandData?.regionAndArea?.principal ??

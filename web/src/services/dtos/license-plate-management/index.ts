@@ -4,7 +4,7 @@ export interface IGetVehicleMonitorRecordsRequest {
   EndTime?: string;
   StartTime?: string;
   Status?: CameraAiMonitorRecordStatus;
-  PlateNumber?: string;
+  Name?: string;
   EquipmentName?: string;
   EquipmentCodes?: string[];
   monitorType?: CameraAiMonitorType;
@@ -17,7 +17,7 @@ export interface IGetRegisteredVehicleListRequest {
   StartTime?: string;
   Status?: CameraAiMonitorRecordStatus;
   RegisterType?: CameraAiMonitorRegisterType;
-  PlateNumber?: string;
+  Name?: string;
 }
 
 export interface IPostRegisteringCarRequest {
@@ -54,8 +54,7 @@ export interface IWarningRecord {
   duration: number;
   exceptionReason: string;
   recordStatus: number;
-  plateNumber: string;
-  faceName: string;
+  name: string;
   replayTaskId: string;
   replayUrl: string;
   isRegistered: true;
@@ -79,8 +78,7 @@ export interface IWarningRegionAndArea {
 export interface IRegisteredVehicleListItem {
   id: number;
   type: CameraAiMonitorRegisterType;
-  faceName: string;
-  plateNumber: string;
+  name: string;
   registeredRecordStatus: CameraAiMonitorRecordStatus;
   createdTime: string;
 }
@@ -93,8 +91,7 @@ export interface IVehicleMonitorRecordsItem {
   correlationId: string;
   duration: number;
   recordStatus: CameraAiMonitorRecordStatus;
-  plateNumber: string;
-  faceName: string;
+  name: string;
   replayTaskId: string;
   replayUrl: string;
   isRegistered: boolean;

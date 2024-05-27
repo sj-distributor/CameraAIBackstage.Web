@@ -61,9 +61,9 @@ export const useAction = () => {
       .then((res) => {
         if (res) setRegionListDto({ count: res.count, regions: res.regions });
       })
-      .catch((err) => {
+      .catch(() => {
         setRegionListDto(initialRegionListDto);
-        message.error(err);
+        message.error("獲取區域管理數據失敗");
       })
       .finally(() => setIsRegionListLoading(false));
   };
@@ -82,8 +82,8 @@ export const useAction = () => {
           initGetRegionList();
         }
       })
-      .catch((err) => {
-        message.error(err);
+      .catch(() => {
+        message.error("刪除失敗");
       })
       .finally(() => setIsLoading(false));
   };

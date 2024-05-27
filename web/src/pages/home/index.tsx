@@ -2,7 +2,7 @@ import { GlobalOutlined } from "@ant-design/icons";
 import { Avatar, Dropdown, Layout, Menu, MenuProps, Select } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import { SubMenuType } from "antd/es/menu/hooks/useItems";
+import { SubMenuType } from "antd/es/menu/interface";
 import { Outlet } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";

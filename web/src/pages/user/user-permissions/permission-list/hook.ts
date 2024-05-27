@@ -112,8 +112,8 @@ export const useAction = () => {
           rolePermissionData: res?.rolePermissionData ?? [],
         }));
       })
-      .catch((err) => {
-        message.error(err);
+      .catch(() => {
+        message.error("獲取角色數據失敗");
         setRoleByPermissionData((prev) => ({
           ...prev,
           count: 0,
