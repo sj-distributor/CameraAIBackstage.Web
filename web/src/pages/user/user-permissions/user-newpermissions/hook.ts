@@ -1,5 +1,4 @@
 import { message } from "antd";
-import { CheckboxOptionType } from "antd/es/checkbox/Group";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -62,21 +61,21 @@ export const useAction = () => {
   const [permissionNoChangeData, setPermissionNoChangeData] =
     useState<IRolePermissionByRoleIdResponse>(initRolePermissionByRoleIdData);
 
-  const [updateRolePermissions, setUpdateRolePermissions] = useState<
-    CheckboxOptionType[]
-  >([]);
+  const [updateRolePermissions, setUpdateRolePermissions] = useState<number[]>(
+    []
+  );
 
-  const [roleFrontPermissions, setRoleFrontPermissions] = useState<
-    CheckboxOptionType[]
-  >([]);
+  const [roleFrontPermissions, setRoleFrontPermissions] = useState<number[]>(
+    []
+  );
 
   const [roleBackgroundPermissions, setRoleBackgroundPermissions] = useState<
-    CheckboxOptionType[]
+    number[]
   >([]);
 
   const onChangeRoleData = (
     field: "role" | "roleUsers" | "rolePermissions" | "rolePermissionsUserIds",
-    value: number | string | string[] | CheckboxOptionType[],
+    value: number | string | string[] | number[],
     roleKey?: keyof IRole
   ) => {
     !isEdit && setIsEdit(true);
@@ -104,7 +103,7 @@ export const useAction = () => {
       case "rolePermissions":
         setRolePermissionByRoleIdData((preValue) => ({
           ...preValue,
-          rolePermissions: (value as CheckboxOptionType[]).map((item) => ({
+          rolePermissions: (value as number[]).map((item) => ({
             permissionId: Number(item),
             userIds: [],
           })),
