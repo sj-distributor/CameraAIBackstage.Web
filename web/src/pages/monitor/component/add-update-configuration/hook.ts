@@ -395,6 +395,14 @@ export const useAction = () => {
       });
   };
 
+  const filterOption = (
+    input: string,
+    option?: {
+      label?: string;
+      value: number | string;
+    }
+  ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+
   useUpdateEffect(() => {
     form.setFieldValue("repeatEveryWeek", selectWeekday);
     form.validateFields(["repeatEveryWeek"]);
@@ -463,5 +471,6 @@ export const useAction = () => {
     onChangeUserNotificationType,
     handleUnitConversion,
     secondsToTime,
+    filterOption,
   };
 };

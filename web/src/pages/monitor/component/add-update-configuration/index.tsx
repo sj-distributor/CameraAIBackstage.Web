@@ -46,6 +46,7 @@ export const AddOrUpdateConfiguration = () => {
     onChangeUserNotificationType,
     handleUnitConversion,
     secondsToTime,
+    filterOption,
   } = useAction();
 
   const { message } = App.useApp();
@@ -178,6 +179,7 @@ export const AddOrUpdateConfiguration = () => {
                                     )}`,
                                   },
                                 ]}
+                                filterOption={filterOption}
                                 onChange={(value) => {
                                   form.setFieldValue("exceptionType", value);
                                 }}
@@ -302,6 +304,7 @@ export const AddOrUpdateConfiguration = () => {
                                 )}
                                 suffixIcon={<img src={downArrow} />}
                                 options={deviceList}
+                                filterOption={filterOption}
                                 onChange={(value) =>
                                   form.setFieldValue("deviceSelect", value)
                                 }
@@ -472,6 +475,7 @@ export const AddOrUpdateConfiguration = () => {
                                     KEYS.NOTIFY_USER_PLACEHOLDER,
                                     source
                                   )}
+                                  filterOption={filterOption}
                                   allowClear={false}
                                   removeIcon={null}
                                   suffixIcon={<img src={downArrow} />}
