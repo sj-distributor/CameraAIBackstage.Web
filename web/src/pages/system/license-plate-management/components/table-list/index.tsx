@@ -165,7 +165,7 @@ export const LicensePlateManagementTable = (
           ) && (
             <Button
               type="link"
-              disabled={record.isRegistered}
+              disabled={record.isRegistered || !record.name}
               onClick={() => {
                 setRegisterCarNumber(record.name);
                 setRegisteringCarRequest((prev) => ({
@@ -524,8 +524,7 @@ export const LicensePlateManagementTable = (
         modalWidth={"680px"}
         footer={
           <div className="py-4 bg-[#F6F8FC] rounded-b-md items-center flex justify-end">
-            <button
-              type="button"
+            <Button
               onClick={() => {
                 setRegisteringCarRequest({
                   recordStatus: undefined,
@@ -536,7 +535,7 @@ export const LicensePlateManagementTable = (
               className="ant-btn css-dev-only-do-not-override-9alsuj ant-btn-default w-[6rem] h-[2.75rem] mr-[1.5rem]"
             >
               <span>{t(KEYS.CANCEL, source)}</span>
-            </button>
+            </Button>
             <Button
               loading={isRegisteringCar}
               onClick={() => {

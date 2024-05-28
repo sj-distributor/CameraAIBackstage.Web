@@ -1,3 +1,5 @@
+import queryString from "query-string";
+
 import {
   IGeneratePlayBackRequest,
   IGetRegisteredVehicleListRequest,
@@ -15,11 +17,10 @@ import { api } from "../http-client";
 export const GetVehicleMonitorRecords = async (
   data: IGetVehicleMonitorRecordsRequest
 ) => {
+  const string = queryString.stringify(data);
+
   const response = await api.get<IGetVehicleMonitorRecordsResponse>(
-    "/api/CameraAi/monitor/records",
-    {
-      params: data,
-    }
+    "/api/CameraAi/monitor/records?" + string
   );
 
   return response.data;

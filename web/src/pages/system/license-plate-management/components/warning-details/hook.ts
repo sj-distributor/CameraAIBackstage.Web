@@ -6,6 +6,7 @@ import { SwiperRef } from "swiper/react";
 
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/license-plate-management-keys";
+import MONITOR_KEYS from "@/i18n/language/keys/monitor-keys";
 import {
   GetGenerateUrl,
   GetWarningDemand,
@@ -105,10 +106,25 @@ export const useAction = (props: { showWarningDetails: string }) => {
     };
   };
 
+  const getMonitorTypeName = (type: CameraAiMonitorType) => {
+    switch (type) {
+      case CameraAiMonitorType.People:
+        return t(MONITOR_KEYS.IDENTIFY_PEOPLE, { ns: "monitor" });
+
+      case CameraAiMonitorType.Vehicles:
+        return t(MONITOR_KEYS.IDENTIFY_VEHICLES, { ns: "monitor" });
+
+      case CameraAiMonitorType.AbnormalVehicles:
+        return t(MONITOR_KEYS.IDENTIFY_ABNORMAL_VEHICLES, { ns: "monitor" });
+    }
+  };
+
   const warningDetails = useMemo(() => {
     const details = {
       name: warningDemandData?.record?.name ?? "攝像頭001",
-      type: warningDemandData?.record?.monitorType ?? "識別車輛",
+      type: getMonitorTypeName(
+        warningDemandData?.record?.monitorType ?? CameraAiMonitorType.Vehicles
+      ),
       content:
         warningDemandData?.regionAndArea?.principal ??
         "攝像頭001，識別車輛（車牌LA12356），出現超過10秒",

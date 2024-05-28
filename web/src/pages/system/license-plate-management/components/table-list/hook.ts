@@ -15,6 +15,7 @@ import {
   PostRegisteringVehicles,
 } from "@/services/api/license-plate-management";
 import {
+  CameraAiMonitorType,
   IGetRegisteredVehicleListRequest,
   IGetRegisteredVehicleListResponse,
   IGetVehicleMonitorRecordsRequest,
@@ -51,7 +52,11 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
   const [registerCarNumber, setRegisterCarNumber] = useState<string>("");
 
   const [vehicleMonitorRecordsRequest, setVehicleMonitorRecordsRequest] =
-    useState<IGetVehicleMonitorRecordsRequest>({ PageIndex: 1, PageSize: 20 });
+    useState<IGetVehicleMonitorRecordsRequest>({
+      PageIndex: 1,
+      PageSize: 20,
+      MonitorTypes: [CameraAiMonitorType.People, CameraAiMonitorType.Vehicles],
+    });
 
   const [registeredVehicleRequest, setRegisteredVehicleRequest] =
     useState<IGetRegisteredVehicleListRequest>({ PageIndex: 1, PageSize: 20 });
@@ -262,8 +267,16 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     {
       manual: true,
       onSuccess: () => {
-        message.success(t(KEYS.REGISTERING_CAR_OK, source));
+        message.success(t(KEYS.EDIT_CAR_OK, source));
+
         setIsRegisterOpen(false);
+
+        setIsOpenConfirmModal(false);
+
+        handelGetRegisteredVehicleList({
+          ...registeredVehicleRequest,
+          PageIndex: 1,
+        });
       },
       onError(error) {
         message.error((error as unknown as { code: number; msg: string }).msg);
@@ -295,7 +308,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     vehicleMonitorRecordsRequest.StartTime,
     vehicleMonitorRecordsRequest.EquipmentCodes,
     vehicleMonitorRecordsRequest.EquipmentName,
-    vehicleMonitorRecordsRequest.monitorType,
+    vehicleMonitorRecordsRequest.MonitorTypes,
     vehicleMonitorRecordsRequest.PageIndex,
     vehicleMonitorRecordsRequest.PageSize,
     vehicleMonitorRecordsRequest.Status,
