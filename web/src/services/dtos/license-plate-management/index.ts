@@ -7,7 +7,7 @@ export interface IGetVehicleMonitorRecordsRequest {
   Name?: string;
   EquipmentName?: string;
   EquipmentCodes?: string[];
-  monitorType?: CameraAiMonitorType;
+  MonitorTypes?: CameraAiMonitorType[];
 }
 
 export interface IGetRegisteredVehicleListRequest {
