@@ -128,7 +128,11 @@ export const useAction = (props: { showWarningDetails: string }) => {
       content:
         warningDemandData?.regionAndArea?.principal ??
         "攝像頭001，識別車輛（車牌LA12356），出現超過10秒",
-      startTime: warningDemandData?.record?.occurrenceTime ?? "",
+      startTime: warningDemandData?.record?.occurrenceTime
+        ? dayjs(warningDemandData?.record?.occurrenceTime).format(
+            "YYYY-MM-DD HH:mm:ss"
+          )
+        : "",
       address:
         warningDemandData?.regionAndArea?.areaName ?? "廣東省中山市中山二路1號",
       duration: dayjs
