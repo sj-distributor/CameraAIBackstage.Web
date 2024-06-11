@@ -18,6 +18,7 @@ import {
   IGetWarningDemandResponse,
   IWarningRecord,
 } from "@/services/dtos/license-plate-management";
+import { Timeout } from "ahooks/lib/useRequest/src/types";
 
 export type Speed = 0.5 | 1 | 1.25 | 1.5 | 2;
 
@@ -349,23 +350,23 @@ export const useAction = (props: { showWarningDetails: string }) => {
   };
 
   const handelGetVideoPlayBackData = (id: string) => {
+    let playbackTimer: Timeout | null = null;
+
     if (isPlayBackCallBackData.current) return;
 
     id &&
-      GetGenerateUrl(id)
-        .then((res) => {
-          const { generateUrl } = res;
+      GetGenerateUrl(id).then((res) => {
+        const { generateUrl } = res;
 
-          if (generateUrl) {
-            handelDownloadUrl(generateUrl);
-            isPlayBackCallBackData.current = true;
+        if (generateUrl) {
+          handelDownloadUrl(generateUrl);
+          isPlayBackCallBackData.current = true;
 
-            return;
-          } else {
-            setTimeout(() => handelGetVideoPlayBackData(id), 5000);
-          }
-        })
-        .catch(() => {});
+          playbackTimer && clearTimeout(playbackTimer);
+        }
+      });
+
+    playbackTimer = setTimeout(() => handelGetVideoPlayBackData(id), 5000);
   };
 
   const handelDownloadUrl = (url: string) => {
