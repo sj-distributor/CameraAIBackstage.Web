@@ -411,7 +411,7 @@ export const useAction = () => {
   useEffect(() => {
     initGetUserList();
 
-    GetEquipmentPage({ PageSize: 2147483647, PageIndex: 1 })
+    GetEquipmentPage({ PageSize: 2147483647, PageIndex: 1, IsBind: true })
       .then((res) => {
         const newEquipmentList = res.equipments.map((item) => {
           return { label: item.equipmentName ?? "", value: item.id };

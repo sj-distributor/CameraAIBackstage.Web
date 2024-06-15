@@ -55,7 +55,10 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
     useState<IGetVehicleMonitorRecordsRequest>({
       PageIndex: 1,
       PageSize: 20,
-      MonitorTypes: [CameraAiMonitorType.People, CameraAiMonitorType.Vehicles],
+      MonitorTypes: [
+        CameraAiMonitorType.Vehicles,
+        CameraAiMonitorType.AbnormalVehicles,
+      ],
     });
 
   const [registeredVehicleRequest, setRegisteredVehicleRequest] =
