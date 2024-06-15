@@ -146,7 +146,7 @@ export const useAction = () => {
         )
       )
       .catch((error) => {
-        message.error(error.msg || error.message || error);
+        message.error((error as Error).message);
 
         setPermissionData(initialPermissionData);
       });
@@ -208,7 +208,7 @@ export const useAction = () => {
         );
       })
       .catch((error) => {
-        message.error(error.msg || error.message || error);
+        message.error((error as Error).message);
         navigate("/user/permissions");
       })
       .finally(() => setIsLoaded(true));
@@ -228,7 +228,7 @@ export const useAction = () => {
         message.success(t(KEYS.CREATED_SUCCESSFULLY, source));
       })
       .catch((error) => {
-        message.error(error.msg || error.message || error);
+        message.error((error as Error).message);
       });
   };
 
@@ -254,7 +254,7 @@ export const useAction = () => {
         message.success(t(KEYS.UPDATE_SUCCESS, source));
       })
       .catch((error) => {
-        message.error(error.msg || error.message || error);
+        message.error((error as Error).message);
         setIsLoaded(true);
       });
   };

@@ -177,7 +177,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
         .then(() => {
           handelGetUrl(showWarningDetails);
         })
-        .catch((err) => message.error(err.msg || err.message || err));
+        .catch((err) => message.error((err as Error).message));
     }
 
     return details;
@@ -214,7 +214,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
           }
         })
         .catch((err) => {
-          message.error(err.msg || err.message || err);
+          message.error((err as Error).message);
         })
         .finally(() => {
           setTimeout(() => {
@@ -340,7 +340,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
           generateTaskId && handelGetVideoPlayBackData(generateTaskId);
         })
-        .catch((err) => message.error(err.msg || err.message || err));
+        .catch((err) => message.error((err as Error).message));
     }
   };
 
@@ -381,10 +381,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
         window.URL.revokeObjectURL(url);
       })
       .catch((error) =>
-        console.error(
-          "Error downloading video:",
-          error.msg || error.message || error
-        )
+        console.error("Error downloading video:", (error as Error).message)
       );
   };
 

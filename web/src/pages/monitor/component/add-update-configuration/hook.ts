@@ -327,7 +327,7 @@ export const useAction = () => {
               navigate("/monitor");
             })
             .catch((err) => {
-              message.error(`创建失败：${err.msg || err.message || err}`);
+              message.error(`创建失败：${(err as Error).message}`);
             })
             .finally(() => setSubmitLoadin(false))
         : MonitorSettingUpdate(data)
@@ -336,7 +336,7 @@ export const useAction = () => {
               navigate("/monitor");
             })
             .catch((err) => {
-              message.error(`编辑失败：${err.msg || err.message || err}`);
+              message.error(`编辑失败：${(err as Error).message}`);
             })
             .finally(() => setSubmitLoadin(false));
     });

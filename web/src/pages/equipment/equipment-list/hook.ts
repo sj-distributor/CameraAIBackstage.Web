@@ -119,7 +119,7 @@ export const useAction = () => {
         setDataTotalCount(res.count);
       })
       .catch((error) => {
-        message.error(error.msg || error.message || error);
+        message.error((error as Error).message);
         setData([]);
         setDataTotalCount(0);
       })
@@ -134,7 +134,7 @@ export const useAction = () => {
       })
       .catch((err) => {
         form.setFieldsValue(initialEquipmentData);
-        message.error(`获取信息失败：${err.msg || err.message || err}`);
+        message.error(`获取信息失败：${(err as Error).message}`);
       })
       .finally(() => {
         setEditLoading(false);
@@ -152,9 +152,7 @@ export const useAction = () => {
         initGetEquipmentList();
         form.setFieldsValue(initialEquipmentData);
       })
-      .catch((err) =>
-        message.error(`更新失敗：${err.msg || err.message || err}`)
-      )
+      .catch((err) => message.error(`更新失敗：${(err as Error).message}`))
       .finally(() => setConfirmLoading(false));
   };
 
@@ -169,9 +167,7 @@ export const useAction = () => {
         setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
         form.setFieldsValue(initialEquipmentData);
       })
-      .catch((err) =>
-        message.error(`新增失敗：${err.msg || err.message || err}`)
-      )
+      .catch((err) => message.error(`新增失敗：${(err as Error).message}`))
       .finally(() => setConfirmLoading(false));
   };
 
@@ -194,9 +190,7 @@ export const useAction = () => {
         setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
         setIsDeleteDeviceOpen(false);
       })
-      .catch((error) =>
-        message.error(`刪除失敗：${error.msg || error.message || error}`)
-      )
+      .catch((error) => message.error(`刪除失敗：${(error as Error).message}`))
       .finally(() => setConfirmLoading(false));
   };
 
@@ -213,7 +207,7 @@ export const useAction = () => {
         setRegionData(newList);
       })
       .catch((err) => {
-        message.error(`获取数据失败：${err.msg || err.message || err}`);
+        message.error(`获取数据失败：${(err as Error).message}`);
         setRegionData([]);
       })
       .finally(() => {
@@ -238,9 +232,7 @@ export const useAction = () => {
         initGetEquipmentList();
         setIsBindingOpen(false);
       })
-      .catch((err) =>
-        message.error(`绑定失败：${err.msg || err.message || err}`)
-      )
+      .catch((err) => message.error(`绑定失败：${(err as Error).message}`))
       .finally(() => setConfirmLoading(false));
   };
 
@@ -255,9 +247,7 @@ export const useAction = () => {
         initGetEquipmentList();
         setIsUnbindOpen(false);
       })
-      .catch((err) =>
-        message.error(`解绑失败：${err.msg || err.message || err}`)
-      )
+      .catch((err) => message.error(`解绑失败：${(err as Error).message}`))
       .finally(() => setConfirmLoading(false));
   };
 
