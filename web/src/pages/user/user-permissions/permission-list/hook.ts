@@ -92,7 +92,7 @@ export const useAction = () => {
         setPageDto({ pageIndex: prams.PageIndex, pageSize: prams.PageSize });
       })
       .catch((err) => {
-        message.error(err.msg);
+        message.error((err as Error).message);
         setRoleByPermissionData((prev) => ({
           ...prev,
           count: 0,
@@ -132,7 +132,7 @@ export const useAction = () => {
           systemSource: RoleSystemSourceEnum.CameraAi,
         });
       })
-      .catch((error) => message.error(error.msg));
+      .catch((error) => message.error((error as Error).message));
   };
 
   useEffect(() => {

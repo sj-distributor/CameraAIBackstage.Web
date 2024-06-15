@@ -82,7 +82,7 @@ export const useAction = () => {
         message.success(t(KEYS.REMOVE_USER_OK, source));
       })
       .catch((err) => {
-        message.error(err.msg);
+        message.error((err as Error).message);
       })
       .finally(() => {
         setIsDeleteUserLoading(false);

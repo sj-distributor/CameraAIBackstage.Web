@@ -99,7 +99,7 @@ export const useAction = () => {
           RoleId: id,
         });
       })
-      .catch((error) => message.error(error.msg));
+      .catch((error) => message.error((error as Error).message));
   };
 
   const handelGetSelectedUsers = async (userIds: string[]) => {
