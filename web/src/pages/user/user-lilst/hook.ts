@@ -159,7 +159,7 @@ export const useAction = () => {
     });
   }, []);
 
-  const handelGetUserList = (data: any) => {
+  const handelGetUserList = (data: IGetUserListRequest) => {
     setUserListData((prev) => ({
       ...prev,
       loading: true,
