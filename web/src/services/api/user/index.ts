@@ -6,7 +6,7 @@ import {
 
 import { api } from "../http-client";
 
-export const GetUserList = async (data: any) => {
+export const GetUserList = async (data: IGetUserListRequest) => {
   const response = await api.get<IGetUserListResponse>(
     "/api/CameraAi/user/page",
     { params: data }
