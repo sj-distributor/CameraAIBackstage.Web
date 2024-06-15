@@ -82,7 +82,7 @@ export const useAction = () => {
         message.success(t(KEYS.REMOVE_USER_OK, source));
       })
       .catch((err) => {
-        message.error(err.msg);
+        message.error(err.msg || err.message || err);
       })
       .finally(() => {
         setIsDeleteUserLoading(false);
@@ -159,7 +159,7 @@ export const useAction = () => {
     });
   }, []);
 
-  const handelGetUserList = (data: IGetUserListRequest) => {
+  const handelGetUserList = (data: any) => {
     setUserListData((prev) => ({
       ...prev,
       loading: true,

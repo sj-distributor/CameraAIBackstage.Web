@@ -66,7 +66,7 @@ export const useAction = () => {
         setTotalListCount(res.count);
       })
       .catch((err) => {
-        message.error(err);
+        message.error(err.msg || err.message || err);
         setData([]);
         setTotalListCount(0);
       })
@@ -87,7 +87,7 @@ export const useAction = () => {
       .catch((err) => {
         setTypeName("");
         setDescription("");
-        message.error(`获取信息失败：${err}`);
+        message.error(`获取信息失败：${err.msg || err.message || err}`);
       })
       .finally(() => setIsEditLoading(false));
     setClickEditId(id);
@@ -113,7 +113,7 @@ export const useAction = () => {
         initGetEquipmentTypeList();
       })
       .catch((err) => {
-        message.error(`新增失敗:${err}`);
+        message.error(`新增失敗:${err.msg || err.message || err}`);
       })
       .finally(() => {
         setConfirmLoading(false);
@@ -141,7 +141,7 @@ export const useAction = () => {
         initGetEquipmentTypeList();
       })
       .catch((err) => {
-        message.error(`新增失敗:${err}`);
+        message.error(`新增失敗:${err.msg || err.message || err}`);
       })
       .finally(() => {
         setConfirmLoading(false);
@@ -163,7 +163,7 @@ export const useAction = () => {
         initGetEquipmentTypeList();
       })
       .catch((err) => {
-        message.error(`删除失败：${err}`);
+        message.error(`删除失败：${err.msg || err.message || err}`);
       })
       .finally(() => setConfirmLoading(false));
   };

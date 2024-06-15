@@ -93,7 +93,7 @@ export const useAction = (props: {
         setTreeFoundationResponse(response);
       })
       .catch((error) => {
-        message.error(error.msg);
+        message.error(error.msg || error.message || error);
         setTreeData([]);
       });
   };

@@ -68,14 +68,14 @@ export const useAction = () => {
             initGetPageData();
           })
           .catch((err) => {
-            message.error(`绑定失败:${err}`);
+            message.error(`绑定失败:${err.msg || err.message || err}`);
           })
       : MonitorSettingDisable({ settingId: id })
           .then(() => {
             initGetPageData();
           })
           .catch((err) => {
-            message.error(`解绑失败:${err}`);
+            message.error(`解绑失败:${err.msg || err.message || err}`);
           });
   };
 
@@ -138,7 +138,7 @@ export const useAction = () => {
         initGetPageData(1);
       })
       .catch((err) => {
-        message.error(`删除失败：${err}`);
+        message.error(`删除失败：${err.msg || err.message || err}`);
       })
       .finally(() => setLoading(false));
   };

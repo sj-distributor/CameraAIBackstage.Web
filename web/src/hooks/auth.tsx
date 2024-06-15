@@ -254,7 +254,7 @@ export default ({ children }: { children: React.ReactNode }) => {
         }
       })
       .catch((error) => {
-        message.error(error.msg);
+        message.error(error.msg || error.message || error);
         setMyPermissions([]);
       });
   };
