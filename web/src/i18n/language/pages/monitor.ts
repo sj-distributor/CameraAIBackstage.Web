@@ -24,6 +24,7 @@ export default {
     [KEYS.IDENTIFY_PEOPLE]: "Identify people",
     [KEYS.IDENTIFY_VEHICLES]: "Identify vehicles",
     [KEYS.IDENTIFY_ABNORMAL_VEHICLES]: "identify abnormal vehicles",
+    [KEYS.SECURITY]: "Security",
   },
   ch: {
     [KEYS.MONITOR]: "監測管理",
@@ -46,5 +47,6 @@ export default {
     [KEYS.IDENTIFY_PEOPLE]: "識別人員",
     [KEYS.IDENTIFY_VEHICLES]: "識別車輛",
     [KEYS.IDENTIFY_ABNORMAL_VEHICLES]: "識別異常車輛",
+    [KEYS.SECURITY]: "防盜功能",
   },
 };

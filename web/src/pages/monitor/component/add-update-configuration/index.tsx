@@ -38,6 +38,7 @@ export const AddOrUpdateConfiguration = () => {
     isAdd,
     detailLoading,
     submitLoading,
+    isSelecteSecurity,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
@@ -47,6 +48,7 @@ export const AddOrUpdateConfiguration = () => {
     handleUnitConversion,
     secondsToTime,
     filterOption,
+    setIsSelectSecurity,
   } = useAction();
 
   const { message } = App.useApp();
@@ -178,10 +180,19 @@ export const AddOrUpdateConfiguration = () => {
                                       { ns: "monitor" }
                                     )}`,
                                   },
+                                  {
+                                    value: CameraAiMonitorType.Security,
+                                    label: `${t(MONITOR_KEY.SECURITY, {
+                                      ns: "monitor",
+                                    })}`,
+                                  },
                                 ]}
                                 filterOption={filterOption}
                                 onChange={(value) => {
                                   form.setFieldValue("exceptionType", value);
+                                  setIsSelectSecurity(
+                                    value.includes(CameraAiMonitorType.Security)
+                                  );
                                 }}
                                 placeholder={t(
                                   KEYS.EXCEPTION_TYPE_PLACEHOLDER,
@@ -278,6 +289,102 @@ export const AddOrUpdateConfiguration = () => {
                               </FormItem>
                             </div>
                           </div>
+
+                          {isSelecteSecurity && (
+                            <div className="flex flex-col w-[24.4rem]">
+                              <span className="pb-2">
+                                {t(KEYS.TIME_INTERVAL, source)}
+                              </span>
+                              <div className="flex flex-row">
+                                <FormItem
+                                  className="mr-[.5rem] w-[77%]"
+                                  name="securityTime"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: `${t(
+                                        KEYS.TIME_INTERVAL_PLACEHOLDER,
+                                        source
+                                      )}`,
+                                    },
+                                  ]}
+                                  initialValue={
+                                    editDetailData?.timeInterval
+                                      ? handleUnitConversion(
+                                          editDetailData.timeInterval,
+                                          false
+                                        )
+                                      : null
+                                  }
+                                >
+                                  <Input
+                                    placeholder={t(
+                                      KEYS.TIME_INTERVAL_PLACEHOLDER,
+                                      source
+                                    )}
+                                    type="number"
+                                    onChange={(e) => {
+                                      const sanitizedValue =
+                                        e.target.value.replace(/[^0-9.]/g, "");
+
+                                      form.setFieldValue(
+                                        "securityTime",
+                                        sanitizedValue
+                                      );
+                                    }}
+                                  />
+                                </FormItem>
+
+                                <FormItem
+                                  className="w-[23%]"
+                                  name="securityTimeType"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: `${t(
+                                        KEYS.DURATION_UNIT_RULE_TIPS,
+                                        source
+                                      )}`,
+                                    },
+                                  ]}
+                                  initialValue={
+                                    editDetailData?.timeInterval
+                                      ? handleUnitConversion(
+                                          editDetailData.timeInterval,
+                                          true
+                                        )
+                                      : null
+                                  }
+                                >
+                                  <Select
+                                    placeholder={t(KEYS.SECOND, source)}
+                                    defaultActiveFirstOption
+                                    options={[
+                                      {
+                                        value: TimeType.Second,
+                                        label: `${t(KEYS.SECOND, source)}`,
+                                      },
+                                      {
+                                        value: TimeType.Minute,
+                                        label: `${t(KEYS.MINUTE, source)}`,
+                                      },
+                                      {
+                                        value: TimeType.Hours,
+                                        label: `${t(KEYS.HOUR, source)}`,
+                                      },
+                                    ]}
+                                    onChange={(value) =>
+                                      form.setFieldValue(
+                                        "securityTimeType",
+                                        value
+                                      )
+                                    }
+                                    suffixIcon={<img src={downArrow} />}
+                                  />
+                                </FormItem>
+                              </div>
+                            </div>
+                          )}
                         </div>
                         <div className="flex flex-row w-full p-[0rem_5.25rem_0rem_5.25rem] flex-wrap">
                           <div className="flex flex-col w-[26.3125rem] pr-[2rem]">

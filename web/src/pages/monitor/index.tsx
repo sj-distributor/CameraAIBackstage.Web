@@ -100,6 +100,9 @@ export const Monitor = () => {
 
             case CameraAiMonitorType.AbnormalVehicles:
               return t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source);
+
+            case CameraAiMonitorType.Security:
+              return t(KEYS.SECURITY, source);
           }
         };
 
@@ -289,6 +292,10 @@ export const Monitor = () => {
                   {
                     value: CameraAiMonitorType.AbnormalVehicles,
                     label: `${t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.Security,
+                    label: `${t(KEYS.SECURITY, source)}`,
                   },
                 ]}
                 suffixIcon={<img src={downArrow} />}

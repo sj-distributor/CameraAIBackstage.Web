@@ -30,6 +30,10 @@ export const useAction = () => {
       value: CameraAiMonitorType.AbnormalVehicles,
       label: `${t(MONITOR_KEY.IDENTIFY_ABNORMAL_VEHICLES, monitorSource)}`,
     },
+    {
+      value: CameraAiMonitorType.Security,
+      label: `${t(MONITOR_KEY.SECURITY, monitorSource)}`,
+    },
   ];
 
   return { monitorTypeOption, token, navigate, KEYS, t, source };

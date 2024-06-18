@@ -16,6 +16,7 @@ import {
   TimeType,
 } from "./props";
 import {
+  CameraAiMonitorType,
   CameraAiNotificationType,
   DayOfWeek,
   IMonitorNotificationsDto,
@@ -142,6 +143,8 @@ export const useAction = () => {
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
 
   const [submitLoading, setSubmitLoadin] = useState<boolean>(false);
+
+  const [isSelecteSecurity, setIsSelectSecurity] = useState<boolean>(false);
 
   const editDetailUser = useMemo(() => {
     // 处理编辑数据中的 user列表
@@ -319,6 +322,13 @@ export const useAction = () => {
         data.id = Number(id); // 编辑添加 id
       }
 
+      if (isSelecteSecurity) {
+        data.timeInterval = handleTotalDuration(
+          values.securityTime,
+          values.securityTimeType
+        );
+      }
+
       setSubmitLoadin(true);
       isAdd
         ? MonitorSettingCreate(data)
@@ -430,6 +440,10 @@ export const useAction = () => {
     GetMonitorSettingDetail({ settingId: Number(id) })
       .then((res) => {
         serEditDetailData(res);
+
+        setIsSelectSecurity(
+          res.monitorTypes.includes(CameraAiMonitorType.Security)
+        );
       })
       .catch(() => {
         message.error("獲取詳情數據失敗");
@@ -463,6 +477,7 @@ export const useAction = () => {
     isAdd,
     detailLoading,
     submitLoading,
+    isSelecteSecurity,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
@@ -472,5 +487,6 @@ export const useAction = () => {
     handleUnitConversion,
     secondsToTime,
     filterOption,
+    setIsSelectSecurity,
   };
 };
