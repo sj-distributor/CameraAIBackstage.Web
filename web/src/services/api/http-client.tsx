@@ -27,7 +27,7 @@ api.interceptors.response.use(
       return response.data;
     }
 
-    return Promise.reject(response.data);
+    throw new Error(response.data.msg);
   },
   (error) => {
     if (error.response.status === 401) {
@@ -40,7 +40,7 @@ api.interceptors.response.use(
         }
       );
     } else {
-      return Promise.reject(error.response.data.msg ?? "Unknown error");
+      throw new Error(error.response.data.msg ?? "Unknown error");
     }
   }
 );
