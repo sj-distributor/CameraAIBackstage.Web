@@ -43,7 +43,7 @@ export interface IMonitorSettingsPublicDto {
   id?: number; // 更新填 id
   title: string;
   duration: number | null;
-  timeInterval: number | null;
+  timeInterval?: number | null;
   notificationContent: string; // 通知内容
   broadcastContent?: string | null; // 广播内容
   monitorTypes: CameraAiMonitorType[]; // 预警类型 id

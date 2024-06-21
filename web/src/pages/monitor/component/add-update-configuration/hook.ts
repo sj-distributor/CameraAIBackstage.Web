@@ -59,6 +59,7 @@ export const useAction = () => {
     monitorTypes: [],
     startTime: null,
     endTime: null,
+    timeInterval: null,
   };
 
   const notifyType = [
