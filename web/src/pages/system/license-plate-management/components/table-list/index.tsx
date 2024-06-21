@@ -191,6 +191,7 @@ export const LicensePlateManagementTable = (
             )}
           <Button
             type="link"
+            disabled={!record.name}
             onClick={() => {
               setIsShowLicensePlateOpen(true);
               setLicensePlateImageUrl(record.licensePlateImageUrl);
