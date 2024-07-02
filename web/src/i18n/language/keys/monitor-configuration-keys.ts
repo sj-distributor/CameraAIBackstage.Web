@@ -10,6 +10,8 @@ export default {
   DURATION_TIME: "Duration",
   EXCEPTION_TYPE_PLACEHOLDER: "SelectExceptionType",
   DURATION_TIME_PLACEHOLDER: "PleaseEnter",
+  TIME_INTERVAL: "TimeInterval",
+  TIME_INTERVAL_PLACEHOLDER: "TimeIntervalPlaceholder",
   SELECT_DEVICE: "SelectDevice",
   SELECT_DEVICE_PLACEHOLDER: "SelectDevicePlaceholder",
   SELECT_DEVICE_RULE_TIPS: "SelectDeviceRuleTips",

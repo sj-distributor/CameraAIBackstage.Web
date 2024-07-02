@@ -19,4 +19,5 @@ export default {
   IDENTIFY_PEOPLE: "IdentifyPeople",
   IDENTIFY_VEHICLES: "IdentifyVehicles",
   IDENTIFY_ABNORMAL_VEHICLES: "identifyAbnormalVehicles",
+  SECURITY: "Security",
 };
