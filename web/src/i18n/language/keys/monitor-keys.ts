@@ -20,4 +20,8 @@ export default {
   IDENTIFY_VEHICLES: "IdentifyVehicles",
   IDENTIFY_ABNORMAL_VEHICLES: "identifyAbnormalVehicles",
   SECURITY: "Security",
+  ANIMAL: "Animal",
+  SMOKE: "Smoke",
+  FIGHT: "Fight",
+  COSTUME: "Costume",
 };

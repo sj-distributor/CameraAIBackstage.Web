@@ -145,6 +145,12 @@ export const useAction = () => {
 
   const [submitLoading, setSubmitLoadin] = useState<boolean>(false);
 
+  const [selectModalType, setSelectModalType] = useState<CameraAiMonitorType[]>(
+    []
+  );
+
+  const [animalType, setAnimalType] = useState<CameraAiMonitorType[]>([]);
+
   const [isSelecteSecurity, setIsSelectSecurity] = useState<boolean>(false);
 
   const editDetailUser = useMemo(() => {
@@ -330,6 +336,10 @@ export const useAction = () => {
         );
       }
 
+      if (selectModalType.includes(CameraAiMonitorType.Animal)) {
+        data.monitorTypes = data.monitorTypes.concat(animalType);
+      }
+
       setSubmitLoadin(true);
       isAdd
         ? MonitorSettingCreate(data)
@@ -445,6 +455,17 @@ export const useAction = () => {
         setIsSelectSecurity(
           res.monitorTypes.includes(CameraAiMonitorType.Security)
         );
+
+        setSelectModalType(res.monitorTypes);
+
+        setAnimalType(
+          res.monitorTypes.filter(
+            (type) =>
+              type === CameraAiMonitorType.Cat ||
+              type === CameraAiMonitorType.Dog ||
+              type === CameraAiMonitorType.Bird
+          )
+        );
       })
       .catch(() => {
         message.error("獲取詳情數據失敗");
@@ -479,6 +500,7 @@ export const useAction = () => {
     detailLoading,
     submitLoading,
     isSelecteSecurity,
+    selectModalType,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
@@ -489,5 +511,7 @@ export const useAction = () => {
     secondsToTime,
     filterOption,
     setIsSelectSecurity,
+    setSelectModalType,
+    setAnimalType,
   };
 };

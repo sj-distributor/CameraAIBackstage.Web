@@ -25,6 +25,10 @@ export default {
     [KEYS.IDENTIFY_VEHICLES]: "Identify vehicles",
     [KEYS.IDENTIFY_ABNORMAL_VEHICLES]: "identify abnormal vehicles",
     [KEYS.SECURITY]: "Security",
+    [KEYS.ANIMAL]: "Animal",
+    [KEYS.SMOKE]: "Smoke",
+    [KEYS.FIGHT]: "Fight",
+    [KEYS.COSTUME]: "Costume",
   },
   ch: {
     [KEYS.MONITOR]: "監測管理",
@@ -48,5 +52,9 @@ export default {
     [KEYS.IDENTIFY_VEHICLES]: "識別車輛",
     [KEYS.IDENTIFY_ABNORMAL_VEHICLES]: "識別異常車輛",
     [KEYS.SECURITY]: "防盜功能",
+    [KEYS.ANIMAL]: "識別動物入侵",
+    [KEYS.SMOKE]: "識別吸煙",
+    [KEYS.FIGHT]: "識別打架",
+    [KEYS.COSTUME]: "識別安全配備",
   },
 };

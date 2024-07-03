@@ -64,7 +64,7 @@ export default {
     [KEYS.TITLE]: "標題",
     [KEYS.TITLE_PLACEHOLDER]: "请输入预警标题",
     [KEYS.RULE_SETTING]: "規則設置",
-    [KEYS.EXCEPTION_TYPE]: "異常類型",
+    [KEYS.EXCEPTION_TYPE]: "AI檢測事件模型",
     [KEYS.DURATION_TIME]: "持續時長",
     [KEYS.EXCEPTION_TYPE_PLACEHOLDER]: "選擇異常類型",
     [KEYS.DURATION_TIME_PLACEHOLDER]: "请输入持續時長",

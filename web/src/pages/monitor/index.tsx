@@ -103,6 +103,9 @@ export const Monitor = () => {
 
             case CameraAiMonitorType.Security:
               return t(KEYS.SECURITY, source);
+
+            case CameraAiMonitorType.Animal:
+              return t(KEYS.ANIMAL, source);
           }
         };
 
@@ -292,6 +295,22 @@ export const Monitor = () => {
                   {
                     value: CameraAiMonitorType.AbnormalVehicles,
                     label: `${t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source)}`,
+                  },
+                  // {
+                  //   value: CameraAiMonitorType.Smoke,
+                  //   label: `${t(KEYS.SMOKE, source)}`,
+                  // },
+                  // {
+                  //   value: CameraAiMonitorType.Fight,
+                  //   label: `${t(KEYS.FIGHT, source)}`,
+                  // },
+                  // {
+                  //   value: CameraAiMonitorType.Costume,
+                  //   label: `${t(KEYS.COSTUME, source)}`,
+                  // },
+                  {
+                    value: CameraAiMonitorType.Animal,
+                    label: `${t(KEYS.ANIMAL, source)}`,
                   },
                   {
                     value: CameraAiMonitorType.Security,
