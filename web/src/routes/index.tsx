@@ -30,14 +30,22 @@ export const Router = () => {
     const aPageData = localStorage.getItem("aPageData");
 
     if (aPageData) {
+      console.log("本地有token了");
+
       setAPageData(aPageData);
     } else {
+      console.log("接收token");
+
       window.addEventListener("message", receiveMessage, false);
     }
 
     function receiveMessage(event: { origin: string; data: string }) {
+      console.log(event);
+
       if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
       if (event.data) {
+        console.log(event);
+
         localStorage.setItem("aPageData", event.data);
       }
     }
