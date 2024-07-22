@@ -1,6 +1,12 @@
 import { ConfigProvider } from "antd";
 import { useEffect, useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 import { AuthStatus } from "@/hooks/auth-status";
 import { useAuth } from "@/hooks/use-auth";
@@ -15,13 +21,23 @@ export const Router = () => {
 
   const pathname = window.location.pathname;
 
+  const navigate = useNavigate();
+
+  const { state: historyState } = useLocation();
+
+  const historyCallback = () => {
+    historyState?.from?.pathname
+      ? navigate(historyState.from.pathname, { replace: true })
+      : navigate("/", { replace: true });
+  };
+
   useEffect(() => {
     if (aPageData) {
       localStorage.setItem(
         (window as any).appSettings?.tokenKey ?? "tokenKey",
         aPageData
       );
-      signIn(aPageData);
+      signIn(aPageData, historyCallback);
       // localStorage.removeItem("aPageData");
     }
   }, [aPageData]);
@@ -30,22 +46,14 @@ export const Router = () => {
     const aPageData = localStorage.getItem("aPageData");
 
     if (aPageData) {
-      console.log("本地有token了");
-
       setAPageData(aPageData);
     } else {
-      console.log("接收token");
-
       window.addEventListener("message", receiveMessage, false);
     }
 
     function receiveMessage(event: { origin: string; data: string }) {
-      console.log(event);
-
       if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
       if (event.data) {
-        console.log(event);
-
         localStorage.setItem("aPageData", event.data);
       }
     }
