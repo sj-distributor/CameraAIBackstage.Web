@@ -22,6 +22,7 @@ export const Router = () => {
         aPageData
       );
 
+      signIn(aPageData);
       // localStorage.removeItem("aPageData");
     }
   }, [aPageData]);
@@ -38,9 +39,9 @@ export const Router = () => {
     function receiveMessage(event: { origin: string; data: string }) {
       if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
       if (event.data) {
-        localStorage.setItem("aPageData", event.data);
-
         signIn(event.data);
+
+        localStorage.setItem("aPageData", event.data);
       }
     }
   }, []);
