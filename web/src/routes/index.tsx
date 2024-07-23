@@ -1,6 +1,6 @@
 import { ConfigProvider } from "antd";
 import { useEffect, useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 
 import { AuthStatus } from "@/hooks/auth-status";
 import { useAuth } from "@/hooks/use-auth";
@@ -10,6 +10,8 @@ import { IRouterList } from "@/services/dtos/routes";
 
 export const Router = () => {
   const { routerList, myPermissions, locale, signIn, defaultPath } = useAuth();
+
+  const navigate = useNavigate();
 
   const [aPageData, setAPageData] = useState<string>("");
 
@@ -39,6 +41,10 @@ export const Router = () => {
     function receiveMessage(event: { origin: string; data: string }) {
       if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
       if (event.data) {
+        console.log(event.data);
+
+        navigate("/user/list");
+
         signIn(event.data);
 
         localStorage.setItem("aPageData", event.data);
