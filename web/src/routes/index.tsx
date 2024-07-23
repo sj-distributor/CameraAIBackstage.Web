@@ -15,6 +15,8 @@ export const Router = () => {
   const pathname = window.location.pathname;
 
   const receiveMessage = (event: { origin: string; data: string }) => {
+    console.log(event);
+
     if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
 
     if (event.data) {
@@ -31,7 +33,7 @@ export const Router = () => {
     if (isNil(token) || isEmpty(token)) {
       window.addEventListener("message", receiveMessage, false);
     }
-  }, []);
+  });
 
   const AuthRoutes = (Routes: IRouterList[]) => {
     return Routes.map((childrenItem, childrenIndex) => {
