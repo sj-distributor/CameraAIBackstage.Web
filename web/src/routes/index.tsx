@@ -1,5 +1,5 @@
 import { ConfigProvider } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AuthStatus } from "@/hooks/auth-status";
@@ -7,40 +7,72 @@ import { useAuth } from "@/hooks/use-auth";
 import { Home } from "@/pages/home/index";
 import { Login } from "@/pages/login";
 import { IRouterList } from "@/services/dtos/routes";
+// import { isEmpty, isNil } from "ramda";
 
 export const Router = () => {
-  const { routerList, myPermissions, locale, signIn, defaultPath } = useAuth();
-
-  const [aPageData, setAPageData] = useState<string>("");
+  const { routerList, myPermissions, locale, defaultPath } = useAuth();
 
   const pathname = window.location.pathname;
 
+  // const receiveMessage = (event: { origin: string; data: string }) => {
+  //   console.log(event);
+
+  //   if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
+
+  //   if (event.data) {
+  //     localStorage.setItem(
+  //       (window as any).appSettings?.tokenKey ?? "tokenKey",
+  //       event.data
+  //     );
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("tokenKey");
+
+  //   if (isNil(token) || isEmpty(token)) {
+  //     window.addEventListener("message", receiveMessage, false);
+  //   }
+  // }, []);
+
   useEffect(() => {
-    if (aPageData) {
-      localStorage.setItem(
-        (window as any).appSettings?.tokenKey ?? "tokenKey",
-        aPageData
+    // 请求 token
+    const requestToken = () => {
+      window.postMessage(
+        "requestToken",
+        (window as any).appSettings?.frontDeskDomain
       );
-      signIn(aPageData);
-      // localStorage.removeItem("aPageData");
-    }
-  }, [aPageData]);
+    };
 
-  useEffect(() => {
-    const aPageData = localStorage.getItem("aPageData");
+    // 监听来自其他窗口的消息
+    const handleMessage = (event: { origin: string; data: string }) => {
+      console.log(event);
 
-    if (aPageData) {
-      setAPageData(aPageData);
-    } else {
-      window.addEventListener("message", receiveMessage, false);
-    }
-
-    function receiveMessage(event: { origin: string; data: string }) {
-      if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
-      if (event.data) {
-        localStorage.setItem("aPageData", event.data);
+      if (event.origin === (window as any).appSettings?.frontDeskDomain) {
+        if (event.data) {
+          localStorage.setItem(
+            (window as any).appSettings?.tokenKey ?? "tokenKey",
+            event.data
+          );
+        }
       }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    // 确保窗口加载完成后请求 token
+    if (document.readyState === "complete") {
+      console.log(121212);
+
+      requestToken();
+    } else {
+      window.onload = requestToken;
     }
+
+    // 清理事件监听器
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
   }, []);
 
   const AuthRoutes = (Routes: IRouterList[]) => {
