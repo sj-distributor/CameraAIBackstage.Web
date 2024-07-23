@@ -1,5 +1,5 @@
 import { ConfigProvider } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AuthStatus } from "@/hooks/auth-status";
@@ -7,39 +7,29 @@ import { useAuth } from "@/hooks/use-auth";
 import { Home } from "@/pages/home/index";
 import { Login } from "@/pages/login";
 import { IRouterList } from "@/services/dtos/routes";
+import { isEmpty, isNil } from "ramda";
 
 export const Router = () => {
-  const { routerList, myPermissions, locale, signIn, defaultPath } = useAuth();
-
-  const [aPageData, setAPageData] = useState<string>("");
+  const { routerList, myPermissions, locale, defaultPath } = useAuth();
 
   const pathname = window.location.pathname;
 
-  useEffect(() => {
-    if (aPageData) {
+  const receiveMessage = (event: { origin: string; data: string }) => {
+    if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
+
+    if (event.data) {
       localStorage.setItem(
         (window as any).appSettings?.tokenKey ?? "tokenKey",
-        aPageData
+        event.data
       );
-      signIn(aPageData);
-      // localStorage.removeItem("aPageData");
     }
-  }, [aPageData]);
+  };
 
   useEffect(() => {
-    const aPageData = localStorage.getItem("aPageData");
+    const token = localStorage.getItem("tokenKey");
 
-    if (aPageData) {
-      setAPageData(aPageData);
-    } else {
+    if (isNil(token) || isEmpty(token)) {
       window.addEventListener("message", receiveMessage, false);
-    }
-
-    function receiveMessage(event: { origin: string; data: string }) {
-      if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
-      if (event.data) {
-        localStorage.setItem("aPageData", event.data);
-      }
     }
   }, []);
 
