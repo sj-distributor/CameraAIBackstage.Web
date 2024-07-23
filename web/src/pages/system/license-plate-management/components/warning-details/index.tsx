@@ -337,15 +337,13 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
                                     className={`w-1/5 h-max relative`}
                                   >
                                     <div className="text-start text-[#5F6279] font-semibold text-[0.875rem] text-nowrap absolute top-[-16px]">
-                                      {index === 0 || index === 4
+                                      {index / 4 === 0
                                         ? dayjs(time).format("hh:mm A")
                                         : ""}
                                     </div>
                                     <div
                                       className={`relative h-2 w-px bg-[#ccc] ${
-                                        index === 0 || index === 4
-                                          ? "h-3"
-                                          : "h-2 "
+                                        index / 4 === 0 ? "h-3" : "h-2 "
                                       }`}
                                     />
                                     <span
@@ -357,7 +355,7 @@ export const WarningDetails = (props: { showWarningDetails: string }) => {
                                   </div>
                                 );
 
-                                return endTimeIndex ? (
+                                return endTimeIndex >= 0 ? (
                                   index <= endTimeIndex ? (
                                     node
                                   ) : (
