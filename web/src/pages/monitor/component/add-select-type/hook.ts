@@ -34,18 +34,18 @@ export const useAction = () => {
       value: CameraAiMonitorType.Security,
       label: `${t(MONITOR_KEY.SECURITY, monitorSource)}`,
     },
-    // {
-    //   value: CameraAiMonitorType.Smoke,
-    //   label: `${t(MONITOR_KEY.SMOKE, monitorSource)}`,
-    // },
-    // {
-    //   value: CameraAiMonitorType.Fight,
-    //   label: `${t(MONITOR_KEY.FIGHT, monitorSource)}`,
-    // },
-    // {
-    //   value: CameraAiMonitorType.Costume,
-    //   label: `${t(MONITOR_KEY.COSTUME, monitorSource)}`,
-    // },
+    {
+      value: CameraAiMonitorType.Smoke,
+      label: `${t(MONITOR_KEY.SMOKE, monitorSource)}`,
+    },
+    {
+      value: CameraAiMonitorType.Fight,
+      label: `${t(MONITOR_KEY.FIGHT, monitorSource)}`,
+    },
+    {
+      value: CameraAiMonitorType.Costume,
+      label: `${t(MONITOR_KEY.COSTUME, monitorSource)}`,
+    },
     {
       value: CameraAiMonitorType.Animal,
       label: `${t(MONITOR_KEY.ANIMAL, monitorSource)}`,

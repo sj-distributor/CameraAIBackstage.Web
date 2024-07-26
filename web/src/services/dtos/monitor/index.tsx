@@ -24,6 +24,9 @@ export enum CameraAiMonitorType {
   Smoke, // 吸烟检测
   Fight, // 打架检测
   Costume, // 安全配备检测
+  FluorescentClothing = 501, // 荧光衣
+  Gloves = 502, // 手套
+  SafetyShoes = 503, // 安全鞋
   Security = 6, // 防盜
   Animal = 7, // 动物
   All = -1,
@@ -50,6 +53,7 @@ export interface IMonitorSettingsPublicDto {
   id?: number; // 更新填 id
   title: string;
   duration: number | null;
+  singleNoticeTime?: number | null;
   timeInterval?: number | null;
   notificationContent: string; // 通知内容
   broadcastContent?: string | null; // 广播内容

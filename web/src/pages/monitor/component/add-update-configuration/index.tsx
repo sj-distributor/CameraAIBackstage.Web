@@ -20,6 +20,7 @@ import { CameraAiMonitorType } from "@/services/dtos/monitor";
 import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
 import { useAction } from "./hook";
 import { IOptionsStringDto, TimeType } from "./props";
+import { RuleObject } from "antd/es/form";
 
 export const AddOrUpdateConfiguration = () => {
   const {
@@ -40,6 +41,8 @@ export const AddOrUpdateConfiguration = () => {
     submitLoading,
     isSelecteSecurity,
     selectModalType,
+    costumeAnimalOption,
+    costumeAnimalType,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
@@ -51,10 +54,44 @@ export const AddOrUpdateConfiguration = () => {
     filterOption,
     setIsSelectSecurity,
     setSelectModalType,
-    setAnimalType,
+    setCostumeAnimalType,
   } = useAction();
 
   const { message } = App.useApp();
+
+  const validateValue = (_: RuleObject, value: CameraAiMonitorType[]) => {
+    if (value.length) {
+      if (selectModalType.includes(CameraAiMonitorType.Animal)) {
+        if (
+          value.every(
+            (item) =>
+              item !== CameraAiMonitorType.Cat &&
+              item !== CameraAiMonitorType.Dog &&
+              item !== CameraAiMonitorType.Bird
+          )
+        ) {
+          return Promise.reject(`請至少選擇一種動物配備類型`);
+        }
+      }
+
+      if (selectModalType.includes(CameraAiMonitorType.Costume)) {
+        if (
+          value.every(
+            (item) =>
+              item !== CameraAiMonitorType.FluorescentClothing &&
+              item !== CameraAiMonitorType.Gloves &&
+              item !== CameraAiMonitorType.SafetyShoes
+          )
+        ) {
+          return Promise.reject(`請至少選擇一種安全配備類型`);
+        }
+      }
+
+      return Promise.resolve();
+    } else {
+      return Promise.reject(`請選擇配備類型`);
+    }
+  };
 
   return (
     <ConfigProvider
@@ -160,7 +197,11 @@ export const AddOrUpdateConfiguration = () => {
                                       (type) =>
                                         type !== CameraAiMonitorType.Cat &&
                                         type !== CameraAiMonitorType.Dog &&
-                                        type !== CameraAiMonitorType.Bird
+                                        type !== CameraAiMonitorType.Bird &&
+                                        type !==
+                                          CameraAiMonitorType.FluorescentClothing &&
+                                        type !== CameraAiMonitorType.Gloves &&
+                                        type !== CameraAiMonitorType.SafetyShoes
                                     )
                                   : null
                               }
@@ -194,24 +235,24 @@ export const AddOrUpdateConfiguration = () => {
                                       ns: "monitor",
                                     })}`,
                                   },
-                                  // {
-                                  //   value: CameraAiMonitorType.Smoke,
-                                  //   label: `${t(MONITOR_KEY.SMOKE, {
-                                  //     ns: "monitor",
-                                  //   })}`,
-                                  // },
-                                  // {
-                                  //   value: CameraAiMonitorType.Fight,
-                                  //   label: `${t(MONITOR_KEY.FIGHT, {
-                                  //     ns: "monitor",
-                                  //   })}`,
-                                  // },
-                                  // {
-                                  //   value: CameraAiMonitorType.Costume,
-                                  //   label: `${t(MONITOR_KEY.COSTUME, {
-                                  //     ns: "monitor",
-                                  //   })}`,
-                                  // },
+                                  {
+                                    value: CameraAiMonitorType.Smoke,
+                                    label: `${t(MONITOR_KEY.SMOKE, {
+                                      ns: "monitor",
+                                    })}`,
+                                  },
+                                  {
+                                    value: CameraAiMonitorType.Fight,
+                                    label: `${t(MONITOR_KEY.FIGHT, {
+                                      ns: "monitor",
+                                    })}`,
+                                  },
+                                  {
+                                    value: CameraAiMonitorType.Costume,
+                                    label: `${t(MONITOR_KEY.COSTUME, {
+                                      ns: "monitor",
+                                    })}`,
+                                  },
                                   {
                                     value: CameraAiMonitorType.Animal,
                                     label: `${t(MONITOR_KEY.ANIMAL, {
@@ -222,7 +263,6 @@ export const AddOrUpdateConfiguration = () => {
                                 filterOption={filterOption}
                                 onChange={(value) => {
                                   form.setFieldValue("exceptionType", value);
-                                  console.log(value);
 
                                   setSelectModalType(value);
 
@@ -238,150 +278,8 @@ export const AddOrUpdateConfiguration = () => {
                             </FormItem>
                           </div>
 
-                          {/* 識別動物 */}
-                          {selectModalType.includes(
-                            CameraAiMonitorType.Animal
-                          ) && (
-                            <div className="flex flex-col w-[26.4375rem]">
-                              <span className="pb-2">配備類型</span>
-
-                              <FormItem
-                                name="animalType"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: `${t(
-                                      KEYS.EXCEPTION_TYPE_PLACEHOLDER,
-                                      source
-                                    )}`,
-                                  },
-                                ]}
-                                initialValue={
-                                  editDetailData
-                                    ? editDetailData.monitorTypes.filter(
-                                        (type) =>
-                                          type === CameraAiMonitorType.Cat ||
-                                          type === CameraAiMonitorType.Dog ||
-                                          type === CameraAiMonitorType.Bird
-                                      )
-                                    : null
-                                }
-                              >
-                                <Select
-                                  mode="multiple"
-                                  options={[
-                                    {
-                                      value: CameraAiMonitorType.Cat,
-                                      label: "貓",
-                                    },
-                                    {
-                                      value: CameraAiMonitorType.Dog,
-                                      label: "狗",
-                                    },
-                                    {
-                                      value: CameraAiMonitorType.Bird,
-                                      label: "鳥",
-                                    },
-                                  ]}
-                                  onChange={(value) => {
-                                    setAnimalType(value);
-                                  }}
-                                />
-                              </FormItem>
-                            </div>
-                          )}
-
-                          {/* 识别安全配备 */}
-                          {/* <div className="flex flex-col w-[26.4375rem]">
-                            <span className="pb-2">配備類型</span>
-
-                            <FormItem>
-                              <Select
-                                mode="multiple"
-                                options={[
-                                  { value: "螢光帶", label: "螢光帶" },
-                                  { value: "手套", label: "手套" },
-                                  { value: "腰帶", label: "腰帶" },
-                                  { value: "安全鞋", label: "安全鞋" },
-                                ]}
-                              />
-                            </FormItem>
-                          </div> */}
-
-                          {/* 识别吸烟 */}
-                          {/* <div className="flex flex-col w-[13rem] pr-[2rem]">
-                            <span className="pb-2">通知策略</span>
-                            <FormItem>
-                              <Select
-                                options={[
-                                  { value: "單次通知", label: "單次通知" },
-                                ]}
-                              />
-                              <div className="text-[0.75rem] text-[#5F6279] mt-[.5rem]">
-                                說明：限定時間內只通知一次
-                              </div>
-                            </FormItem>
-                          </div>
-
-                          <div className="flex flex-col">
-                            <span className="pb-2">
-                              <span className="text-red-500">* </span>限定時間
-                            </span>
-
-                            <div className="flex space-x-2">
-                              <FormItem>
-                                <Input placeholder="請輸入限定時間" />
-                              </FormItem>
-
-                              <FormItem
-                                className="w-[40%]"
-                                name="timeType"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: `${t(
-                                      KEYS.DURATION_UNIT_RULE_TIPS,
-                                      source
-                                    )}`,
-                                  },
-                                ]}
-                                initialValue={
-                                  editDetailData?.duration
-                                    ? handleUnitConversion(
-                                        editDetailData.duration,
-                                        true
-                                      )
-                                    : null
-                                }
-                              >
-                                <Select
-                                  placeholder={t(KEYS.SECOND, source)}
-                                  defaultActiveFirstOption
-                                  options={[
-                                    {
-                                      value: TimeType.Second,
-                                      label: `${t(KEYS.SECOND, source)}`,
-                                    },
-                                    {
-                                      value: TimeType.Minute,
-                                      label: `${t(KEYS.MINUTE, source)}`,
-                                    },
-                                    {
-                                      value: TimeType.Hours,
-                                      label: `${t(KEYS.HOUR, source)}`,
-                                    },
-                                  ]}
-                                  onChange={(value) =>
-                                    form.setFieldValue("timeType", value)
-                                  }
-                                  suffixIcon={<img src={downArrow} />}
-                                />
-                              </FormItem>
-                            </div>
-                          </div> */}
-
-                          {/* 原本的 */}
-                          <div className="flex flex-col w-[26.4375rem]">
+                          {/* 原本的：徘徊、人、车 */}
+                          <div className="flex flex-col w-[26.4375rem] mr-2">
                             <span className="pb-2">
                               {t(KEYS.DURATION_TIME, source)}
                             </span>
@@ -468,6 +366,168 @@ export const AddOrUpdateConfiguration = () => {
                               </FormItem>
                             </div>
                           </div>
+
+                          {/* 識別動物、识别安全配备 */}
+                          {/* {(selectModalType.includes(
+                            CameraAiMonitorType.Animal
+                          ) ||
+                            selectModalType.includes(
+                              CameraAiMonitorType.Costume
+                            )) && ( */}
+                          <div className="flex flex-col w-[26.4375rem] pr-[2rem]">
+                            <span className="pb-2">配備類型</span>
+
+                            <FormItem
+                              name="costumeAnimalType"
+                              rules={[
+                                {
+                                  validator: validateValue,
+                                },
+                              ]}
+                              initialValue={
+                                editDetailData
+                                  ? editDetailData.monitorTypes.filter(
+                                      (type) =>
+                                        type === CameraAiMonitorType.Cat ||
+                                        type === CameraAiMonitorType.Dog ||
+                                        type === CameraAiMonitorType.Bird ||
+                                        type ===
+                                          CameraAiMonitorType.FluorescentClothing ||
+                                        type === CameraAiMonitorType.Gloves ||
+                                        type === CameraAiMonitorType.SafetyShoes
+                                    )
+                                  : null
+                              }
+                            >
+                              <Select
+                                mode="multiple"
+                                options={costumeAnimalOption}
+                                value={costumeAnimalType}
+                                onChange={(value) => {
+                                  setCostumeAnimalType(value);
+                                }}
+                              />
+                            </FormItem>
+                          </div>
+                          {/* )} */}
+
+                          {/* 识别吸烟 识别打架 */}
+                          {(selectModalType.includes(
+                            CameraAiMonitorType.Smoke
+                          ) ||
+                            selectModalType.includes(
+                              CameraAiMonitorType.Fight
+                            )) && (
+                            <div className="flex mr-[2rem] mb-[.75rem] relative">
+                              <div className="flex flex-col w-[9.5rem] pr-[2rem]">
+                                <span className="pb-2">通知策略</span>
+                                <FormItem>
+                                  <Select
+                                    defaultValue={"單次通知"}
+                                    options={[
+                                      { value: "單次通知", label: "單次通知" },
+                                    ]}
+                                  />
+                                </FormItem>
+                              </div>
+
+                              <div className="flex flex-col">
+                                <span className="pb-2">
+                                  <span className="text-red-500">* </span>
+                                  限定時間
+                                </span>
+
+                                <div className="flex space-x-2">
+                                  <FormItem
+                                    name="singleTime"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: `請輸入限定時間`,
+                                      },
+                                    ]}
+                                    initialValue={
+                                      editDetailData?.singleNoticeTime
+                                        ? handleUnitConversion(
+                                            editDetailData.singleNoticeTime,
+                                            false
+                                          )
+                                        : null
+                                    }
+                                  >
+                                    <Input
+                                      placeholder="請輸入限定時間"
+                                      type="number"
+                                      onChange={(e) => {
+                                        const sanitizedValue =
+                                          e.target.value.replace(
+                                            /[^0-9.]/g,
+                                            ""
+                                          );
+
+                                        form.setFieldValue(
+                                          "singleTime",
+                                          sanitizedValue
+                                        );
+                                      }}
+                                    />
+                                  </FormItem>
+
+                                  <FormItem
+                                    className="w-[40%]"
+                                    name="singleTimeType"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: `${t(
+                                          KEYS.DURATION_UNIT_RULE_TIPS,
+                                          source
+                                        )}`,
+                                      },
+                                    ]}
+                                    initialValue={
+                                      editDetailData?.singleNoticeTime
+                                        ? handleUnitConversion(
+                                            editDetailData.singleNoticeTime,
+                                            true
+                                          )
+                                        : null
+                                    }
+                                  >
+                                    <Select
+                                      placeholder={t(KEYS.SECOND, source)}
+                                      defaultActiveFirstOption
+                                      options={[
+                                        {
+                                          value: TimeType.Second,
+                                          label: `${t(KEYS.SECOND, source)}`,
+                                        },
+                                        {
+                                          value: TimeType.Minute,
+                                          label: `${t(KEYS.MINUTE, source)}`,
+                                        },
+                                        {
+                                          value: TimeType.Hours,
+                                          label: `${t(KEYS.HOUR, source)}`,
+                                        },
+                                      ]}
+                                      onChange={(value) =>
+                                        form.setFieldValue(
+                                          "singleTimeType",
+                                          value
+                                        )
+                                      }
+                                      suffixIcon={<img src={downArrow} />}
+                                    />
+                                  </FormItem>
+                                </div>
+                              </div>
+
+                              <div className="absolute text-[0.75rem] text-[#5F6279] bottom-0">
+                                說明：限定時間內只通知一次
+                              </div>
+                            </div>
+                          )}
 
                           {isSelecteSecurity && (
                             <div className="flex flex-col w-[24.4rem]">

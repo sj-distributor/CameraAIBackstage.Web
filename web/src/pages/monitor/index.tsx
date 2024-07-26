@@ -106,6 +106,15 @@ export const Monitor = () => {
 
             case CameraAiMonitorType.Animal:
               return t(KEYS.ANIMAL, source);
+
+            case CameraAiMonitorType.Costume:
+              return "識別安全配備";
+
+            case CameraAiMonitorType.Smoke:
+              return "識別吸煙";
+
+            case CameraAiMonitorType.Fight:
+              return "識別打架";
           }
         };
 
@@ -296,18 +305,18 @@ export const Monitor = () => {
                     value: CameraAiMonitorType.AbnormalVehicles,
                     label: `${t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source)}`,
                   },
-                  // {
-                  //   value: CameraAiMonitorType.Smoke,
-                  //   label: `${t(KEYS.SMOKE, source)}`,
-                  // },
-                  // {
-                  //   value: CameraAiMonitorType.Fight,
-                  //   label: `${t(KEYS.FIGHT, source)}`,
-                  // },
-                  // {
-                  //   value: CameraAiMonitorType.Costume,
-                  //   label: `${t(KEYS.COSTUME, source)}`,
-                  // },
+                  {
+                    value: CameraAiMonitorType.Smoke,
+                    label: `${t(KEYS.SMOKE, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.Fight,
+                    label: `${t(KEYS.FIGHT, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.Costume,
+                    label: `${t(KEYS.COSTUME, source)}`,
+                  },
                   {
                     value: CameraAiMonitorType.Animal,
                     label: `${t(KEYS.ANIMAL, source)}`,
@@ -339,7 +348,7 @@ export const Monitor = () => {
               columns={columns}
               dataSource={data}
               className="pt-[1.125rem] tableHiddenScrollBar"
-              scroll={{ y: 550, x: 580 }}
+              scroll={{ y: "calc(100vh - 25rem)", x: 580 }}
               pagination={false}
               loading={loading}
             />
