@@ -21,7 +21,13 @@ export default {
   IDENTIFY_ABNORMAL_VEHICLES: "identifyAbnormalVehicles",
   SECURITY: "Security",
   ANIMAL: "Animal",
+  CAT: "Cat",
+  DOG: "Dog",
+  BIRD: "Bird",
   SMOKE: "Smoke",
   FIGHT: "Fight",
   COSTUME: "Costume",
+  FlUORESCENTCLOTHING: "FluorescentClothing",
+  GLOVES: "Gloves",
+  SAFETYSHOES: "SafetyShoes",
 };

@@ -9,6 +9,8 @@ import { Moment } from "moment";
 import { useAuth } from "@/hooks/use-auth";
 
 import KEYS from "../../../../i18n/language/keys/monitor-configuration-keys";
+import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
+
 import {
   ICronListDto,
   IOptionsNumberDto,
@@ -158,30 +160,42 @@ export const useAction = () => {
   const animalOptions = [
     {
       value: CameraAiMonitorType.Cat,
-      label: "貓",
+      label: t(MONITOR_KEY.CAT, {
+        ns: "monitor",
+      }),
     },
     {
       value: CameraAiMonitorType.Dog,
-      label: "狗",
+      label: t(MONITOR_KEY.DOG, {
+        ns: "monitor",
+      }),
     },
     {
       value: CameraAiMonitorType.Bird,
-      label: "鳥",
+      label: t(MONITOR_KEY.BIRD, {
+        ns: "monitor",
+      }),
     },
   ];
 
   const costumeOptions = [
     {
       value: CameraAiMonitorType.FluorescentClothing,
-      label: "螢光衣",
+      label: t(MONITOR_KEY.FlUORESCENTCLOTHING, {
+        ns: "monitor",
+      }),
     },
     {
       value: CameraAiMonitorType.Gloves,
-      label: "手套",
+      label: t(MONITOR_KEY.GLOVES, {
+        ns: "monitor",
+      }),
     },
     {
       value: CameraAiMonitorType.SafetyShoes,
-      label: "安全鞋",
+      label: t(MONITOR_KEY.SAFETYSHOES, {
+        ns: "monitor",
+      }),
     },
   ];
 
@@ -399,10 +413,6 @@ export const useAction = () => {
         );
       }
 
-      console.log(data);
-
-      // return;
-
       setSubmitLoadin(true);
       isAdd
         ? MonitorSettingCreate(data)
@@ -549,28 +559,6 @@ export const useAction = () => {
     setCronList(isAdd ? initCronList : editCronList);
   }, [isAdd, editDetailData, editDetailUser]);
 
-  // const filterTypes = useMemo(() => {
-  //   const filterType = clone(costumeAnimalType);
-
-  //   if (!selectModalType.includes(CameraAiMonitorType.Animal)) {
-  //     return filterType.filter(
-  //       (type) =>
-  //         type === CameraAiMonitorType.Cat ||
-  //         type === CameraAiMonitorType.Dog ||
-  //         type === CameraAiMonitorType.Bird
-  //     );
-  //   }
-
-  //   if (!selectModalType.includes(CameraAiMonitorType.Costume)) {
-  //     return filterType.filter(
-  //       (type) =>
-  //         type === CameraAiMonitorType.FluorescentClothing ||
-  //         type === CameraAiMonitorType.Gloves ||
-  //         type === CameraAiMonitorType.SafetyShoes
-  //     );
-  //   }
-  // }, [costumeAnimalOption]);
-
   useEffect(() => {
     let filterType: CameraAiMonitorType[] = [...costumeAnimalType];
 
@@ -596,10 +584,6 @@ export const useAction = () => {
 
     form.setFieldsValue({ costumeAnimalType: filterType });
   }, [selectModalType]);
-
-  useEffect(() => {
-    console.log(costumeAnimalType);
-  }, [costumeAnimalType]);
 
   return {
     cronList,

@@ -108,13 +108,13 @@ export const Monitor = () => {
               return t(KEYS.ANIMAL, source);
 
             case CameraAiMonitorType.Costume:
-              return "識別安全配備";
+              return t(KEYS.COSTUME, source);
 
             case CameraAiMonitorType.Smoke:
-              return "識別吸煙";
+              return t(KEYS.SMOKE, source);
 
             case CameraAiMonitorType.Fight:
-              return "識別打架";
+              return t(KEYS.FIGHT, source);
           }
         };
 

@@ -70,7 +70,7 @@ export const AddOrUpdateConfiguration = () => {
               item !== CameraAiMonitorType.Bird
           )
         ) {
-          return Promise.reject(`請至少選擇一種動物配備類型`);
+          return Promise.reject(`${t(KEYS.ANIMAL_TYPE_TIPS, source)}`);
         }
       }
 
@@ -83,13 +83,13 @@ export const AddOrUpdateConfiguration = () => {
               item !== CameraAiMonitorType.SafetyShoes
           )
         ) {
-          return Promise.reject(`請至少選擇一種安全配備類型`);
+          return Promise.reject(`${t(KEYS.COSTUME_TYPE_TIPS, source)}`);
         }
       }
 
       return Promise.resolve();
     } else {
-      return Promise.reject(`請選擇配備類型`);
+      return Promise.reject(`${t(KEYS.EQUIPMENT_TYPE_TIPS, source)}`);
     }
   };
 
@@ -375,7 +375,9 @@ export const AddOrUpdateConfiguration = () => {
                               CameraAiMonitorType.Costume
                             )) && (
                             <div className="flex flex-col w-[26.4375rem] pr-[2rem]">
-                              <span className="pb-2">配備類型</span>
+                              <span className="pb-2">
+                                {t(KEYS.EQUIPMENT_TYPE, source)}
+                              </span>
 
                               <FormItem
                                 name="costumeAnimalType"
@@ -421,12 +423,23 @@ export const AddOrUpdateConfiguration = () => {
                             )) && (
                             <div className="flex mr-[2rem] mb-[.75rem] relative">
                               <div className="flex flex-col w-[9.5rem] pr-[2rem]">
-                                <span className="pb-2">通知策略</span>
+                                <span className="pb-2">
+                                  {t(KEYS.NOTICE_STRATEGY, source)}
+                                </span>
                                 <FormItem>
                                   <Select
-                                    defaultValue={"單次通知"}
+                                    defaultValue={t(KEYS.SINGLE_NOTICE, source)}
                                     options={[
-                                      { value: "單次通知", label: "單次通知" },
+                                      {
+                                        value: `${t(
+                                          KEYS.SINGLE_NOTICE,
+                                          source
+                                        )}`,
+                                        label: `${t(
+                                          KEYS.SINGLE_NOTICE,
+                                          source
+                                        )}`,
+                                      },
                                     ]}
                                   />
                                 </FormItem>
@@ -435,7 +448,7 @@ export const AddOrUpdateConfiguration = () => {
                               <div className="flex flex-col">
                                 <span className="pb-2">
                                   <span className="text-red-500">* </span>
-                                  限定時間
+                                  {t(KEYS.SINGLE_NOTICE_TIME, source)}
                                 </span>
 
                                 <div className="flex space-x-2">
@@ -444,7 +457,10 @@ export const AddOrUpdateConfiguration = () => {
                                     rules={[
                                       {
                                         required: true,
-                                        message: `請輸入限定時間`,
+                                        message: `${t(
+                                          KEYS.SINGLE_NOTICE_TIME_TIPS,
+                                          source
+                                        )}`,
                                       },
                                     ]}
                                     initialValue={
@@ -457,7 +473,10 @@ export const AddOrUpdateConfiguration = () => {
                                     }
                                   >
                                     <Input
-                                      placeholder="請輸入限定時間"
+                                      placeholder={t(
+                                        KEYS.SINGLE_NOTICE_TIME_TIPS,
+                                        source
+                                      )}
                                       type="number"
                                       onChange={(e) => {
                                         const sanitizedValue =
@@ -525,7 +544,7 @@ export const AddOrUpdateConfiguration = () => {
                               </div>
 
                               <div className="absolute text-[0.75rem] text-[#5F6279] bottom-0">
-                                說明：限定時間內只通知一次
+                                {t(KEYS.SINGLE_NOTICE_TIPS, source)}
                               </div>
                             </div>
                           )}
