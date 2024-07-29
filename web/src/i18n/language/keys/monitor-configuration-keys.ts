@@ -50,4 +50,13 @@ export default {
   SELECT_RULE_TIPS: "SelectRuleTips",
   BACK: "Back",
   CONFIRM: "Confirm",
+  ANIMAL_TYPE_TIPS: "AnimalTypeTips",
+  COSTUME_TYPE_TIPS: "CostumeTypeTips",
+  EQUIPMENT_TYPE_TIPS: "EquipmentTypeTips",
+  EQUIPMENT_TYPE: "EquipmentType",
+  NOTICE_STRATEGY: "NoticeStrategy",
+  SINGLE_NOTICE: "SingleNotice",
+  SINGLE_NOTICE_TIME: "SingleNoticeTime",
+  SINGLE_NOTICE_TIME_TIPS: "SingleNoticeTimeTips",
+  SINGLE_NOTICE_TIPS: "SingleNoticeTips",
 };
