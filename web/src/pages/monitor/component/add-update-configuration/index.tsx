@@ -368,48 +368,49 @@ export const AddOrUpdateConfiguration = () => {
                           </div>
 
                           {/* 識別動物、识别安全配备 */}
-                          {/* {(selectModalType.includes(
+                          {(selectModalType.includes(
                             CameraAiMonitorType.Animal
                           ) ||
                             selectModalType.includes(
                               CameraAiMonitorType.Costume
-                            )) && ( */}
-                          <div className="flex flex-col w-[26.4375rem] pr-[2rem]">
-                            <span className="pb-2">配備類型</span>
+                            )) && (
+                            <div className="flex flex-col w-[26.4375rem] pr-[2rem]">
+                              <span className="pb-2">配備類型</span>
 
-                            <FormItem
-                              name="costumeAnimalType"
-                              rules={[
-                                {
-                                  validator: validateValue,
-                                },
-                              ]}
-                              initialValue={
-                                editDetailData
-                                  ? editDetailData.monitorTypes.filter(
-                                      (type) =>
-                                        type === CameraAiMonitorType.Cat ||
-                                        type === CameraAiMonitorType.Dog ||
-                                        type === CameraAiMonitorType.Bird ||
-                                        type ===
-                                          CameraAiMonitorType.FluorescentClothing ||
-                                        type === CameraAiMonitorType.Gloves ||
-                                        type === CameraAiMonitorType.SafetyShoes
-                                    )
-                                  : null
-                              }
-                            >
-                              <Select
-                                mode="multiple"
-                                options={costumeAnimalOption}
-                                value={costumeAnimalType}
-                                onChange={(value) => {
-                                  setCostumeAnimalType(value);
-                                }}
-                              />
-                            </FormItem>
-                          </div>
-                          {/* )} */}
+                              <FormItem
+                                name="costumeAnimalType"
+                                rules={[
+                                  {
+                                    validator: validateValue,
+                                  },
+                                ]}
+                                initialValue={
+                                  editDetailData
+                                    ? editDetailData.monitorTypes.filter(
+                                        (type) =>
+                                          type === CameraAiMonitorType.Cat ||
+                                          type === CameraAiMonitorType.Dog ||
+                                          type === CameraAiMonitorType.Bird ||
+                                          type ===
+                                            CameraAiMonitorType.FluorescentClothing ||
+                                          type === CameraAiMonitorType.Gloves ||
+                                          type ===
+                                            CameraAiMonitorType.SafetyShoes
+                                      )
+                                    : null
+                                }
+                              >
+                                <Select
+                                  mode="multiple"
+                                  options={costumeAnimalOption}
+                                  value={costumeAnimalType}
+                                  onChange={(value) => {
+                                    setCostumeAnimalType(value);
+                                  }}
+                                />
+                              </FormItem>
+                            </div>
+                          )}
 
                           {/* 识别吸烟 识别打架 */}
                           {(selectModalType.includes(

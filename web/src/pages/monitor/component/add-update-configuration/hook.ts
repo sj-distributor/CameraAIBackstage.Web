@@ -593,6 +593,8 @@ export const useAction = () => {
     }
 
     setCostumeAnimalType(filterType);
+
+    form.setFieldsValue({ costumeAnimalType: filterType });
   }, [selectModalType]);
 
   useEffect(() => {
