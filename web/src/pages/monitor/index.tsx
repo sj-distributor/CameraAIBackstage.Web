@@ -103,6 +103,18 @@ export const Monitor = () => {
 
             case CameraAiMonitorType.Security:
               return t(KEYS.SECURITY, source);
+
+            case CameraAiMonitorType.Animal:
+              return t(KEYS.ANIMAL, source);
+
+            case CameraAiMonitorType.Costume:
+              return t(KEYS.COSTUME, source);
+
+            case CameraAiMonitorType.Smoke:
+              return t(KEYS.SMOKE, source);
+
+            case CameraAiMonitorType.Fight:
+              return t(KEYS.FIGHT, source);
           }
         };
 
@@ -294,6 +306,22 @@ export const Monitor = () => {
                     label: `${t(KEYS.IDENTIFY_ABNORMAL_VEHICLES, source)}`,
                   },
                   {
+                    value: CameraAiMonitorType.Smoke,
+                    label: `${t(KEYS.SMOKE, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.Fight,
+                    label: `${t(KEYS.FIGHT, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.Costume,
+                    label: `${t(KEYS.COSTUME, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.Animal,
+                    label: `${t(KEYS.ANIMAL, source)}`,
+                  },
+                  {
                     value: CameraAiMonitorType.Security,
                     label: `${t(KEYS.SECURITY, source)}`,
                   },
@@ -320,7 +348,7 @@ export const Monitor = () => {
               columns={columns}
               dataSource={data}
               className="pt-[1.125rem] tableHiddenScrollBar"
-              scroll={{ y: 550, x: 580 }}
+              scroll={{ y: "calc(100vh - 25rem)", x: 580 }}
               pagination={false}
               loading={loading}
             />

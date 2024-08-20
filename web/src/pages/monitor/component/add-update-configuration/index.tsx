@@ -20,6 +20,7 @@ import { CameraAiMonitorType } from "@/services/dtos/monitor";
 import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
 import { useAction } from "./hook";
 import { IOptionsStringDto, TimeType } from "./props";
+import { RuleObject } from "antd/es/form";
 
 export const AddOrUpdateConfiguration = () => {
   const {
@@ -39,6 +40,9 @@ export const AddOrUpdateConfiguration = () => {
     detailLoading,
     submitLoading,
     isSelecteSecurity,
+    selectModalType,
+    costumeAnimalOption,
+    costumeAnimalType,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
@@ -49,9 +53,45 @@ export const AddOrUpdateConfiguration = () => {
     secondsToTime,
     filterOption,
     setIsSelectSecurity,
+    setSelectModalType,
+    setCostumeAnimalType,
   } = useAction();
 
   const { message } = App.useApp();
+
+  const validateValue = (_: RuleObject, value: CameraAiMonitorType[]) => {
+    if (value.length) {
+      if (selectModalType.includes(CameraAiMonitorType.Animal)) {
+        if (
+          value.every(
+            (item) =>
+              item !== CameraAiMonitorType.Cat &&
+              item !== CameraAiMonitorType.Dog &&
+              item !== CameraAiMonitorType.Bird
+          )
+        ) {
+          return Promise.reject(`${t(KEYS.ANIMAL_TYPE_TIPS, source)}`);
+        }
+      }
+
+      if (selectModalType.includes(CameraAiMonitorType.Costume)) {
+        if (
+          value.every(
+            (item) =>
+              item !== CameraAiMonitorType.FluorescentClothing &&
+              item !== CameraAiMonitorType.Gloves &&
+              item !== CameraAiMonitorType.SafetyShoes
+          )
+        ) {
+          return Promise.reject(`${t(KEYS.COSTUME_TYPE_TIPS, source)}`);
+        }
+      }
+
+      return Promise.resolve();
+    } else {
+      return Promise.reject(`${t(KEYS.EQUIPMENT_TYPE_TIPS, source)}`);
+    }
+  };
 
   return (
     <ConfigProvider
@@ -153,7 +193,16 @@ export const AddOrUpdateConfiguration = () => {
                               ]}
                               initialValue={
                                 editDetailData
-                                  ? editDetailData.monitorTypes
+                                  ? editDetailData.monitorTypes.filter(
+                                      (type) =>
+                                        type !== CameraAiMonitorType.Cat &&
+                                        type !== CameraAiMonitorType.Dog &&
+                                        type !== CameraAiMonitorType.Bird &&
+                                        type !==
+                                          CameraAiMonitorType.FluorescentClothing &&
+                                        type !== CameraAiMonitorType.Gloves &&
+                                        type !== CameraAiMonitorType.SafetyShoes
+                                    )
                                   : null
                               }
                             >
@@ -186,10 +235,37 @@ export const AddOrUpdateConfiguration = () => {
                                       ns: "monitor",
                                     })}`,
                                   },
+                                  {
+                                    value: CameraAiMonitorType.Smoke,
+                                    label: `${t(MONITOR_KEY.SMOKE, {
+                                      ns: "monitor",
+                                    })}`,
+                                  },
+                                  {
+                                    value: CameraAiMonitorType.Fight,
+                                    label: `${t(MONITOR_KEY.FIGHT, {
+                                      ns: "monitor",
+                                    })}`,
+                                  },
+                                  {
+                                    value: CameraAiMonitorType.Costume,
+                                    label: `${t(MONITOR_KEY.COSTUME, {
+                                      ns: "monitor",
+                                    })}`,
+                                  },
+                                  {
+                                    value: CameraAiMonitorType.Animal,
+                                    label: `${t(MONITOR_KEY.ANIMAL, {
+                                      ns: "monitor",
+                                    })}`,
+                                  },
                                 ]}
                                 filterOption={filterOption}
                                 onChange={(value) => {
                                   form.setFieldValue("exceptionType", value);
+
+                                  setSelectModalType(value);
+
                                   setIsSelectSecurity(
                                     value.includes(CameraAiMonitorType.Security)
                                   );
@@ -202,7 +278,8 @@ export const AddOrUpdateConfiguration = () => {
                             </FormItem>
                           </div>
 
-                          <div className="flex flex-col w-[26.4375rem]">
+                          {/* 原本的：徘徊、人、车 */}
+                          <div className="flex flex-col w-[26.4375rem] mr-2">
                             <span className="pb-2">
                               {t(KEYS.DURATION_TIME, source)}
                             </span>
@@ -289,6 +366,188 @@ export const AddOrUpdateConfiguration = () => {
                               </FormItem>
                             </div>
                           </div>
+
+                          {/* 識別動物、识别安全配备 */}
+                          {(selectModalType.includes(
+                            CameraAiMonitorType.Animal
+                          ) ||
+                            selectModalType.includes(
+                              CameraAiMonitorType.Costume
+                            )) && (
+                            <div className="flex flex-col w-[26.4375rem] pr-[2rem]">
+                              <span className="pb-2">
+                                {t(KEYS.EQUIPMENT_TYPE, source)}
+                              </span>
+
+                              <FormItem
+                                name="costumeAnimalType"
+                                rules={[
+                                  {
+                                    validator: validateValue,
+                                  },
+                                ]}
+                                initialValue={
+                                  editDetailData
+                                    ? editDetailData.monitorTypes.filter(
+                                        (type) =>
+                                          type === CameraAiMonitorType.Cat ||
+                                          type === CameraAiMonitorType.Dog ||
+                                          type === CameraAiMonitorType.Bird ||
+                                          type ===
+                                            CameraAiMonitorType.FluorescentClothing ||
+                                          type === CameraAiMonitorType.Gloves ||
+                                          type ===
+                                            CameraAiMonitorType.SafetyShoes
+                                      )
+                                    : null
+                                }
+                              >
+                                <Select
+                                  mode="multiple"
+                                  options={costumeAnimalOption}
+                                  value={costumeAnimalType}
+                                  onChange={(value) => {
+                                    setCostumeAnimalType(value);
+                                  }}
+                                />
+                              </FormItem>
+                            </div>
+                          )}
+
+                          {/* 识别吸烟 识别打架 */}
+                          {(selectModalType.includes(
+                            CameraAiMonitorType.Smoke
+                          ) ||
+                            selectModalType.includes(
+                              CameraAiMonitorType.Fight
+                            )) && (
+                            <div className="flex mr-[2rem] mb-[.75rem] relative">
+                              <div className="flex flex-col w-[9.5rem] pr-[2rem]">
+                                <span className="pb-2">
+                                  {t(KEYS.NOTICE_STRATEGY, source)}
+                                </span>
+                                <FormItem>
+                                  <Select
+                                    defaultValue={t(KEYS.SINGLE_NOTICE, source)}
+                                    options={[
+                                      {
+                                        value: `${t(
+                                          KEYS.SINGLE_NOTICE,
+                                          source
+                                        )}`,
+                                        label: `${t(
+                                          KEYS.SINGLE_NOTICE,
+                                          source
+                                        )}`,
+                                      },
+                                    ]}
+                                  />
+                                </FormItem>
+                              </div>
+
+                              <div className="flex flex-col">
+                                <span className="pb-2">
+                                  <span className="text-red-500">* </span>
+                                  {t(KEYS.SINGLE_NOTICE_TIME, source)}
+                                </span>
+
+                                <div className="flex space-x-2">
+                                  <FormItem
+                                    name="singleTime"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: `${t(
+                                          KEYS.SINGLE_NOTICE_TIME_TIPS,
+                                          source
+                                        )}`,
+                                      },
+                                    ]}
+                                    initialValue={
+                                      editDetailData?.singleNoticeTime
+                                        ? handleUnitConversion(
+                                            editDetailData.singleNoticeTime,
+                                            false
+                                          )
+                                        : null
+                                    }
+                                  >
+                                    <Input
+                                      placeholder={t(
+                                        KEYS.SINGLE_NOTICE_TIME_TIPS,
+                                        source
+                                      )}
+                                      type="number"
+                                      onChange={(e) => {
+                                        const sanitizedValue =
+                                          e.target.value.replace(
+                                            /[^0-9.]/g,
+                                            ""
+                                          );
+
+                                        form.setFieldValue(
+                                          "singleTime",
+                                          sanitizedValue
+                                        );
+                                      }}
+                                    />
+                                  </FormItem>
+
+                                  <FormItem
+                                    className="w-[40%]"
+                                    name="singleTimeType"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: `${t(
+                                          KEYS.DURATION_UNIT_RULE_TIPS,
+                                          source
+                                        )}`,
+                                      },
+                                    ]}
+                                    initialValue={
+                                      editDetailData?.singleNoticeTime
+                                        ? handleUnitConversion(
+                                            editDetailData.singleNoticeTime,
+                                            true
+                                          )
+                                        : null
+                                    }
+                                  >
+                                    <Select
+                                      placeholder={t(KEYS.SECOND, source)}
+                                      defaultActiveFirstOption
+                                      options={[
+                                        {
+                                          value: TimeType.Second,
+                                          label: `${t(KEYS.SECOND, source)}`,
+                                        },
+                                        {
+                                          value: TimeType.Minute,
+                                          label: `${t(KEYS.MINUTE, source)}`,
+                                        },
+                                        {
+                                          value: TimeType.Hours,
+                                          label: `${t(KEYS.HOUR, source)}`,
+                                        },
+                                      ]}
+                                      onChange={(value) =>
+                                        form.setFieldValue(
+                                          "singleTimeType",
+                                          value
+                                        )
+                                      }
+                                      suffixIcon={<img src={downArrow} />}
+                                    />
+                                  </FormItem>
+                                </div>
+                              </div>
+
+                              <div className="absolute text-[0.75rem] text-[#5F6279] bottom-0">
+                                {t(KEYS.SINGLE_NOTICE_TIPS, source)}
+                              </div>
+                            </div>
+                          )}
 
                           {isSelecteSecurity && (
                             <div className="flex flex-col w-[24.4rem]">
