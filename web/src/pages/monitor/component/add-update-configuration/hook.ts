@@ -77,10 +77,11 @@ export const useAction = () => {
       title: t(KEYS.SHORT_MESSAGE, source),
       type: CameraAiNotificationType.Sms,
     },
-    {
-      title: t(KEYS.TELEPHONE, source),
-      type: CameraAiNotificationType.PhoneCall,
-    },
+    // 电话暂时隐藏
+    // {
+    //   title: t(KEYS.TELEPHONE, source),
+    //   type: CameraAiNotificationType.PhoneCall,
+    // },
   ];
 
   const initCronList = [
