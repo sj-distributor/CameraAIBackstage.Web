@@ -22,6 +22,7 @@ import {
 import { IPageDto } from "@/services/dtos/public";
 
 import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
+import { getErrorMessage } from "@/utils/error-message";
 
 export const useAction = () => {
   const { t, language, myPermissions } = useAuth();
@@ -152,7 +153,7 @@ export const useAction = () => {
         initGetEquipmentList();
         form.setFieldsValue(initialEquipmentData);
       })
-      .catch((err) => message.error(`更新失敗：${(err as Error).message}`))
+      .catch((err) => message.error(getErrorMessage((err as Error).message)))
       .finally(() => setConfirmLoading(false));
   };
 
@@ -167,7 +168,7 @@ export const useAction = () => {
         setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
         form.setFieldsValue(initialEquipmentData);
       })
-      .catch((err) => message.error(`新增失敗：${(err as Error).message}`))
+      .catch((err) => message.error(getErrorMessage((err as Error).message)))
       .finally(() => setConfirmLoading(false));
   };
 
