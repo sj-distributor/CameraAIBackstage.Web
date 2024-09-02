@@ -5,7 +5,7 @@ const ERROR_KEYWORDS = {
   DUPLICATE_CAMERA: "Reduplicative camera",
   DATABASE_ERROR: "gateway database error",
   ERROR_CAMERA: "camera not found or not online",
-  INSUFFICIENT_RESOURCES: "No node free",
+  INSUFFICIENT_RESOURCES: "insufficient resource",
 };
 
 export const getErrorMessage = (error: string) => {
