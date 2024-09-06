@@ -33,6 +33,7 @@ import {
 } from "@/services/api/monitor";
 import { GetEquipmentPage } from "@/services/api/equipment/list";
 import dayjs from "dayjs";
+import { getErrorMessage } from "@/utils/error-message";
 
 export const useAction = () => {
   const { t } = useAuth();
@@ -422,7 +423,7 @@ export const useAction = () => {
               navigate("/monitor");
             })
             .catch((err) => {
-              message.error(`创建失败：${(err as Error).message}`);
+              message.error(getErrorMessage((err as Error).message));
             })
             .finally(() => setSubmitLoadin(false))
         : MonitorSettingUpdate(data)
@@ -431,7 +432,7 @@ export const useAction = () => {
               navigate("/monitor");
             })
             .catch((err) => {
-              message.error(`编辑失败：${(err as Error).message}`);
+              message.error(getErrorMessage((err as Error).message));
             })
             .finally(() => setSubmitLoadin(false));
     });

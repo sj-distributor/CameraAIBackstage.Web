@@ -13,6 +13,7 @@ import operationLog from "./language/pages/operation-log";
 import portraitList from "./language/pages/portrait-list";
 import userList from "./language/pages/user-list";
 import userPermissions from "./language/pages/user-permissions";
+import errorMessage from "./language/pages/error-message";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -53,6 +54,9 @@ i18n.use(initReactI18next).init({
       homeMenu: {
         ...homeMenu.en,
       },
+      errorMessage: {
+        ...errorMessage.en,
+      },
     },
     ch: {
       operationLog: {
@@ -90,6 +94,9 @@ i18n.use(initReactI18next).init({
       },
       licensePlateManagement: {
         ...licensePlateManagement.ch,
+      },
+      errorMessage: {
+        ...errorMessage.ch,
       },
     },
   },
