@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
 import { GetFoundationData } from "@/services/api/tree";
+import { GetUserList } from "@/services/api/user";
 import { HierarchyDepthEnum, IFoundationResponse } from "@/services/dtos/tree";
+import { useUpdateEffect } from "ahooks";
 
 export interface IFoundationDetail {
   department: {
@@ -37,17 +39,16 @@ export interface ITreeSelectNode {
   children?: ITreeSelectNode[];
 }
 
-export const useAction = (props: {
-  staffIdSource: number;
-  disabledKeys?: string[];
-}) => {
-  const { staffIdSource, disabledKeys } = props;
+export const useAction = (props: { staffIdSource: number }) => {
+  const { staffIdSource } = props;
 
   const { t } = useAuth();
 
   const source = { ns: "userPermissions" };
 
   const [treeData, setTreeData] = useState<ITreeData[]>([]);
+
+  const [disableTreeStaffId, setDisableTreeStaffId] = useState<string[]>([]);
 
   const [treeFoundationResponse, setTreeFoundationResponse] =
     useState<IFoundationResponse>({ staffDepartmentHierarchy: [] });
@@ -68,7 +69,7 @@ export const useAction = (props: {
           value: staff.id,
           key: staff.id,
           isUser: true,
-          disabled: disabledKeys?.some((item) => item == staff.id),
+          disabled: disableTreeStaffId?.some((item) => item == staff.id),
         };
       });
     }
@@ -98,18 +99,35 @@ export const useAction = (props: {
       });
   };
 
+  const getAllUserList = () => {
+    GetUserList({
+      PageIndex: 1,
+      PageSize: 2147483647,
+    }).then((res) => {
+      setDisableTreeStaffId(
+        (res?.userProfiles ?? []).map((item) => item.staffId)
+      );
+    });
+  };
+
   useEffect(() => {
     onGetFoundationData();
+
+    getAllUserList();
   }, []);
 
   useEffect(() => {
-    disabledKeys?.length &&
+    disableTreeStaffId?.length &&
       setTreeData(
         treeFoundationResponse.staffDepartmentHierarchy
           ? convertToTreeData(treeFoundationResponse)
           : []
       );
-  }, [disabledKeys]);
+  }, [disableTreeStaffId]);
+
+  useUpdateEffect(() => {
+    console.log("treeData", treeData);
+  }, [treeData]);
 
   return { t, source, treeData };
 };

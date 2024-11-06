@@ -13,16 +13,14 @@ export const TransferTree = ({
   setIsModelOpen,
   handelGetSelectedUsers,
   staffIdSource,
-  disabledKeys,
 }: {
   isModelOpen: boolean;
   setIsModelOpen: (value: SetStateAction<boolean>) => void;
   data?: TransferItem[];
   handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
   staffIdSource: number;
-  disabledKeys?: string[];
 }) => {
-  const { t, source, treeData } = useAction({ staffIdSource, disabledKeys });
+  const { t, source, treeData } = useAction({ staffIdSource });
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
