@@ -125,9 +125,5 @@ export const useAction = (props: { staffIdSource: number }) => {
       );
   }, [disableTreeStaffId]);
 
-  useUpdateEffect(() => {
-    console.log("treeData", treeData);
-  }, [treeData]);
-
   return { t, source, treeData };
 };
