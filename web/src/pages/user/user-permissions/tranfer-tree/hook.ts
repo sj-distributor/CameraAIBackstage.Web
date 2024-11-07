@@ -5,7 +5,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { GetFoundationData } from "@/services/api/tree";
 import { GetUserList } from "@/services/api/user";
 import { HierarchyDepthEnum, IFoundationResponse } from "@/services/dtos/tree";
-import { useUpdateEffect } from "ahooks";
 
 export interface IFoundationDetail {
   department: {
