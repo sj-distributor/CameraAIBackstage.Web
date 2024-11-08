@@ -51,6 +51,7 @@ export const UserList = () => {
     language,
     handelGetUserList,
     filterKeyword,
+    disableTreeStaffId,
   } = useAction();
 
   const columns: TableProps<IUserDataItem>["columns"] = [
@@ -324,6 +325,7 @@ export const UserList = () => {
         setIsModelOpen={setIsAddUser}
         handelGetSelectedUsers={handelGetSelectedUsers}
         staffIdSource={0}
+        disableTreeStaffId={disableTreeStaffId}
       />
 
       <CustomModal

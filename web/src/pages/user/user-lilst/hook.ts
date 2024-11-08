@@ -62,6 +62,8 @@ export const useAction = () => {
       PageSize: 20,
     });
 
+  const [disableTreeStaffId, setDisableTreeStaffId] = useState<string[]>([]);
+
   const handelConfirmDeleteUsers = () => {
     if (deleteUserKeys.length < 1) return;
 
@@ -73,12 +75,16 @@ export const useAction = () => {
     deleteUserFun(data as string & string[])
       .then(() => {
         setIsRemoveUser(false);
+
         handelGetUserList({
           PageIndex: 1,
           PageSize: userListData.PageSize,
           Keyword: filterKeyword,
           Status: userListData.Status,
         });
+
+        getAllUserList();
+
         message.success(t(KEYS.REMOVE_USER_OK, source));
       })
       .catch((err) => {
@@ -103,6 +109,8 @@ export const useAction = () => {
         Keyword: filterKeyword,
         Status: userListData.Status,
       });
+
+      getAllUserList();
 
       loading = false;
     } catch (err) {
@@ -142,6 +150,21 @@ export const useAction = () => {
         message.error(err.message);
       },
     });
+
+  const getAllUserList = () => {
+    GetUserList({
+      PageIndex: 1,
+      PageSize: 2147483647,
+    }).then((res) => {
+      setDisableTreeStaffId(
+        (res?.userProfiles ?? []).map((item) => item.staffId)
+      );
+    });
+  };
+
+  useEffect(() => {
+    getAllUserList();
+  }, []);
 
   useEffect(() => {
     handelGetUserList({
@@ -224,5 +247,6 @@ export const useAction = () => {
     language,
     handelGetUserList,
     filterKeyword,
+    disableTreeStaffId,
   };
 };
