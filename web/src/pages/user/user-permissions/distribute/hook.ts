@@ -160,6 +160,8 @@ export const useAction = () => {
       setDisableTreeStaffId(
         (res?.roleUsers ?? []).map((item) => String(item.userId))
       );
+
+      if (res) setUserByRoleIdAllData(res ?? initialUserByRoleIdData);
     });
   };
 
