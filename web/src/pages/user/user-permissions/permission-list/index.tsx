@@ -87,7 +87,7 @@ export const UserPermissions = () => {
               },
             }}
           >
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center h-[2rem]">
               {record.id === 1 ? (
                 myPermissions.includes(
                   BackGroundRolePermissionEnum.CanCreateRoleUser
@@ -104,19 +104,20 @@ export const UserPermissions = () => {
                 )
               ) : (
                 <>
-                  {operateButtons.map((item, index) => (
-                    <div key={index}>
-                      {myPermissions.includes(item.permissions) && (
-                        <Button
-                          type="link"
-                          className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
-                          onClick={() => item.onClick(record)}
-                        >
-                          {item.text}
-                        </Button>
-                      )}
-                    </div>
-                  ))}
+                  {record.name !== "CameraAiUser" &&
+                    operateButtons.map((item, index) => (
+                      <div key={index}>
+                        {myPermissions.includes(item.permissions) && (
+                          <Button
+                            type="link"
+                            className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
+                            onClick={() => item.onClick(record)}
+                          >
+                            {item.text}
+                          </Button>
+                        )}
+                      </div>
+                    ))}
                 </>
               )}
             </div>
