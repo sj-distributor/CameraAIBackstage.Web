@@ -67,10 +67,6 @@ export const useAction = (props: {
       key: department.id,
     };
 
-    console.log(disableTreeStaffId);
-
-    const userSet = new Set(disableTreeStaffId.map((id) => String(id)));
-
     if (staffs && staffs.length > 0) {
       treeData.children = staffs.map((staff) => {
         return {
@@ -78,7 +74,7 @@ export const useAction = (props: {
           value: staff.id,
           key: staff.id,
           isUser: true,
-          disabled: userSet.has(staff.id),
+          disabled: disableTreeStaffId?.some((item) => item === staff.id),
         };
       });
     }
