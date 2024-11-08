@@ -175,13 +175,6 @@ export const useAction = () => {
     });
   }, [filterKeyword]);
 
-  useEffect(() => {
-    handelGetUserList({
-      PageIndex: userListData.PageIndex,
-      PageSize: userListData.PageSize,
-    });
-  }, []);
-
   const handelGetUserList = (data: IGetUserListRequest) => {
     setUserListData((prev) => ({
       ...prev,

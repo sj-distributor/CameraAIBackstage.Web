@@ -22,3 +22,18 @@ export const GetFoundationData = async (
 
   return response.data;
 };
+
+export const GetTreeData = async (
+  type: string,
+  data: HierarchyDepthEnum | HierarchyStaffRangeEnum
+) => {
+  const response = await api.get<IFoundationResponse>(
+    `/api/CameraAi/user/hierarchy/tree?${
+      type === "HierarchyStaffRange"
+        ? `HierarchyDepth=${HierarchyDepthEnum.Group}&` + type + "=" + data
+        : type + "=" + data
+    }`
+  );
+
+  return response.data;
+};

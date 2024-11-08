@@ -11,7 +11,7 @@ import dayjs from "dayjs";
 import { Trans } from "react-i18next";
 
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
-import { HierarchyStaffIdSourceEnum } from "@/services/dtos/tree";
+import { HierarchyStaffIdSourceEnum, TreeTypeEnum } from "@/services/dtos/tree";
 import { IUserByRoleIdData } from "@/services/dtos/user-permission";
 
 import { OperateConfirmModal } from "../operate-confirm";
@@ -23,6 +23,7 @@ export const UserDistribute = () => {
   const {
     t,
     source,
+    disableTreeStaffId,
     isDeletePermissions,
     setIsDeletePermissions,
     isBatchDeleteUser,
@@ -209,6 +210,8 @@ export const UserDistribute = () => {
         setIsModelOpen={setIsAddNewUser}
         handelGetSelectedUsers={handelGetSelectedUsers}
         staffIdSource={HierarchyStaffIdSourceEnum.IntegerStaffId}
+        type={TreeTypeEnum.UserPermission}
+        disableTreeStaffId={disableTreeStaffId}
       />
     </div>
   );

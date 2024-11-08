@@ -19,3 +19,8 @@ export enum HierarchyStaffIdSourceEnum {
   StringStaffId,
   IntegerStaffId,
 }
+
+export enum TreeTypeEnum {
+  UserList,
+  UserPermission,
+}
