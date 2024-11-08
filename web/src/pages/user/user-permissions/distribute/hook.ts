@@ -156,13 +156,19 @@ export const useAction = () => {
       PageIndex: 1,
       PageSize: 2147483647,
       RoleId: id,
-    }).then((res) => {
-      setDisableTreeStaffId(
-        (res?.roleUsers ?? []).map((item) => String(item.userId))
-      );
+    })
+      .then((res) => {
+        setDisableTreeStaffId(
+          (res?.roleUsers ?? []).map((item) => String(item.userId))
+        );
 
-      if (res) setUserByRoleIdAllData(res ?? initialUserByRoleIdData);
-    });
+        if (res) setUserByRoleIdAllData(res ?? initialUserByRoleIdData);
+      })
+      .catch(() => {
+        navigate("/user/permissions");
+
+        message.error("獲取全部用戶數據失敗");
+      });
   };
 
   useEffect(() => {
