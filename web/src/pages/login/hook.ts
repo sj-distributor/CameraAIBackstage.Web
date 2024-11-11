@@ -31,6 +31,16 @@ export const useAction = () => {
     }));
   };
 
+  const hanldeNoPermission = () => {
+    message.error("您没有访问权限");
+
+    localStorage.removeItem(
+      (window as any).appsettings?.tokenKey ?? "tokenKey"
+    );
+
+    localStorage.removeItem((window as any).appsettings?.userNameKey);
+  };
+
   const onLogin = () => {
     setLoginLoading(true);
 
@@ -50,37 +60,34 @@ export const useAction = () => {
               userInfo.userName
             );
 
-            return GetRoles({
+            GetRoles({
               PageIndex: 1,
               PageSize: 2147483647,
               systemSource: RoleSystemSourceEnum.CameraAi,
-            });
-          }
-        })
-        .then((rolesRes) => {
-          if (!rolesRes) return;
+            })
+              .then((rolesRes) => {
+                if (!rolesRes) return;
 
-          if (
-            rolesRes.rolePermissionData.some((item) =>
-              item.role?.name?.includes(PermissionEnum.CameraAiUser)
-            )
-          ) {
-            message.success("登录成功");
-            navigate("/user/list");
+                if (
+                  !rolesRes.rolePermissionData.some((item) =>
+                    item.role?.name?.includes(PermissionEnum.CameraAiUser)
+                  )
+                ) {
+                  message.success("登录成功");
+                  navigate("/user/list");
 
-            signIn(
-              localStorage.getItem(
-                (window as any).appsettings?.tokenKey ?? "tokenKey"
-              ) || ""
-            );
-          } else {
-            message.error("您没有访问权限");
-
-            localStorage.removeItem(
-              (window as any).appsettings?.tokenKey ?? "tokenKey"
-            );
-
-            localStorage.removeItem((window as any).appsettings?.userNameKey);
+                  signIn(
+                    localStorage.getItem(
+                      (window as any).appsettings?.tokenKey ?? "tokenKey"
+                    ) || ""
+                  );
+                } else {
+                  hanldeNoPermission();
+                }
+              })
+              .catch(() => {
+                hanldeNoPermission();
+              });
           }
         })
         .catch(() => {
