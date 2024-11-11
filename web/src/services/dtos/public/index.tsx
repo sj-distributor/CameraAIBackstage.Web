@@ -3,3 +3,7 @@ export interface IPageDto {
   PageIndex?: number;
   Status?: number;
 }
+
+export enum PermissionEnum {
+  CameraAiUser = "CameraAiUser",
+}

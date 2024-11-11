@@ -9,6 +9,7 @@ import { IRole } from "@/services/dtos/user-permission";
 import { OperateConfirmModal } from "../operate-confirm";
 import { BackGroundRolePermissionEnum } from "../user-newpermissions/props";
 import { useAction } from "./hook";
+import { PermissionEnum } from "@/services/dtos/public";
 
 export const UserPermissions = () => {
   const {
@@ -104,7 +105,7 @@ export const UserPermissions = () => {
                 )
               ) : (
                 <>
-                  {record.name !== "CameraAiUser" &&
+                  {record.name !== PermissionEnum.CameraAiUser &&
                     operateButtons.map((item, index) => (
                       <div key={index}>
                         {myPermissions.includes(item.permissions) && (

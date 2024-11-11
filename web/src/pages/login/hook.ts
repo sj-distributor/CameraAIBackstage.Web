@@ -1,14 +1,19 @@
 import { useDebounceFn } from "ahooks";
-import { message } from "antd";
+import { App } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 import { Login } from "@/services/api/login";
 import { IUserInfo } from "@/services/dtos/login";
+import { GetRoles } from "@/services/api/user-permission";
+import { RoleSystemSourceEnum } from "@/services/dtos/user-permission";
+import { PermissionEnum } from "@/services/dtos/public";
 
 export const useAction = () => {
   const { signIn } = useAuth();
+
+  const { message } = App.useApp();
 
   const navigate = useNavigate();
 
@@ -28,6 +33,7 @@ export const useAction = () => {
 
   const onLogin = () => {
     setLoginLoading(true);
+
     if (
       userInfo.userName.trim().length !== 0 &&
       userInfo.password.trim().length !== 0
@@ -35,7 +41,6 @@ export const useAction = () => {
       Login(userInfo)
         .then((res) => {
           if (res) {
-            message.success("登录成功");
             localStorage.setItem(
               (window as any).appsettings?.tokenKey ?? "tokenKey",
               res
@@ -45,9 +50,37 @@ export const useAction = () => {
               userInfo.userName
             );
 
+            return GetRoles({
+              PageIndex: 1,
+              PageSize: 2147483647,
+              systemSource: RoleSystemSourceEnum.CameraAi,
+            });
+          }
+        })
+        .then((rolesRes) => {
+          if (!rolesRes) return;
+
+          if (
+            rolesRes.rolePermissionData.some((item) =>
+              item.role?.name?.includes(PermissionEnum.CameraAiUser)
+            )
+          ) {
+            message.success("登录成功");
             navigate("/user/list");
 
-            signIn(res);
+            signIn(
+              localStorage.getItem(
+                (window as any).appsettings?.tokenKey ?? "tokenKey"
+              ) || ""
+            );
+          } else {
+            message.error("您没有访问权限");
+
+            localStorage.removeItem(
+              (window as any).appsettings?.tokenKey ?? "tokenKey"
+            );
+
+            localStorage.removeItem((window as any).appsettings?.userNameKey);
           }
         })
         .catch(() => {
