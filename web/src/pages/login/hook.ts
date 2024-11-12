@@ -6,9 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { Login } from "@/services/api/login";
 import { IUserInfo } from "@/services/dtos/login";
-import { GetRoles } from "@/services/api/user-permission";
-import { RoleSystemSourceEnum } from "@/services/dtos/user-permission";
-import { PermissionEnum } from "@/services/dtos/public";
+import { GetCurrentAccountPermission } from "@/services/api/user-permission";
+import { FrontRolePermissionEnum } from "../user/user-permissions/user-newpermissions/props";
 
 export const useAction = () => {
   const { signIn } = useAuth();
@@ -32,7 +31,7 @@ export const useAction = () => {
   };
 
   const hanldeNoPermission = () => {
-    message.error("您没有访问权限");
+    message.error("您没有访问後台权限");
 
     localStorage.removeItem(
       (window as any).appsettings?.tokenKey ?? "tokenKey"
@@ -60,21 +59,22 @@ export const useAction = () => {
               userInfo.userName
             );
 
-            GetRoles({
-              PageIndex: 1,
-              PageSize: 2147483647,
-              systemSource: RoleSystemSourceEnum.CameraAi,
-            })
-              .then((rolesRes) => {
-                if (!rolesRes) return;
+            GetCurrentAccountPermission()
+              .then((response) => {
+                if (!response) return;
 
                 if (
-                  !rolesRes.rolePermissionData.some((item) =>
-                    item.role?.name?.includes(PermissionEnum.CameraAiUser)
+                  response.rolePermissionData.some((item) =>
+                    item.permissions.some(
+                      (permission) =>
+                        permission.name ===
+                        FrontRolePermissionEnum.CanSwitchCameraAiBackEnd
+                    )
                   )
                 ) {
                   message.success("登录成功");
-                  navigate("/user/list");
+
+                  navigate("/");
 
                   signIn(
                     localStorage.getItem(
