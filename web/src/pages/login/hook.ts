@@ -61,8 +61,6 @@ export const useAction = () => {
 
             GetCurrentAccountPermission()
               .then((response) => {
-                if (!response) return;
-
                 if (
                   response.rolePermissionData.some((item) =>
                     item.permissions.some(
