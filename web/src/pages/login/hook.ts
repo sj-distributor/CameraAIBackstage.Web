@@ -1,14 +1,18 @@
 import { useDebounceFn } from "ahooks";
-import { message } from "antd";
+import { App } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 import { Login } from "@/services/api/login";
 import { IUserInfo } from "@/services/dtos/login";
+import { GetCurrentAccountPermission } from "@/services/api/user-permission";
+import { FrontRolePermissionEnum } from "../user/user-permissions/user-newpermissions/props";
 
 export const useAction = () => {
   const { signIn } = useAuth();
+
+  const { message } = App.useApp();
 
   const navigate = useNavigate();
 
@@ -26,8 +30,19 @@ export const useAction = () => {
     }));
   };
 
+  const hanldeNoPermission = () => {
+    message.error("您没有访问後台权限");
+
+    localStorage.removeItem(
+      (window as any).appsettings?.tokenKey ?? "tokenKey"
+    );
+
+    localStorage.removeItem((window as any).appsettings?.userNameKey);
+  };
+
   const onLogin = () => {
     setLoginLoading(true);
+
     if (
       userInfo.userName.trim().length !== 0 &&
       userInfo.password.trim().length !== 0
@@ -35,7 +50,6 @@ export const useAction = () => {
       Login(userInfo)
         .then((res) => {
           if (res) {
-            message.success("登录成功");
             localStorage.setItem(
               (window as any).appsettings?.tokenKey ?? "tokenKey",
               res
@@ -45,9 +59,33 @@ export const useAction = () => {
               userInfo.userName
             );
 
-            navigate("/user/list");
+            GetCurrentAccountPermission()
+              .then((response) => {
+                if (
+                  response.rolePermissionData.some((item) =>
+                    item.permissions.some(
+                      (permission) =>
+                        permission.name ===
+                        FrontRolePermissionEnum.CanSwitchCameraAiBackEnd
+                    )
+                  )
+                ) {
+                  message.success("登录成功");
 
-            signIn(res);
+                  navigate("/");
+
+                  signIn(
+                    localStorage.getItem(
+                      (window as any).appsettings?.tokenKey ?? "tokenKey"
+                    ) || ""
+                  );
+                } else {
+                  hanldeNoPermission();
+                }
+              })
+              .catch(() => {
+                hanldeNoPermission();
+              });
           }
         })
         .catch(() => {

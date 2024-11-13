@@ -23,6 +23,7 @@ import { IUserDataItem, UserStatus } from "@/services/dtos/user";
 import { TransferTree } from "../user-permissions/tranfer-tree";
 import { BackGroundRolePermissionEnum } from "../user-permissions/user-newpermissions/props";
 import { useAction } from "./hook";
+import { TreeTypeEnum } from "@/services/dtos/tree";
 
 export const UserList = () => {
   const {
@@ -51,6 +52,7 @@ export const UserList = () => {
     language,
     handelGetUserList,
     filterKeyword,
+    disableTreeStaffId,
   } = useAction();
 
   const columns: TableProps<IUserDataItem>["columns"] = [
@@ -324,6 +326,8 @@ export const UserList = () => {
         setIsModelOpen={setIsAddUser}
         handelGetSelectedUsers={handelGetSelectedUsers}
         staffIdSource={0}
+        disableTreeStaffId={disableTreeStaffId}
+        type={TreeTypeEnum.UserList}
       />
 
       <CustomModal

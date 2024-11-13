@@ -7,22 +7,30 @@ import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
 
 import { ITreeData, useAction } from "./hook";
+import { TreeTypeEnum } from "@/services/dtos/tree";
 
 export const TransferTree = ({
   isModelOpen,
   setIsModelOpen,
   handelGetSelectedUsers,
   staffIdSource,
-  disabledKeys,
+  disableTreeStaffId,
+  type,
 }: {
   isModelOpen: boolean;
   setIsModelOpen: (value: SetStateAction<boolean>) => void;
   data?: TransferItem[];
   handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
   staffIdSource: number;
-  disabledKeys?: string[];
+  disableTreeStaffId: string[];
+  type: TreeTypeEnum;
 }) => {
-  const { t, source, treeData } = useAction({ staffIdSource, disabledKeys });
+  const { t, source, treeData } = useAction({
+    staffIdSource,
+    isModelOpen,
+    disableTreeStaffId,
+    type,
+  });
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 

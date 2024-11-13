@@ -60,6 +60,8 @@ export const useAction = () => {
   const [userByRoleIdAllData, setUserByRoleIdAllData] =
     useState<IUserByRoleIdResponse>(initialUserByRoleIdData);
 
+  const [disableTreeStaffId, setDisableTreeStaffId] = useState<string[]>([]);
+
   const filterKeyword = useDebounce(searchValue, { wait: 500 });
 
   const onSelectedAllRow = (selected: boolean) => {
@@ -98,6 +100,8 @@ export const useAction = () => {
           KeyWord: filterKeyword,
           RoleId: id,
         });
+
+        getAllRolesUsersList();
       })
       .catch((error) => message.error((error as Error).message));
   };
@@ -124,6 +128,8 @@ export const useAction = () => {
         RoleId: id,
       });
 
+      getAllRolesUsersList();
+
       loading = false;
     } catch (err) {
       loading = false;
@@ -145,13 +151,22 @@ export const useAction = () => {
       .finally(() => setIsTableLoading(false));
   };
 
-  const getAllRolesUsersList = (prams: IRoleIdRequestParams) => {
-    GetRolesUserByRoleId(prams)
+  const getAllRolesUsersList = () => {
+    GetRolesUserByRoleId({
+      PageIndex: 1,
+      PageSize: 2147483647,
+      RoleId: id,
+    })
       .then((res) => {
+        setDisableTreeStaffId(
+          (res?.roleUsers ?? []).map((item) => String(item.userId))
+        );
+
         if (res) setUserByRoleIdAllData(res ?? initialUserByRoleIdData);
       })
       .catch(() => {
         navigate("/user/permissions");
+
         message.error("獲取全部用戶數據失敗");
       });
   };
@@ -166,13 +181,8 @@ export const useAction = () => {
   }, [pageDto.pageIndex, pageDto.pageSize, filterKeyword]);
 
   useEffect(() => {
-    getAllRolesUsersList({
-      PageIndex: 1,
-      PageSize: 2147483647,
-      KeyWord: filterKeyword,
-      RoleId: id,
-    });
-  }, [filterKeyword]);
+    getAllRolesUsersList();
+  }, []);
 
   useEffect(() => {
     const newSelectedRowKeys = selectedRows.map((x) => x.id);
@@ -184,6 +194,7 @@ export const useAction = () => {
     t,
     source,
     isDeletePermissions,
+    disableTreeStaffId,
     setIsDeletePermissions,
     isBatchDeleteUser,
     setIsBatchDeleteUser,

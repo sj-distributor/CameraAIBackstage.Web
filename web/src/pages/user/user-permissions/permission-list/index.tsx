@@ -9,6 +9,7 @@ import { IRole } from "@/services/dtos/user-permission";
 import { OperateConfirmModal } from "../operate-confirm";
 import { BackGroundRolePermissionEnum } from "../user-newpermissions/props";
 import { useAction } from "./hook";
+import { PermissionEnum } from "@/services/dtos/public";
 
 export const UserPermissions = () => {
   const {
@@ -87,7 +88,7 @@ export const UserPermissions = () => {
               },
             }}
           >
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center h-[2rem]">
               {record.id === 1 ? (
                 myPermissions.includes(
                   BackGroundRolePermissionEnum.CanCreateRoleUser
@@ -104,19 +105,20 @@ export const UserPermissions = () => {
                 )
               ) : (
                 <>
-                  {operateButtons.map((item, index) => (
-                    <div key={index}>
-                      {myPermissions.includes(item.permissions) && (
-                        <Button
-                          type="link"
-                          className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
-                          onClick={() => item.onClick(record)}
-                        >
-                          {item.text}
-                        </Button>
-                      )}
-                    </div>
-                  ))}
+                  {record.name !== PermissionEnum.CameraAiUser &&
+                    operateButtons.map((item, index) => (
+                      <div key={index}>
+                        {myPermissions.includes(item.permissions) && (
+                          <Button
+                            type="link"
+                            className="text-[.875rem] text-[#2853E3] h-[2rem] w-[6rem]"
+                            onClick={() => item.onClick(record)}
+                          >
+                            {item.text}
+                          </Button>
+                        )}
+                      </div>
+                    ))}
                 </>
               )}
             </div>

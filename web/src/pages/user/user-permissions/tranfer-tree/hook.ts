@@ -2,8 +2,12 @@ import { message } from "antd";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
-import { GetFoundationData } from "@/services/api/tree";
-import { HierarchyDepthEnum, IFoundationResponse } from "@/services/dtos/tree";
+import { GetFoundationData, GetTreeData } from "@/services/api/tree";
+import {
+  HierarchyDepthEnum,
+  IFoundationResponse,
+  TreeTypeEnum,
+} from "@/services/dtos/tree";
 
 export interface IFoundationDetail {
   department: {
@@ -39,9 +43,11 @@ export interface ITreeSelectNode {
 
 export const useAction = (props: {
   staffIdSource: number;
-  disabledKeys?: string[];
+  isModelOpen: boolean;
+  disableTreeStaffId: string[];
+  type: number;
 }) => {
-  const { staffIdSource, disabledKeys } = props;
+  const { staffIdSource, isModelOpen, disableTreeStaffId, type } = props;
 
   const { t } = useAuth();
 
@@ -68,7 +74,7 @@ export const useAction = (props: {
           value: staff.id,
           key: staff.id,
           isUser: true,
-          disabled: disabledKeys?.some((item) => item == staff.id),
+          disabled: disableTreeStaffId?.some((item) => item === staff.id),
         };
       });
     }
@@ -86,8 +92,8 @@ export const useAction = (props: {
     return foundationData.staffDepartmentHierarchy.map(convertDetailToTreeData);
   };
 
-  const onGetFoundationData = () => {
-    GetFoundationData("HierarchyDepth", HierarchyDepthEnum.Group, staffIdSource)
+  const loadData = (fetchData: Promise<any>) => {
+    fetchData
       .then((response) => {
         setTreeData(response ? convertToTreeData(response) : []);
         setTreeFoundationResponse(response);
@@ -98,18 +104,31 @@ export const useAction = (props: {
       });
   };
 
-  useEffect(() => {
-    onGetFoundationData();
-  }, []);
+  const onGetFoundationData = () => {
+    const fetchDataPromise =
+      type === TreeTypeEnum.UserList
+        ? GetFoundationData(
+            "HierarchyDepth",
+            HierarchyDepthEnum.Group,
+            staffIdSource
+          )
+        : GetTreeData("HierarchyDepth", HierarchyDepthEnum.Group);
+
+    loadData(fetchDataPromise);
+  };
 
   useEffect(() => {
-    disabledKeys?.length &&
+    isModelOpen && onGetFoundationData();
+  }, [isModelOpen]);
+
+  useEffect(() => {
+    disableTreeStaffId?.length &&
       setTreeData(
         treeFoundationResponse.staffDepartmentHierarchy
           ? convertToTreeData(treeFoundationResponse)
           : []
       );
-  }, [disabledKeys]);
+  }, [disableTreeStaffId]);
 
   return { t, source, treeData };
 };
