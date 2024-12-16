@@ -1,5 +1,5 @@
 import { useDebounce, useRequest } from "ahooks";
-import { message } from "antd";
+import { Form, message } from "antd";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -16,6 +16,8 @@ import {
   IGetUserListResponse,
   UserStatus,
 } from "@/services/dtos/user";
+import { useNavigate } from "react-router-dom";
+import { ITreeData } from "../user-permissions/tranfer-tree/hook";
 
 export interface IDto extends IGetUserListResponse {
   PageIndex: number;
@@ -25,6 +27,10 @@ export interface IDto extends IGetUserListResponse {
 
 export const useAction = () => {
   const source = { ns: "userList" };
+
+  const navigate = useNavigate();
+
+  const [form] = Form.useForm();
 
   const { t, myPermissions, language } = useAuth();
 
@@ -63,6 +69,12 @@ export const useAction = () => {
     });
 
   const [disableTreeStaffId, setDisableTreeStaffId] = useState<string[]>([]);
+
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+
+  const [selectRange, setSelectRange] = useState<number[]>([0]);
+
+  const [selectUser, setSelectUser] = useState<ITreeData[]>([]);
 
   const handelConfirmDeleteUsers = () => {
     if (deleteUserKeys.length < 1) return;
@@ -241,5 +253,13 @@ export const useAction = () => {
     handelGetUserList,
     filterKeyword,
     disableTreeStaffId,
+    navigate,
+    form,
+    openDrawer,
+    setOpenDrawer,
+    selectRange,
+    setSelectRange,
+    selectUser,
+    setSelectUser,
   };
 };
