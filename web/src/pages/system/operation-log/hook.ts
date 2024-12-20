@@ -24,7 +24,7 @@ export const useAction = () => {
     pageSize: number;
   }>({
     pageIndex: 1,
-    pageSize: 5,
+    pageSize: 20,
   });
 
   const [dateRange, setDateRange] = useState<(Dayjs | null)[]>([null, null]);

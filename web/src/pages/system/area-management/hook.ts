@@ -40,7 +40,7 @@ export const useAction = () => {
     keyword?: string;
   }>({
     pageIndex: 1,
-    pageSize: 5,
+    pageSize: 20,
   });
 
   const [operateModalParams, setOperateModalParams] = useState<IModifyModalDto>(
