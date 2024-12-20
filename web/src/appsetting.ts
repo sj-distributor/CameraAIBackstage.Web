@@ -1,6 +1,8 @@
 export interface IAppSettings {
   serverUrl: string;
   tokenKey: string;
+  userNameKey: string;
+  frontDeskDomain: string;
 }
 
 export const InitialAppSetting = async () => {

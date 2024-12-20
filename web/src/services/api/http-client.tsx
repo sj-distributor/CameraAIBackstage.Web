@@ -31,12 +31,17 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
-      localStorage.removeItem((window as any).appSettings?.tokenKey);
       message.error(
         error.response.data.msg ?? "登录已过期，请重新登录",
         1,
         () => {
-          window.location.reload();
+          if (window.__POWERED_BY_WUJIE__) {
+            window.$wujie.props?.signOut();
+          } else {
+            localStorage.removeItem((window as any).appSettings?.tokenKey);
+
+            window.location.reload();
+          }
         }
       );
     } else {

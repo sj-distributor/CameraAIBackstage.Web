@@ -1,12 +1,13 @@
 import { useDebounceFn } from "ahooks";
 import { App } from "antd";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 import { Login } from "@/services/api/login";
-import { IUserInfo } from "@/services/dtos/login";
 import { GetCurrentAccountPermission } from "@/services/api/user-permission";
+import { IUserInfo } from "@/services/dtos/login";
+
 import { FrontRolePermissionEnum } from "../user/user-permissions/user-newpermissions/props";
 
 export const useAction = () => {
@@ -15,6 +16,8 @@ export const useAction = () => {
   const { message } = App.useApp();
 
   const navigate = useNavigate();
+
+  const { state: historyState } = useLocation();
 
   const [userInfo, setUserInfo] = useState<IUserInfo>({
     userName: "",
@@ -30,14 +33,20 @@ export const useAction = () => {
     }));
   };
 
-  const hanldeNoPermission = () => {
+  const historyCallback = () => {
+    historyState?.from?.pathname
+      ? navigate(historyState.from.pathname, { replace: true })
+      : navigate("/", { replace: true });
+  };
+
+  const handleNoPermission = () => {
     message.error("您没有访问後台权限");
 
     localStorage.removeItem(
-      (window as any).appsettings?.tokenKey ?? "tokenKey"
+      (window as any).appSettings?.tokenKey ?? "tokenKey"
     );
 
-    localStorage.removeItem((window as any).appsettings?.userNameKey);
+    localStorage.removeItem((window as any).appSettings?.userNameKey);
   };
 
   const onLogin = () => {
@@ -51,11 +60,11 @@ export const useAction = () => {
         .then((res) => {
           if (res) {
             localStorage.setItem(
-              (window as any).appsettings?.tokenKey ?? "tokenKey",
+              (window as any).appSettings?.tokenKey ?? "tokenKey",
               res
             );
             localStorage.setItem(
-              (window as any).appsettings?.userNameKey,
+              (window as any).appSettings?.userNameKey,
               userInfo.userName
             );
 
@@ -72,19 +81,18 @@ export const useAction = () => {
                 ) {
                   message.success("登录成功");
 
-                  navigate("/");
-
                   signIn(
                     localStorage.getItem(
-                      (window as any).appsettings?.tokenKey ?? "tokenKey"
-                    ) || ""
+                      (window as any).appSettings?.tokenKey ?? "tokenKey"
+                    ) || "",
+                    historyCallback
                   );
                 } else {
-                  hanldeNoPermission();
+                  handleNoPermission();
                 }
               })
               .catch(() => {
-                hanldeNoPermission();
+                handleNoPermission();
               });
           }
         })
@@ -101,6 +109,14 @@ export const useAction = () => {
   const { run: handleOnLogin } = useDebounceFn(onLogin, {
     wait: 300,
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem((window as any).appSettings?.tokenKey);
+
+    if (token) {
+      signIn(token, historyCallback);
+    }
+  }, []);
 
   return { userInfo, loginLoading, updateUserInfo, handleOnLogin };
 };

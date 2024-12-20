@@ -7,7 +7,9 @@ export const AuthStatus = (props: { children: JSX.Element }) => {
 
   const { token } = useAuth();
 
-  if (!token) {
+  if (window.__POWERED_BY_WUJIE__) {
+    window.$wujie.props?.token || window.$wujie.props?.signOut();
+  } else if (!token) {
     return <Navigate to="/login" state={{ from: location }} replace={true} />;
   }
 
