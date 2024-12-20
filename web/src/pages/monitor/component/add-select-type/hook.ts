@@ -2,8 +2,9 @@ import { theme } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
-import KEYS from "../../../../i18n/language/keys/monitor-add-keys";
 import { CameraAiMonitorType } from "@/services/dtos/monitor";
+
+import KEYS from "../../../../i18n/language/keys/monitor-add-keys";
 import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
 import { IMonitorOptionDto } from "../../props";
 
@@ -15,6 +16,7 @@ export const useAction = () => {
   const navigate = useNavigate();
 
   const source = { ns: "monitorAdd" };
+
   const monitorSource = { ns: "monitor" };
 
   const monitorTypeOption: IMonitorOptionDto[] = [

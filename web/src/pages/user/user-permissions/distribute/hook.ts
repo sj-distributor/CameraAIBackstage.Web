@@ -1,3 +1,4 @@
+import { useDebounce } from "ahooks";
 import { message } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -13,7 +14,6 @@ import {
   IUserByRoleIdData,
   IUserByRoleIdResponse,
 } from "@/services/dtos/user-permission";
-import { useDebounce } from "ahooks";
 
 export const useAction = () => {
   const { id } = useParams();
@@ -46,7 +46,7 @@ export const useAction = () => {
     pageSize: number;
   }>({
     pageIndex: 1,
-    pageSize: 5,
+    pageSize: 10,
   });
 
   const initialUserByRoleIdData: IUserByRoleIdResponse = {
