@@ -7,6 +7,8 @@ import PlusOutlined from "@ant-design/icons/lib/icons/PlusOutlined";
 import {
   Button,
   ConfigProvider,
+  Drawer,
+  Form,
   Input,
   Pagination,
   Select,
@@ -14,6 +16,7 @@ import {
   Table,
   TableProps,
 } from "antd";
+import { CustomTagProps } from "rc-select/lib/BaseSelect";
 import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
@@ -53,6 +56,14 @@ export const UserList = () => {
     handelGetUserList,
     filterKeyword,
     disableTreeStaffId,
+    navigate,
+    form,
+    openDrawer,
+    setOpenDrawer,
+    selectRange,
+    setSelectRange,
+    selectUser,
+    setSelectUser,
   } = useAction();
 
   const columns: TableProps<IUserDataItem>["columns"] = [
@@ -144,20 +155,25 @@ export const UserList = () => {
               },
             }}
           >
-            {myPermissions.includes(
-              BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
-            ) && (
-              <Button
-                type="link"
-                onClick={() => {
-                  setIsDeleteUsers(false);
-                  setDeleteUserKeys([String(record.id)]);
-                  setIsRemoveUser(true);
-                }}
-              >
-                {t(KEYS.REMOVE, source)}
+            <div className="flex">
+              <Button type="link" onClick={() => navigate(`/user/list/detail`)}>
+                詳情
               </Button>
-            )}
+              {myPermissions.includes(
+                BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
+              ) && (
+                <Button
+                  type="link"
+                  onClick={() => {
+                    setIsDeleteUsers(false);
+                    setDeleteUserKeys([String(record.id)]);
+                    setIsRemoveUser(true);
+                  }}
+                >
+                  {t(KEYS.REMOVE, source)}
+                </Button>
+              )}
+            </div>
           </ConfigProvider>
         );
       },
@@ -232,7 +248,7 @@ export const UserList = () => {
               <Button
                 type="primary"
                 className="w-[7.25rem] h-[2.75rem]"
-                onClick={() => setIsAddUser(true)}
+                onClick={() => setOpenDrawer(true)}
               >
                 <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
               </Button>
@@ -297,6 +313,8 @@ export const UserList = () => {
         staffIdSource={0}
         disableTreeStaffId={disableTreeStaffId}
         type={TreeTypeEnum.UserList}
+        selectUser={selectUser}
+        setSelectUser={setSelectUser}
       />
 
       <CustomModal
@@ -365,6 +383,146 @@ export const UserList = () => {
           </div>
         </div>
       </CustomModal>
+
+      <Drawer
+        title="添加用戶"
+        closable={false}
+        open={openDrawer}
+        width="33.75rem"
+        styles={{ footer: { backgroundColor: "#F6F8FC" } }}
+        onClose={() => setOpenDrawer(false)}
+        keyboard={true}
+        extra={
+          <CloseOutlined
+            className="cursor-pointer"
+            onClick={() => setOpenDrawer(false)}
+          />
+        }
+        footer={
+          <div className="flex justify-end">
+            <ConfigProvider
+              theme={{
+                components: {
+                  Button: {
+                    defaultBorderColor: "#2853E3",
+                    defaultColor: "#2853E3",
+                  },
+                },
+              }}
+            >
+              <Button
+                className="w-[6rem] h-[2.75rem]"
+                onClick={() => setOpenDrawer(false)}
+              >
+                取消
+              </Button>
+            </ConfigProvider>
+
+            <Button className="w-[6rem] h-[2.75rem] ml-[1.5rem]" type="primary">
+              確定
+            </Button>
+          </div>
+        }
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            label="新增用戶"
+            rules={[{ required: true, message: "請選擇部門或成員" }]}
+          >
+            <Select
+              mode="multiple"
+              open={false}
+              suffixIcon={null}
+              placeholder="請選擇部門或成員"
+              value={selectUser.map((item) => ({
+                label: item.title,
+                value: item.key,
+              }))}
+              labelInValue
+              onFocus={() => {
+                if (!isAddUser) {
+                  (document.activeElement as HTMLElement)?.blur();
+                  setIsAddUser(true);
+                }
+              }}
+              onDeselect={(selectedItem) => {
+                setSelectUser((prev) =>
+                  prev.filter((item) => item.value !== selectedItem.value)
+                );
+              }}
+            />
+          </Form.Item>
+          <Form.Item label="查看範圍" required={true}>
+            <Select
+              value={selectRange}
+              mode="multiple"
+              allowClear
+              options={[
+                {
+                  value: 0,
+                  label: "不查看任何區域地址",
+                },
+                {
+                  value: 1,
+                  label: "廣東省中山市興政路1號",
+                },
+                {
+                  value: 2,
+                  label: "廣東省中山市中山三路16號",
+                },
+                {
+                  value: 3,
+                  label: "廣東省中山市学院路1號",
+                },
+                {
+                  value: 4,
+                  label: "廣東省中山市中山三路45435號",
+                },
+                {
+                  value: 5,
+                  label: "廣東省中山市学院路asadsad號",
+                },
+              ]}
+              onChange={(value) => {
+                if (value.every((item) => item === 0)) {
+                  setSelectRange(value);
+                } else {
+                  const data = value.filter((item) => item !== 0);
+
+                  setSelectRange(data);
+                }
+              }}
+              onSelect={(value) => {
+                if (value === 0) {
+                  setSelectRange([value]);
+                }
+              }}
+              tagRender={(props: CustomTagProps) => {
+                const { label, closable, onClose } = props;
+
+                if (selectRange.includes(0)) {
+                  return <span className="ml-2">{label}</span>;
+                }
+
+                return (
+                  <span className="ant-select-selection-item !bg-[#F6F8FC] !px-3">
+                    {label}
+                    {closable && (
+                      <span
+                        onClick={onClose}
+                        className="ant-select-selection-item-remove ml-2"
+                      >
+                        <CloseOutlined />
+                      </span>
+                    )}
+                  </span>
+                );
+              }}
+              popupClassName={"selectOptions"}
+            />
+          </Form.Item>
+        </Form>
+      </Drawer>
     </div>
   );
 };

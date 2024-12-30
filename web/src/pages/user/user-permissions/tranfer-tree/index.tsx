@@ -1,13 +1,13 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Transfer, Tree } from "antd";
 import { TransferItem } from "antd/es/transfer";
-import { Key, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, Key, SetStateAction, useEffect, useState } from "react";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
+import { TreeTypeEnum } from "@/services/dtos/tree";
 
 import { ITreeData, useAction } from "./hook";
-import { TreeTypeEnum } from "@/services/dtos/tree";
 
 export const TransferTree = ({
   isModelOpen,
@@ -16,6 +16,8 @@ export const TransferTree = ({
   staffIdSource,
   disableTreeStaffId,
   type,
+  selectUser,
+  setSelectUser,
 }: {
   isModelOpen: boolean;
   setIsModelOpen: (value: SetStateAction<boolean>) => void;
@@ -24,8 +26,10 @@ export const TransferTree = ({
   staffIdSource: number;
   disableTreeStaffId: string[];
   type: TreeTypeEnum;
+  selectUser: ITreeData[];
+  setSelectUser: Dispatch<SetStateAction<ITreeData[]>>;
 }) => {
-  const { t, source, treeData } = useAction({
+  const { t, source, treeData, onGetFoundationData } = useAction({
     staffIdSource,
     isModelOpen,
     disableTreeStaffId,
@@ -208,6 +212,16 @@ export const TransferTree = ({
     }
   }, [targetKeys]);
 
+  useEffect(() => {
+    if (isModelOpen) {
+      onGetFoundationData();
+
+      setTargetAllData(selectUser);
+
+      setTargetKeys(selectUser.map((item) => item.key));
+    }
+  }, [isModelOpen]);
+
   return (
     <CustomModal
       title={
@@ -215,7 +229,10 @@ export const TransferTree = ({
           <div>{t(KEYS.ADD_USER, source)}</div>
           <CloseOutlined
             className="mr-[1rem]"
-            onClick={() => setIsModelOpen(false)}
+            onClick={() => {
+              handelResetSelectData();
+              setIsModelOpen(false);
+            }}
           />
         </div>
       }
@@ -227,6 +244,14 @@ export const TransferTree = ({
       confirmLoading={isConfirmLoading}
       onConfirm={async () => {
         const data = targetAllData.map((item) => item.key);
+
+        setSelectUser(targetAllData);
+
+        setIsModelOpen(false);
+
+        handelResetSelectData();
+
+        return;
 
         if (handelGetSelectedUsers && data.length > 0) {
           const loading = await handelGetSelectedUsers(data);

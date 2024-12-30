@@ -6,7 +6,7 @@ import zhCN from "antd/es/locale/zh_CN";
 import { TFunction } from "i18next";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 import { MonitorIcon, SystemIcon } from "@/assets/sider";
 import KEYS from "@/i18n/language/keys/home-menu-keys";
@@ -23,6 +23,7 @@ import { OperationLog } from "@/pages/system/operation-log";
 import { PortraitList } from "@/pages/system/portrait-list";
 import { TeamInfo } from "@/pages/user/team-info";
 import { UserList } from "@/pages/user/user-lilst";
+import { UserDetail } from "@/pages/user/user-lilst/user-detail";
 import { PermissionsList } from "@/pages/user/user-permissions";
 import { UserDistribute } from "@/pages/user/user-permissions/distribute";
 import { UserPermissions } from "@/pages/user/user-permissions/permission-list";
@@ -95,9 +96,19 @@ export default ({ children }: { children: React.ReactNode }) => {
         },
         {
           path: "/user/list",
-          element: <UserList />,
+          element: <Outlet />,
           name: t(KEYS.USER_LIST, { ns: "homeMenu" }),
           permissions: "CanViewCameraAiUserAccountPage",
+          children: [
+            {
+              path: "",
+              element: <UserList />,
+            },
+            {
+              path: "/user/list/detail",
+              element: <UserDetail />,
+            },
+          ],
         },
         {
           path: "/user/permissions",
