@@ -20,9 +20,9 @@ import {
   IRegionDto,
 } from "@/services/dtos/equipment/list";
 import { IPageDto } from "@/services/dtos/public";
+import { getErrorMessage } from "@/utils/error-message";
 
 import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
-import { getErrorMessage } from "@/utils/error-message";
 
 export const useAction = () => {
   const { t, language, myPermissions } = useAuth();

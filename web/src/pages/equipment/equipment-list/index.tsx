@@ -253,7 +253,7 @@ export const EquipmentList = () => {
       }}
     >
       <div>
-        <div className="bg-white h-[calc(100vh-5.5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
+        <div className="bg-white w-full h-full flex-col justify-start p-[1.5rem]">
           <span className="text-[1.125rem] font-semibold tracking-tight">
             {t(KEYS.DEVICE_LIST, source)}
           </span>
@@ -346,7 +346,7 @@ export const EquipmentList = () => {
               </Button>
             )}
           </div>
-          <div className="flex flex-col h-[calc(100%-4.8rem)] justify-between pt-[1rem]">
+          <div className="flex flex-col h-[calc(100vh-18.15rem)] justify-between pt-[1rem] overflow-y-auto no-scrollbar">
             <Table
               loading={loading}
               rowKey={(record) => record.id}
@@ -356,31 +356,31 @@ export const EquipmentList = () => {
               scroll={{ y: 510 }}
               pagination={false}
             />
-            <div className="flex justify-between items-center py-[1rem]">
-              <div className="text-[#929292]">
-                <Trans
-                  i18nKey={KEYS.PAGINATION}
-                  ns="equipmentList"
-                  values={{ count: dataTotalCount }}
-                  components={{
-                    span: <span className="text-[#2853E3] font-light mx-1" />,
-                  }}
-                />
-              </div>
-              <div>
-                <Pagination
-                  current={pageDto.PageIndex}
-                  pageSize={pageDto.PageSize}
-                  pageSizeOptions={[5, 10, 20]}
-                  total={dataTotalCount}
-                  showQuickJumper
-                  showSizeChanger
-                  onChange={(page, pageSize) => {
-                    onChangePage(page, pageSize);
-                  }}
-                  className="flex flex-wrap justify-center"
-                />
-              </div>
+          </div>
+          <div className="flex justify-between items-center py-[1rem]">
+            <div className="text-[#929292]">
+              <Trans
+                i18nKey={KEYS.PAGINATION}
+                ns="equipmentList"
+                values={{ count: dataTotalCount }}
+                components={{
+                  span: <span className="text-[#2853E3] font-light mx-1" />,
+                }}
+              />
+            </div>
+            <div>
+              <Pagination
+                current={pageDto.PageIndex}
+                pageSize={pageDto.PageSize}
+                pageSizeOptions={[5, 10, 20]}
+                total={dataTotalCount}
+                showQuickJumper
+                showSizeChanger
+                onChange={(page, pageSize) => {
+                  onChangePage(page, pageSize);
+                }}
+                className="flex flex-wrap justify-center"
+              />
             </div>
           </div>
         </div>
