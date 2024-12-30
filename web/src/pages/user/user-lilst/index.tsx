@@ -135,37 +135,6 @@ export const UserList = () => {
         );
       },
     },
-    // {
-    //   title: t(KEYS.OPERATE, source),
-    //   dataIndex: "operate",
-    //   render: () => {
-    //     return (
-    //       <ConfigProvider
-    //         theme={{
-    //           components: {
-    //             Button: {
-    //               colorLink: "#2853E3",
-    //               colorLinkHover: "#5168e3",
-    //               colorPrimary: "#2853E3",
-    //               colorPrimaryHover: "#5168e3",
-    //               defaultBorderColor: "#2853E3",
-    //               defaultColor: "#2853E3",
-    //               linkHoverBg: "#F0F4FF",
-    //             },
-    //           },
-    //         }}
-    //       >
-    //         <Button
-    //           type="link"
-    //           disabled
-    //           onClick={() => setIsResetPassword(true)}
-    //         >
-    //           {t(KEYS.RESET_PASSWORD, source)}
-    //         </Button>
-    //       </ConfigProvider>
-    //     );
-    //   },
-    // },
     {
       title: t(KEYS.OPERATE, source),
       key: "operate",
@@ -287,7 +256,7 @@ export const UserList = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-between h-[calc(100vh-18.15rem)]  overflow-y-auto no-scrollbar">
+      <div className="flex flex-col justify-between h-[calc(100vh-18.15rem)] overflow-y-auto no-scrollbar">
         <Table
           rowKey={(record) => record.id}
           columns={columns}

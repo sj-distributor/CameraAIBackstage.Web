@@ -199,3 +199,7 @@ code {
 .selectOptions .ant-select-item-option-selected {
   color: #2853e3 !important;
 }
+
+.teamLogo .ant-upload-list-item:hover::before {
+  opacity: 0 !important;
+}

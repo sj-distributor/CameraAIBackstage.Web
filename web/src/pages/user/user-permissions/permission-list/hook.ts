@@ -36,7 +36,7 @@ export const useAction = () => {
     pageSize: number;
   }>({
     pageIndex: 1,
-    pageSize: 5,
+    pageSize: 10,
   });
 
   const [isDeletePermissions, setISDeletePermissions] =
@@ -148,7 +148,7 @@ export const useAction = () => {
     isSearch &&
       getRolesAllDataList({
         PageIndex: 1,
-        PageSize: 5,
+        PageSize: 10,
         KeyWord: filterKeyword,
         systemSource: RoleSystemSourceEnum.CameraAi,
       });
