@@ -182,3 +182,24 @@ code {
   max-width: 18rem !important;
   min-width: 18rem !important;
 }
+
+.userDetailDisableInput {
+  background-color: #f6f8fc !important;
+  color: #323444 !important;
+}
+
+.userDetailSelect .ant-select-selection-item {
+  background-color: #f6f8fc !important;
+}
+
+.selectOptions .ant-select-item {
+  background-color: white !important;
+}
+
+.selectOptions .ant-select-item-option-selected {
+  color: #2853e3 !important;
+}
+
+.teamLogo .ant-upload-list-item:hover::before {
+  opacity: 0 !important;
+}

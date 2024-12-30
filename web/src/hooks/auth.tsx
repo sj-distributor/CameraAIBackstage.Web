@@ -21,6 +21,7 @@ import { AreaManagement } from "@/pages/system/area-management";
 import { LicensePlateManagement } from "@/pages/system/license-plate-management";
 import { OperationLog } from "@/pages/system/operation-log";
 import { PortraitList } from "@/pages/system/portrait-list";
+import { TeamInfo } from "@/pages/user/team-info";
 import { UserList } from "@/pages/user/user-lilst";
 import { PermissionsList } from "@/pages/user/user-permissions";
 import { UserDistribute } from "@/pages/user/user-permissions/distribute";
@@ -125,6 +126,12 @@ export default ({ children }: { children: React.ReactNode }) => {
               permissions: "CanCreateRoleUser",
             },
           ],
+        },
+        {
+          path: "/user/teamInfo",
+          element: <TeamInfo />,
+          name: t(KEYS.TEAM_INFO, { ns: "homeMenu" }),
+          permissions: "CanViewCameraAiUserAccountPage",
         },
       ],
     },
