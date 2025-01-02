@@ -5,6 +5,7 @@ import Sider from "antd/es/layout/Sider";
 import { SubMenuType } from "antd/es/menu/interface";
 import { Outlet } from "react-router-dom";
 
+import { TeamIcon } from "@/assets/top-menu";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/home-menu-keys";
 import { IRouterList } from "@/services/dtos/routes";
@@ -142,9 +143,9 @@ export const Home = () => {
     {
       label: (
         <div className="flex items-center hover:text-[#2853e3]">
-          <span className="iconfont icon-a-Key2" />
-          <div className="ml-[.5rem]">
-            {t(KEYS.CHANGE_PASSWORD, { ns: "homeMenu" })}
+          <TeamIcon />
+          <div className="ml-[.5rem] max-w-[10rem] whitespace-nowrap overflow-hidden text-ellipsis text-[#9D9FB0]">
+            SJ-CN TEAM
           </div>
         </div>
       ),

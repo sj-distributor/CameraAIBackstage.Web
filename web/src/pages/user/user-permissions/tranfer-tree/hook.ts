@@ -118,10 +118,6 @@ export const useAction = (props: {
   };
 
   useEffect(() => {
-    isModelOpen && onGetFoundationData();
-  }, [isModelOpen]);
-
-  useEffect(() => {
     disableTreeStaffId?.length &&
       setTreeData(
         treeFoundationResponse.staffDepartmentHierarchy
@@ -130,5 +126,5 @@ export const useAction = (props: {
       );
   }, [disableTreeStaffId]);
 
-  return { t, source, treeData };
+  return { t, source, treeData, onGetFoundationData };
 };
