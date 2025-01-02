@@ -9,7 +9,9 @@ api.interceptors.request.use(
 
     config.baseURL = appSettings.serverUrl;
 
-    const authorizeToken = localStorage.getItem(appSettings.tokenKey);
+    const authorizeToken = window.__POWERED_BY_WUJIE__
+      ? window.$wujie.props?.token
+      : localStorage.getItem(appSettings.tokenKey);
 
     authorizeToken &&
       (config.headers.Authorization = `Bearer ${authorizeToken}`);

@@ -250,7 +250,7 @@ export const Home = () => {
                         className="mx-4"
                       >
                         {window.__POWERED_BY_WUJIE__
-                          ? window.$wujie.props?.userName.charAt(0)
+                          ? window.$wujie.props?.userName?.charAt(0)
                           : localStorage.getItem(userNameKey)?.charAt(0)}
                       </Avatar>
                       {window.__POWERED_BY_WUJIE__
