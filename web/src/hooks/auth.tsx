@@ -28,7 +28,10 @@ import { PermissionsList } from "@/pages/user/user-permissions";
 import { UserDistribute } from "@/pages/user/user-permissions/distribute";
 import { UserPermissions } from "@/pages/user/user-permissions/permission-list";
 import { NewOrUpdatePermissions } from "@/pages/user/user-permissions/user-newpermissions";
-import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
+import {
+  BackGroundRolePermissionEnum,
+  FrontRolePermissionEnum,
+} from "@/pages/user/user-permissions/user-newpermissions/props";
 import { GetCurrentAccountPermission } from "@/services/api/user-permission";
 import { IRouterList } from "@/services/dtos/routes";
 
@@ -43,8 +46,10 @@ interface IAuthContextType {
   getMyPermission: () => void;
   token: string;
   signIn: (auth: string, callback?: VoidFunction) => void;
-  signOut: () => void;
+  signOut: (callback?: VoidFunction) => void;
   defaultPath: string;
+  permission: { isGetPermission: boolean; hasSwitchCameraAiBackEnd: boolean };
+  userNameKey: string;
 }
 
 export const AuthContext = React.createContext<IAuthContextType>(null!);
@@ -63,13 +68,24 @@ export default ({ children }: { children: React.ReactNode }) => {
   const [myPermissions, setMyPermissions] = useState<string[]>([]);
 
   const tokenKey =
-    ((window as any).appsettings?.tokenKey as string) ?? "tokenKey";
+    ((window as any).appSettings?.tokenKey as string) ?? "tokenKey";
+
+  const userNameKey =
+    ((window as any).appSettings?.userNameKey as string) ?? "userName";
 
   const defaultToken = localStorage.getItem(tokenKey) ?? "";
 
   const [token, setToken] = useState<string>(defaultToken);
 
-  const [defaultPath, setDefaultPath] = useState<string>("/system/log");
+  const [defaultPath, setDefaultPath] = useState<string>("");
+
+  const [permission, setPermission] = useState<{
+    isGetPermission: boolean;
+    hasSwitchCameraAiBackEnd: boolean;
+  }>({
+    isGetPermission: false,
+    hasSwitchCameraAiBackEnd: false,
+  });
 
   const signIn = (auth: string, callback?: VoidFunction) => {
     setToken(auth);
@@ -77,9 +93,11 @@ export default ({ children }: { children: React.ReactNode }) => {
     callback && callback();
   };
 
-  const signOut = () => {
+  const signOut = (callback?: VoidFunction) => {
     setToken("");
     localStorage.removeItem(tokenKey);
+    localStorage.removeItem(userNameKey);
+    callback && callback();
   };
 
   const routerList: IRouterList[] = [
@@ -265,6 +283,15 @@ export default ({ children }: { children: React.ReactNode }) => {
 
           setHaveRoles(roles);
           setMyPermissions(rolePermissions);
+
+          setPermission((prevState) => ({
+            ...prevState,
+            isGetPermission: true,
+            hasSwitchCameraAiBackEnd: rolePermissions.some(
+              (permission) =>
+                permission === FrontRolePermissionEnum.CanSwitchCameraAiBackEnd
+            ),
+          }));
         } else {
           message.error(
             t(KEY.ABNORMAL_PERMISSION_DATA, { ns: "userPermissions" })
@@ -274,6 +301,10 @@ export default ({ children }: { children: React.ReactNode }) => {
       .catch((error) => {
         message.error((error as Error).message);
         setMyPermissions([]);
+        setPermission({
+          isGetPermission: true,
+          hasSwitchCameraAiBackEnd: false,
+        });
       });
   };
 
@@ -344,6 +375,8 @@ export default ({ children }: { children: React.ReactNode }) => {
     signIn,
     signOut,
     defaultPath,
+    permission,
+    userNameKey,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

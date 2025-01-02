@@ -10,7 +10,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  server: { port: 3000 },
+  server: { port: 5173 },
   css: {
     modules: {
       generateScopedName: "[name]__[local]___[hash:base64:5]",
