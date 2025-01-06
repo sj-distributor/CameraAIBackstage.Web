@@ -12,6 +12,7 @@ import {
   Input,
   Pagination,
   Select,
+  Spin,
   Switch,
   Table,
   TableProps,
@@ -64,6 +65,14 @@ export const UserList = () => {
     setSelectRange,
     selectUser,
     setSelectUser,
+    openAddUserDrawer,
+    selectLoading,
+    regionData,
+    filterOption,
+    handleCreateTeam,
+    currentTeam,
+    adduserLoading,
+    currentAccount,
   } = useAction();
 
   const columns: TableProps<IUserDataItem>["columns"] = [
@@ -156,23 +165,30 @@ export const UserList = () => {
             }}
           >
             <div className="flex">
-              <Button type="link" onClick={() => navigate(`/user/list/detail`)}>
+              <Button
+                type="link"
+                onClick={() =>
+                  navigate(`/user/list/detail`, { state: { record } })
+                }
+              >
                 詳情
               </Button>
               {myPermissions.includes(
                 BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
-              ) && (
-                <Button
-                  type="link"
-                  onClick={() => {
-                    setIsDeleteUsers(false);
-                    setDeleteUserKeys([String(record.id)]);
-                    setIsRemoveUser(true);
-                  }}
-                >
-                  {t(KEYS.REMOVE, source)}
-                </Button>
-              )}
+              ) &&
+                record.id !== Number(currentTeam.leaderId) &&
+                record.id !== currentAccount.id && (
+                  <Button
+                    type="link"
+                    onClick={() => {
+                      setIsDeleteUsers(false);
+                      setDeleteUserKeys([String(record.id)]);
+                      setIsRemoveUser(true);
+                    }}
+                  >
+                    {t(KEYS.REMOVE, source)}
+                  </Button>
+                )}
             </div>
           </ConfigProvider>
         );
@@ -223,6 +239,7 @@ export const UserList = () => {
                   Status: status,
                   Keyword: filterKeyword,
                   PageSize: userListData.PageSize,
+                  TeamId: currentTeam.id,
                 })
               }
             />
@@ -248,7 +265,7 @@ export const UserList = () => {
               <Button
                 type="primary"
                 className="w-[7.25rem] h-[2.75rem]"
-                onClick={() => setOpenDrawer(true)}
+                onClick={() => openAddUserDrawer()}
               >
                 <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
               </Button>
@@ -298,6 +315,7 @@ export const UserList = () => {
                 PageIndex: page,
                 Status: userListData.Status,
                 Keyword: filterKeyword,
+                TeamId: currentTeam.id,
               })
             }
             showSizeChanger
@@ -418,17 +436,19 @@ export const UserList = () => {
               </Button>
             </ConfigProvider>
 
-            <Button className="w-[6rem] h-[2.75rem] ml-[1.5rem]" type="primary">
+            <Button
+              className="w-[6rem] h-[2.75rem] ml-[1.5rem]"
+              type="primary"
+              loading={adduserLoading}
+              onClick={handleCreateTeam}
+            >
               確定
             </Button>
           </div>
         }
       >
         <Form form={form} layout="vertical">
-          <Form.Item
-            label="新增用戶"
-            rules={[{ required: true, message: "請選擇部門或成員" }]}
-          >
+          <Form.Item label="新增用戶" required={true}>
             <Select
               mode="multiple"
               open={false}
@@ -457,50 +477,35 @@ export const UserList = () => {
               value={selectRange}
               mode="multiple"
               allowClear
-              options={[
-                {
-                  value: 0,
-                  label: "不查看任何區域地址",
-                },
-                {
-                  value: 1,
-                  label: "廣東省中山市興政路1號",
-                },
-                {
-                  value: 2,
-                  label: "廣東省中山市中山三路16號",
-                },
-                {
-                  value: 3,
-                  label: "廣東省中山市学院路1號",
-                },
-                {
-                  value: 4,
-                  label: "廣東省中山市中山三路45435號",
-                },
-                {
-                  value: 5,
-                  label: "廣東省中山市学院路asadsad號",
-                },
-              ]}
+              options={regionData}
+              filterOption={filterOption}
+              dropdownRender={(menu) => (
+                <>
+                  {selectLoading ? (
+                    <Spin className="flex justify-center" />
+                  ) : (
+                    <div>{menu}</div>
+                  )}
+                </>
+              )}
               onChange={(value) => {
-                if (value.every((item) => item === 0)) {
+                if (value.every((item) => item === -1)) {
                   setSelectRange(value);
                 } else {
-                  const data = value.filter((item) => item !== 0);
+                  const data = value.filter((item) => item !== -1);
 
                   setSelectRange(data);
                 }
               }}
               onSelect={(value) => {
-                if (value === 0) {
+                if (value === -1) {
                   setSelectRange([value]);
                 }
               }}
               tagRender={(props: CustomTagProps) => {
                 const { label, closable, onClose } = props;
 
-                if (selectRange.includes(0)) {
+                if (selectRange.includes(-1)) {
                   return <span className="ml-2">{label}</span>;
                 }
 

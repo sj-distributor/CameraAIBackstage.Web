@@ -4,12 +4,12 @@ import { ColumnsType } from "antd/es/table";
 import { Trans } from "react-i18next";
 
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
+import { PermissionEnum } from "@/services/dtos/public";
 import { IRole } from "@/services/dtos/user-permission";
 
 import { OperateConfirmModal } from "../operate-confirm";
 import { BackGroundRolePermissionEnum } from "../user-newpermissions/props";
 import { useAction } from "./hook";
-import { PermissionEnum } from "@/services/dtos/public";
 
 export const UserPermissions = () => {
   const {

@@ -14,6 +14,7 @@ import {
   IUserByRoleIdData,
   IUserByRoleIdResponse,
 } from "@/services/dtos/user-permission";
+import { ITreeData } from "../tranfer-tree/hook";
 
 export const useAction = () => {
   const { id } = useParams();
@@ -38,6 +39,8 @@ export const useAction = () => {
   const [isTableLoading, setIsTableLoading] = useState<boolean>(false);
 
   const [selectedRows, setSelectedRows] = useState<IUserByRoleIdData[]>([]);
+
+  const [selectUser, setSelectUser] = useState<ITreeData[]>([]);
 
   const [record, setRecord] = useState<IUserByRoleIdData>();
 
@@ -213,5 +216,7 @@ export const useAction = () => {
     handleOperateDelete,
     onSelectedRow,
     handelGetSelectedUsers,
+    selectUser,
+    setSelectUser,
   };
 };

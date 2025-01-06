@@ -33,7 +33,9 @@ import {
   FrontRolePermissionEnum,
 } from "@/pages/user/user-permissions/user-newpermissions/props";
 import { GetCurrentAccountPermission } from "@/services/api/user-permission";
+import { ITeamListProps } from "@/services/dtos/login";
 import { IRouterList } from "@/services/dtos/routes";
+import { IUserDataItem } from "@/services/dtos/user";
 
 interface IAuthContextType {
   language: string;
@@ -50,6 +52,10 @@ interface IAuthContextType {
   defaultPath: string;
   permission: { isGetPermission: boolean; hasSwitchCameraAiBackEnd: boolean };
   userNameKey: string;
+  currentTeam: ITeamListProps;
+  setCurrentTeam: React.Dispatch<React.SetStateAction<ITeamListProps>>;
+  currentAccount: IUserDataItem;
+  setCurrentAccount: React.Dispatch<React.SetStateAction<IUserDataItem>>;
 }
 
 export const AuthContext = React.createContext<IAuthContextType>(null!);
@@ -86,6 +92,25 @@ export default ({ children }: { children: React.ReactNode }) => {
     isGetPermission: false,
     hasSwitchCameraAiBackEnd: false,
   });
+
+  const localCurrentTeam = JSON.parse(
+    localStorage.getItem("currentTeam") ?? "{}"
+  );
+
+  const localCurrentAccount = JSON.parse(
+    localStorage.getItem("currentAccount") ?? "{}"
+  );
+
+  const [currentTeam, setCurrentTeam] = useState<ITeamListProps>({
+    id: localCurrentTeam.id ?? "",
+    name: localCurrentTeam.name ?? "",
+    leaderId: localCurrentTeam.leaderId ?? "",
+    tenantId: localCurrentTeam.tenantId ?? "",
+    avatarUrl: localCurrentTeam.avatarUrl ?? "",
+  });
+
+  const [currentAccount, setCurrentAccount] =
+    useState<IUserDataItem>(localCurrentAccount);
 
   const signIn = (auth: string, callback?: VoidFunction) => {
     setToken(auth);
@@ -377,6 +402,10 @@ export default ({ children }: { children: React.ReactNode }) => {
     defaultPath,
     permission,
     userNameKey,
+    currentTeam,
+    setCurrentTeam,
+    currentAccount,
+    setCurrentAccount,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,3 +1,4 @@
+import { CloseOutlined } from "@ant-design/icons";
 import {
   Breadcrumb,
   Button,
@@ -5,9 +6,12 @@ import {
   Form,
   Input,
   Select,
+  Spin,
   Switch,
 } from "antd";
-import { useNavigate } from "react-router-dom";
+import { CustomTagProps } from "rc-select/lib/BaseSelect";
+
+import { useAction } from "./hook";
 
 export interface IUserInfoProps {
   label: string;
@@ -15,62 +19,17 @@ export interface IUserInfoProps {
 }
 
 export const UserDetail = () => {
-  const navigate = useNavigate();
-
-  const [form] = Form.useForm();
-
-  const userInfo: IUserInfoProps[] = [
-    {
-      label: "用户ID",
-      value: "001",
-    },
-    {
-      label: "用戶名",
-      value: "DANNY.L",
-    },
-    {
-      label: "部門",
-      value: "OSC",
-    },
-    {
-      label: "組別",
-      value: "A組",
-    },
-    {
-      label: "崗位",
-      value: "001",
-    },
-    {
-      label: "是否在職",
-      value: "在職",
-    },
-    {
-      label: "電話",
-      value: "13712312345",
-    },
-    {
-      label: "企業微信",
-      value: "XXX.X",
-    },
-    {
-      label: "關聯郵箱",
-      value: "xx@QWE..COM",
-    },
-  ];
-
-  const filterOption = (
-    input: string,
-    option?: {
-      label?: string;
-      value: number | string;
-    }
-  ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
-
-  const onSubmit = () => {
-    form.validateFields().then(async (values) => {
-      console.log(values);
-    });
-  };
+  const {
+    form,
+    selectLoading,
+    selectRange,
+    regionData,
+    userInfo,
+    navigate,
+    setSelectRange,
+    filterOption,
+    onSubmit,
+  } = useAction();
 
   return (
     <div className="bg-white relative overflow-hidden no-scrollbar h-screen">
@@ -117,7 +76,7 @@ export const UserDetail = () => {
         </div>
 
         <div className="p-[2rem_1.5rem] w-[80%] max-w-[71.25rem]">
-          <div className="text-[#323444] font-semibold mb-[1rem]">用户信息</div>
+          <div className="text-[#323444] font-semibold mb-[1rem]">用户设置</div>
           <Form
             form={form}
             labelCol={{ span: 3 }}
@@ -149,6 +108,59 @@ export const UserDetail = () => {
             </Form.Item>
             <Form.Item label="查看範圍" colon={false}>
               <Select
+                style={{ width: "60%" }}
+                value={selectRange}
+                mode="multiple"
+                allowClear
+                options={regionData}
+                filterOption={filterOption}
+                dropdownRender={(menu) => (
+                  <>
+                    {selectLoading ? (
+                      <Spin className="flex justify-center" />
+                    ) : (
+                      <div>{menu}</div>
+                    )}
+                  </>
+                )}
+                onChange={(value) => {
+                  if (value.every((item) => item === -1)) {
+                    setSelectRange(value);
+                  } else {
+                    const data = value.filter((item) => item !== -1);
+
+                    setSelectRange(data);
+                  }
+                }}
+                onSelect={(value) => {
+                  if (value === -1) {
+                    setSelectRange([value]);
+                  }
+                }}
+                tagRender={(props: CustomTagProps) => {
+                  const { label, closable, onClose } = props;
+
+                  if (selectRange.includes(-1)) {
+                    return <span className="ml-2">{label}</span>;
+                  }
+
+                  return (
+                    <span className="ant-select-selection-item !bg-[#F6F8FC] !px-3">
+                      {label}
+                      {closable && (
+                        <span
+                          onClick={onClose}
+                          className="ant-select-selection-item-remove ml-2"
+                        >
+                          <CloseOutlined />
+                        </span>
+                      )}
+                    </span>
+                  );
+                }}
+                popupClassName={"selectOptions"}
+              />
+              {/* <Select
                 mode="multiple"
                 allowClear
                 filterOption={filterOption}
@@ -164,7 +176,7 @@ export const UserDetail = () => {
                     label: "廣東省中山市中山三路1號",
                   },
                 ]}
-              />
+              /> */}
             </Form.Item>
           </Form>
         </div>

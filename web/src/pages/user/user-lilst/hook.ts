@@ -1,14 +1,19 @@
-import { useDebounce, useRequest } from "ahooks";
-import { Form, message } from "antd";
+import { useDebounce, useRequest, useUpdateEffect } from "ahooks";
+import { App, Form } from "antd";
+import { isEmpty } from "ramda";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/user-list-keys";
+import { GetRegionPage } from "@/services/api/equipment/list";
 import {
   GetUserList,
+  PostAddUsersApi,
   PostBatchDeleteUsers,
   PostCreateUsers,
   PostDeleteUser,
+  PostDeleteUserApi,
   PostUpdateUser,
 } from "@/services/api/user";
 import {
@@ -16,7 +21,7 @@ import {
   IGetUserListResponse,
   UserStatus,
 } from "@/services/dtos/user";
-import { useNavigate } from "react-router-dom";
+
 import { ITreeData } from "../user-permissions/tranfer-tree/hook";
 
 export interface IDto extends IGetUserListResponse {
@@ -26,13 +31,15 @@ export interface IDto extends IGetUserListResponse {
 }
 
 export const useAction = () => {
+  const { message } = App.useApp();
+
   const source = { ns: "userList" };
 
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
 
-  const { t, myPermissions, language } = useAuth();
+  const { t, myPermissions, language, currentTeam, currentAccount } = useAuth();
 
   const [isAddUser, setIsAddUser] = useState<boolean>(false);
 
@@ -72,11 +79,46 @@ export const useAction = () => {
 
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
-  const [selectRange, setSelectRange] = useState<number[]>([0]);
+  const [regionData, setRegionData] = useState<
+    { value: number; label: string }[]
+  >([]);
+
+  const [selectRange, setSelectRange] = useState<number[]>([]);
+
+  const [selectLoading, setSelectLoading] = useState<boolean>(false);
 
   const [selectUser, setSelectUser] = useState<ITreeData[]>([]);
 
+  const [adduserLoading, setAddUserLoading] = useState<boolean>(false);
+
   const handelConfirmDeleteUsers = () => {
+    setIsDeleteUserLoading(true);
+
+    PostDeleteUserApi({ teamUserIds: deleteUserKeys })
+      .then(() => {
+        setIsRemoveUser(false);
+
+        handelGetUserList({
+          PageIndex: 1,
+          PageSize: userListData.PageSize,
+          Keyword: filterKeyword,
+          Status: userListData.Status,
+          TeamId: currentTeam.id,
+        });
+
+        getAllUserList();
+
+        message.success(t(KEYS.REMOVE_USER_OK, source));
+      })
+      .catch((err) => {
+        message.error((err as Error).message);
+      })
+      .finally(() => {
+        setIsDeleteUserLoading(false);
+      });
+
+    return;
+
     if (deleteUserKeys.length < 1) return;
 
     const deleteUserFun = isDeleteUsers ? PostBatchDeleteUsers : PostDeleteUser;
@@ -93,6 +135,7 @@ export const useAction = () => {
           PageSize: userListData.PageSize,
           Keyword: filterKeyword,
           Status: userListData.Status,
+          TeamId: currentTeam.id,
         });
 
         getAllUserList();
@@ -107,6 +150,7 @@ export const useAction = () => {
       });
   };
 
+  // 旧 添加用户
   const handelGetSelectedUsers = async (userIds: string[]) => {
     let loading = true;
 
@@ -120,6 +164,7 @@ export const useAction = () => {
         PageSize: userListData.PageSize,
         Keyword: filterKeyword,
         Status: userListData.Status,
+        TeamId: currentTeam.id,
       });
 
       getAllUserList();
@@ -133,20 +178,6 @@ export const useAction = () => {
     return loading;
   };
 
-  // const { run: handelGetUserList, loading: isGetUserListLoading } = useRequest(
-  //   GetUserList,
-  //   {
-  //     manual: true,
-  //     onSuccess: (res) => {
-  //       res && setUserListData(res);
-  //     },
-  //     onError: (err) => {
-  //       message.error(err.message);
-  //       setUserListData({ count: 0, userProfiles: [] });
-  //     },
-  //   }
-  // );
-
   const { run: handelUpdateUserData, loading: isUpdateUserLoading } =
     useRequest(PostUpdateUser, {
       manual: true,
@@ -156,6 +187,7 @@ export const useAction = () => {
           PageSize: userListData.PageSize,
           Keyword: filterKeyword,
           Status: userListData.Status,
+          TeamId: currentTeam.id,
         });
       },
       onError: (err) => {
@@ -167,6 +199,7 @@ export const useAction = () => {
     GetUserList({
       PageIndex: 1,
       PageSize: 2147483647,
+      TeamId: currentTeam.id,
     }).then((res) => {
       setDisableTreeStaffId(
         (res?.userProfiles ?? []).map((item) => item.staffId)
@@ -184,6 +217,7 @@ export const useAction = () => {
       PageSize: userListData.PageSize,
       Keyword: filterKeyword,
       Status: userListData.Status,
+      TeamId: currentTeam.id,
     });
   }, [filterKeyword]);
 
@@ -224,6 +258,82 @@ export const useAction = () => {
       });
   };
 
+  const filterOption = (
+    input: string,
+    option?: {
+      label?: string;
+      value: number | string;
+    }
+  ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+
+  const openAddUserDrawer = () => {
+    setOpenDrawer(true);
+
+    setSelectLoading(true);
+
+    GetRegionPage({})
+      .then((res) => {
+        const data = [
+          { value: -1, label: "不查看任何區域地址" },
+          ...(res?.regions ?? []).map((item) => ({
+            value: item.areaId,
+            label: item.areaName,
+          })),
+        ];
+
+        setRegionData(data);
+
+        setSelectRange([-1]);
+      })
+      .catch((err) => {
+        setRegionData([{ value: -1, label: "不查看任何區域地址" }]);
+
+        message.error(`获取数据失败：${(err as Error).message}`);
+      })
+      .finally(() => setSelectLoading(false));
+  };
+
+  // 新 添加用户
+  const handleCreateTeam = () => {
+    if (isEmpty(selectUser) || isEmpty(selectRange)) {
+      message.info("請補充完整信息！");
+
+      return;
+    }
+
+    setAddUserLoading(true);
+
+    PostAddUsersApi({
+      teamId: currentTeam.id,
+      userProfileIds: selectUser
+        .map((item) => item.value)
+        .filter((value): value is string => value !== undefined),
+      regionIds: selectRange.filter((item) => item !== -1),
+    })
+      .then(() => {
+        message.success("新增成功");
+
+        setOpenDrawer(false);
+
+        handelGetUserList({
+          PageIndex: 1,
+          PageSize: userListData.PageSize,
+          Keyword: "",
+          Status: undefined,
+          TeamId: currentTeam.id,
+        });
+      })
+      .catch((err) => {
+        setAddUserLoading(false);
+
+        message.error(`新增失败：${(err as Error).message}`);
+      });
+  };
+
+  useUpdateEffect(() => {
+    console.log(deleteUserKeys);
+  }, [deleteUserKeys]);
+
   return {
     isAddUser,
     setIsAddUser,
@@ -261,5 +371,13 @@ export const useAction = () => {
     setSelectRange,
     selectUser,
     setSelectUser,
+    openAddUserDrawer,
+    selectLoading,
+    regionData,
+    filterOption,
+    handleCreateTeam,
+    currentTeam,
+    adduserLoading,
+    currentAccount,
   };
 };

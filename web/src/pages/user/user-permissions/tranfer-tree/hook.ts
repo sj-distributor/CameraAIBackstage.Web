@@ -8,6 +8,7 @@ import {
   IFoundationResponse,
   TreeTypeEnum,
 } from "@/services/dtos/tree";
+import { useUpdateEffect } from "ahooks";
 
 export interface IFoundationDetail {
   department: {
@@ -92,8 +93,8 @@ export const useAction = (props: {
     return foundationData.staffDepartmentHierarchy.map(convertDetailToTreeData);
   };
 
-  const loadData = (fetchData: Promise<any>) => {
-    fetchData
+  const onGetFoundationData = () => {
+    GetTreeData({ HierarchyDepth: HierarchyDepthEnum.Group })
       .then((response) => {
         setTreeData(response ? convertToTreeData(response) : []);
         setTreeFoundationResponse(response);
@@ -102,19 +103,6 @@ export const useAction = (props: {
         message.error((error as Error).message);
         setTreeData([]);
       });
-  };
-
-  const onGetFoundationData = () => {
-    const fetchDataPromise =
-      type === TreeTypeEnum.UserList
-        ? GetFoundationData(
-            "HierarchyDepth",
-            HierarchyDepthEnum.Group,
-            staffIdSource
-          )
-        : GetTreeData("HierarchyDepth", HierarchyDepthEnum.Group);
-
-    loadData(fetchDataPromise);
   };
 
   useEffect(() => {

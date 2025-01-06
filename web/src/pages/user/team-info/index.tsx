@@ -4,99 +4,46 @@ import {
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { Button, ConfigProvider, Form, Input, message, Upload } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  Empty,
+  Form,
+  Image,
+  Input,
+  message,
+  Spin,
+  Upload,
+} from "antd";
 import { isEmpty } from "ramda";
-import { useState } from "react";
 
 import { CustomModal } from "@/components/custom-modal";
 
-const teamMember = [
-  {
-    key: "1",
-    name: "Carla Curtis",
-  },
-  {
-    key: "2",
-    name: "Kaylynn Lubin",
-  },
-  {
-    key: "3",
-    name: "Rayna Aminoff",
-  },
-  {
-    key: "4",
-    name: "Marley Dokidis",
-  },
-  {
-    key: "5",
-    name: "Carla Curtis",
-  },
-  {
-    key: "6",
-    name: "Kaylynn Lubin",
-  },
-  {
-    key: "7",
-    name: "Rayna Aminoff",
-  },
-  {
-    key: "8",
-    name: "Marley Dokidis",
-  },
-  {
-    key: "9",
-    name: "Carla Curtis",
-  },
-  {
-    key: "10",
-    name: "Kaylynn Lubin",
-  },
-  {
-    key: "11",
-    name: "Rayna Aminoff",
-  },
-  {
-    key: "12",
-    name: "Marley Dokidis",
-  },
-  {
-    key: "13",
-    name: "Carla Curtis",
-  },
-  {
-    key: "14",
-    name: "Kaylynn Lubin",
-  },
-  {
-    key: "15",
-    name: "Rayna Aminoff",
-  },
-  {
-    key: "16",
-    name: "Marley Dokidis",
-  },
-];
-
-const teamInfo = {
-  teamName: "SJ-CN TEAM",
-  teamLogo:
-    "https://smartiestest.oss-cn-hongkong.aliyuncs.com/20241217/6be331e8-0b6a-4a65-aeb8-e14f70407c33.jpeg?Expires=253402300799&OSSAccessKeyId=LTAI5tEYyDT8YqJBSXaFDtyk&Signature=zhqP7kcVoYACfR7K6rmQkC3sQSk%3D",
-};
+import { useAction } from "./hook";
 
 export const TeamInfo = () => {
-  const [openSelectMember, setOpenSelectMember] = useState<boolean>(false);
-
-  const [teamOwner, setTeamOwner] = useState<string>("");
-
-  const [showReUpload, setShowReUpload] = useState<boolean>(false);
-
-  const [confirmCancel, setConfirmCancel] = useState<boolean>(false);
-
-  const handleCancelModal = () => {
-    setOpenSelectMember(false);
-
-    setTeamOwner("");
-  };
+  const {
+    teamInfo,
+    currentTeam,
+    currentAccount,
+    openSelectMember,
+    showReUpload,
+    confirmCancel,
+    tempTeamLeader,
+    keyWord,
+    filteredTeamUsers,
+    uploadLoading,
+    submitLoading,
+    updateTeamInfo,
+    onUpload,
+    handleUpdateTeamInfo,
+    setOpenSelectMember,
+    setShowReUpload,
+    setConfirmCancel,
+    setTempTeamLeader,
+    resetTeamInfo,
+    setKeyWord,
+  } = useAction();
 
   return (
     <div className="bg-white relative overflow-hidden no-scrollbar h-screen">
@@ -128,34 +75,32 @@ export const TeamInfo = () => {
                         showRemoveIcon: false,
                       }}
                       onPreview={() => false}
-                      fileList={
-                        teamInfo.teamLogo
-                          ? [
-                              {
-                                uid: "-1",
-                                name: "image",
-                                status: "done",
-                                url: teamInfo.teamLogo,
-                              },
-                            ]
-                          : []
-                      }
+                      beforeUpload={() => false}
+                      onChange={(e) => onUpload(e.fileList)}
+                      fileList={[]}
+                      disabled={uploadLoading}
                     >
-                      {isEmpty(teamInfo.teamLogo) && (
+                      {uploadLoading ? (
+                        <Spin />
+                      ) : (
+                        <Image src={teamInfo.avatarUrl} preview={false} />
+                      )}
+
+                      {isEmpty(teamInfo.avatarUrl) && (
                         <div className="text-[1.125rem] text-[#606278]">
                           <PlusOutlined />
                           <div className="text-[.85rem]">點擊上傳</div>
                         </div>
                       )}
-                    </Upload>
 
-                    {showReUpload && (
-                      <div className="absolute bg-[rgba(0,0,0,0.3)] w-[6.4rem] h-[1.55rem] bottom-[0.61rem] rounded-b-[0.5rem] cursor-pointer z-10 flex justify-center items-center">
-                        <div className="text-white text-[0.75rem]">
-                          重新上传
+                      {showReUpload && !uploadLoading && (
+                        <div className="absolute bg-[rgba(0,0,0,0.3)] w-[6.4rem] h-[1.55rem] bottom-[0.61rem] rounded-b-[0.5rem] cursor-pointer z-10 flex justify-center items-center">
+                          <div className="text-white text-[0.75rem]">
+                            重新上传
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </Upload>
                   </div>
 
                   <div className="mt-[4rem] text-[#9696A7] text-[.63rem]">
@@ -169,7 +114,11 @@ export const TeamInfo = () => {
                 </div>
               </Form.Item>
               <Form.Item label="團隊名稱" colon={false}>
-                <Input className="w-[80%]" value={teamInfo.teamName} />
+                <Input
+                  className="w-[80%]"
+                  value={teamInfo.name}
+                  onChange={(e) => updateTeamInfo("name", e.target.value)}
+                />
               </Form.Item>
             </Form>
           </div>
@@ -180,16 +129,18 @@ export const TeamInfo = () => {
           <div className="border border-[#E7E8EE] border-solid rounded-2xl shadow-md pt-[2rem]">
             <Form className="pl-[4rem]">
               <Form.Item label="团队所有者" colon={false}>
-                Henry
+                {tempTeamLeader.name}
               </Form.Item>
-              <Form.Item label="移交团队" colon={false}>
-                <Button
-                  type="primary"
-                  onClick={() => setOpenSelectMember(true)}
-                >
-                  移交团队
-                </Button>
-              </Form.Item>
+              {currentAccount.id === Number(currentTeam.leaderId) && (
+                <Form.Item label="移交团队" colon={false}>
+                  <Button
+                    type="primary"
+                    onClick={() => setOpenSelectMember(true)}
+                  >
+                    移交团队
+                  </Button>
+                </Form.Item>
+              )}
             </Form>
           </div>
         </div>
@@ -211,7 +162,6 @@ export const TeamInfo = () => {
             onClick={() => {
               setConfirmCancel(true);
             }}
-            // onClick={() => navigate("/user/list")}
           >
             取消
           </Button>
@@ -220,7 +170,8 @@ export const TeamInfo = () => {
         <Button
           className="w-[6rem] h-[2.75rem] ml-[1.5rem]"
           type="primary"
-          // onClick={onSubmit}
+          loading={submitLoading}
+          onClick={handleUpdateTeamInfo}
         >
           確定
         </Button>
@@ -230,17 +181,44 @@ export const TeamInfo = () => {
         title={
           <div className="flex flex-row justify-between">
             <div>选择团队成员</div>
-            <CloseOutlined className="mr-[1rem]" onClick={handleCancelModal} />
+            <CloseOutlined
+              className="mr-[1rem]"
+              onClick={() => {
+                setKeyWord("");
+
+                setOpenSelectMember(false);
+
+                setTempTeamLeader({
+                  id: Number(teamInfo.leaderId),
+                  name: teamInfo.leaderName ?? "",
+                });
+              }}
+            />
           </div>
         }
-        onCancle={handleCancelModal}
+        onCancle={() => {
+          setKeyWord("");
+
+          setOpenSelectMember(false);
+
+          setTempTeamLeader({
+            id: Number(teamInfo.leaderId),
+            name: teamInfo.leaderName ?? "",
+          });
+        }}
         onConfirm={() => {
-          if (!teamOwner) {
+          if (!tempTeamLeader) {
             message.warning("请选择一位团队成员");
 
             return;
           }
-          handleCancelModal();
+          setKeyWord("");
+
+          setOpenSelectMember(false);
+
+          updateTeamInfo("leaderId", tempTeamLeader.id);
+
+          updateTeamInfo("leaderName", tempTeamLeader.name);
         }}
         open={openSelectMember}
         destroyOnClose={true}
@@ -253,27 +231,36 @@ export const TeamInfo = () => {
               placeholder="搜索团队成员"
               className="w-[60%] mb-[1rem]"
               suffix={<SearchOutlined />}
+              value={keyWord}
+              onChange={(e) => setKeyWord(e.target.value)}
             />
           </div>
-          <div className="max-h-[24.56rem] overflow-y-scroll">
-            {teamMember.map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  className={`w-full h-[2.06rem] flex justify-between items-center cursor-pointer hover:bg-[#F0F4FF] hover:text-[#2853E3] ${
-                    item.key === teamOwner && "bg-[#F0F4FF] text-[#2853E3]"
-                  }`}
-                  onClick={() => setTeamOwner(item.key)}
-                >
-                  <div className="ml-[1rem] w-[90%] truncate text-ellipsis">
-                    {item.name}
+          <div className="min-h-[8rem] max-h-[24.56rem] overflow-y-scroll">
+            {isEmpty(filteredTeamUsers) ? (
+              <Empty />
+            ) : (
+              filteredTeamUsers.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={`w-full h-[2.06rem] flex justify-between items-center cursor-pointer hover:bg-[#F0F4FF] hover:text-[#2853E3] ${
+                      item.id === tempTeamLeader.id &&
+                      "bg-[#F0F4FF] text-[#2853E3]"
+                    }`}
+                    onClick={() =>
+                      setTempTeamLeader({ id: item.id, name: item.name })
+                    }
+                  >
+                    <div className="ml-[1rem] w-[90%] truncate text-ellipsis">
+                      {item.name}
+                    </div>
+                    {item.id === tempTeamLeader.id && (
+                      <CheckOutlined className="mr-[1rem] text-[#2853E3]" />
+                    )}
                   </div>
-                  {item.key === teamOwner && (
-                    <CheckOutlined className="mr-[1rem] text-[#2853E3]" />
-                  )}
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </>
       </CustomModal>
@@ -281,15 +268,17 @@ export const TeamInfo = () => {
       <CustomModal
         open={confirmCancel}
         title={<div>请确认</div>}
-        onCancle={() => setConfirmCancel(false)}
-        onConfirm={() => setConfirmCancel(false)}
         footer={
           <div>
             <Button onClick={() => setConfirmCancel(false)}>取消</Button>
             <Button
               type="primary"
               className="ml-2"
-              onClick={() => setConfirmCancel(false)}
+              onClick={() => {
+                setConfirmCancel(false);
+
+                resetTeamInfo();
+              }}
             >
               确定
             </Button>
