@@ -6,6 +6,7 @@ export interface IOperateLogsPageRequest extends IPageDto {
   StartTime?: Dayjs | null | string;
   EndTime?: Dayjs | null | string;
   Keyword?: string;
+  TeamId?: string;
 }
 
 export interface IOperateLogsPageResponse {

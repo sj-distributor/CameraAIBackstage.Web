@@ -2,6 +2,7 @@ import { App, Form } from "antd";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { useAuth } from "@/hooks/use-auth";
 import { GetRegionPage } from "@/services/api/equipment/list";
 
 import { IUserInfoProps } from ".";
@@ -14,6 +15,8 @@ export const useAction = () => {
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
+
+  const { currentTeam } = useAuth();
 
   const userInfoRecord = location.state.record || {};
 
@@ -81,7 +84,7 @@ export const useAction = () => {
   const getRegions = () => {
     setSelectLoading(true);
 
-    GetRegionPage({})
+    GetRegionPage({ TeamId: currentTeam.id })
       .then((res) => {
         const data = [
           { value: -1, label: "不查看任何區域地址" },

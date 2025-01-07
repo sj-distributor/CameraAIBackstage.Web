@@ -35,13 +35,16 @@ export const PostBatchDeleteUsers = async (userProfileIds: string[]) => {
 };
 
 // 新 删除用户（单个+批量）
-export const PostDeleteUserApi = async (data: { teamUserIds: string[] }) => {
+export const PostDeleteUserApi = async (data: {
+  teamId: string;
+  userProfileIds: string[];
+}) => {
   const response = await api.post("/api/CameraAi/team/user/delete", data);
 
   return response.data;
 };
 
-// 旧 添加用户
+// 旧 添加用户 还没加teamId
 export const PostCreateUsers = async (staffIds: string[]) => {
   const response = await api.post<IUserProfileItem[]>(
     "/api/CameraAi/user/create",

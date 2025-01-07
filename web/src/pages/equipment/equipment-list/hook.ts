@@ -25,7 +25,7 @@ import { getErrorMessage } from "@/utils/error-message";
 import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
 
 export const useAction = () => {
-  const { t, language, myPermissions } = useAuth();
+  const { t, language, myPermissions, currentTeam } = useAuth();
 
   const initialEquipmentData = {
     equipmentCode: "",
@@ -104,6 +104,7 @@ export const useAction = () => {
       PageIndex,
       PageSize,
       Keyword: searchKey ? searchKey : undefined,
+      TeamId: currentTeam.id,
     };
 
     if (isSearchOnline !== undefined && isSearchOnline !== IOnlineOrNot.All) {
@@ -146,7 +147,11 @@ export const useAction = () => {
   const handleUpdate = () => {
     setConfirmLoading(true);
     PostUpdateEquipment({
-      equipment: { ...form.getFieldsValue(), id: clickEditId },
+      equipment: {
+        ...form.getFieldsValue(),
+        id: clickEditId,
+        teamId: currentTeam.id,
+      },
     })
       .then(() => {
         setIsAddOrUpdateOpen(false);
@@ -160,7 +165,7 @@ export const useAction = () => {
   const handleCreate = () => {
     setConfirmLoading(true);
     PostCreateEquipment({
-      equipment: form.getFieldsValue(),
+      equipment: { ...form.getFieldsValue(), teamId: currentTeam.id },
     })
       .then(() => {
         setIsAddOrUpdateOpen(false);
@@ -199,6 +204,7 @@ export const useAction = () => {
     setRegionLoading(true);
     GetRegionPage({
       IsFilter: true,
+      TeamId: currentTeam.id,
     })
       .then((res) => {
         const newList = res.regions.map((item) => {
@@ -258,7 +264,11 @@ export const useAction = () => {
   };
 
   useEffect(() => {
-    GetEquipmentTypePage({ PageIndex: 1, PageSize: 2147483647 })
+    GetEquipmentTypePage({
+      PageIndex: 1,
+      PageSize: 2147483647,
+      TeamId: currentTeam.id,
+    })
       .then((res) => {
         const list = res.equipmentTypes.map((item) => {
           return { label: item.name, value: item.id };

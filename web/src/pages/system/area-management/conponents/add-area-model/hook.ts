@@ -14,7 +14,7 @@ export const useAction = (
   operateModalParams: IModifyModalDto,
   initGetRegionList: () => void
 ) => {
-  const { t, language } = useAuth();
+  const { t, language, currentTeam } = useAuth();
 
   const source = { ns: "areaManagement" };
 
@@ -62,7 +62,8 @@ export const useAction = (
   const handleCreateOrUpdateRegionItem = () => {
     setIsLoading(true);
     (operateModalParams.isEdit ? PostUpdateRegion : PostCreateRegion)({
-      regionAndArea: regionDataItem,
+      teamId: currentTeam.id,
+      regionAndArea: { ...regionDataItem, teamId: currentTeam.id },
     })
       .then(() => initGetRegionList())
       .catch(() => {

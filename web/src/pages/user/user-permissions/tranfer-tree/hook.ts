@@ -2,13 +2,8 @@ import { message } from "antd";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
-import { GetFoundationData, GetTreeData } from "@/services/api/tree";
-import {
-  HierarchyDepthEnum,
-  IFoundationResponse,
-  TreeTypeEnum,
-} from "@/services/dtos/tree";
-import { useUpdateEffect } from "ahooks";
+import { GetTreeData } from "@/services/api/tree";
+import { HierarchyDepthEnum, IFoundationResponse } from "@/services/dtos/tree";
 
 export interface IFoundationDetail {
   department: {
@@ -42,13 +37,8 @@ export interface ITreeSelectNode {
   children?: ITreeSelectNode[];
 }
 
-export const useAction = (props: {
-  staffIdSource: number;
-  isModelOpen: boolean;
-  disableTreeStaffId: string[];
-  type: number;
-}) => {
-  const { staffIdSource, isModelOpen, disableTreeStaffId, type } = props;
+export const useAction = (props: { disableTreeStaffId: string[] }) => {
+  const { disableTreeStaffId } = props;
 
   const { t } = useAuth();
 

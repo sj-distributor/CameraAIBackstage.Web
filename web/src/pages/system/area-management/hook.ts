@@ -11,7 +11,7 @@ import { IAreaManagementPageResponse } from "@/services/dtos/area-management";
 import { IModifyModalDto } from "./props";
 
 export const useAction = () => {
-  const { t, myPermissions } = useAuth();
+  const { t, myPermissions, currentTeam } = useAuth();
 
   const source = { ns: "areaManagement" };
 
@@ -57,6 +57,7 @@ export const useAction = () => {
       PageIndex: pageDto.pageIndex,
       PageSize: pageDto.pageSize,
       Keyword: pageDto.keyword,
+      TeamId: currentTeam.id,
     })
       .then((res) => {
         if (res) setRegionListDto({ count: res.count, regions: res.regions });

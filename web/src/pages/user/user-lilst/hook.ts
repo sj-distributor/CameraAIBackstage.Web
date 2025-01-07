@@ -94,7 +94,10 @@ export const useAction = () => {
   const handelConfirmDeleteUsers = () => {
     setIsDeleteUserLoading(true);
 
-    PostDeleteUserApi({ teamUserIds: deleteUserKeys })
+    PostDeleteUserApi({
+      teamId: currentTeam.id,
+      userProfileIds: deleteUserKeys,
+    })
       .then(() => {
         setIsRemoveUser(false);
 
@@ -271,7 +274,7 @@ export const useAction = () => {
 
     setSelectLoading(true);
 
-    GetRegionPage({})
+    GetRegionPage({ TeamId: currentTeam.id })
       .then((res) => {
         const data = [
           { value: -1, label: "不查看任何區域地址" },

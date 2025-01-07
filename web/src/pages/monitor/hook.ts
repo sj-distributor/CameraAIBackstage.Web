@@ -19,7 +19,7 @@ import { IPageDto } from "@/services/dtos/public";
 import { IMonitorOptionDto, IOpenOrStopStatus } from "./props";
 
 export const useAction = () => {
-  const { t, language, myPermissions } = useAuth();
+  const { t, language, myPermissions, currentTeam } = useAuth();
 
   const { message } = App.useApp();
 
@@ -105,6 +105,7 @@ export const useAction = () => {
     const data: IMonitorSettingRequest = {
       PageIndex,
       PageSize,
+      TeamId: currentTeam.id,
     };
 
     if (isActive !== undefined) {

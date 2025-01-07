@@ -36,7 +36,7 @@ import dayjs from "dayjs";
 import { getErrorMessage } from "@/utils/error-message";
 
 export const useAction = () => {
-  const { t } = useAuth();
+  const { t, currentTeam } = useAuth();
 
   const source = { ns: "monitorConfiguration" };
 
@@ -378,7 +378,9 @@ export const useAction = () => {
         endTime: timeToSeconds(values.timeSetting[1]),
         timeZone: "Pacific Standard Time",
         isActive: true,
+        teamId: currentTeam.id,
       };
+
       if ((isAdd && !!values.broadcastContent) || !isAdd) {
         data.broadcastContent = values.broadcastContent;
       }
@@ -470,6 +472,7 @@ export const useAction = () => {
     const foundItemIndex = newList.findIndex(
       (item) => item.notifyType === itemType
     );
+
     if (foundItemIndex === -1) {
       newList.push({
         recipientIds: [userId],
@@ -482,7 +485,12 @@ export const useAction = () => {
   };
 
   const initGetUserList = () => {
-    GetUserList({ PageSize: 2147483647, PageIndex: 1, Status: 1 })
+    GetUserList({
+      PageSize: 2147483647,
+      PageIndex: 1,
+      Status: 1,
+      TeamId: currentTeam.id,
+    })
       .then((res) => {
         setUserData(res.userProfiles);
       })
@@ -507,7 +515,12 @@ export const useAction = () => {
   useEffect(() => {
     initGetUserList();
 
-    GetEquipmentPage({ PageSize: 2147483647, PageIndex: 1, IsBind: true })
+    GetEquipmentPage({
+      PageSize: 2147483647,
+      PageIndex: 1,
+      IsBind: true,
+      TeamId: currentTeam.id,
+    })
       .then((res) => {
         const newEquipmentList = res.equipments.map((item) => {
           return { label: item.equipmentName ?? "", value: item.id };

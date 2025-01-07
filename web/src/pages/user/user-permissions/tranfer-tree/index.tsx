@@ -11,29 +11,25 @@ import { ITreeData, useAction } from "./hook";
 
 export const TransferTree = ({
   isModelOpen,
-  setIsModelOpen,
-  handelGetSelectedUsers,
-  staffIdSource,
   disableTreeStaffId,
   type,
   selectUser,
   setSelectUser,
+  setIsModelOpen,
+  handelGetSelectedUsers,
 }: {
   isModelOpen: boolean;
-  setIsModelOpen: (value: SetStateAction<boolean>) => void;
   data?: TransferItem[];
-  handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
   staffIdSource: number;
   disableTreeStaffId: string[];
   type: TreeTypeEnum;
   selectUser: ITreeData[];
   setSelectUser: Dispatch<SetStateAction<ITreeData[]>>;
+  setIsModelOpen: (value: SetStateAction<boolean>) => void;
+  handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
 }) => {
   const { t, source, treeData, onGetFoundationData } = useAction({
-    staffIdSource,
-    isModelOpen,
     disableTreeStaffId,
-    type,
   });
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
@@ -243,25 +239,25 @@ export const TransferTree = ({
       }}
       confirmLoading={isConfirmLoading}
       onConfirm={async () => {
-        const data = targetAllData.map((item) => item.key);
+        if (type === TreeTypeEnum.UserPermission) {
+          const data = targetAllData.map((item) => item.key);
 
-        setSelectUser(targetAllData);
+          if (handelGetSelectedUsers && data.length > 0) {
+            const loading = await handelGetSelectedUsers(data);
 
-        setIsModelOpen(false);
+            setIsConfirmLoading(loading);
 
-        handelResetSelectData();
-
-        return;
-
-        if (handelGetSelectedUsers && data.length > 0) {
-          const loading = await handelGetSelectedUsers(data);
-
-          setIsConfirmLoading(loading);
-
-          if (!loading) {
-            handelResetSelectData();
-            setIsModelOpen(false);
+            if (!loading) {
+              handelResetSelectData();
+              setIsModelOpen(false);
+            }
           }
+        } else {
+          setSelectUser(targetAllData);
+
+          setIsModelOpen(false);
+
+          handelResetSelectData();
         }
       }}
       open={isModelOpen}

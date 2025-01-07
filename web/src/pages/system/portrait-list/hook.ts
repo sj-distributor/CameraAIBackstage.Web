@@ -3,6 +3,7 @@ import { App, UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
 import { useEffect, useState } from "react";
 
+import { useAuth } from "@/hooks/use-auth";
 import {
   getPortraitList,
   postCreatePortrait,
@@ -20,6 +21,8 @@ import {
 } from "@/services/dtos/portrait";
 
 export const useAction = () => {
+  const { currentTeam } = useAuth();
+
   const initialPortraitDto: IPortraitDto = {
     name: "",
     department: "",
@@ -51,6 +54,7 @@ export const useAction = () => {
   const [pageData, setPageData] = useState<IGetPortraitByParams>({
     pageIndex: 1,
     pageSize: 9,
+    TeamId: currentTeam.id,
   });
 
   const [imageInformation, setImageInformation] = useState<IPreviewImageDto>({
@@ -170,7 +174,11 @@ export const useAction = () => {
         }
       }
 
-      const params: IPortraitDto = { ...portraitModal.item, faces };
+      const params: IPortraitDto = {
+        ...portraitModal.item,
+        faces,
+        teamId: currentTeam.id,
+      };
 
       return (
         portraitModal.operationType === OperationTypeEnum.Add

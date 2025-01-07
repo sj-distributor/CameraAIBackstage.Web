@@ -32,7 +32,7 @@ dayjs.extend(utc);
 export const useAction = (props: ILicensePlateManagementTableProps) => {
   const { isRegisteredVehicle } = props;
 
-  const { t, language } = useAuth();
+  const { t, language, currentTeam } = useAuth();
 
   const [registerForm] = useForm();
 
@@ -59,10 +59,14 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
         CameraAiMonitorType.Vehicles,
         CameraAiMonitorType.AbnormalVehicles,
       ],
+      TeamId: currentTeam.id,
     });
 
   const [registeredVehicleRequest, setRegisteredVehicleRequest] =
-    useState<IGetRegisteredVehicleListRequest>({ PageIndex: 1, PageSize: 20 });
+    useState<IGetRegisteredVehicleListRequest>({
+      PageIndex: 1,
+      PageSize: 20,
+    });
 
   const [registeringCarRequest, setRegisteringCarRequest] = useState<
     IPostRegisteringCarRequest | IRegisteredVehicleListItem
@@ -279,6 +283,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
         handelGetRegisteredVehicleList({
           ...registeredVehicleRequest,
           PageIndex: 1,
+          TeamId: currentTeam.id,
         });
       },
       onError(error) {
@@ -296,6 +301,7 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
         handelGetRegisteredVehicleList({
           ...registeredVehicleRequest,
           PageIndex: 1,
+          TeamId: currentTeam.id,
         });
       },
       onError(error) {
@@ -321,7 +327,10 @@ export const useAction = (props: ILicensePlateManagementTableProps) => {
 
   useEffect(() => {
     isRegisteredVehicle &&
-      handelGetRegisteredVehicleList(registeredVehicleRequest);
+      handelGetRegisteredVehicleList({
+        ...registeredVehicleRequest,
+        TeamId: currentTeam.id,
+      });
   }, [
     registeredVehicleRequest.EndTime,
     registeredVehicleRequest.StartTime,
