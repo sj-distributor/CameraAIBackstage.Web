@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/user-list-keys";
 import { GetRegionPage } from "@/services/api/equipment/list";
+import { IUserDataItem, UserStatus } from "@/services/dtos/user";
 
 interface IUserInfoProps {
   label: string;
@@ -70,6 +71,18 @@ export const useAction = () => {
       value: userInfoRecord?.email ?? "",
     },
   ];
+
+  const [userSetting, setUserSetting] = useState<IUserDataItem>(userInfoRecord);
+
+  const updateUserSetting = (
+    k: keyof IUserDataItem,
+    v: string | number | UserStatus
+  ) => {
+    setUserSetting((prev) => ({
+      ...prev,
+      [k]: v,
+    }));
+  };
 
   const filterOption = (
     input: string,

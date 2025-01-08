@@ -171,7 +171,7 @@ export const UserList = () => {
                   navigate(`/user/list/detail`, { state: { record } })
                 }
               >
-                詳情
+                {t(KEYS.DETAIL, source)}
               </Button>
               {myPermissions.includes(
                 BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
