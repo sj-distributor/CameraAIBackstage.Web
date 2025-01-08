@@ -3,9 +3,13 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
+import KEYS from "@/i18n/language/keys/user-list-keys";
 import { GetRegionPage } from "@/services/api/equipment/list";
 
-import { IUserInfoProps } from ".";
+interface IUserInfoProps {
+  label: string;
+  value: string;
+}
 
 export const useAction = () => {
   const { message } = App.useApp();
@@ -16,7 +20,7 @@ export const useAction = () => {
 
   const [form] = Form.useForm();
 
-  const { currentTeam } = useAuth();
+  const { t, currentTeam } = useAuth();
 
   const userInfoRecord = location.state.record || {};
 
@@ -30,39 +34,39 @@ export const useAction = () => {
 
   const userInfo: IUserInfoProps[] = [
     {
-      label: "用户ID",
+      label: t(KEYS.USER_ID, { ns: "userList" }),
       value: userInfoRecord?.id ?? "",
     },
     {
-      label: "用戶名",
+      label: t(KEYS.NAME, { ns: "userList" }),
       value: userInfoRecord?.name ?? "",
     },
     {
-      label: "部門",
+      label: t(KEYS.DEPARTMENT, { ns: "userList" }),
       value: userInfoRecord?.department ?? "",
     },
     {
-      label: "組別",
+      label: t(KEYS.GROUP, { ns: "userList" }),
       value: userInfoRecord?.group ?? "",
     },
     {
-      label: "崗位",
+      label: t(KEYS.POSITION, { ns: "userList" }),
       value: userInfoRecord?.position ?? "",
     },
     {
-      label: "是否在職",
+      label: t(KEYS.POSITION_STATUS, { ns: "userList" }),
       value: userInfoRecord?.positionStatus ?? "",
     },
     {
-      label: "電話",
+      label: t(KEYS.PHONE, { ns: "userList" }),
       value: userInfoRecord?.phone ?? "",
     },
     {
-      label: "企業微信",
+      label: t(KEYS.WECHAT_NAME, { ns: "userList" }),
       value: userInfoRecord?.wechatName ?? "",
     },
     {
-      label: "關聯郵箱",
+      label: t(KEYS.EMAIL, { ns: "userList" }),
       value: userInfoRecord?.email ?? "",
     },
   ];
@@ -87,7 +91,7 @@ export const useAction = () => {
     GetRegionPage({ TeamId: currentTeam.id })
       .then((res) => {
         const data = [
-          { value: -1, label: "不查看任何區域地址" },
+          { value: -1, label: t(KEYS.NO_VIEW_RANGE, { ns: "userList" }) },
           ...(res?.regions ?? []).map((item) => ({
             value: item.areaId,
             label: item.areaName,
@@ -99,7 +103,9 @@ export const useAction = () => {
         setSelectRange([-1]);
       })
       .catch((err) => {
-        setRegionData([{ value: -1, label: "不查看任何區域地址" }]);
+        setRegionData([
+          { value: -1, label: t(KEYS.NO_VIEW_RANGE, { ns: "userList" }) },
+        ]);
 
         message.error(`获取数据失败：${(err as Error).message}`);
       })
@@ -111,6 +117,7 @@ export const useAction = () => {
   }, []);
 
   return {
+    t,
     form,
     selectLoading,
     selectRange,

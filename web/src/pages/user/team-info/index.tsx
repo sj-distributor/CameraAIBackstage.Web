@@ -18,11 +18,13 @@ import {
 import { isEmpty } from "ramda";
 
 import { CustomModal } from "@/components/custom-modal";
+import KEYS from "@/i18n/language/keys/team-info-keys";
 
 import { useAction } from "./hook";
 
 export const TeamInfo = () => {
   const {
+    t,
     teamInfo,
     currentTeam,
     currentAccount,
@@ -49,16 +51,21 @@ export const TeamInfo = () => {
     <div className="bg-white relative overflow-hidden no-scrollbar h-screen">
       <div className="text-[1.125rem] font-semibold ml-[1.5rem] mt-[2rem]">
         <span className="text-[1.125rem] font-semibold tracking-tight">
-          團隊信息
+          {t(KEYS.TEAM_INFO, { ns: "teamInfo" })}
         </span>
       </div>
 
       <div className="w-full flex flex-col items-center overflow-scroll h-[calc(100vh-15rem)] no-scrollbar min-w-[34rem]">
         <div className="w-[80%] max-w-[71.25rem] mt-[2.5rem]">
-          <div className="text-[#323444] font-semibold mb-[1rem]">基礎信息</div>
+          <div className="text-[#323444] font-semibold mb-[1rem]">
+            {t(KEYS.BASIC_INFO, { ns: "teamInfo" })}
+          </div>
           <div className="border border-[#E7E8EE] border-solid rounded-2xl shadow-md pt-[2rem]">
             <Form className="pl-[4rem]">
-              <Form.Item label="團隊logo" colon={false}>
+              <Form.Item
+                label={t(KEYS.TEAM_LOGO, { ns: "teamInfo" })}
+                colon={false}
+              >
                 <div className="flex relative">
                   <div
                     onMouseEnter={() => setShowReUpload(true)}
@@ -89,14 +96,16 @@ export const TeamInfo = () => {
                       {isEmpty(teamInfo.avatarUrl) && (
                         <div className="text-[1.125rem] text-[#606278]">
                           <PlusOutlined />
-                          <div className="text-[.85rem]">點擊上傳</div>
+                          <div className="text-[.85rem]">
+                            {t(KEYS.CLICK_UPLOAD, { ns: "teamInfo" })}
+                          </div>
                         </div>
                       )}
 
                       {showReUpload && !uploadLoading && (
                         <div className="absolute bg-[rgba(0,0,0,0.3)] w-[6.4rem] h-[1.55rem] bottom-[0.61rem] rounded-b-[0.5rem] cursor-pointer z-10 flex justify-center items-center">
                           <div className="text-white text-[0.75rem]">
-                            重新上传
+                            {t(KEYS.RE_UPLOAD, { ns: "teamInfo" })}
                           </div>
                         </div>
                       )}
@@ -105,15 +114,16 @@ export const TeamInfo = () => {
 
                   <div className="mt-[4rem] text-[#9696A7] text-[.63rem]">
                     <div className="font-semibold mb-[.2rem]">
-                      优质图标的小窍门：
+                      {t(KEYS.UPLOAD_TIPONE, { ns: "teamInfo" })}
                     </div>
-                    <div>
-                      建议图片比例为1:1，文件大小小于2MB，保持视觉元素居中
-                    </div>
+                    <div>{t(KEYS.UPLOAD_TIPTWO, { ns: "teamInfo" })}</div>
                   </div>
                 </div>
               </Form.Item>
-              <Form.Item label="團隊名稱" colon={false}>
+              <Form.Item
+                label={t(KEYS.TEAM_NAME, { ns: "teamInfo" })}
+                colon={false}
+              >
                 <Input
                   className="w-[80%]"
                   value={teamInfo.name}
@@ -125,19 +135,27 @@ export const TeamInfo = () => {
         </div>
 
         <div className="w-[80%] max-w-[71.25rem] mt-[2rem]">
-          <div className="text-[#323444] font-semibold mb-[1rem]">团队管理</div>
+          <div className="text-[#323444] font-semibold mb-[1rem]">
+            {t(KEYS.TEAM_MANAGEMENT, { ns: "teamInfo" })}
+          </div>
           <div className="border border-[#E7E8EE] border-solid rounded-2xl shadow-md pt-[2rem]">
             <Form className="pl-[4rem]">
-              <Form.Item label="团队所有者" colon={false}>
+              <Form.Item
+                label={t(KEYS.TEAM_LEADER, { ns: "teamInfo" })}
+                colon={false}
+              >
                 {tempTeamLeader.name}
               </Form.Item>
               {currentAccount.id === Number(currentTeam.leaderId) && (
-                <Form.Item label="移交团队" colon={false}>
+                <Form.Item
+                  label={t(KEYS.HANDOVER_TEAM, { ns: "teamInfo" })}
+                  colon={false}
+                >
                   <Button
                     type="primary"
                     onClick={() => setOpenSelectMember(true)}
                   >
-                    移交团队
+                    {t(KEYS.HANDOVER_TEAM, { ns: "teamInfo" })}
                   </Button>
                 </Form.Item>
               )}
@@ -163,7 +181,7 @@ export const TeamInfo = () => {
               setConfirmCancel(true);
             }}
           >
-            取消
+            {t(KEYS.CANCEL, { ns: "teamInfo" })}
           </Button>
         </ConfigProvider>
 
@@ -173,14 +191,14 @@ export const TeamInfo = () => {
           loading={submitLoading}
           onClick={handleUpdateTeamInfo}
         >
-          確定
+          {t(KEYS.CONFIRM, { ns: "teamInfo" })}
         </Button>
       </div>
 
       <CustomModal
         title={
           <div className="flex flex-row justify-between">
-            <div>选择团队成员</div>
+            <div>{t(KEYS.SELECT_TEAM_USER, { ns: "teamInfo" })}</div>
             <CloseOutlined
               className="mr-[1rem]"
               onClick={() => {
@@ -208,7 +226,9 @@ export const TeamInfo = () => {
         }}
         onConfirm={() => {
           if (!tempTeamLeader) {
-            message.warning("请选择一位团队成员");
+            message.warning(
+              `${t(KEYS.SELECT_TEAM_USER_TIPS, { ns: "teamInfo" })}`
+            );
 
             return;
           }
@@ -228,7 +248,7 @@ export const TeamInfo = () => {
         <>
           <div>
             <Input
-              placeholder="搜索团队成员"
+              placeholder={t(KEYS.SEARCH_TEAM_USER, { ns: "teamInfo" })}
               className="w-[60%] mb-[1rem]"
               suffix={<SearchOutlined />}
               value={keyWord}
@@ -267,10 +287,12 @@ export const TeamInfo = () => {
 
       <CustomModal
         open={confirmCancel}
-        title={<div>请确认</div>}
+        title={<div>{t(KEYS.PLEASE_CONFIRM, { ns: "teamInfo" })}</div>}
         footer={
           <div>
-            <Button onClick={() => setConfirmCancel(false)}>取消</Button>
+            <Button onClick={() => setConfirmCancel(false)}>
+              {t(KEYS.CANCEL, { ns: "teamInfo" })}
+            </Button>
             <Button
               type="primary"
               className="ml-2"
@@ -280,12 +302,12 @@ export const TeamInfo = () => {
                 resetTeamInfo();
               }}
             >
-              确定
+              {t(KEYS.CONFIRM, { ns: "teamInfo" })}
             </Button>
           </div>
         }
       >
-        <div>将会失去编辑内容，确认是否取消？</div>
+        <div>{t(KEYS.LOSS_EDIT_CONTENT, { ns: "teamInfo" })}</div>
       </CustomModal>
     </div>
   );

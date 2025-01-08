@@ -11,15 +11,13 @@ import {
 } from "antd";
 import { CustomTagProps } from "rc-select/lib/BaseSelect";
 
-import { useAction } from "./hook";
+import KEYS from "@/i18n/language/keys/user-list-keys";
 
-export interface IUserInfoProps {
-  label: string;
-  value: string;
-}
+import { useAction } from "./hook";
 
 export const UserDetail = () => {
   const {
+    t,
     form,
     selectLoading,
     selectRange,
@@ -41,12 +39,12 @@ export const UserDetail = () => {
                 className="cursor-pointer"
                 onClick={() => navigate("/user/list")}
               >
-                用户列表
+                {t(KEYS.USER_LIST, { ns: "userList" })}
               </div>
             ),
           },
           {
-            title: "详情",
+            title: t(KEYS.DETAIL, { ns: "userList" }),
           },
         ]}
         className="text-[1.125rem] font-semibold ml-[1.5rem] mt-[2rem]"
@@ -54,7 +52,9 @@ export const UserDetail = () => {
 
       <div className="flex flex-col items-center overflow-scroll h-[calc(100vh-15rem)] no-scrollbar w-full min-w-[34rem]">
         <div className="p-[2rem_1.5rem] w-[80%] max-w-[71.25rem]">
-          <div className="text-[#323444] font-semibold mb-[1rem]">用户信息</div>
+          <div className="text-[#323444] font-semibold mb-[1rem]">
+            {t(KEYS.USER_INFO, { ns: "userList" })}
+          </div>
           <Form className="border border-[#E7E8EE] border-solid rounded-2xl shadow-md pt-[2rem] pr-[3.5rem] flex flex-wrap justify-between">
             {userInfo.map((item, index) => {
               return (
@@ -76,37 +76,60 @@ export const UserDetail = () => {
         </div>
 
         <div className="p-[2rem_1.5rem] w-[80%] max-w-[71.25rem]">
-          <div className="text-[#323444] font-semibold mb-[1rem]">用户设置</div>
+          <div className="text-[#323444] font-semibold mb-[1rem]">
+            {t(KEYS.USER_SETTING, { ns: "userList" })}
+          </div>
           <Form
             form={form}
             labelCol={{ span: 3 }}
             className="border border-[#E7E8EE] border-solid rounded-2xl shadow-md pt-[2rem]"
           >
-            <Form.Item label="帳號狀態" colon={false}>
+            <Form.Item
+              label={t(KEYS.ACCOUNT_STATUS, { ns: "userList" })}
+              colon={false}
+            >
               <Switch />
             </Form.Item>
-            <Form.Item label="通知電話" colon={false}>
+            <Form.Item
+              label={t(KEYS.ANNOUNCE_PHONE, { ns: "userList" })}
+              colon={false}
+            >
               <Input
                 className="w-[60%]"
-                placeholder="如沒有設置通知電話，默認使用用戶信息的電話"
+                placeholder={t(KEYS.ANNOUNCE_PHONE_PLACEHOLDER, {
+                  ns: "userList",
+                })}
                 onChange={(e) => {
                   form.setFieldValue("title", e.target.value);
                 }}
               />
             </Form.Item>
-            <Form.Item label="通知企業微信" colon={false}>
+            <Form.Item
+              label={t(KEYS.ANNOUNCE_WECHAT, { ns: "userList" })}
+              colon={false}
+            >
               <Input
                 className="w-[60%]"
-                placeholder="如沒有設置通知企業微信，默認使用用戶信息的企業微信"
+                placeholder={t(KEYS.ANNOUNCE_WECHAT_PLACEHOLDER, {
+                  ns: "userList",
+                })}
               />
             </Form.Item>
-            <Form.Item label="通知郵箱" colon={false}>
+            <Form.Item
+              label={t(KEYS.ANNOUNCE_EMAIL, { ns: "userList" })}
+              colon={false}
+            >
               <Input
                 className="w-[60%]"
-                placeholder="如沒有設置通知郵箱，默認使用關聯郵箱"
+                placeholder={t(KEYS.ANNOUNCE_EMAIL_PLACEHOLDER, {
+                  ns: "userList",
+                })}
               />
             </Form.Item>
-            <Form.Item label="查看範圍" colon={false}>
+            <Form.Item
+              label={t(KEYS.VIEW_RANGE, { ns: "userList" })}
+              colon={false}
+            >
               <Select
                 style={{ width: "60%" }}
                 value={selectRange}
@@ -160,23 +183,6 @@ export const UserDetail = () => {
                 }}
                 popupClassName={"selectOptions"}
               />
-              {/* <Select
-                mode="multiple"
-                allowClear
-                filterOption={filterOption}
-                style={{ width: "60%" }}
-                className="userDetailSelect"
-                options={[
-                  {
-                    value: 1,
-                    label: "廣東省中山市行政路1號",
-                  },
-                  {
-                    value: 2,
-                    label: "廣東省中山市中山三路1號",
-                  },
-                ]}
-              /> */}
             </Form.Item>
           </Form>
         </div>
@@ -197,7 +203,7 @@ export const UserDetail = () => {
             className="w-[6rem] h-[2.75rem]"
             onClick={() => navigate("/user/list")}
           >
-            返回
+            {t(KEYS.RETURN, { ns: "userList" })}
           </Button>
         </ConfigProvider>
 
@@ -206,7 +212,7 @@ export const UserDetail = () => {
           type="primary"
           onClick={onSubmit}
         >
-          確定
+          {t(KEYS.SUBMIT, { ns: "userList" })}
         </Button>
       </div>
     </div>

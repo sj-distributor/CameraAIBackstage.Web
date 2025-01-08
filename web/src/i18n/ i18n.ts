@@ -4,6 +4,7 @@ import { initReactI18next } from "react-i18next";
 import areaManagement from "./language/pages/area-management";
 import equipmentList from "./language/pages/equipment-list";
 import equipmentType from "./language/pages/equipment-type";
+import errorMessage from "./language/pages/error-message";
 import homeMenu from "./language/pages/home-menu";
 import licensePlateManagement from "./language/pages/license-plate-management";
 import monitor from "./language/pages/monitor";
@@ -11,9 +12,9 @@ import monitorAdd from "./language/pages/monitor-add";
 import monitorConfiguration from "./language/pages/monitor-configuration";
 import operationLog from "./language/pages/operation-log";
 import portraitList from "./language/pages/portrait-list";
+import teamInfo from "./language/pages/team-info";
 import userList from "./language/pages/user-list";
 import userPermissions from "./language/pages/user-permissions";
-import errorMessage from "./language/pages/error-message";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -57,6 +58,7 @@ i18n.use(initReactI18next).init({
       errorMessage: {
         ...errorMessage.en,
       },
+      teamInfo: { ...teamInfo.en },
     },
     ch: {
       operationLog: {
@@ -98,6 +100,7 @@ i18n.use(initReactI18next).init({
       errorMessage: {
         ...errorMessage.ch,
       },
+      teamInfo: { ...teamInfo.ch },
     },
   },
   lng: "en",

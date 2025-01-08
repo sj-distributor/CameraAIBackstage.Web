@@ -277,7 +277,7 @@ export const useAction = () => {
     GetRegionPage({ TeamId: currentTeam.id })
       .then((res) => {
         const data = [
-          { value: -1, label: "不查看任何區域地址" },
+          { value: -1, label: t(KEYS.NO_VIEW_RANGE, source) },
           ...(res?.regions ?? []).map((item) => ({
             value: item.areaId,
             label: item.areaName,
@@ -289,7 +289,7 @@ export const useAction = () => {
         setSelectRange([-1]);
       })
       .catch((err) => {
-        setRegionData([{ value: -1, label: "不查看任何區域地址" }]);
+        setRegionData([{ value: -1, label: t(KEYS.NO_VIEW_RANGE, source) }]);
 
         message.error(`获取数据失败：${(err as Error).message}`);
       })

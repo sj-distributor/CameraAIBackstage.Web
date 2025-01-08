@@ -376,7 +376,7 @@ export const UserList = () => {
                 {t(KEYS.CURRENT_PASSWORD, source)}
               </span>
               <Input
-                placeholder={t(KEYS.PLEASE_ENTRE)}
+                placeholder={t(KEYS.PLEASE_ENTRE, source)}
                 className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
               />
             </div>
@@ -386,7 +386,7 @@ export const UserList = () => {
               {t(KEYS.NEW_PASSWORD, source)}
             </span>
             <Input
-              placeholder={t(KEYS.PLEASE_ENTRE)}
+              placeholder={t(KEYS.PLEASE_ENTRE, source)}
               className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
             />
           </div>
@@ -395,7 +395,7 @@ export const UserList = () => {
               {t(KEYS.CONFIRM_PASSWORD, source)}
             </span>
             <Input
-              placeholder={t(KEYS.PLEASE_ENTRE)}
+              placeholder={t(KEYS.PLEASE_ENTRE, source)}
               className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
             />
           </div>
@@ -403,7 +403,7 @@ export const UserList = () => {
       </CustomModal>
 
       <Drawer
-        title="添加用戶"
+        title={t(KEYS.ADD_USERS, source)}
         closable={false}
         open={openDrawer}
         width="33.75rem"
@@ -432,7 +432,7 @@ export const UserList = () => {
                 className="w-[6rem] h-[2.75rem]"
                 onClick={() => setOpenDrawer(false)}
               >
-                取消
+                {t(KEYS.CANCEL, source)}
               </Button>
             </ConfigProvider>
 
@@ -442,18 +442,18 @@ export const UserList = () => {
               loading={adduserLoading}
               onClick={handleCreateTeam}
             >
-              確定
+              {t(KEYS.SUBMIT, source)}
             </Button>
           </div>
         }
       >
         <Form form={form} layout="vertical">
-          <Form.Item label="新增用戶" required={true}>
+          <Form.Item label={t(KEYS.ADD_NEW_USER, source)} required={true}>
             <Select
               mode="multiple"
               open={false}
               suffixIcon={null}
-              placeholder="請選擇部門或成員"
+              placeholder={t(KEYS.SELECT_USER, source)}
               value={selectUser.map((item) => ({
                 label: item.title,
                 value: item.key,
@@ -472,7 +472,7 @@ export const UserList = () => {
               }}
             />
           </Form.Item>
-          <Form.Item label="查看範圍" required={true}>
+          <Form.Item label={t(KEYS.VIEW_RANGE, source)} required={true}>
             <Select
               value={selectRange}
               mode="multiple"

@@ -1,4 +1,4 @@
-import { useDebounce, useUpdateEffect } from "ahooks";
+import { useDebounce } from "ahooks";
 import { App } from "antd";
 import { useEffect, useMemo, useState } from "react";
 
@@ -12,121 +12,10 @@ import { GetUserList } from "@/services/api/user";
 import { ITeamListProps } from "@/services/dtos/login";
 import { IUserDataItem } from "@/services/dtos/user";
 
-const mockTeamMember = [
-  {
-    id: 24,
-    staffId: "5481be79-b6e9-488f-8ede-f6a4505ac85e",
-    userAccountId: 9943,
-    name: "Mindy.L",
-    department: "IS部",
-    group: "SATURN组",
-    position: "初级程序员",
-    positionStatus: "在職",
-    phone: "365904395",
-    email: null,
-    wechatName: null,
-    isQualified: false,
-    status: 1,
-    from: 1,
-    isDeleted: false,
-    createdTime: "2025-01-06T06:00:17.233+00:00",
-  },
-  {
-    id: 25,
-    staffId: "af6e3c89-d2b1-4a1e-8f63-7f3a3d5c2f1a",
-    userAccountId: 9944,
-    name: "Alice.W",
-    department: "IS部",
-    group: "SATURN组",
-    position: "初级程序员",
-    positionStatus: "在職",
-    phone: "365904396",
-    email: null,
-    wechatName: null,
-    isQualified: false,
-    status: 1,
-    from: 1,
-    isDeleted: false,
-    createdTime: "2025-01-06T06:01:17.233+00:00",
-  },
-  {
-    id: 26,
-    staffId: "7be4c501-c0f3-4856-9f0c-9f658d0ed92b",
-    userAccountId: 9945,
-    name: "Bob.K",
-    department: "IS部",
-    group: "SATURN组",
-    position: "初级程序员",
-    positionStatus: "在職",
-    phone: "365904397",
-    email: null,
-    wechatName: null,
-    isQualified: false,
-    status: 1,
-    from: 1,
-    isDeleted: false,
-    createdTime: "2025-01-06T06:02:17.233+00:00",
-  },
-  {
-    id: 27,
-    staffId: "a81d4b67-5af3-4c99-90b7-183e09d9b5c4",
-    userAccountId: 9946,
-    name: "Charlie.Z",
-    department: "IS部",
-    group: "SATURN组",
-    position: "初级程序员",
-    positionStatus: "在職",
-    phone: "365904398",
-    email: null,
-    wechatName: null,
-    isQualified: false,
-    status: 1,
-    from: 1,
-    isDeleted: false,
-    createdTime: "2025-01-06T06:03:17.233+00:00",
-  },
-  {
-    id: 28,
-    staffId: "2b59d354-e365-42e3-91f5-ec78f83a9b92",
-    userAccountId: 9947,
-    name: "Diana.Y",
-    department: "IS部",
-    group: "SATURN组",
-    position: "初级程序员",
-    positionStatus: "在職",
-    phone: "365904399",
-    email: null,
-    wechatName: null,
-    isQualified: false,
-    status: 1,
-    from: 1,
-    isDeleted: false,
-    createdTime: "2025-01-06T06:04:17.233+00:00",
-  },
-  {
-    id: 29,
-    staffId: "3e6c485a-6df4-4971-b89e-c6f7e3e27e17",
-    userAccountId: 9948,
-    name: "Eve.J",
-    department: "IS部",
-    group: "SATURN组",
-    position: "初级程序员",
-    positionStatus: "在職",
-    phone: "365904400",
-    email: null,
-    wechatName: null,
-    isQualified: false,
-    status: 1,
-    from: 1,
-    isDeleted: false,
-    createdTime: "2025-01-06T06:05:17.233+00:00",
-  },
-];
-
 export const useAction = () => {
   const { message } = App.useApp();
 
-  const { currentTeam, currentAccount, setCurrentTeam } = useAuth();
+  const { t, currentTeam, currentAccount, setCurrentTeam } = useAuth();
 
   const [teamInfo, setTeamInfo] = useState<ITeamListProps>(currentTeam);
 
@@ -288,6 +177,7 @@ export const useAction = () => {
   }, []);
 
   return {
+    t,
     teamInfo,
     currentTeam,
     currentAccount,
