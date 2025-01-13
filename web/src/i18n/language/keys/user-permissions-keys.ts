@@ -32,6 +32,7 @@ export default {
   WARNING_LIST: "WarningList",
   FEEDBACK_LIST: "FeedbackList",
   SWITCH_BACKGROUND: "Switch background",
+  CREATE_TEAM: "Create Team",
   CANCEL: "Cancel",
   CONFIRM: "Confirm",
   EXPORT: "Export",
@@ -64,4 +65,6 @@ export default {
   CREATED_SUCCESSFULLY: "CreatedSuccessfully",
   PLEASE_MAKE_SURE_ALL_DATA_INPUT: "PleaseMakeSureAllDataIsFilledInCompletely",
   ABNORMAL_PERMISSION_DATA: "AbnormalPermissionData",
+  TEAM_INFO: "TeamInfo",
+  LOGO_NAME: "LogoName",
 };

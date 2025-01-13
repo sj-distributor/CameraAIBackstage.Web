@@ -18,6 +18,9 @@ export default {
     [KEYS.OPERATION_LOG]: "Operation Log",
     [KEYS.CHANGE_PASSWORD]: "Change Password",
     [KEYS.SIGN_OUT]: "Sign Out",
+    [KEYS.TEAM_MANAGEMENT]: "Team Management",
+    [KEYS.TEAM_LIST]: "Team List",
+    [KEYS.RESOURCE_MANAGEMENT]: "Resource Management",
   },
   ch: {
     [KEYS.USER_MANAGEMENT]: "用戶管理",
@@ -35,5 +38,8 @@ export default {
     [KEYS.OPERATION_LOG]: "操作日誌",
     [KEYS.CHANGE_PASSWORD]: "修改密碼",
     [KEYS.SIGN_OUT]: "退出登錄",
+    [KEYS.TEAM_MANAGEMENT]: "團隊管理",
+    [KEYS.TEAM_LIST]: "團隊列表",
+    [KEYS.RESOURCE_MANAGEMENT]: "資源管理",
   },
 };

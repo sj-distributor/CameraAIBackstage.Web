@@ -55,6 +55,7 @@ export default {
     [KEYS.CANCEL]: "Cancel",
     [KEYS.ADD_NEW_USER]: "Add User",
     [KEYS.SELECT_USER]: "Please select a department or member",
+    [KEYS.ENTERPRISE]: "Enterprise",
   },
   ch: {
     [KEYS.USER_LIST]: "用戶列表",
@@ -107,5 +108,6 @@ export default {
     [KEYS.CANCEL]: "取消",
     [KEYS.ADD_NEW_USER]: "新增用戶",
     [KEYS.SELECT_USER]: "請選擇部門或成員",
+    [KEYS.ENTERPRISE]: "所屬企業",
   },
 };

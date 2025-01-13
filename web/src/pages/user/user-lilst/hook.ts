@@ -39,7 +39,14 @@ export const useAction = () => {
 
   const [form] = Form.useForm();
 
-  const { t, myPermissions, language, currentTeam, currentAccount } = useAuth();
+  const {
+    t,
+    myPermissions,
+    language,
+    currentTeam,
+    currentAccount,
+    isSuperAdmin,
+  } = useAuth();
 
   const [isAddUser, setIsAddUser] = useState<boolean>(false);
 
@@ -220,7 +227,7 @@ export const useAction = () => {
       PageSize: userListData.PageSize,
       Keyword: filterKeyword,
       Status: userListData.Status,
-      TeamId: currentTeam.id,
+      TeamId: isSuperAdmin ? undefined : currentTeam.id,
     });
   }, [filterKeyword]);
 
@@ -382,5 +389,6 @@ export const useAction = () => {
     currentTeam,
     adduserLoading,
     currentAccount,
+    isSuperAdmin,
   };
 };

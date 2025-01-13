@@ -13,6 +13,7 @@ import monitorConfiguration from "./language/pages/monitor-configuration";
 import operationLog from "./language/pages/operation-log";
 import portraitList from "./language/pages/portrait-list";
 import teamInfo from "./language/pages/team-info";
+import teamList from "./language/pages/team-list";
 import userList from "./language/pages/user-list";
 import userPermissions from "./language/pages/user-permissions";
 
@@ -59,6 +60,7 @@ i18n.use(initReactI18next).init({
         ...errorMessage.en,
       },
       teamInfo: { ...teamInfo.en },
+      teamList: { ...teamList.en },
     },
     ch: {
       operationLog: {
@@ -101,6 +103,7 @@ i18n.use(initReactI18next).init({
         ...errorMessage.ch,
       },
       teamInfo: { ...teamInfo.ch },
+      teamList: { ...teamList.ch },
     },
   },
   lng: "en",

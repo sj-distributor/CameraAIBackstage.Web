@@ -25,7 +25,7 @@ import { getErrorMessage } from "@/utils/error-message";
 import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
 
 export const useAction = () => {
-  const { t, language, myPermissions, currentTeam } = useAuth();
+  const { t, language, myPermissions, currentTeam, isSuperAdmin } = useAuth();
 
   const initialEquipmentData = {
     equipmentCode: "",
@@ -104,7 +104,7 @@ export const useAction = () => {
       PageIndex,
       PageSize,
       Keyword: searchKey ? searchKey : undefined,
-      TeamId: currentTeam.id,
+      TeamId: isSuperAdmin ? undefined : currentTeam.id,
     };
 
     if (isSearchOnline !== undefined && isSearchOnline !== IOnlineOrNot.All) {
@@ -146,6 +146,7 @@ export const useAction = () => {
 
   const handleUpdate = () => {
     setConfirmLoading(true);
+
     PostUpdateEquipment({
       equipment: {
         ...form.getFieldsValue(),
@@ -200,11 +201,11 @@ export const useAction = () => {
       .finally(() => setConfirmLoading(false));
   };
 
-  const onOpenBind = () => {
+  const onOpenBind = (teamId: string | undefined) => {
     setRegionLoading(true);
     GetRegionPage({
       IsFilter: true,
-      TeamId: currentTeam.id,
+      TeamId: teamId,
     })
       .then((res) => {
         const newList = res.regions.map((item) => {
@@ -267,7 +268,7 @@ export const useAction = () => {
     GetEquipmentTypePage({
       PageIndex: 1,
       PageSize: 2147483647,
-      TeamId: currentTeam.id,
+      TeamId: isSuperAdmin ? undefined : currentTeam.id,
     })
       .then((res) => {
         const list = res.equipmentTypes.map((item) => {
@@ -330,5 +331,6 @@ export const useAction = () => {
     myPermissions,
     initialEquipmentData,
     onChangePage,
+    isSuperAdmin,
   };
 };

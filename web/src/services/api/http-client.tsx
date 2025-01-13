@@ -48,6 +48,12 @@ api.interceptors.response.use(
           } else {
             localStorage.removeItem((window as any).appSettings?.tokenKey);
 
+            localStorage.removeItem("backstage");
+
+            localStorage.removeItem("currentTeam");
+
+            localStorage.removeItem("currentAccount");
+
             window.location.reload();
           }
         }

@@ -47,4 +47,5 @@ export default {
   CANCEL: "Cancel",
   ADD_NEW_USER: "AddNewUser",
   SELECT_USER: "SelectUser",
+  ENTERPRISE: "Enterprise",
 };

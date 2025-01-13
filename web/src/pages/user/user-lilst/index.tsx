@@ -1,5 +1,6 @@
 import {
   CloseOutlined,
+  DownOutlined,
   SearchOutlined,
   WarningFilled,
 } from "@ant-design/icons";
@@ -11,6 +12,7 @@ import {
   Form,
   Input,
   Pagination,
+  Popover,
   Select,
   Spin,
   Switch,
@@ -73,6 +75,7 @@ export const UserList = () => {
     currentTeam,
     adduserLoading,
     currentAccount,
+    isSuperAdmin,
   } = useAction();
 
   const columns: TableProps<IUserDataItem>["columns"] = [
@@ -99,6 +102,13 @@ export const UserList = () => {
     {
       title: t(KEYS.POSITION_STATUS, source),
       dataIndex: "positionStatus",
+    },
+    {
+      title: t(KEYS.ENTERPRISE, source),
+      hidden: !isSuperAdmin,
+      render: () => {
+        return <div>企业</div>;
+      },
     },
     {
       title: t(KEYS.PHONE, source),
@@ -131,7 +141,8 @@ export const UserList = () => {
                   status
                     ? BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount
                     : BackGroundRolePermissionEnum.CanDisableCameraAiUserAccount
-                )
+                ) ||
+                isSuperAdmin
               ) {
                 setUpdateUserId(String(record.id));
                 handelUpdateUserData({
@@ -147,6 +158,7 @@ export const UserList = () => {
     {
       title: t(KEYS.OPERATE, source),
       key: "operate",
+      width: 200,
       render: (_, record) => {
         return (
           <ConfigProvider
@@ -164,18 +176,54 @@ export const UserList = () => {
               },
             }}
           >
-            <div className="flex">
+            <div className="flex items-center">
               <Button
                 type="link"
                 onClick={() =>
-                  navigate(`/user/list/detail`, { state: { record } })
+                  navigate(
+                    `${
+                      isSuperAdmin
+                        ? "/team/userList/detail"
+                        : "/user/list/detail"
+                    }`,
+                    { state: { record } }
+                  )
                 }
               >
                 {t(KEYS.DETAIL, source)}
               </Button>
-              {myPermissions.includes(
-                BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
-              ) &&
+              {isSuperAdmin ? (
+                <Popover
+                  arrow={false}
+                  placement="bottomLeft"
+                  className="text-[#2853E3] cursor-pointer ml-[1rem]"
+                  content={
+                    <div className="w-[8rem] h-[3.5rem] flex flex-col justify-around pl-[1rem]">
+                      <div className="cursor-pointer text-[#2853E3]">
+                        設為團隊管理員
+                      </div>
+                      <div
+                        className="cursor-pointer text-[#F04E4E]"
+                        onClick={() => {
+                          setIsDeleteUsers(false);
+                          setDeleteUserKeys([String(record.id)]);
+                          setIsRemoveUser(true);
+                        }}
+                      >
+                        {t(KEYS.REMOVE, source)}
+                      </div>
+                    </div>
+                  }
+                >
+                  更多
+                  <DownOutlined
+                    style={{ fontSize: "0.7rem", marginLeft: "1rem" }}
+                  />
+                </Popover>
+              ) : (
+                myPermissions.includes(
+                  BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
+                ) &&
                 record.id !== Number(currentTeam.leaderId) &&
                 record.id !== currentAccount.id && (
                   <Button
@@ -188,7 +236,8 @@ export const UserList = () => {
                   >
                     {t(KEYS.REMOVE, source)}
                   </Button>
-                )}
+                )
+              )}
             </div>
           </ConfigProvider>
         );
@@ -239,15 +288,16 @@ export const UserList = () => {
                   Status: status,
                   Keyword: filterKeyword,
                   PageSize: userListData.PageSize,
-                  TeamId: currentTeam.id,
+                  TeamId: isSuperAdmin ? undefined : currentTeam.id,
                 })
               }
             />
           </div>
           <div className="flex self-end mb-[.8rem]">
-            {myPermissions.includes(
+            {(myPermissions.includes(
               BackGroundRolePermissionEnum.CanBatchDeleteCameraAiUserAccount
-            ) && (
+            ) ||
+              isSuperAdmin) && (
               <Button
                 type="default"
                 className="mr-[1rem] h-[2.75rem]"

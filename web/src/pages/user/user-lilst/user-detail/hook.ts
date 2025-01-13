@@ -21,7 +21,7 @@ export const useAction = () => {
 
   const [form] = Form.useForm();
 
-  const { t, currentTeam } = useAuth();
+  const { t, currentTeam, isSuperAdmin } = useAuth();
 
   const userInfoRecord = location.state.record || {};
 
@@ -136,6 +136,7 @@ export const useAction = () => {
     selectRange,
     regionData,
     userInfo,
+    isSuperAdmin,
     navigate,
     setSelectRange,
     filterOption,

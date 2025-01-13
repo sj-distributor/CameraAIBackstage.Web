@@ -20,6 +20,7 @@ export interface IEquipmentList extends IEquipmentCreateOrUpdateDto {
   createdTime: string;
   equipmentType: string;
   id: number;
+  teamId?: string;
   isBind: boolean;
   isDeleted: boolean;
   isOnline: boolean;

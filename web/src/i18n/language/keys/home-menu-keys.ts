@@ -14,4 +14,7 @@ export default {
   OPERATION_LOG: "OperationLog",
   CHANGE_PASSWORD: "ChangePassword",
   SIGN_OUT: "SignOut",
+  TEAM_MANAGEMENT: "TeamManagement",
+  TEAM_LIST: "TeamList",
+  RESOURCE_MANAGEMENT: "ResourceManagement",
 };

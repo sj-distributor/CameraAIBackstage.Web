@@ -14,11 +14,13 @@ export enum FrontRolePermissionEnum {
   CanViewCameraAiFeedbackListPage = "CanViewCameraAiFeedbackListPage",
   CanExportExcelCameraAiFeedback = "CanExportExcelCameraAiFeedback",
   CanViewDetailCameraAiFeedback = "CanViewDetailCameraAiFeedback",
+  CanCreateCameraAiTeam = "CanCreateCameraAiTeam",
 }
 
 export const frontRolePermission = {
   [FrontRolePermissionEnum.CanViewCameraAiHomePage]: KEYS.DASHBOARD,
   [FrontRolePermissionEnum.CanSwitchCameraAiBackEnd]: KEYS.SWITCH_BACKGROUND,
+  [FrontRolePermissionEnum.CanCreateCameraAiTeam]: KEYS.CREATE_TEAM,
   [FrontRolePermissionEnum.CanViewCameraAiLiveMonitorPage]:
     KEYS.REAL_TIME_MONITORING,
   [FrontRolePermissionEnum.CanExportCameraAiRealtimeVideo]: KEYS.EXPORT,
@@ -40,6 +42,7 @@ export enum BackGroundRolePermissionEnum {
   CanBatchDeleteCameraAiUserAccount = "CanBatchDeleteCameraAiUserAccount",
   CanEnableCameraAiUserAccount = "CanEnableCameraAiUserAccount",
   CanDisableCameraAiUserAccount = "CanDisableCameraAiUserAccount",
+  CanViewDetailCameraAiUsers = "CanViewDetailCameraAiUsers",
   CanUpdateCameraAiUserAccount = "CanUpdateCameraAiUserAccount",
   CanDeleteCameraAiUserAccount = "CanDeleteCameraAiUserAccount",
   CanViewCameraAiRoleUserPage = "CanViewCameraAiRoleUserPage",
@@ -75,24 +78,31 @@ export enum BackGroundRolePermissionEnum {
   CanAddCameraAiArea = "CanAddCameraAiArea",
   CanUpdateCameraAiArea = "CanUpdateCameraAiArea",
   CanDeleteCameraAiArea = "CanDeleteCameraAiArea",
+  CanViewCameraAiTeam = "CanViewCameraAiTeam",
+  CanEditTeamInfo = "CanEditTeamInfo", // 要跟接口確定後改
 }
 
 export const backGroundRolePermission = {
+  // 用戶列表
   [BackGroundRolePermissionEnum.CanViewCameraAiUserAccountPage]: KEYS.ROLE_LIST,
   [BackGroundRolePermissionEnum.CanAddCameraAiUserAccount]: KEYS.ADD_USER,
   [BackGroundRolePermissionEnum.CanBatchDeleteCameraAiUserAccount]:
     KEYS.DELETE_USERS_IN_BATCHES,
   [BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount]: KEYS.ENABLE,
   [BackGroundRolePermissionEnum.CanDisableCameraAiUserAccount]: KEYS.DISABLE,
-  // [BackGroundRolePermissionEnum.CanUpdateCameraAiUserAccount]:
-  //   KEYS.RESET_PASSWORDS, // 目前不显示
+  [BackGroundRolePermissionEnum.CanViewDetailCameraAiUsers]: KEYS.DETAILS,
   [BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount]: KEYS.REMOVE,
+  // 角色權限
   [BackGroundRolePermissionEnum.CanViewCameraAiRoleUserPage]:
     KEYS.ROLE_PERMISSION,
   [BackGroundRolePermissionEnum.CanGrantPermissionsIntoRole]: KEYS.ADD_ROLE,
   [BackGroundRolePermissionEnum.CanCreateRoleUser]: KEYS.ALLOT,
   [BackGroundRolePermissionEnum.CanUpdatePermissionsOfRole]: KEYS.EDIT,
   [BackGroundRolePermissionEnum.CanDeleteRoles]: KEYS.DELETE,
+  // 團隊信息
+  [BackGroundRolePermissionEnum.CanViewCameraAiTeam]: KEYS.TEAM_INFO,
+  [BackGroundRolePermissionEnum.CanEditTeamInfo]: KEYS.LOGO_NAME,
+  // 設備列表
   [BackGroundRolePermissionEnum.CanViewCameraAiEquipmentPage]: KEYS.DEVICE_LIST,
   [BackGroundRolePermissionEnum.CanAddCameraAiEquipment]: KEYS.ADD_DEVICE,
   [BackGroundRolePermissionEnum.CanUpdateCameraAiEquipment]: KEYS.EDIT,
@@ -100,11 +110,13 @@ export const backGroundRolePermission = {
   [BackGroundRolePermissionEnum.CanUnBindCameraAiEquipment]:
     KEYS.REMOVE_BINDING,
   [BackGroundRolePermissionEnum.CanDeleteCameraAiEquipment]: KEYS.DELETE,
+  // 設備類型
   [BackGroundRolePermissionEnum.CanViewCameraAiEquipmentTypePage]:
     KEYS.DEVICE_TYPE,
   [BackGroundRolePermissionEnum.CanAddCameraAiEquipmentType]: KEYS.ADD,
   [BackGroundRolePermissionEnum.CanUpdateCameraAiEquipmentType]: KEYS.EDIT,
   [BackGroundRolePermissionEnum.CanDeleteCameraAiEquipmentType]: KEYS.DELETE,
+  // 監測管理
   [BackGroundRolePermissionEnum.CanViewCameraAiMonitorManagementPage]:
     KEYS.MONITORING_MANAGEMENT,
   [BackGroundRolePermissionEnum.CanAddCameraAiMonitor]: KEYS.ADD,
@@ -112,11 +124,13 @@ export const backGroundRolePermission = {
   [BackGroundRolePermissionEnum.CanDisableCameraAiMonitor]: KEYS.CLOSURE,
   [BackGroundRolePermissionEnum.CanUpdateCameraAiMonitor]: KEYS.EDIT,
   [BackGroundRolePermissionEnum.CanDeleteCameraAiMonitor]: KEYS.DELETE,
+  // 人像列表
   [BackGroundRolePermissionEnum.CanViewCameraAiPortraitManagementPage]:
     KEYS.LIST_OF_PORTRAITS,
   [BackGroundRolePermissionEnum.CanAddCameraAiPortrait]: KEYS.ADD,
   [BackGroundRolePermissionEnum.CanUpdateCameraAiPortrait]: KEYS.EDIT,
   [BackGroundRolePermissionEnum.CanDeleteCameraAiPortrait]: KEYS.DELETE,
+  // 車牌管理
   [BackGroundRolePermissionEnum.CanViewCameraAiLicensePlateManagementPage]:
     KEYS.LICENCE_PLATE_MANAGEMENT,
   [BackGroundRolePermissionEnum.CanViewRegisteredCameraAiLicensePlate]:
@@ -124,6 +138,7 @@ export const backGroundRolePermission = {
   [BackGroundRolePermissionEnum.CanRegisterCameraAiLicensePlate]: KEYS.REGISTER,
   [BackGroundRolePermissionEnum.CanViewDetailCameraAiLicensePlate]:
     KEYS.DETAILS,
+  // 區域管理
   [BackGroundRolePermissionEnum.CanViewCameraAiAreaManagementPage]:
     KEYS.DISTRICT_MANAGEMENT,
   [BackGroundRolePermissionEnum.CanAddCameraAiArea]: KEYS.ADD,

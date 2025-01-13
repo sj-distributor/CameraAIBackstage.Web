@@ -39,4 +39,6 @@ export default {
   CLICK_TO_UNBIND: "ClickToUnbind",
   CLICK_TO_BIND: "ClickToBind",
   PAGINATION: "Pagination",
+  TEAM_NAME: "TeamName",
+  ENTERPRISE: "Enterprise",
 };

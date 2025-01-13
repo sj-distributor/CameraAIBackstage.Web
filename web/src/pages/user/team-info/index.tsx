@@ -36,6 +36,7 @@ export const TeamInfo = () => {
     filteredTeamUsers,
     uploadLoading,
     submitLoading,
+    getTeamUsersLoading,
     updateTeamInfo,
     onUpload,
     handleUpdateTeamInfo,
@@ -144,7 +145,7 @@ export const TeamInfo = () => {
                 label={t(KEYS.TEAM_LEADER, { ns: "teamInfo" })}
                 colon={false}
               >
-                {tempTeamLeader.name}
+                {getTeamUsersLoading ? <Spin /> : tempTeamLeader.name}
               </Form.Item>
               {currentAccount.id === Number(currentTeam.leaderId) && (
                 <Form.Item

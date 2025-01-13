@@ -5,7 +5,7 @@ import Sider from "antd/es/layout/Sider";
 import { SubMenuType } from "antd/es/menu/interface";
 import { Outlet } from "react-router-dom";
 
-import { TeamIcon } from "@/assets/top-menu";
+import { LogOutIcon, TeamIcon } from "@/assets/top-menu";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/home-menu-keys";
 import { IRouterList } from "@/services/dtos/routes";
@@ -59,6 +59,8 @@ export const Home = () => {
     myPermissions,
     permission,
     userNameKey,
+    isSuperAdmin,
+    currentTeam,
     signOut,
   } = useAuth();
 
@@ -110,47 +112,35 @@ export const Home = () => {
   const getMenu = () => {
     if (!routerList) return;
 
-    const items = permissionRouterList(routerList).reduce(
-      (accumulator, item) => {
-        if (item && item.path !== "") {
-          const menuItem: MenuItem | SubMenuType = {
-            label: item.name,
-            key: item.path,
-            icon: item.icon,
-          };
+    const items = (
+      isSuperAdmin ? routerList : permissionRouterList(routerList)
+    ).reduce((accumulator, item) => {
+      if (item && item.path !== "") {
+        const menuItem: MenuItem | SubMenuType = {
+          label: item.name,
+          key: item.path,
+          icon: item.icon,
+        };
 
-          if (!!item.children && !item.path.includes("/monitor")) {
-            (menuItem as SubMenuType).children = item.children
-              .filter((child) => child.path !== "")
-              .map((child) => ({
-                label: child.name,
-                key: child.path,
-              }));
-          }
-
-          accumulator.push(menuItem);
+        if (!!item.children && !item.path.includes("/monitor")) {
+          (menuItem as SubMenuType).children = item.children
+            .filter((child) => child.path !== "")
+            .map((child) => ({
+              label: child.name,
+              key: child.path,
+            }));
         }
 
-        return accumulator;
-      },
-      [] as MenuItem[]
-    );
+        accumulator.push(menuItem);
+      }
+
+      return accumulator;
+    }, [] as MenuItem[]);
 
     return items;
   };
 
   const items: MenuProps["items"] = [
-    {
-      label: (
-        <div className="flex items-center hover:text-[#2853e3]">
-          <TeamIcon />
-          <div className="ml-[.5rem] max-w-[10rem] whitespace-nowrap overflow-hidden text-ellipsis text-[#9D9FB0]">
-            SJ-CN TEAM
-          </div>
-        </div>
-      ),
-      key: "0",
-    },
     {
       label: (
         <div
@@ -163,7 +153,7 @@ export const Home = () => {
             }
           }}
         >
-          <span className="iconfont icon-sign_out" />
+          <LogOutIcon />
           <div className="ml-[.5rem]">
             {t(KEYS.SIGN_OUT, { ns: "homeMenu" })}
           </div>
@@ -172,6 +162,19 @@ export const Home = () => {
       key: "1",
     },
   ];
+
+  !isSuperAdmin &&
+    items.unshift({
+      label: (
+        <div className="flex items-center hover:text-[#2853e3]">
+          <TeamIcon />
+          <div className="ml-[.5rem] max-w-[10rem] whitespace-nowrap overflow-hidden text-ellipsis text-[#9D9FB0]">
+            {currentTeam?.name ?? ""}
+          </div>
+        </div>
+      ),
+      key: "0",
+    });
 
   return (
     <Layout

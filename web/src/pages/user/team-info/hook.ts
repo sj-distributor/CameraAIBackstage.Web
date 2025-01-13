@@ -41,6 +41,9 @@ export const useAction = () => {
 
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
 
+  const [getTeamUsersLoading, setGetTeamUsersLoading] =
+    useState<boolean>(false);
+
   const updateTeamInfo = (k: keyof ITeamListProps, v: string | number) => {
     setTeamInfo((prev) => ({
       ...prev,
@@ -70,6 +73,8 @@ export const useAction = () => {
   };
 
   const getTeamsUser = () => {
+    setGetTeamUsersLoading(true);
+
     GetUserList({
       PageIndex: 1,
       PageSize: 2147483647,
@@ -82,18 +87,19 @@ export const useAction = () => {
           return item.id === Number(currentTeam.leaderId);
         });
 
-        updateTeamInfo("leaderName", leaderInfo[0].name);
+        updateTeamInfo("leaderName", leaderInfo[0]?.name ?? "");
 
         setTempTeamLeader((prev) => ({
           ...prev,
-          name: leaderInfo[0].name,
+          name: leaderInfo[0]?.name ?? "",
         }));
       })
       .catch((err) => {
         setTeamUsers([]);
 
         message.error(`获取团队成员失败：${(err as Error).message}`);
-      });
+      })
+      .finally(() => setGetTeamUsersLoading(false));
   };
 
   const handleUpdateTeamInfo = () => {
@@ -189,6 +195,7 @@ export const useAction = () => {
     filteredTeamUsers,
     uploadLoading,
     submitLoading,
+    getTeamUsersLoading,
     updateTeamInfo,
     onUpload,
     handleUpdateTeamInfo,

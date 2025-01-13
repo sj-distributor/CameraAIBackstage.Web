@@ -1,10 +1,11 @@
+import { DatabaseOutlined, TeamOutlined } from "@ant-design/icons";
 import { useUpdateEffect } from "ahooks";
 import { message } from "antd";
 import type { Locale } from "antd/es/locale";
 import enUS from "antd/es/locale/en_US";
 import zhCN from "antd/es/locale/zh_CN";
 import { TFunction } from "i18next";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, Outlet } from "react-router-dom";
 
@@ -21,6 +22,7 @@ import { AreaManagement } from "@/pages/system/area-management";
 import { LicensePlateManagement } from "@/pages/system/license-plate-management";
 import { OperationLog } from "@/pages/system/operation-log";
 import { PortraitList } from "@/pages/system/portrait-list";
+import { TeamList } from "@/pages/team-list";
 import { TeamInfo } from "@/pages/user/team-info";
 import { UserList } from "@/pages/user/user-lilst";
 import { UserDetail } from "@/pages/user/user-lilst/user-detail";
@@ -56,6 +58,7 @@ interface IAuthContextType {
   setCurrentTeam: React.Dispatch<React.SetStateAction<ITeamListProps>>;
   currentAccount: IUserDataItem;
   setCurrentAccount: React.Dispatch<React.SetStateAction<IUserDataItem>>;
+  isSuperAdmin: boolean;
 }
 
 export const AuthContext = React.createContext<IAuthContextType>(null!);
@@ -112,6 +115,11 @@ export default ({ children }: { children: React.ReactNode }) => {
   const [currentAccount, setCurrentAccount] =
     useState<IUserDataItem>(localCurrentAccount);
 
+  const isSuperAdmin = useMemo(() => {
+    // admin 普通后台  superAdmin 超管后台
+    return localStorage.getItem("backstage") === "superAdmin";
+  }, [localStorage.getItem("backstage")]);
+
   const signIn = (auth: string, callback?: VoidFunction) => {
     setToken(auth);
     localStorage.setItem(tokenKey, auth);
@@ -122,159 +130,214 @@ export default ({ children }: { children: React.ReactNode }) => {
     setToken("");
     localStorage.removeItem(tokenKey);
     localStorage.removeItem(userNameKey);
+    localStorage.removeItem("backstage");
+    localStorage.removeItem("currentTeam");
+    localStorage.removeItem("currentAccount");
     callback && callback();
   };
 
-  const routerList: IRouterList[] = [
-    {
-      path: "/user",
-      element: <Container />,
-      name: t(KEYS.USER_MANAGEMENT, { ns: "homeMenu" }),
-      icon: <MonitorIcon path="/user" />,
-      children: [
+  const routerList: IRouterList[] = isSuperAdmin
+    ? [
         {
-          path: "",
-          element: <Navigate to={"/user/list"} />,
-          permissions: "CanViewCameraAiUserAccountPage",
-        },
-        {
-          path: "/user/list",
-          element: <Outlet />,
-          name: t(KEYS.USER_LIST, { ns: "homeMenu" }),
-          permissions: "CanViewCameraAiUserAccountPage",
+          path: "/team",
+          element: <Container />,
+          name: t(KEYS.TEAM_MANAGEMENT, { ns: "homeMenu" }),
+          icon: <TeamOutlined />,
           children: [
             {
               path: "",
-              element: <UserList />,
+              element: <Navigate to="/team/list" />,
             },
             {
-              path: "/user/list/detail",
-              element: <UserDetail />,
+              path: "/team/list",
+              element: <TeamList />,
+              name: t(KEYS.TEAM_LIST, { ns: "homeMenu" }),
+            },
+            {
+              path: "/team/userList",
+              element: <Outlet />,
+              name: t(KEYS.USER_MANAGEMENT, { ns: "homeMenu" }),
+              children: [
+                {
+                  path: "",
+                  element: <UserList />,
+                },
+                {
+                  path: "/team/userList/detail",
+                  element: <UserDetail />,
+                },
+              ],
             },
           ],
         },
         {
-          path: "/user/permissions",
-          element: <PermissionsList />,
-          name: t(KEYS.USER_PERMISSIONS, { ns: "homeMenu" }),
-          permissions: "CanViewCameraAiRoleUserPage",
+          path: "/resource",
+          element: <Container />,
+          name: t(KEYS.RESOURCE_MANAGEMENT, { ns: "homeMenu" }),
+          icon: <DatabaseOutlined />,
           children: [
             {
               path: "",
-              element: <UserPermissions />,
+              element: <Navigate to={"/resource/equipmentList"} />,
+            },
+            {
+              path: "/resource/equipmentList",
+              element: <EquipmentList />,
+              name: t(KEYS.DEVICE_LIST, { ns: "homeMenu" }),
+            },
+          ],
+        },
+      ]
+    : [
+        {
+          path: "/user",
+          element: <Container />,
+          name: t(KEYS.USER_MANAGEMENT, { ns: "homeMenu" }),
+          icon: <MonitorIcon path="/user" />,
+          children: [
+            {
+              path: "",
+              element: <Navigate to={"/user/list"} />,
+              permissions: "CanViewCameraAiUserAccountPage",
+            },
+            {
+              path: "/user/list",
+              element: <Outlet />,
+              name: t(KEYS.USER_LIST, { ns: "homeMenu" }),
+              permissions: "CanViewCameraAiUserAccountPage",
+              children: [
+                {
+                  path: "",
+                  element: <UserList />,
+                },
+                {
+                  path: "/user/list/detail",
+                  element: <UserDetail />,
+                },
+              ],
+            },
+            {
+              path: "/user/permissions",
+              element: <PermissionsList />,
+              name: t(KEYS.USER_PERMISSIONS, { ns: "homeMenu" }),
               permissions: "CanViewCameraAiRoleUserPage",
+              children: [
+                {
+                  path: "",
+                  element: <UserPermissions />,
+                  permissions: "CanViewCameraAiRoleUserPage",
+                },
+                {
+                  path: "/user/permissions/list",
+                  element: <UserPermissions />,
+                  permissions: "CanViewCameraAiRoleUserPage",
+                },
+                {
+                  path: "/user/permissions/roles/:id?",
+                  element: <NewOrUpdatePermissions />,
+                  permissions: "CanUpdatePermissionsOfRole",
+                },
+                {
+                  path: "/user/permissions/distribute/:id?",
+                  element: <UserDistribute />,
+                  permissions: "CanCreateRoleUser",
+                },
+              ],
             },
             {
-              path: "/user/permissions/list",
-              element: <UserPermissions />,
-              permissions: "CanViewCameraAiRoleUserPage",
-            },
-            {
-              path: "/user/permissions/roles/:id?",
-              element: <NewOrUpdatePermissions />,
-              permissions: "CanUpdatePermissionsOfRole",
-            },
-            {
-              path: "/user/permissions/distribute/:id?",
-              element: <UserDistribute />,
-              permissions: "CanCreateRoleUser",
+              path: "/user/teamInfo",
+              element: <TeamInfo />,
+              name: t(KEYS.TEAM_INFO, { ns: "homeMenu" }),
+              permissions: "CanViewCameraAiUserAccountPage",
             },
           ],
         },
         {
-          path: "/user/teamInfo",
-          element: <TeamInfo />,
-          name: t(KEYS.TEAM_INFO, { ns: "homeMenu" }),
-          permissions: "CanViewCameraAiUserAccountPage",
+          path: "/equipment",
+          element: <Container />,
+          name: t(KEYS.DEVICE_MANAGEMENT, { ns: "homeMenu" }),
+          icon: <MonitorIcon path="/equipment" />,
+          children: [
+            {
+              path: "",
+              element: <Navigate to={"/equipment/list"} />,
+              permissions: "CanViewCameraAiEquipmentPage",
+            },
+            {
+              path: "/equipment/list",
+              element: <EquipmentList />,
+              name: t(KEYS.DEVICE_LIST, { ns: "homeMenu" }),
+              permissions: "CanViewCameraAiEquipmentPage",
+            },
+            {
+              path: "/equipment/type",
+              element: <EquipmentType />,
+              name: t(KEYS.DEVICE_TYPE, { ns: "homeMenu" }),
+              permissions: "CanViewCameraAiEquipmentTypePage",
+            },
+          ],
         },
-      ],
-    },
-    {
-      path: "/equipment",
-      element: <Container />,
-      name: t(KEYS.DEVICE_MANAGEMENT, { ns: "homeMenu" }),
-      icon: <MonitorIcon path="/equipment" />,
-      children: [
         {
-          path: "",
-          element: <Navigate to={"/equipment/list"} />,
-          permissions: "CanViewCameraAiEquipmentPage",
-        },
-        {
-          path: "/equipment/list",
-          element: <EquipmentList />,
-          name: t(KEYS.DEVICE_LIST, { ns: "homeMenu" }),
-          permissions: "CanViewCameraAiEquipmentPage",
-        },
-        {
-          path: "/equipment/type",
-          element: <EquipmentType />,
-          name: t(KEYS.DEVICE_TYPE, { ns: "homeMenu" }),
-          permissions: "CanViewCameraAiEquipmentTypePage",
-        },
-      ],
-    },
-    {
-      path: "/monitor",
-      element: <Container />,
-      name: t(KEYS.MONITOR, { ns: "homeMenu" }),
-      icon: <MonitorIcon path="/monitor" />,
-      permissions: "CanViewCameraAiMonitorManagementPage",
-      children: [
-        {
-          path: "",
-          element: <Monitor />,
+          path: "/monitor",
+          element: <Container />,
+          name: t(KEYS.MONITOR, { ns: "homeMenu" }),
+          icon: <MonitorIcon path="/monitor" />,
           permissions: "CanViewCameraAiMonitorManagementPage",
+          children: [
+            {
+              path: "",
+              element: <Monitor />,
+              permissions: "CanViewCameraAiMonitorManagementPage",
+            },
+            {
+              path: "/monitor/add",
+              element: <AddSelectType />,
+              permissions: "CanAddCameraAiMonitor",
+            },
+            {
+              path: "/monitor/configuration/:type/:id",
+              element: <AddOrUpdateConfiguration />,
+              permissions: "CanUpdateCameraAiMonitor",
+            },
+          ],
         },
         {
-          path: "/monitor/add",
-          element: <AddSelectType />,
-          permissions: "CanAddCameraAiMonitor",
+          path: "/system",
+          element: <Container />,
+          name: t(KEYS.SYSTEM_MANAGEMENT, { ns: "homeMenu" }),
+          icon: <SystemIcon path="/system" />,
+          children: [
+            {
+              path: "",
+              element: <Navigate to={"/system/portrait"} />,
+              permissions: "CanViewCameraAiPortraitManagementPage",
+            },
+            {
+              path: "/system/portrait",
+              element: <PortraitList />,
+              name: t(KEYS.PORTRAIT_LIST, { ns: "homeMenu" }),
+              permissions: "CanViewCameraAiPortraitManagementPage",
+            },
+            {
+              path: "/system/license",
+              element: <LicensePlateManagement />,
+              name: t(KEYS.LICENSE_PLATE_MANAGEMENT, { ns: "homeMenu" }),
+              permissions: "CanViewCameraAiLicensePlateManagementPage",
+            },
+            {
+              path: "/system/area",
+              element: <AreaManagement />,
+              name: t(KEYS.AREA_MANAGEMENT, { ns: "homeMenu" }),
+              permissions: "CanViewCameraAiAreaManagementPage",
+            },
+            {
+              path: "/system/log",
+              element: <OperationLog />,
+              name: t(KEYS.OPERATION_LOG, { ns: "homeMenu" }),
+            },
+          ],
         },
-        {
-          path: "/monitor/configuration/:type/:id",
-          element: <AddOrUpdateConfiguration />,
-          permissions: "CanUpdateCameraAiMonitor",
-        },
-      ],
-    },
-    {
-      path: "/system",
-      element: <Container />,
-      name: t(KEYS.SYSTEM_MANAGEMENT, { ns: "homeMenu" }),
-      icon: <SystemIcon path="/system" />,
-      children: [
-        {
-          path: "",
-          element: <Navigate to={"/system/portrait"} />,
-          permissions: "CanViewCameraAiPortraitManagementPage",
-        },
-        {
-          path: "/system/portrait",
-          element: <PortraitList />,
-          name: t(KEYS.PORTRAIT_LIST, { ns: "homeMenu" }),
-          permissions: "CanViewCameraAiPortraitManagementPage",
-        },
-        {
-          path: "/system/license",
-          element: <LicensePlateManagement />,
-          name: t(KEYS.LICENSE_PLATE_MANAGEMENT, { ns: "homeMenu" }),
-          permissions: "CanViewCameraAiLicensePlateManagementPage",
-        },
-        {
-          path: "/system/area",
-          element: <AreaManagement />,
-          name: t(KEYS.AREA_MANAGEMENT, { ns: "homeMenu" }),
-          permissions: "CanViewCameraAiAreaManagementPage",
-        },
-        {
-          path: "/system/log",
-          element: <OperationLog />,
-          name: t(KEYS.OPERATION_LOG, { ns: "homeMenu" }),
-        },
-      ],
-    },
-  ];
+      ];
 
   const changeLanguage = (language: string) => {
     setLanguage(language);
@@ -334,8 +397,19 @@ export default ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    if (token) getMyPermission();
-  }, [token]);
+    if (token) {
+      if (isSuperAdmin) {
+        setDefaultPath("/team/list");
+
+        setPermission({
+          isGetPermission: true,
+          hasSwitchCameraAiBackEnd: true,
+        });
+      } else {
+        getMyPermission();
+      }
+    }
+  }, [token, localStorage.getItem("backstage")]);
 
   useEffect(() => {
     i18n.changeLanguage(language);
@@ -406,6 +480,7 @@ export default ({ children }: { children: React.ReactNode }) => {
     setCurrentTeam,
     currentAccount,
     setCurrentAccount,
+    isSuperAdmin,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

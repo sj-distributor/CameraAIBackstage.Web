@@ -23,6 +23,7 @@ export const UserDetail = () => {
     selectRange,
     regionData,
     userInfo,
+    isSuperAdmin,
     navigate,
     setSelectRange,
     filterOption,
@@ -37,7 +38,9 @@ export const UserDetail = () => {
             title: (
               <div
                 className="cursor-pointer"
-                onClick={() => navigate("/user/list")}
+                onClick={() =>
+                  navigate(`${isSuperAdmin ? "/team/userList" : "/user/list"}`)
+                }
               >
                 {t(KEYS.USER_LIST, { ns: "userList" })}
               </div>
@@ -201,7 +204,9 @@ export const UserDetail = () => {
         >
           <Button
             className="w-[6rem] h-[2.75rem]"
-            onClick={() => navigate("/user/list")}
+            onClick={() =>
+              navigate(`${isSuperAdmin ? "/team/userList" : "/user/list"}`)
+            }
           >
             {t(KEYS.RETURN, { ns: "userList" })}
           </Button>
