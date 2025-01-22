@@ -13,7 +13,7 @@ RUN yarn build
 FROM nginx:stable-alpine
 COPY --from=build /dockerweb/dist /usr/share/nginx/html
 
-RUN  sed -i '12a error_page 404 /index.html;' /etc/nginx/conf.d/default.conf
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 RUN sed -i '/^http {/a \
     gzip on;\n\
