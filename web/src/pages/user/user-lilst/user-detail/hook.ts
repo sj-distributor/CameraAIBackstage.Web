@@ -141,7 +141,7 @@ export const useAction = () => {
 
     console.log(updateSetting);
 
-    return;
+    // return;
 
     PostUserUpdateApi(updateSetting)
       .then(() => {
@@ -149,7 +149,8 @@ export const useAction = () => {
       })
       .catch((err) => {
         `更改失败：${(err as Error).message}`;
-      });
+      })
+      .finally(() => loading("updateLoading", false));
   };
 
   // 拿用户所有的团队
@@ -191,23 +192,21 @@ export const useAction = () => {
           setUserSetting({
             teamId: TeamId,
             userProfileId: userInfoRecord?.id,
-            status: res.userProfileDto.status,
-            regionIds: res.cameraAiEquipmentVisibleRangesDto.map(
-              (item) => item.regionId
+            status: res?.userProfileDto?.status,
+            regionIds: res?.cameraAiEquipmentVisibleRangesDto.map(
+              (item) => item?.regionId
             ),
             userProfileNotificationDto: {
-              id: res.userProfileNotificationDto.id,
-              email: res.userProfileNotificationDto.email,
-              phone: res.userProfileNotificationDto.phone,
-              workWechat: res.userProfileNotificationDto.workWechat,
+              id: res?.userProfileNotificationDto?.id,
+              email: res?.userProfileNotificationDto?.email,
+              phone: res?.userProfileNotificationDto?.phone,
+              workWechat: res?.userProfileNotificationDto?.workWechat,
             },
           });
 
           setSelectRange(
-            res.cameraAiEquipmentVisibleRangesDto.map((item) => item.regionId)
+            res?.cameraAiEquipmentVisibleRangesDto.map((item) => item.regionId)
           );
-
-          console.log(res);
         })
         .catch((err) => {
           reject(err);
