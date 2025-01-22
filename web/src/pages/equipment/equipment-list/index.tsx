@@ -158,7 +158,7 @@ export const EquipmentList = () => {
       width: "16.6%",
       hidden: !isSuperAdmin,
       render: () => {
-        return <div>企业</div>;
+        return <div />;
       },
     },
     {

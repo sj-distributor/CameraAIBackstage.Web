@@ -120,7 +120,7 @@ export const UserList = () => {
       title: t(KEYS.ENTERPRISE, source),
       hidden: !isSuperAdmin,
       render: () => {
-        return <div>企业</div>;
+        return <div />;
       },
     },
     {
