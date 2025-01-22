@@ -2,7 +2,7 @@ import { GlobalOutlined } from "@ant-design/icons";
 import { Avatar, Dropdown, Layout, Menu, MenuProps, Select, Spin } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import { SubMenuType } from "antd/es/menu/interface";
+import { SubMenuType } from "antd/es/menu/hooks/useItems";
 import { Outlet } from "react-router-dom";
 
 import { LogOutIcon, TeamIcon } from "@/assets/top-menu";

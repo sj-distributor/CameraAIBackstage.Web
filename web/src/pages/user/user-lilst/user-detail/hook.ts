@@ -1,6 +1,6 @@
 import { useUpdateEffect } from "ahooks";
 import { App, Form } from "antd";
-import { isEmpty, isNil, reject } from "ramda";
+import { isEmpty, isNil } from "ramda";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -13,10 +13,7 @@ import {
   PostUserUpdateApi,
 } from "@/services/api/team-list";
 import { ITeamListProps } from "@/services/dtos/login";
-import {
-  IPostUpdateUserProps,
-  IUserProfileNotificationDto,
-} from "@/services/dtos/team-list";
+import { IPostUpdateUserProps } from "@/services/dtos/team-list";
 import { UserStatus } from "@/services/dtos/user";
 
 interface IUserInfoProps {

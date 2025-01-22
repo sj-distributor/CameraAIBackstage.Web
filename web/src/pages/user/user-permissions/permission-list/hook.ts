@@ -9,11 +9,10 @@ import {
   IRequestRoles,
   IRole,
   IRoleByPermissionResponse,
-  RoleSystemSourceEnum,
 } from "@/services/dtos/user-permission";
 
 export const useAction = () => {
-  const { t, myPermissions, currentAccount, currentTeam } = useAuth();
+  const { t, myPermissions, currentTeam } = useAuth();
 
   const navigate = useNavigate();
 

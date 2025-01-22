@@ -10,7 +10,6 @@ import {
   IRoleIdRequestParams,
   IRolePermissionByRoleIdResponse,
   IUserByRoleIdResponse,
-  RoleSystemSourceEnum,
 } from "@/services/dtos/user-permission";
 
 import { api } from "../http-client";
