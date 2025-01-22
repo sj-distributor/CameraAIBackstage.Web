@@ -2,5 +2,5 @@
   "serverUrl": "https://testsmarties.yamimeal.ca",
   "tokenKey": "token",
   "userNameKey": "userName",
-  "cameraAIFrontdeskDomain": "http://localhost:3000/"
+  "cameraAIFrontdeskDomain": "https://camerai.wiltechs.com/"
 }
