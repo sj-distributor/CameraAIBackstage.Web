@@ -10,7 +10,13 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  server: { port: 5173 },
+  server: {
+    port: 5174,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+    cors: true,
+  },
   css: {
     modules: {
       generateScopedName: "[name]__[local]___[hash:base64:5]",
