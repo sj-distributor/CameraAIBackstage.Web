@@ -20,6 +20,7 @@ import { isEmpty } from "ramda";
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/team-info-keys";
 
+import { BackGroundRolePermissionEnum } from "../user-permissions/user-newpermissions/props";
 import { useAction } from "./hook";
 
 export const TeamInfo = () => {
@@ -37,6 +38,7 @@ export const TeamInfo = () => {
     uploadLoading,
     submitLoading,
     getTeamUsersLoading,
+    myPermissions,
     updateTeamInfo,
     onUpload,
     handleUpdateTeamInfo,
@@ -86,7 +88,12 @@ export const TeamInfo = () => {
                       beforeUpload={() => false}
                       onChange={(e) => onUpload(e.fileList)}
                       fileList={[]}
-                      disabled={uploadLoading}
+                      disabled={
+                        uploadLoading ||
+                        !myPermissions.includes(
+                          BackGroundRolePermissionEnum.CanUpdateCameraAiTeam
+                        )
+                      }
                     >
                       {uploadLoading ? (
                         <Spin />
@@ -128,6 +135,11 @@ export const TeamInfo = () => {
                 <Input
                   className="w-[80%]"
                   value={teamInfo.name}
+                  disabled={
+                    !myPermissions.includes(
+                      BackGroundRolePermissionEnum.CanUpdateCameraAiTeam
+                    )
+                  }
                   onChange={(e) => updateTeamInfo("name", e.target.value)}
                 />
               </Form.Item>

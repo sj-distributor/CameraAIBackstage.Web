@@ -35,6 +35,7 @@ export interface IRolePermissionUser {
   modifiedDate?: string;
 }
 export interface ICreateOrUpdateRole {
+  teamId: string;
   role: IRole;
   roleUsers: IRoleUser[];
   rolePermissions: IRolePermissionDetail[];
@@ -102,6 +103,8 @@ export interface IPublicPageParams {
 
 export interface IRequestRoles extends IPublicPageParams {
   PageIndex: number;
+  UserId?: number;
+  TeamId: string;
 }
 
 export enum RoleSystemSourceEnum {

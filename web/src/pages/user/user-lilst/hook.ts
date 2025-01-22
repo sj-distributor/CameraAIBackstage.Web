@@ -10,6 +10,7 @@ import { GetRegionPage } from "@/services/api/equipment/list";
 import {
   GetUserList,
   PostAddUsersApi,
+  PostAdminGrantApi,
   PostBatchDeleteUsers,
   PostCreateUsers,
   PostDeleteUser,
@@ -23,6 +24,8 @@ import {
 } from "@/services/dtos/user";
 
 import { ITreeData } from "../user-permissions/tranfer-tree/hook";
+import { GetTeamsMineApi } from "@/services/api/login";
+import { ITeamListProps } from "@/services/dtos/login";
 
 export interface IDto extends IGetUserListResponse {
   PageIndex: number;
@@ -340,9 +343,51 @@ export const useAction = () => {
       });
   };
 
-  useUpdateEffect(() => {
-    console.log(deleteUserKeys);
-  }, [deleteUserKeys]);
+  const [selectTeamAdminModal, setSelectTeamAdminModal] =
+    useState<boolean>(false);
+
+  const [currentUserProfileId, setCurrentUserProfileId] = useState<string>("");
+
+  const [teamList, setTeamList] = useState<ITeamListProps[]>([]);
+
+  const [selectTeam, setSelectTeam] = useState<string>("");
+
+  const [teamLoading, setTeamLoading] = useState<boolean>(false);
+
+  const [adminGrantLoading, setAdminGrantLoading] = useState<boolean>(false);
+
+  const getUserTeams = (UserProfileId: string) => {
+    setTeamLoading(true);
+
+    GetTeamsMineApi({ UserProfileId: UserProfileId })
+      .then((res) => {
+        setTeamList(res ?? []);
+      })
+      .catch((err) => {
+        message.error(`获取團隊失敗：${(err as Error).message}`);
+      })
+      .finally(() => setTeamLoading(false));
+  };
+
+  const AdminGrant = () => {
+    setAdminGrantLoading(true);
+
+    PostAdminGrantApi({
+      UserProfileId: currentUserProfileId,
+      TeamId: selectTeam,
+    })
+      .then(() => {
+        message.success("設置成功");
+
+        setSelectTeam("");
+
+        setSelectTeamAdminModal(false);
+      })
+      .catch((err) => {
+        message.error(`設置失敗：${(err as Error).message}`);
+      })
+      .finally(() => setAdminGrantLoading(false));
+  };
 
   return {
     isAddUser,
@@ -390,5 +435,15 @@ export const useAction = () => {
     adduserLoading,
     currentAccount,
     isSuperAdmin,
+    selectTeamAdminModal,
+    setSelectTeamAdminModal,
+    getUserTeams,
+    teamList,
+    teamLoading,
+    setCurrentUserProfileId,
+    setSelectTeam,
+    selectTeam,
+    adminGrantLoading,
+    AdminGrant,
   };
 };

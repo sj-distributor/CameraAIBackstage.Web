@@ -24,3 +24,40 @@ export interface ICameraAiTeamsProps {
   leader: string;
   phone: string;
 }
+
+export interface IGetUserNotificationRequest {
+  UserProfileId?: string;
+  TeamId: string;
+}
+
+export enum UserStatus {
+  Disable,
+  Enable,
+}
+
+export interface IGetUserNotificationResponse {
+  userProfileDto: { status: UserStatus };
+  userProfileNotificationDto: IUserProfileNotificationDto;
+  cameraAiEquipmentVisibleRangesDto: ICameraAiEquipmentVisibleRangesDto[];
+}
+
+export interface IUserProfileNotificationDto {
+  id: string;
+  email: string;
+  phone: string;
+  workWechat: string;
+}
+
+export interface ICameraAiEquipmentVisibleRangesDto {
+  id: string;
+  regionId: number;
+  teamUserId: string;
+}
+
+export interface IPostUpdateUserProps {
+  teamId: string;
+  userProfileId: string;
+  status: UserStatus;
+  regionIds: number[];
+  userProfileNotificationDto: IUserProfileNotificationDto;
+}

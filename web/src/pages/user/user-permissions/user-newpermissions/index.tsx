@@ -73,7 +73,7 @@ export const NewOrUpdatePermissions = () => {
         case BackGroundRolePermissionEnum.CanViewDetailCameraAiLicensePlate:
         case BackGroundRolePermissionEnum.CanDeleteCameraAiArea:
           return 8;
-        case BackGroundRolePermissionEnum.CanEditTeamInfo:
+        case BackGroundRolePermissionEnum.CanUpdateCameraAiTeam:
           return 18;
         case BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount:
           return 20;
@@ -91,7 +91,7 @@ export const NewOrUpdatePermissions = () => {
         case BackGroundRolePermissionEnum.CanDeleteRoles:
           return 12;
 
-        case BackGroundRolePermissionEnum.CanEditTeamInfo:
+        case BackGroundRolePermissionEnum.CanUpdateCameraAiTeam:
           return 20;
         case BackGroundRolePermissionEnum.CanDeleteCameraAiPortrait:
         case BackGroundRolePermissionEnum.CanViewDetailCameraAiLicensePlate:

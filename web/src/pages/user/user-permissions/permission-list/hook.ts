@@ -13,7 +13,7 @@ import {
 } from "@/services/dtos/user-permission";
 
 export const useAction = () => {
-  const { t, myPermissions } = useAuth();
+  const { t, myPermissions, currentAccount, currentTeam } = useAuth();
 
   const navigate = useNavigate();
 
@@ -129,7 +129,8 @@ export const useAction = () => {
           PageIndex: pageDto.pageIndex,
           PageSize: pageDto.pageSize,
           KeyWord: filterKeyword,
-          systemSource: RoleSystemSourceEnum.CameraAi,
+          // UserId: currentAccount.id,
+          TeamId: currentTeam.id,
         });
       })
       .catch((error) => message.error((error as Error).message));
@@ -140,7 +141,8 @@ export const useAction = () => {
       PageIndex: pageDto.pageIndex,
       PageSize: pageDto.pageSize,
       KeyWord: filterKeyword,
-      systemSource: RoleSystemSourceEnum.CameraAi,
+      // UserId: currentAccount.id,
+      TeamId: currentTeam.id,
     });
   }, [pageDto.pageIndex, pageDto.pageSize]);
 
@@ -150,7 +152,8 @@ export const useAction = () => {
         PageIndex: 1,
         PageSize: 10,
         KeyWord: filterKeyword,
-        systemSource: RoleSystemSourceEnum.CameraAi,
+        // UserId: currentAccount.id,
+        TeamId: currentTeam.id,
       });
   }, [filterKeyword]);
 

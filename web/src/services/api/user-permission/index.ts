@@ -18,7 +18,7 @@ import { api } from "../http-client";
 // 获取角色列表
 export const GetRoles = async (data: IRequestRoles) => {
   const response = await api.get<IRoleByPermissionResponse>(
-    "/api/Security/roles/by/permissions",
+    "/api/CameraAi/roles/by/permissions",
     {
       params: data,
     }
@@ -30,7 +30,7 @@ export const GetRoles = async (data: IRequestRoles) => {
 // 新增角色
 export const PostCreateRoles = async (data: ICreateOrUpdateRole) => {
   const response = await api.post(
-    "/api/Security/role/permissions/assign",
+    "/api/CameraAi/role/permissions/assign",
     data
   );
 
@@ -68,10 +68,10 @@ export const GetPermission = async () => {
 };
 
 // 获取当前账户权限
-export const GetCurrentAccountPermission = async () => {
+export const GetCurrentAccountPermission = async (data: { TeamId: string }) => {
   const response = await api.get<IMinePermissionResponse>(
-    "/api/Security/mine/roles",
-    { params: { SystemSource: RoleSystemSourceEnum.CameraAi } }
+    "/api/CameraAi/mine/roles",
+    { params: data }
   );
 
   return response.data;

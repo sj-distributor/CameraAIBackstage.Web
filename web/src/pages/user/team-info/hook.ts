@@ -15,7 +15,8 @@ import { IUserDataItem } from "@/services/dtos/user";
 export const useAction = () => {
   const { message } = App.useApp();
 
-  const { t, currentTeam, currentAccount, setCurrentTeam } = useAuth();
+  const { t, currentTeam, currentAccount, myPermissions, setCurrentTeam } =
+    useAuth();
 
   const [teamInfo, setTeamInfo] = useState<ITeamListProps>(currentTeam);
 
@@ -196,6 +197,7 @@ export const useAction = () => {
     uploadLoading,
     submitLoading,
     getTeamUsersLoading,
+    myPermissions,
     updateTeamInfo,
     onUpload,
     handleUpdateTeamInfo,

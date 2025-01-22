@@ -6,12 +6,15 @@ import {
   Form,
   Input,
   Select,
+  Skeleton,
   Spin,
   Switch,
 } from "antd";
+import { isEmpty } from "ramda";
 import { CustomTagProps } from "rc-select/lib/BaseSelect";
 
 import KEYS from "@/i18n/language/keys/user-list-keys";
+import { UserStatus } from "@/services/dtos/team-list";
 
 import { useAction } from "./hook";
 
@@ -24,10 +27,15 @@ export const UserDetail = () => {
     regionData,
     userInfo,
     isSuperAdmin,
+    teamList,
+    teamsSelectLoading,
+    userSetting,
+    userSettingLoading,
     navigate,
     setSelectRange,
     filterOption,
     onSubmit,
+    setUserSetting,
   } = useAction();
 
   return (
@@ -85,108 +93,179 @@ export const UserDetail = () => {
           <Form
             form={form}
             labelCol={{ span: 3 }}
+            disabled={userSettingLoading.updateLoading}
             className="border border-[#E7E8EE] border-solid rounded-2xl shadow-md pt-[2rem]"
           >
-            <Form.Item
-              label={t(KEYS.ACCOUNT_STATUS, { ns: "userList" })}
-              colon={false}
-            >
-              <Switch />
-            </Form.Item>
-            <Form.Item
-              label={t(KEYS.ANNOUNCE_PHONE, { ns: "userList" })}
-              colon={false}
-            >
-              <Input
-                className="w-[60%]"
-                placeholder={t(KEYS.ANNOUNCE_PHONE_PLACEHOLDER, {
-                  ns: "userList",
-                })}
-                onChange={(e) => {
-                  form.setFieldValue("title", e.target.value);
-                }}
-              />
-            </Form.Item>
-            <Form.Item
-              label={t(KEYS.ANNOUNCE_WECHAT, { ns: "userList" })}
-              colon={false}
-            >
-              <Input
-                className="w-[60%]"
-                placeholder={t(KEYS.ANNOUNCE_WECHAT_PLACEHOLDER, {
-                  ns: "userList",
-                })}
-              />
-            </Form.Item>
-            <Form.Item
-              label={t(KEYS.ANNOUNCE_EMAIL, { ns: "userList" })}
-              colon={false}
-            >
-              <Input
-                className="w-[60%]"
-                placeholder={t(KEYS.ANNOUNCE_EMAIL_PLACEHOLDER, {
-                  ns: "userList",
-                })}
-              />
-            </Form.Item>
-            <Form.Item
-              label={t(KEYS.VIEW_RANGE, { ns: "userList" })}
-              colon={false}
-            >
-              <Select
-                style={{ width: "60%" }}
-                value={selectRange}
-                mode="multiple"
-                allowClear
-                options={regionData}
-                filterOption={filterOption}
-                dropdownRender={(menu) => (
-                  <>
-                    {selectLoading ? (
-                      <Spin className="flex justify-center" />
-                    ) : (
-                      <div>{menu}</div>
-                    )}
-                  </>
+            {userSettingLoading.initGetLoading ? (
+              <Skeleton className="w-[60%] h-[13rem] mx-auto" />
+            ) : (
+              <div>
+                {isSuperAdmin && (
+                  <Form.Item label="選擇團隊" colon={false}>
+                    <Select
+                      loading={teamsSelectLoading}
+                      style={{ width: "60%" }}
+                      value={userSetting.teamId}
+                      options={teamList.map((item) => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                      onChange={(value) => {
+                        setUserSetting((prev) => ({
+                          ...prev,
+                          teamId: value,
+                        }));
+                      }}
+                    />
+                  </Form.Item>
                 )}
-                onChange={(value) => {
-                  if (value.every((item) => item === -1)) {
-                    setSelectRange(value);
-                  } else {
-                    const data = value.filter((item) => item !== -1);
+                <Form.Item
+                  label={t(KEYS.ACCOUNT_STATUS, { ns: "userList" })}
+                  colon={false}
+                >
+                  <Switch
+                    value={userSetting.status === UserStatus.Enable}
+                    onChange={(status) => {
+                      setUserSetting((prev) => ({
+                        ...prev,
+                        status: status ? UserStatus.Enable : UserStatus.Disable,
+                      }));
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={t(KEYS.ANNOUNCE_PHONE, { ns: "userList" })}
+                  colon={false}
+                >
+                  <Input
+                    className="w-[60%]"
+                    placeholder={t(KEYS.ANNOUNCE_PHONE_PLACEHOLDER, {
+                      ns: "userList",
+                    })}
+                    value={userSetting.userProfileNotificationDto.phone}
+                    onChange={(e) => {
+                      setUserSetting((prev) => ({
+                        ...prev,
+                        userProfileNotificationDto: {
+                          ...prev.userProfileNotificationDto,
+                          phone: e.target.value,
+                        },
+                      }));
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={t(KEYS.ANNOUNCE_WECHAT, { ns: "userList" })}
+                  colon={false}
+                >
+                  <Input
+                    className="w-[60%]"
+                    value={userSetting.userProfileNotificationDto.workWechat}
+                    placeholder={t(KEYS.ANNOUNCE_WECHAT_PLACEHOLDER, {
+                      ns: "userList",
+                    })}
+                    onChange={(e) => {
+                      setUserSetting((prev) => ({
+                        ...prev,
+                        userProfileNotificationDto: {
+                          ...prev.userProfileNotificationDto,
+                          workWechat: e.target.value,
+                        },
+                      }));
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={t(KEYS.ANNOUNCE_EMAIL, { ns: "userList" })}
+                  colon={false}
+                >
+                  <Input
+                    className="w-[60%]"
+                    value={userSetting.userProfileNotificationDto.email}
+                    placeholder={t(KEYS.ANNOUNCE_EMAIL_PLACEHOLDER, {
+                      ns: "userList",
+                    })}
+                    onChange={(e) => {
+                      setUserSetting((prev) => ({
+                        ...prev,
+                        userProfileNotificationDto: {
+                          ...prev.userProfileNotificationDto,
+                          email: e.target.value,
+                        },
+                      }));
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={t(KEYS.VIEW_RANGE, { ns: "userList" })}
+                  colon={false}
+                >
+                  <Select
+                    style={{ width: "60%" }}
+                    value={
+                      isEmpty(selectRange)
+                        ? [-1]
+                        : selectRange.some(
+                            (item) =>
+                              !regionData.some(
+                                (region) => region.value === item
+                              )
+                          )
+                        ? [-1]
+                        : selectRange
+                    }
+                    mode="multiple"
+                    options={regionData}
+                    filterOption={filterOption}
+                    dropdownRender={(menu) => (
+                      <>
+                        {selectLoading ? (
+                          <Spin className="flex justify-center" />
+                        ) : (
+                          <div>{menu}</div>
+                        )}
+                      </>
+                    )}
+                    onChange={(value) => {
+                      if (value.every((item) => item === -1)) {
+                        setSelectRange(value);
+                      } else {
+                        const data = value.filter((item) => item !== -1);
 
-                    setSelectRange(data);
-                  }
-                }}
-                onSelect={(value) => {
-                  if (value === -1) {
-                    setSelectRange([value]);
-                  }
-                }}
-                tagRender={(props: CustomTagProps) => {
-                  const { label, closable, onClose } = props;
+                        setSelectRange(data);
+                      }
+                    }}
+                    onSelect={(value) => {
+                      if (value === -1) {
+                        setSelectRange([value]);
+                      }
+                    }}
+                    tagRender={(props: CustomTagProps) => {
+                      const { label, closable, onClose } = props;
 
-                  if (selectRange.includes(-1)) {
-                    return <span className="ml-2">{label}</span>;
-                  }
+                      if (selectRange.includes(-1)) {
+                        return <span className="ml-2">{label}</span>;
+                      }
 
-                  return (
-                    <span className="ant-select-selection-item !bg-[#F6F8FC] !px-3">
-                      {label}
-                      {closable && (
-                        <span
-                          onClick={onClose}
-                          className="ant-select-selection-item-remove ml-2"
-                        >
-                          <CloseOutlined />
+                      return (
+                        <span className="ant-select-selection-item !bg-[#F6F8FC] !px-3">
+                          {label}
+                          {closable && (
+                            <span
+                              onClick={onClose}
+                              className="ant-select-selection-item-remove ml-2"
+                            >
+                              <CloseOutlined />
+                            </span>
+                          )}
                         </span>
-                      )}
-                    </span>
-                  );
-                }}
-                popupClassName={"selectOptions"}
-              />
-            </Form.Item>
+                      );
+                    }}
+                    popupClassName={"selectOptions"}
+                  />
+                </Form.Item>
+              </div>
+            )}
           </Form>
         </div>
       </div>
@@ -207,6 +286,7 @@ export const UserDetail = () => {
             onClick={() =>
               navigate(`${isSuperAdmin ? "/team/userList" : "/user/list"}`)
             }
+            disabled={userSettingLoading.updateLoading}
           >
             {t(KEYS.RETURN, { ns: "userList" })}
           </Button>
@@ -216,6 +296,7 @@ export const UserDetail = () => {
           className="w-[6rem] h-[2.75rem] ml-[1.5rem]"
           type="primary"
           onClick={onSubmit}
+          loading={userSettingLoading.updateLoading}
         >
           {t(KEYS.SUBMIT, { ns: "userList" })}
         </Button>

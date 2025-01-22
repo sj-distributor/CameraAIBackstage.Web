@@ -30,6 +30,7 @@ export const TransferTree = ({
 }) => {
   const { t, source, treeData, onGetFoundationData } = useAction({
     disableTreeStaffId,
+    type,
   });
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);

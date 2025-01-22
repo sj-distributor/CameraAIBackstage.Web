@@ -13,12 +13,15 @@ import {
   Input,
   Pagination,
   Popover,
+  Radio,
   Select,
+  Skeleton,
   Spin,
   Switch,
   Table,
   TableProps,
 } from "antd";
+import { isEmpty } from "ramda";
 import { CustomTagProps } from "rc-select/lib/BaseSelect";
 import { Trans } from "react-i18next";
 
@@ -76,6 +79,16 @@ export const UserList = () => {
     adduserLoading,
     currentAccount,
     isSuperAdmin,
+    selectTeamAdminModal,
+    setSelectTeamAdminModal,
+    getUserTeams,
+    teamList,
+    teamLoading,
+    setCurrentUserProfileId,
+    setSelectTeam,
+    selectTeam,
+    adminGrantLoading,
+    AdminGrant,
   } = useAction();
 
   const columns: TableProps<IUserDataItem>["columns"] = [
@@ -125,6 +138,7 @@ export const UserList = () => {
     {
       title: t(KEYS.IS_QUALIFIED, source),
       dataIndex: "status",
+      hidden: isSuperAdmin,
       render: (status, record) => {
         return (
           <Switch
@@ -177,21 +191,27 @@ export const UserList = () => {
             }}
           >
             <div className="flex items-center">
-              <Button
-                type="link"
-                onClick={() =>
-                  navigate(
-                    `${
-                      isSuperAdmin
-                        ? "/team/userList/detail"
-                        : "/user/list/detail"
-                    }`,
-                    { state: { record } }
-                  )
-                }
-              >
-                {t(KEYS.DETAIL, source)}
-              </Button>
+              {(myPermissions.includes(
+                BackGroundRolePermissionEnum.CanViewDetailCameraAiUsers
+              ) ||
+                isSuperAdmin) && (
+                <Button
+                  type="link"
+                  onClick={() =>
+                    navigate(
+                      `${
+                        isSuperAdmin
+                          ? "/team/userList/detail"
+                          : "/user/list/detail"
+                      }`,
+                      { state: { record } }
+                    )
+                  }
+                >
+                  {t(KEYS.DETAIL, source)}
+                </Button>
+              )}
+
               {isSuperAdmin ? (
                 <Popover
                   arrow={false}
@@ -199,7 +219,14 @@ export const UserList = () => {
                   className="text-[#2853E3] cursor-pointer ml-[1rem]"
                   content={
                     <div className="w-[8rem] h-[3.5rem] flex flex-col justify-around pl-[1rem]">
-                      <div className="cursor-pointer text-[#2853E3]">
+                      <div
+                        className="cursor-pointer text-[#2853E3]"
+                        onClick={() => {
+                          getUserTeams(String(record.id));
+                          setSelectTeamAdminModal(true);
+                          setCurrentUserProfileId(String(record.id));
+                        }}
+                      >
                         設為團隊管理員
                       </div>
                       <div
@@ -449,6 +476,51 @@ export const UserList = () => {
               className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
             />
           </div>
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        title={<div>設置管理員</div>}
+        open={selectTeamAdminModal}
+        onCancle={() => {
+          setSelectTeamAdminModal(false);
+          setSelectTeam("");
+        }}
+        onConfirm={() => {
+          setSelectTeam("");
+
+          if (isEmpty(teamList)) {
+            setSelectTeamAdminModal(false);
+          } else {
+            AdminGrant();
+          }
+        }}
+        className={"customModal"}
+        confirmLoading={adminGrantLoading}
+      >
+        <div>
+          {teamLoading ? (
+            <Skeleton />
+          ) : isEmpty(teamList) ? (
+            <div>該用戶沒有加入任何團隊</div>
+          ) : (
+            <>
+              <div className="mb-[1rem]">
+                請選擇一個團隊，將此用戶設置為該團隊的管理員
+              </div>
+              {teamList.map((item, index) => {
+                return (
+                  <Radio
+                    key={index}
+                    checked={item.id === selectTeam}
+                    onClick={() => setSelectTeam(item.id)}
+                  >
+                    {item.name}
+                  </Radio>
+                );
+              })}
+            </>
+          )}
         </div>
       </CustomModal>
 

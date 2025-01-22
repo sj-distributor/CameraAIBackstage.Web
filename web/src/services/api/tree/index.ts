@@ -40,6 +40,7 @@ export const GetFoundationData = async (
 
 export const GetTreeData = async (data: {
   HierarchyDepth: HierarchyDepthEnum;
+  StaffIdSource?: HierarchyStaffIdSourceEnum;
 }) => {
   const response = await api.get<IFoundationResponse>(
     "/api/CameraAi/user/hierarchy/tree",

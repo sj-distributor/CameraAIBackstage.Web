@@ -3,7 +3,12 @@ import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
 import { GetTreeData } from "@/services/api/tree";
-import { HierarchyDepthEnum, IFoundationResponse } from "@/services/dtos/tree";
+import {
+  HierarchyDepthEnum,
+  HierarchyStaffIdSourceEnum,
+  IFoundationResponse,
+  TreeTypeEnum,
+} from "@/services/dtos/tree";
 
 export interface IFoundationDetail {
   department: {
@@ -37,8 +42,11 @@ export interface ITreeSelectNode {
   children?: ITreeSelectNode[];
 }
 
-export const useAction = (props: { disableTreeStaffId: string[] }) => {
-  const { disableTreeStaffId } = props;
+export const useAction = (props: {
+  disableTreeStaffId: string[];
+  type: TreeTypeEnum;
+}) => {
+  const { disableTreeStaffId, type } = props;
 
   const { t } = useAuth();
 
@@ -84,7 +92,13 @@ export const useAction = (props: { disableTreeStaffId: string[] }) => {
   };
 
   const onGetFoundationData = () => {
-    GetTreeData({ HierarchyDepth: HierarchyDepthEnum.Group })
+    GetTreeData({
+      HierarchyDepth: HierarchyDepthEnum.Group,
+      StaffIdSource:
+        type === TreeTypeEnum.UserPermission
+          ? HierarchyStaffIdSourceEnum.IntegerStaffId
+          : undefined,
+    })
       .then((response) => {
         setTreeData(response ? convertToTreeData(response) : []);
         setTreeFoundationResponse(response);

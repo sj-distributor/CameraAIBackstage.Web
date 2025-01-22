@@ -9,11 +9,10 @@ export const Login = async (data: { userName: string; password: string }) => {
   return response.data;
 };
 
-export const GetTeamsMineApi = async (data: object) => {
-  const response = await api.get<ITeamListProps[]>(
-    "/api/CameraAi/teams/mine",
-    data
-  );
+export const GetTeamsMineApi = async (data: { UserProfileId: string }) => {
+  const response = await api.get<ITeamListProps[]>("/api/CameraAi/teams/mine", {
+    params: data,
+  });
 
   return response.data;
 };

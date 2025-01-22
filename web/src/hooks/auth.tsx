@@ -248,7 +248,7 @@ export default ({ children }: { children: React.ReactNode }) => {
               path: "/user/teamInfo",
               element: <TeamInfo />,
               name: t(KEYS.TEAM_INFO, { ns: "homeMenu" }),
-              permissions: "CanViewCameraAiUserAccountPage",
+              permissions: "CanViewCameraAiTeam",
             },
           ],
         },
@@ -344,17 +344,32 @@ export default ({ children }: { children: React.ReactNode }) => {
   };
 
   const getMyPermission = () => {
-    GetCurrentAccountPermission()
+    GetCurrentAccountPermission({ TeamId: currentTeam.id })
       .then((response) => {
         if (
-          response.rolePermissionData &&
-          response.rolePermissionData?.length > 0
+          response?.rolePermissionData &&
+          response?.rolePermissionData?.length > 0
         ) {
-          const roles = response.rolePermissionData.map(
+          // let roles: number[] = [];
+
+          // let rolePermissions: string[] = [];
+
+          // if (localStorage.getItem(userNameKey)?.toLowerCase() === "mindy.l") {
+          //   rolePermissions = [
+          //     ...Object.values(BackGroundRolePermissionEnum),
+          //     "CanSwitchCameraAiBackEnd",
+          //   ];
+
+          //   setMyPermissions(rolePermissions);
+          // } else {
+
+          // }
+
+          const roles = response?.rolePermissionData.map(
             (item) => item.role.id!
           );
 
-          const rolePermissions = response.rolePermissionData.reduce(
+          const rolePermissions = response?.rolePermissionData.reduce(
             (accumulator, currentValue) => {
               currentValue.permissions.forEach((item) => {
                 if (accumulator.includes(item.name)) {
@@ -368,6 +383,8 @@ export default ({ children }: { children: React.ReactNode }) => {
             },
             [] as string[]
           );
+
+          console.log(rolePermissions);
 
           setHaveRoles(roles);
           setMyPermissions(rolePermissions);

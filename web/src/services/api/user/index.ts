@@ -70,3 +70,14 @@ export const PostUpdateUser = async (userProfile: IUserProfileItem) => {
 
   return response.data;
 };
+
+export const PostAdminGrantApi = async (data: {
+  UserProfileId: string;
+  TeamId: string;
+}) => {
+  const response = await api.post(
+    `/api/CameraAi/team/user/admin/grant?UserProfileId=${data.UserProfileId}&TeamId=${data.TeamId}`
+  );
+
+  return response.data;
+};

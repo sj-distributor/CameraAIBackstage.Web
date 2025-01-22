@@ -21,7 +21,7 @@ import { BackGroundRolePermissionEnum, FrontRolePermissionEnum } from "./props";
 import { useUpdateEffect } from "ahooks";
 
 export const useAction = () => {
-  const { t, language } = useAuth();
+  const { t, language, currentTeam } = useAuth();
 
   const { id } = useParams();
 
@@ -174,6 +174,7 @@ export const useAction = () => {
     const userIds = rolePermissionUsers ? rolePermissionUsers[0]?.userIds : [];
 
     const result = {
+      teamId: currentTeam.id,
       role: {
         name: role.name,
         description: role.description,

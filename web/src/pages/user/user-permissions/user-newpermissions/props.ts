@@ -79,7 +79,7 @@ export enum BackGroundRolePermissionEnum {
   CanUpdateCameraAiArea = "CanUpdateCameraAiArea",
   CanDeleteCameraAiArea = "CanDeleteCameraAiArea",
   CanViewCameraAiTeam = "CanViewCameraAiTeam",
-  CanEditTeamInfo = "CanEditTeamInfo", // 要跟接口確定後改
+  CanUpdateCameraAiTeam = "CanUpdateCameraAiTeam",
 }
 
 export const backGroundRolePermission = {
@@ -101,7 +101,7 @@ export const backGroundRolePermission = {
   [BackGroundRolePermissionEnum.CanDeleteRoles]: KEYS.DELETE,
   // 團隊信息
   [BackGroundRolePermissionEnum.CanViewCameraAiTeam]: KEYS.TEAM_INFO,
-  [BackGroundRolePermissionEnum.CanEditTeamInfo]: KEYS.LOGO_NAME,
+  [BackGroundRolePermissionEnum.CanUpdateCameraAiTeam]: KEYS.LOGO_NAME,
   // 設備列表
   [BackGroundRolePermissionEnum.CanViewCameraAiEquipmentPage]: KEYS.DEVICE_LIST,
   [BackGroundRolePermissionEnum.CanAddCameraAiEquipment]: KEYS.ADD_DEVICE,

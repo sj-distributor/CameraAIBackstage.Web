@@ -11,8 +11,9 @@ import {
   Login,
 } from "@/services/api/login";
 import { GetCurrentAccountPermission } from "@/services/api/user-permission";
-import { ITeamListProps, IUserInfo } from "@/services/dtos/login";
+import { IUserInfo } from "@/services/dtos/login";
 import { IUserDataItem } from "@/services/dtos/user";
+import { IMinePermissionResponse } from "@/services/dtos/user-permission";
 
 import { FrontRolePermissionEnum } from "../user/user-permissions/user-newpermissions/props";
 
@@ -53,16 +54,19 @@ export const useAction = () => {
     localStorage.removeItem((window as any).appSettings?.userNameKey);
   };
 
-  // 获取当前账号的团队
-  const getCurrentTeams = (): Promise<ITeamListProps[]> => {
+  // 获取当前账号在团队中的权限
+  const getCurrentPermission = (
+    TeamId: string
+  ): Promise<IMinePermissionResponse> => {
     return new Promise((resolve, reject) => {
-      GetTeamsMineApi({})
+      GetCurrentAccountPermission({ TeamId: TeamId })
         .then((res) => {
           resolve(res);
         })
         .catch((err) => {
           reject(err);
-          message.error(`获取团队失败：${(err as Error).message}`);
+
+          message.error(`获取权限失败：${(err as Error).message}`);
           handleRemoveLocalStorage();
         });
     });
@@ -83,40 +87,49 @@ export const useAction = () => {
     });
   };
 
-  const getMinePermission = () => {
-    GetCurrentAccountPermission()
-      .then((res) => {
-        if (userInfo.userName.toLowerCase() === "admin") {
-          setLoginLoading(false);
+  const judgeAdmin = () => {
+    if (userInfo.userName.toLowerCase() === "admin") {
+      setLoginLoading(false);
 
-          localStorage.setItem("backstage", "superAdmin");
+      localStorage.setItem("backstage", "superAdmin");
 
-          signIn(
-            localStorage.getItem(
-              (window as any).appSettings?.tokenKey ?? "tokenKey"
-            ) || "",
-            historyCallback
+      signIn(
+        localStorage.getItem(
+          (window as any).appSettings?.tokenKey ?? "tokenKey"
+        ) || "",
+        historyCallback
+      );
+    } else {
+      localStorage.setItem("backstage", "admin");
+
+      GetTeamsMineApi({ UserProfileId: "" })
+        .then((mineTeamsResponse) => {
+          const filterTeams = mineTeamsResponse.filter(
+            (item) => !isEmpty(item.id) && !isNil(item.id)
           );
-        } else {
-          localStorage.setItem("backstage", "admin");
 
-          Promise.all([getCurrentTeams(), getCurrentAccount()])
-            .then(([mineTeamsResponse, accountInfoResponse]) => {
-              const hasCameraAiBackEnd = res.rolePermissionData.some((item) =>
-                item.permissions.some(
-                  (permission) =>
-                    permission.name ===
-                    FrontRolePermissionEnum.CanSwitchCameraAiBackEnd
-                )
-              );
+          if (isEmpty(filterTeams)) {
+            setLoginLoading(false);
+            message.error("您未有加入任何團隊");
+            handleRemoveLocalStorage();
 
-              const filterTeams = mineTeamsResponse.filter(
-                (item) => !isEmpty(item.id) && !isNil(item.id)
-              );
+            return;
+          }
+          Promise.all([
+            getCurrentPermission(filterTeams[0].id),
+            getCurrentAccount(),
+          ])
+            .then(([permissionResponse, accountInfoResponse]) => {
+              const hasCameraAiBackEnd =
+                permissionResponse?.rolePermissionData.some((item) =>
+                  item.permissions.some(
+                    (permission) =>
+                      permission.name ===
+                      FrontRolePermissionEnum.CanSwitchCameraAiBackEnd
+                  )
+                );
 
-              const hasTeams = !!filterTeams.length;
-
-              if (hasCameraAiBackEnd && hasTeams) {
+              if (hasCameraAiBackEnd) {
                 signIn(
                   localStorage.getItem(
                     (window as any).appSettings?.tokenKey ?? "tokenKey"
@@ -135,22 +148,21 @@ export const useAction = () => {
                   "currentAccount",
                   JSON.stringify(accountInfoResponse.userProfile)
                 );
-              } else if (!hasCameraAiBackEnd) {
-                message.error("您没有访问後台权限");
-                handleRemoveLocalStorage();
-              } else if (!hasTeams) {
-                message.error("您未有加入任何團隊");
+              } else {
+                message.error(
+                  `您在團隊【${filterTeams[0].name}】中没有访问後台权限`
+                );
                 handleRemoveLocalStorage();
               }
             })
             .finally(() => setLoginLoading(false));
-        }
-      })
-      .catch((err) => {
-        setLoginLoading(false);
-
-        message.error(`獲取權限失敗：${(err as Error).message}`);
-      });
+        })
+        .catch((err) => {
+          setLoginLoading(false);
+          message.error(`获取团队失败：${(err as Error).message}`);
+          handleRemoveLocalStorage();
+        });
+    }
   };
 
   const onLogin = () => {
@@ -173,7 +185,7 @@ export const useAction = () => {
               userInfo.userName
             );
 
-            getMinePermission();
+            judgeAdmin();
           }
         })
         .catch((err) => {
