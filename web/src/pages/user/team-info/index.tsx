@@ -16,6 +16,7 @@ import {
   Upload,
 } from "antd";
 import { isEmpty } from "ramda";
+import { useEffect } from "react";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/team-info-keys";
@@ -49,6 +50,20 @@ export const TeamInfo = () => {
     resetTeamInfo,
     setKeyWord,
   } = useAction();
+
+  const localCurrentTeam = JSON.parse(
+    localStorage.getItem("currentTeam") ?? "{}"
+  );
+
+  const localCurrentAccount = JSON.parse(
+    localStorage.getItem("currentAccount") ?? "{}"
+  );
+
+  useEffect(() => {
+    console.log(121212);
+
+    console.log(localCurrentTeam, localCurrentAccount);
+  }, []);
 
   return (
     <div className="bg-white relative overflow-hidden no-scrollbar h-screen">
@@ -159,7 +174,7 @@ export const TeamInfo = () => {
               >
                 {getTeamUsersLoading ? <Spin /> : tempTeamLeader.name}
               </Form.Item>
-              {currentAccount.id === Number(currentTeam.leaderId) && (
+              {localCurrentAccount.id === Number(localCurrentTeam.leaderId) && (
                 <Form.Item
                   label={t(KEYS.HANDOVER_TEAM, { ns: "teamInfo" })}
                   colon={false}
