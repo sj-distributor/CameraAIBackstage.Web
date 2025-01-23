@@ -28,8 +28,6 @@ export const TeamInfo = () => {
   const {
     t,
     teamInfo,
-    currentTeam,
-    currentAccount,
     openSelectMember,
     showReUpload,
     confirmCancel,
