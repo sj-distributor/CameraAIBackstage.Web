@@ -49,6 +49,7 @@ export const CameraFrondesk = () => {
           height="100%"
           name="CameraFrontdesk"
           url={(window as any).appSettings.cameraAIFrontdeskDomain}
+          sync={true}
           alive={false}
           fiber={true}
           props={{

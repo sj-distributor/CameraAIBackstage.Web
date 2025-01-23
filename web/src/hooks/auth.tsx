@@ -350,21 +350,6 @@ export default ({ children }: { children: React.ReactNode }) => {
           response?.rolePermissionData &&
           response?.rolePermissionData?.length > 0
         ) {
-          // let roles: number[] = [];
-
-          // let rolePermissions: string[] = [];
-
-          // if (localStorage.getItem(userNameKey)?.toLowerCase() === "mindy.l") {
-          //   rolePermissions = [
-          //     ...Object.values(BackGroundRolePermissionEnum),
-          //     "CanSwitchCameraAiBackEnd",
-          //   ];
-
-          //   setMyPermissions(rolePermissions);
-          // } else {
-
-          // }
-
           const roles = response?.rolePermissionData.map(
             (item) => item.role.id!
           );
