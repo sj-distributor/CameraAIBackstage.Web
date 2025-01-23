@@ -16,6 +16,7 @@ export default {
     [KEYS.PAGINATION]: "Total <span>{{count}}</span> Item",
     [KEYS.UPDATE_TIME]: "UpdateTime",
     [KEYS.CONFIRM_DELETE_ROLE]: "Confirm delete role ?",
+    [KEYS.CONFIRM_DELETE_USER]: "Confirm delete user ?",
     [KEYS.CONFIRM_DELETE]: "Confirm delete",
     [KEYS.DELETE_USERS_IN_BATCHES]: "Batch removal",
     [KEYS.USER_NAME]: "User Name",
