@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/user-list-keys";
 import { GetRegionPage } from "@/services/api/equipment/list";
+import { GetTeamsMineApi } from "@/services/api/login";
 import {
   GetUserList,
   PostAddUsersApi,
@@ -17,6 +18,7 @@ import {
   PostDeleteUserApi,
   PostUpdateUser,
 } from "@/services/api/user";
+import { ITeamListProps } from "@/services/dtos/login";
 import {
   IGetUserListRequest,
   IGetUserListResponse,
@@ -24,8 +26,6 @@ import {
 } from "@/services/dtos/user";
 
 import { ITreeData } from "../user-permissions/tranfer-tree/hook";
-import { GetTeamsMineApi } from "@/services/api/login";
-import { ITeamListProps } from "@/services/dtos/login";
 
 export interface IDto extends IGetUserListResponse {
   PageIndex: number;

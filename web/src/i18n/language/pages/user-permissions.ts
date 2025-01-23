@@ -87,6 +87,7 @@ export default {
     [KEYS.PAGINATION]: "共 <span>{{count}}</span> 條",
     [KEYS.UPDATE_TIME]: "更新時間",
     [KEYS.CONFIRM_DELETE_ROLE]: "請確認是否刪除該角色?",
+    [KEYS.CONFIRM_DELETE_USER]: "請確認是否移除該用戶?",
     [KEYS.CONFIRM_DELETE]: "確定刪除",
     [KEYS.DELETE_USERS_IN_BATCHES]: "批量移除",
     [KEYS.USER_NAME]: "用戶名",

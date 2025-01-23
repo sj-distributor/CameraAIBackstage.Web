@@ -197,7 +197,7 @@ export const UserDistribute = () => {
       <OperateConfirmModal
         isModelOpen={isDeletePermissions}
         setIsModelOpen={setIsDeletePermissions}
-        contentText={t(KEYS.CONFIRM_DELETE_ROLE, source)}
+        contentText={t(KEYS.CONFIRM_DELETE_USER, source)}
         handleOperateConfirm={handleOperateDelete}
       />
       <OperateConfirmModal

@@ -67,4 +67,5 @@ export default {
   ABNORMAL_PERMISSION_DATA: "AbnormalPermissionData",
   TEAM_INFO: "TeamInfo",
   LOGO_NAME: "LogoName",
+  CONFIRM_DELETE_USER: "ConfirmDeleteUser",
 };

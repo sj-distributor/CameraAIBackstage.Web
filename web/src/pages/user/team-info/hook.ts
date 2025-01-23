@@ -82,7 +82,7 @@ export const useAction = () => {
       TeamId: currentTeam.id,
     })
       .then((res) => {
-        setTeamUsers(res.userProfiles ?? []);
+        setTeamUsers(res?.userProfiles ?? []);
 
         const leaderInfo = res?.userProfiles.filter((item) => {
           return item.id === Number(currentTeam.leaderId);
