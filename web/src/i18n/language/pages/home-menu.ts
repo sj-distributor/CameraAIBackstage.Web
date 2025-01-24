@@ -5,7 +5,7 @@ export default {
   en: {
     [KEYS.USER_MANAGEMENT]: "User Management",
     [KEYS.USER_LIST]: "User List",
-    [KEYS.USER_PERMISSIONS]: "User Permissions",
+    [KEYS.USER_PERMISSIONS]: "Role Permissions",
     [KEYS.TEAM_INFO]: "Team Infomation",
     [KEYS.DEVICE_MANAGEMENT]: "Device Management",
     [KEYS.DEVICE_LIST]: "Device List",
@@ -25,7 +25,7 @@ export default {
   ch: {
     [KEYS.USER_MANAGEMENT]: "用戶管理",
     [KEYS.USER_LIST]: "用戶列表",
-    [KEYS.USER_PERMISSIONS]: "用戶權限",
+    [KEYS.USER_PERMISSIONS]: "角色權限",
     [KEYS.TEAM_INFO]: "團隊信息",
     [KEYS.DEVICE_MANAGEMENT]: "設備管理",
     [KEYS.DEVICE_LIST]: "設備列表",

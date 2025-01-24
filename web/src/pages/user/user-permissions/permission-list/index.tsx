@@ -133,7 +133,7 @@ export const UserPermissions = () => {
       <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-screen">
         <div className="bg-white w-full flex-col justify-start pt-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            {t(KEYS.ROLE_LIST, source)}
+            {t(KEYS.USER_PERMISSIONS, source)}
           </span>
           <div className="flex justify-between mb-[1rem] mt-[1.5rem] ">
             <Input

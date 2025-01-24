@@ -3,7 +3,7 @@ import KEYS from "../keys/user-permissions-keys";
 
 export default {
   en: {
-    [KEYS.USER_PERMISSIONS]: "User Permissions",
+    [KEYS.USER_PERMISSIONS]: "Role List",
     [KEYS.ROLE_LIST]: "User List",
     [KEYS.ROLE_NAME]: "Role name",
     [KEYS.ROLE_DESCRIBE]: "Role Describe",
@@ -75,7 +75,7 @@ export default {
     [KEYS.ABNORMAL_PERMISSION_DATA]: "Abnormal permission data",
   },
   ch: {
-    [KEYS.USER_PERMISSIONS]: "用戶權限",
+    [KEYS.USER_PERMISSIONS]: "角色列表",
     [KEYS.ROLE_LIST]: "用戶列表",
     [KEYS.ROLE_NAME]: "角色名稱",
     [KEYS.ROLE_DESCRIBE]: "角色描述",
