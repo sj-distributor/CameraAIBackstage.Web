@@ -18,9 +18,11 @@ export const CameraFrondesk = () => {
   const goAdminStage = () => {
     localStorage.setItem("backstage", "admin");
 
-    navigate(defaultPath);
-
-    window.location.reload();
+    window.open(
+      `${window.location.origin}/${defaultPath}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   useEffect(() => {
