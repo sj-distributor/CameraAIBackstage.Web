@@ -18,6 +18,8 @@ import { Container } from "@/pages/main";
 import { Monitor } from "@/pages/monitor";
 import { AddSelectType } from "@/pages/monitor/component/add-select-type";
 import { AddOrUpdateConfiguration } from "@/pages/monitor/component/add-update-configuration";
+// 出入口管理
+// import { AccessManagement } from "@/pages/system/access-management";
 import { AreaManagement } from "@/pages/system/area-management";
 import { LicensePlateManagement } from "@/pages/system/license-plate-management";
 import { OperationLog } from "@/pages/system/operation-log";
