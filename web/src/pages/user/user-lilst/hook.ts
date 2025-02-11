@@ -72,7 +72,7 @@ export const useAction = () => {
     Status: undefined,
   });
 
-  const [deleteUserKeys, setDeleteUserKeys] = useState<string[]>([""]);
+  const [deleteUserKeys, setDeleteUserKeys] = useState<string[]>([]);
 
   const [updateUserId, setUpdateUserId] = useState<string>("");
 
@@ -102,44 +102,24 @@ export const useAction = () => {
   const [adduserLoading, setAddUserLoading] = useState<boolean>(false);
 
   const handelConfirmDeleteUsers = () => {
+    if (isEmpty(deleteUserKeys)) {
+      message.info("請至少選擇一個用戶");
+
+      return;
+    }
+
     setIsDeleteUserLoading(true);
 
-    PostDeleteUserApi({
-      teamId: currentTeam.id,
-      userProfileIds: deleteUserKeys,
-    })
-      .then(() => {
-        setIsRemoveUser(false);
-
-        handelGetUserList({
-          PageIndex: 1,
-          PageSize: userListData.PageSize,
-          Keyword: filterKeyword,
-          Status: userListData.Status,
-          TeamId: currentTeam.id,
+    const deletUserFun = isSuperAdmin
+      ? isDeleteUsers
+        ? PostBatchDeleteUsers(deleteUserKeys)
+        : PostDeleteUser(deleteUserKeys[0])
+      : PostDeleteUserApi({
+          teamId: currentTeam.id,
+          userProfileIds: deleteUserKeys,
         });
 
-        getAllUserList();
-
-        message.success(t(KEYS.REMOVE_USER_OK, source));
-      })
-      .catch((err) => {
-        message.error((err as Error).message);
-      })
-      .finally(() => {
-        setIsDeleteUserLoading(false);
-      });
-
-    return;
-
-    if (deleteUserKeys.length < 1) return;
-
-    const deleteUserFun = isDeleteUsers ? PostBatchDeleteUsers : PostDeleteUser;
-
-    const data = isDeleteUsers ? deleteUserKeys : deleteUserKeys[0];
-
-    setIsDeleteUserLoading(true);
-    deleteUserFun(data as string & string[])
+    deletUserFun
       .then(() => {
         setIsRemoveUser(false);
 
@@ -148,7 +128,7 @@ export const useAction = () => {
           PageSize: userListData.PageSize,
           Keyword: filterKeyword,
           Status: userListData.Status,
-          TeamId: currentTeam.id,
+          TeamId: isSuperAdmin ? undefined : currentTeam.id,
         });
 
         getAllUserList();
@@ -163,7 +143,7 @@ export const useAction = () => {
       });
   };
 
-  // 旧 添加用户
+  // 大后台 添加用户
   const handelGetSelectedUsers = async (userIds: string[]) => {
     let loading = true;
 
@@ -177,7 +157,6 @@ export const useAction = () => {
         PageSize: userListData.PageSize,
         Keyword: filterKeyword,
         Status: userListData.Status,
-        TeamId: currentTeam.id,
       });
 
       getAllUserList();
@@ -212,10 +191,12 @@ export const useAction = () => {
     GetUserList({
       PageIndex: 1,
       PageSize: 2147483647,
-      TeamId: currentTeam.id,
+      TeamId: isSuperAdmin ? undefined : currentTeam.id,
     }).then((res) => {
       setDisableTreeStaffId(
-        (res?.userProfiles ?? []).map((item) => item.staffId)
+        (res?.userProfiles ?? []).map((item) =>
+          isSuperAdmin ? item.staffId : JSON.stringify(item.id)
+        )
       );
     });
   };
@@ -306,7 +287,7 @@ export const useAction = () => {
       .finally(() => setSelectLoading(false));
   };
 
-  // 新 添加用户
+  // 普通后台 添加用户
   const handleCreateTeam = () => {
     if (isEmpty(selectUser) || isEmpty(selectRange)) {
       message.info("請補充完整信息！");

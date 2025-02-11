@@ -16,7 +16,7 @@ export const GetUserList = async (data: IGetUserListRequest) => {
   return response.data;
 };
 
-// 旧 删除单个用户
+// 大后台 删除单个用户
 export const PostDeleteUser = async (userProfileId: string) => {
   const response = await api.post("/api/CameraAi/user/delete", {
     userProfileId,
@@ -25,7 +25,7 @@ export const PostDeleteUser = async (userProfileId: string) => {
   return response.data;
 };
 
-// 旧 批量删除用户
+// 大后台 批量删除用户
 export const PostBatchDeleteUsers = async (userProfileIds: string[]) => {
   const response = await api.post("/api/CameraAi/user/batch/delete", {
     userProfileIds,
@@ -44,7 +44,7 @@ export const PostDeleteUserApi = async (data: {
   return response.data;
 };
 
-// 旧 添加用户 还没加teamId
+// 大后台 添加用户 不需要加teamId
 export const PostCreateUsers = async (staffIds: string[]) => {
   const response = await api.post<IUserProfileItem[]>(
     "/api/CameraAi/user/create",

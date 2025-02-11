@@ -1,45 +1,29 @@
 import {
   HierarchyDepthEnum,
   HierarchyStaffIdSourceEnum,
-  HierarchyStaffRangeEnum,
   IFoundationResponse,
 } from "@/services/dtos/tree";
 
 import { api } from "../http-client";
 
-export const GetFoundationData = async (
-  type: string,
-  data: HierarchyDepthEnum | HierarchyStaffRangeEnum,
-  staffIdSource: HierarchyStaffIdSourceEnum
-) => {
+// 大后台添加用户用的树
+export const GetFoundationData = async (data: {
+  StaffIdSource: HierarchyStaffIdSourceEnum;
+  HierarchyDepth: HierarchyDepthEnum;
+}) => {
   const response = await api.get<IFoundationResponse>(
-    `/api/HappyScore/department/staff/hierarchy/tree?StaffIdSource=${staffIdSource}&${
-      type === "HierarchyStaffRange"
-        ? `HierarchyDepth=${HierarchyDepthEnum.Group}&` + type + "=" + data
-        : type + "=" + data
-    }`
+    "/api/Foundation/department/staff/hierarchy/tree",
+    {
+      params: data,
+    }
   );
 
   return response.data;
 };
 
-// export const GetTreeData = async (
-//   type: string,
-//   data: HierarchyDepthEnum | HierarchyStaffRangeEnum
-// ) => {
-//   const response = await api.get<IFoundationResponse>(
-//     `/api/CameraAi/user/hierarchy/tree?${
-//       type === "HierarchyStaffRange"
-//         ? `HierarchyDepth=${HierarchyDepthEnum.Group}&` + type + "=" + data
-//         : type + "=" + data
-//     }`
-//   );
-
-//   return response.data;
-// };
-
+// 普通后台添加用户用的树
 export const GetTreeData = async (data: {
-  HierarchyDepth: HierarchyDepthEnum;
+  HierarchyDepth?: HierarchyDepthEnum;
   StaffIdSource?: HierarchyStaffIdSourceEnum;
 }) => {
   const response = await api.get<IFoundationResponse>(

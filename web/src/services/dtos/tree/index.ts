@@ -23,4 +23,5 @@ export enum HierarchyStaffIdSourceEnum {
 export enum TreeTypeEnum {
   UserList,
   UserPermission,
+  SuperAdminUserList,
 }

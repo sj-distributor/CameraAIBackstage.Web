@@ -22,6 +22,7 @@ export interface IGetUserListRequest extends IPageDto {
 export interface IUserDataItem {
   id: number;
   staffId: string;
+  userAccountId?: string;
   name: string;
   department: string;
   group: string;

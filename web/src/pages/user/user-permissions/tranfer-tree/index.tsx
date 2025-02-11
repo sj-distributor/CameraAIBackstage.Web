@@ -14,6 +14,7 @@ export const TransferTree = ({
   disableTreeStaffId,
   type,
   selectUser,
+  currentTeamStaff,
   setSelectUser,
   setIsModelOpen,
   handelGetSelectedUsers,
@@ -24,12 +25,14 @@ export const TransferTree = ({
   disableTreeStaffId: string[];
   type: TreeTypeEnum;
   selectUser: ITreeData[];
+  currentTeamStaff?: string[];
   setSelectUser: Dispatch<SetStateAction<ITreeData[]>>;
   setIsModelOpen: (value: SetStateAction<boolean>) => void;
   handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
 }) => {
   const { t, source, treeData, onGetFoundationData } = useAction({
     disableTreeStaffId,
+    currentTeamStaff,
     type,
   });
 
@@ -240,7 +243,10 @@ export const TransferTree = ({
       }}
       confirmLoading={isConfirmLoading}
       onConfirm={async () => {
-        if (type === TreeTypeEnum.UserPermission) {
+        if (
+          type === TreeTypeEnum.UserPermission ||
+          type === TreeTypeEnum.SuperAdminUserList
+        ) {
           const data = targetAllData.map((item) => item.key);
 
           if (handelGetSelectedUsers && data.length > 0) {

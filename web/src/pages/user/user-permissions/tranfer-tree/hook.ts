@@ -2,7 +2,7 @@ import { message } from "antd";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
-import { GetTreeData } from "@/services/api/tree";
+import { GetFoundationData, GetTreeData } from "@/services/api/tree";
 import {
   HierarchyDepthEnum,
   HierarchyStaffIdSourceEnum,
@@ -44,11 +44,12 @@ export interface ITreeSelectNode {
 
 export const useAction = (props: {
   disableTreeStaffId: string[];
+  currentTeamStaff?: string[];
   type: TreeTypeEnum;
 }) => {
-  const { disableTreeStaffId, type } = props;
+  const { disableTreeStaffId, currentTeamStaff = [], type } = props;
 
-  const { t } = useAuth();
+  const { t, isSuperAdmin } = useAuth();
 
   const source = { ns: "userPermissions" };
 
@@ -73,7 +74,10 @@ export const useAction = (props: {
           value: staff.id,
           key: staff.id,
           isUser: true,
-          disabled: disableTreeStaffId?.some((item) => item === staff.id),
+          disabled:
+            disableTreeStaffId?.some((item) => item === staff.id) ||
+            (type === TreeTypeEnum.UserPermission &&
+              !currentTeamStaff.some((item) => item === staff.id)),
         };
       });
     }
@@ -92,6 +96,31 @@ export const useAction = (props: {
   };
 
   const onGetFoundationData = () => {
+    const getTreeDataApi = isSuperAdmin
+      ? GetFoundationData({
+          StaffIdSource: HierarchyStaffIdSourceEnum.StringStaffId,
+          HierarchyDepth: HierarchyDepthEnum.Group,
+        })
+      : GetTreeData({
+          HierarchyDepth: HierarchyDepthEnum.Group,
+          StaffIdSource:
+            type === TreeTypeEnum.UserPermission
+              ? HierarchyStaffIdSourceEnum.IntegerStaffId
+              : undefined,
+        });
+
+    getTreeDataApi
+      .then((response) => {
+        setTreeData(response ? convertToTreeData(response) : []);
+        setTreeFoundationResponse(response);
+      })
+      .catch((error) => {
+        message.error((error as Error).message);
+        setTreeData([]);
+      });
+
+    return;
+
     GetTreeData({
       HierarchyDepth: HierarchyDepthEnum.Group,
       StaffIdSource:

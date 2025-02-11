@@ -45,6 +45,7 @@ export const UserDistribute = () => {
     handelGetSelectedUsers,
     selectUser,
     setSelectUser,
+    currentTeamStaff,
   } = useAction();
 
   const columns: ColumnsType<IUserByRoleIdData> = [
@@ -214,6 +215,7 @@ export const UserDistribute = () => {
         staffIdSource={HierarchyStaffIdSourceEnum.IntegerStaffId}
         type={TreeTypeEnum.UserPermission}
         disableTreeStaffId={disableTreeStaffId}
+        currentTeamStaff={currentTeamStaff}
         selectUser={selectUser}
         setSelectUser={setSelectUser}
       />

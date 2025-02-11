@@ -336,13 +336,16 @@ export const UserList = () => {
                 {t(KEYS.BATCH_REMOVE_USERS, source)}
               </Button>
             )}
-            {myPermissions.includes(
+            {(myPermissions.includes(
               BackGroundRolePermissionEnum.CanAddCameraAiUserAccount
-            ) && (
+            ) ||
+              isSuperAdmin) && (
               <Button
                 type="primary"
                 className="w-[7.25rem] h-[2.75rem]"
-                onClick={() => openAddUserDrawer()}
+                onClick={() => {
+                  isSuperAdmin ? setIsAddUser(true) : openAddUserDrawer();
+                }}
               >
                 <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
               </Button>
@@ -366,6 +369,11 @@ export const UserList = () => {
                 selectedRowKeys.map((item) => String(item))
               );
             },
+            getCheckboxProps: (record) => ({
+              disabled:
+                record.id === Number(currentTeam.leaderId) ||
+                record.id === currentAccount.id,
+            }),
           }}
         />
       </div>
@@ -392,7 +400,7 @@ export const UserList = () => {
                 PageIndex: page,
                 Status: userListData.Status,
                 Keyword: filterKeyword,
-                TeamId: currentTeam.id,
+                TeamId: isSuperAdmin ? undefined : currentTeam.id,
               })
             }
             showSizeChanger
@@ -407,7 +415,9 @@ export const UserList = () => {
         handelGetSelectedUsers={handelGetSelectedUsers}
         staffIdSource={0}
         disableTreeStaffId={disableTreeStaffId}
-        type={TreeTypeEnum.UserList}
+        type={
+          isSuperAdmin ? TreeTypeEnum.SuperAdminUserList : TreeTypeEnum.UserList
+        }
         selectUser={selectUser}
         setSelectUser={setSelectUser}
       />
