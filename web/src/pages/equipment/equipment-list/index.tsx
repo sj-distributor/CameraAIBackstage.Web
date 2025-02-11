@@ -69,6 +69,7 @@ export const EquipmentList = () => {
     myPermissions,
     initialEquipmentData,
     onChangePage,
+    isSuperAdmin,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -141,7 +142,7 @@ export const EquipmentList = () => {
                   )
                 ) {
                   setIsBindingOpen(true);
-                  onOpenBind();
+                  onOpenBind(record.teamId);
                 }
               }}
               className={`${
@@ -153,9 +154,17 @@ export const EquipmentList = () => {
       },
     },
     {
+      title: t(KEYS.ENTERPRISE, source),
+      width: "16.6%",
+      hidden: !isSuperAdmin,
+      render: () => {
+        return <div />;
+      },
+    },
+    {
       title: t(KEYS.OPERATE, source),
       key: "operate",
-      width: "16.6%",
+      width: "26.6%",
       render: (_, record) => (
         <div>
           {myPermissions.includes(
@@ -173,9 +182,10 @@ export const EquipmentList = () => {
               {t(KEYS.EDIT, source)}
             </Button>
           )}
-          {myPermissions.includes(
+          {(myPermissions.includes(
             BackGroundRolePermissionEnum.CanDeleteCameraAiEquipment
-          ) && (
+          ) ||
+            isSuperAdmin) && (
             <Button
               type="link"
               className="w-[6rem]"
@@ -353,7 +363,7 @@ export const EquipmentList = () => {
               columns={columns}
               dataSource={data}
               className="tableHiddenScrollBar flex-1"
-              scroll={{ y: 510 }}
+              scroll={{ y: 510, x: 800 }}
               pagination={false}
             />
           </div>

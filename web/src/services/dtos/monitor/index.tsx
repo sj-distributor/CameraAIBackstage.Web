@@ -42,6 +42,7 @@ export interface IMonitorSettingIdDto {
 export interface IMonitorSettingRequest extends IPageDto {
   IsActive?: boolean;
   MonitorType?: CameraAiMonitorType[];
+  TeamId?: string;
 }
 
 export interface IMonitorSettingResponse {
@@ -72,6 +73,7 @@ export interface IMonitorSettingsDto extends IMonitorSettingsPublicDto {
   timeZone: string;
   loading?: boolean; // 自定义
   monitorTypeNames?: string[];
+  teamId?: string;
 }
 
 export interface IMonitorNotificationsDto {

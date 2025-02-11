@@ -8,6 +8,7 @@ export interface IGetVehicleMonitorRecordsRequest {
   EquipmentName?: string;
   EquipmentCodes?: string[];
   MonitorTypes?: CameraAiMonitorType[];
+  TeamId?: string;
 }
 
 export interface IGetRegisteredVehicleListRequest {
@@ -18,6 +19,7 @@ export interface IGetRegisteredVehicleListRequest {
   Status?: CameraAiMonitorRecordStatus;
   RegisterType?: CameraAiMonitorRegisterType;
   Name?: string;
+  TeamId?: string;
 }
 
 export interface IPostRegisteringCarRequest {

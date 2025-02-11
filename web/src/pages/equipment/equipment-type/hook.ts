@@ -17,7 +17,7 @@ import {
 import { IPageDto } from "@/services/dtos/public";
 
 export const useAction = () => {
-  const { t, language, myPermissions } = useAuth();
+  const { t, language, myPermissions, currentTeam } = useAuth();
 
   const [form] = Form.useForm();
 
@@ -60,7 +60,7 @@ export const useAction = () => {
 
   const initGetEquipmentTypeList = () => {
     loadingAction.setTrue();
-    GetEquipmentTypePage(pageDto)
+    GetEquipmentTypePage({ ...pageDto, TeamId: currentTeam.id })
       .then((res) => {
         setData(res.equipmentTypes);
         setTotalListCount(res.count);
@@ -99,6 +99,7 @@ export const useAction = () => {
         name: typeName,
         description: description,
         label: typeLabel ?? CameraAiEquipmentTypeLabel.Camera,
+        teamId: currentTeam.id,
       },
     })
       .then(() => {
@@ -127,6 +128,7 @@ export const useAction = () => {
         description: description,
         id: clickEditId,
         label: typeLabel,
+        teamId: currentTeam.id,
       },
     })
       .then(() => {

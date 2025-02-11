@@ -8,6 +8,7 @@ export interface IEquipmentPageRequest extends IPageDto {
   EquipmentCode?: string;
   EquipmentName?: string;
   EquipmentTypeName?: string;
+  TeamId?: string;
 }
 
 export interface IEquipmentPageResponse {
@@ -19,6 +20,7 @@ export interface IEquipmentList extends IEquipmentCreateOrUpdateDto {
   createdTime: string;
   equipmentType: string;
   id: number;
+  teamId?: string;
   isBind: boolean;
   isDeleted: boolean;
   isOnline: boolean;
@@ -39,6 +41,7 @@ export interface IEquipmentCreateOrUpdateDto {
   brand?: string;
   username: string;
   password: string;
+  teamId?: string;
 }
 
 export interface IRegionPageResponse {
@@ -51,6 +54,7 @@ export interface IGetRegionPageRequest extends IPageDto {
   RegionAddress?: string;
   Keyword?: string;
   IsFilter?: boolean;
+  TeamId?: string;
 }
 
 export interface IRegionDto {

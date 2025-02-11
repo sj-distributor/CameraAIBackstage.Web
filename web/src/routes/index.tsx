@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AuthStatus } from "@/hooks/auth-status";
 import { useAuth } from "@/hooks/use-auth";
+import { CameraFrondesk } from "@/pages/camera-frontdesk";
 import { Home } from "@/pages/home/index";
 import { Login } from "@/pages/login";
 import { IRouterList } from "@/services/dtos/routes";
@@ -64,6 +65,14 @@ export const Router = () => {
     <ConfigProvider locale={locale}>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route
+          path="/frontdesk"
+          element={
+            <AuthStatus>
+              <CameraFrondesk />
+            </AuthStatus>
+          }
+        />
         <Route element={<Home />}>
           {routerList.map((item, index) => (
             <Route

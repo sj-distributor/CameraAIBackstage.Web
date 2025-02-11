@@ -16,6 +16,12 @@ api.interceptors.request.use(
     authorizeToken &&
       (config.headers.Authorization = `Bearer ${authorizeToken}`);
 
+    const localCurrentTeam = JSON.parse(
+      localStorage.getItem("currentTeam") ?? "{}"
+    );
+
+    config.headers["X-TeamId-Header"] = localCurrentTeam.id;
+
     return config;
   },
   (error) => {
@@ -41,6 +47,12 @@ api.interceptors.response.use(
             window.$wujie.props?.signOut();
           } else {
             localStorage.removeItem((window as any).appSettings?.tokenKey);
+
+            localStorage.removeItem("backstage");
+
+            localStorage.removeItem("currentTeam");
+
+            localStorage.removeItem("currentAccount");
 
             window.location.reload();
           }

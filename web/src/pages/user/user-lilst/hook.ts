@@ -1,22 +1,30 @@
 import { useDebounce, useRequest } from "ahooks";
-import { Form, message } from "antd";
+import { App, Form } from "antd";
+import { isEmpty } from "ramda";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/user-list-keys";
+import { GetRegionPage } from "@/services/api/equipment/list";
+import { GetTeamsMineApi } from "@/services/api/login";
 import {
   GetUserList,
+  PostAddUsersApi,
+  PostAdminGrantApi,
   PostBatchDeleteUsers,
   PostCreateUsers,
   PostDeleteUser,
+  PostDeleteUserApi,
   PostUpdateUser,
 } from "@/services/api/user";
+import { ITeamListProps } from "@/services/dtos/login";
 import {
   IGetUserListRequest,
   IGetUserListResponse,
   UserStatus,
 } from "@/services/dtos/user";
-import { useNavigate } from "react-router-dom";
+
 import { ITreeData } from "../user-permissions/tranfer-tree/hook";
 
 export interface IDto extends IGetUserListResponse {
@@ -26,13 +34,22 @@ export interface IDto extends IGetUserListResponse {
 }
 
 export const useAction = () => {
+  const { message } = App.useApp();
+
   const source = { ns: "userList" };
 
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
 
-  const { t, myPermissions, language } = useAuth();
+  const {
+    t,
+    myPermissions,
+    language,
+    currentTeam,
+    currentAccount,
+    isSuperAdmin,
+  } = useAuth();
 
   const [isAddUser, setIsAddUser] = useState<boolean>(false);
 
@@ -55,7 +72,7 @@ export const useAction = () => {
     Status: undefined,
   });
 
-  const [deleteUserKeys, setDeleteUserKeys] = useState<string[]>([""]);
+  const [deleteUserKeys, setDeleteUserKeys] = useState<string[]>([]);
 
   const [updateUserId, setUpdateUserId] = useState<string>("");
 
@@ -72,19 +89,37 @@ export const useAction = () => {
 
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
-  const [selectRange, setSelectRange] = useState<number[]>([0]);
+  const [regionData, setRegionData] = useState<
+    { value: number; label: string }[]
+  >([]);
+
+  const [selectRange, setSelectRange] = useState<number[]>([]);
+
+  const [selectLoading, setSelectLoading] = useState<boolean>(false);
 
   const [selectUser, setSelectUser] = useState<ITreeData[]>([]);
 
+  const [adduserLoading, setAddUserLoading] = useState<boolean>(false);
+
   const handelConfirmDeleteUsers = () => {
-    if (deleteUserKeys.length < 1) return;
+    if (isEmpty(deleteUserKeys)) {
+      message.info("請至少選擇一個用戶");
 
-    const deleteUserFun = isDeleteUsers ? PostBatchDeleteUsers : PostDeleteUser;
-
-    const data = isDeleteUsers ? deleteUserKeys : deleteUserKeys[0];
+      return;
+    }
 
     setIsDeleteUserLoading(true);
-    deleteUserFun(data as string & string[])
+
+    const deletUserFun = isSuperAdmin
+      ? isDeleteUsers
+        ? PostBatchDeleteUsers(deleteUserKeys)
+        : PostDeleteUser(deleteUserKeys[0])
+      : PostDeleteUserApi({
+          teamId: currentTeam.id,
+          userProfileIds: deleteUserKeys,
+        });
+
+    deletUserFun
       .then(() => {
         setIsRemoveUser(false);
 
@@ -93,6 +128,7 @@ export const useAction = () => {
           PageSize: userListData.PageSize,
           Keyword: filterKeyword,
           Status: userListData.Status,
+          TeamId: isSuperAdmin ? undefined : currentTeam.id,
         });
 
         getAllUserList();
@@ -107,6 +143,7 @@ export const useAction = () => {
       });
   };
 
+  // 大后台 添加用户
   const handelGetSelectedUsers = async (userIds: string[]) => {
     let loading = true;
 
@@ -133,20 +170,6 @@ export const useAction = () => {
     return loading;
   };
 
-  // const { run: handelGetUserList, loading: isGetUserListLoading } = useRequest(
-  //   GetUserList,
-  //   {
-  //     manual: true,
-  //     onSuccess: (res) => {
-  //       res && setUserListData(res);
-  //     },
-  //     onError: (err) => {
-  //       message.error(err.message);
-  //       setUserListData({ count: 0, userProfiles: [] });
-  //     },
-  //   }
-  // );
-
   const { run: handelUpdateUserData, loading: isUpdateUserLoading } =
     useRequest(PostUpdateUser, {
       manual: true,
@@ -156,6 +179,7 @@ export const useAction = () => {
           PageSize: userListData.PageSize,
           Keyword: filterKeyword,
           Status: userListData.Status,
+          TeamId: currentTeam.id,
         });
       },
       onError: (err) => {
@@ -167,9 +191,12 @@ export const useAction = () => {
     GetUserList({
       PageIndex: 1,
       PageSize: 2147483647,
+      TeamId: isSuperAdmin ? undefined : currentTeam.id,
     }).then((res) => {
       setDisableTreeStaffId(
-        (res?.userProfiles ?? []).map((item) => item.staffId)
+        (res?.userProfiles ?? []).map((item) =>
+          isSuperAdmin ? item.staffId : JSON.stringify(item.id)
+        )
       );
     });
   };
@@ -184,6 +211,7 @@ export const useAction = () => {
       PageSize: userListData.PageSize,
       Keyword: filterKeyword,
       Status: userListData.Status,
+      TeamId: isSuperAdmin ? undefined : currentTeam.id,
     });
   }, [filterKeyword]);
 
@@ -224,6 +252,124 @@ export const useAction = () => {
       });
   };
 
+  const filterOption = (
+    input: string,
+    option?: {
+      label?: string;
+      value: number | string;
+    }
+  ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+
+  const openAddUserDrawer = () => {
+    setOpenDrawer(true);
+
+    setSelectLoading(true);
+
+    GetRegionPage({ TeamId: currentTeam.id })
+      .then((res) => {
+        const data = [
+          { value: -1, label: t(KEYS.NO_VIEW_RANGE, source) },
+          ...(res?.regions ?? []).map((item) => ({
+            value: item.areaId,
+            label: item.areaName,
+          })),
+        ];
+
+        setRegionData(data);
+
+        setSelectRange([-1]);
+      })
+      .catch((err) => {
+        setRegionData([{ value: -1, label: t(KEYS.NO_VIEW_RANGE, source) }]);
+
+        message.error(`获取数据失败：${(err as Error).message}`);
+      })
+      .finally(() => setSelectLoading(false));
+  };
+
+  // 普通后台 添加用户
+  const handleCreateTeam = () => {
+    if (isEmpty(selectUser) || isEmpty(selectRange)) {
+      message.info("請補充完整信息！");
+
+      return;
+    }
+
+    setAddUserLoading(true);
+
+    PostAddUsersApi({
+      teamId: currentTeam.id,
+      userProfileIds: selectUser
+        .map((item) => item.value)
+        .filter((value): value is string => value !== undefined),
+      regionIds: selectRange.filter((item) => item !== -1),
+    })
+      .then(() => {
+        message.success("新增成功");
+
+        setOpenDrawer(false);
+
+        handelGetUserList({
+          PageIndex: 1,
+          PageSize: userListData.PageSize,
+          Keyword: "",
+          Status: undefined,
+          TeamId: currentTeam.id,
+        });
+      })
+      .catch((err) => {
+        setAddUserLoading(false);
+
+        message.error(`新增失败：${(err as Error).message}`);
+      });
+  };
+
+  const [selectTeamAdminModal, setSelectTeamAdminModal] =
+    useState<boolean>(false);
+
+  const [currentUserProfileId, setCurrentUserProfileId] = useState<string>("");
+
+  const [teamList, setTeamList] = useState<ITeamListProps[]>([]);
+
+  const [selectTeam, setSelectTeam] = useState<string>("");
+
+  const [teamLoading, setTeamLoading] = useState<boolean>(false);
+
+  const [adminGrantLoading, setAdminGrantLoading] = useState<boolean>(false);
+
+  const getUserTeams = (UserProfileId: string) => {
+    setTeamLoading(true);
+
+    GetTeamsMineApi({ UserProfileId: UserProfileId })
+      .then((res) => {
+        setTeamList(res ?? []);
+      })
+      .catch((err) => {
+        message.error(`获取團隊失敗：${(err as Error).message}`);
+      })
+      .finally(() => setTeamLoading(false));
+  };
+
+  const AdminGrant = () => {
+    setAdminGrantLoading(true);
+
+    PostAdminGrantApi({
+      UserProfileId: currentUserProfileId,
+      TeamId: selectTeam,
+    })
+      .then(() => {
+        message.success("設置成功");
+
+        setSelectTeam("");
+
+        setSelectTeamAdminModal(false);
+      })
+      .catch((err) => {
+        message.error(`設置失敗：${(err as Error).message}`);
+      })
+      .finally(() => setAdminGrantLoading(false));
+  };
+
   return {
     isAddUser,
     setIsAddUser,
@@ -261,5 +407,24 @@ export const useAction = () => {
     setSelectRange,
     selectUser,
     setSelectUser,
+    openAddUserDrawer,
+    selectLoading,
+    regionData,
+    filterOption,
+    handleCreateTeam,
+    currentTeam,
+    adduserLoading,
+    currentAccount,
+    isSuperAdmin,
+    selectTeamAdminModal,
+    setSelectTeamAdminModal,
+    getUserTeams,
+    teamList,
+    teamLoading,
+    setCurrentUserProfileId,
+    setSelectTeam,
+    selectTeam,
+    adminGrantLoading,
+    AdminGrant,
   };
 };

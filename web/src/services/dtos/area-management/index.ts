@@ -10,6 +10,7 @@ export interface IAreaManagementPageRequest extends IPageDto {
   RegionAddress?: string;
   Keyword?: string;
   IsFilter?: boolean;
+  TeamId?: string;
 }
 
 export interface IAreaManagementPageResponse {
@@ -18,6 +19,7 @@ export interface IAreaManagementPageResponse {
 }
 
 export interface ICreateOrUpdateRegionRequest {
+  teamId?: string;
   regionAndArea: IRegionsDto;
 }
 
@@ -30,4 +32,5 @@ export interface IRegionsDto {
   principal: string;
   createdTime?: string;
   locationId: string;
+  teamId?: string;
 }

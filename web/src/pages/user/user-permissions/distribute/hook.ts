@@ -14,11 +14,13 @@ import {
   IUserByRoleIdData,
   IUserByRoleIdResponse,
 } from "@/services/dtos/user-permission";
+import { ITreeData } from "../tranfer-tree/hook";
+import { GetUserList } from "@/services/api/user";
 
 export const useAction = () => {
   const { id } = useParams();
 
-  const { t } = useAuth();
+  const { t, currentTeam } = useAuth();
 
   const navigate = useNavigate();
 
@@ -38,6 +40,8 @@ export const useAction = () => {
   const [isTableLoading, setIsTableLoading] = useState<boolean>(false);
 
   const [selectedRows, setSelectedRows] = useState<IUserByRoleIdData[]>([]);
+
+  const [selectUser, setSelectUser] = useState<ITreeData[]>([]);
 
   const [record, setRecord] = useState<IUserByRoleIdData>();
 
@@ -61,6 +65,8 @@ export const useAction = () => {
     useState<IUserByRoleIdResponse>(initialUserByRoleIdData);
 
   const [disableTreeStaffId, setDisableTreeStaffId] = useState<string[]>([]);
+
+  const [currentTeamStaff, setCurrentTeamStaff] = useState<string[]>([]);
 
   const filterKeyword = useDebounce(searchValue, { wait: 500 });
 
@@ -171,6 +177,23 @@ export const useAction = () => {
       });
   };
 
+  // 获取团队所有用户
+  const getAllUserList = () => {
+    GetUserList({
+      PageIndex: 1,
+      PageSize: 2147483647,
+      TeamId: currentTeam.id,
+    }).then((res) => {
+      setCurrentTeamStaff(
+        (res?.userProfiles ?? []).map((item) => String(item.userAccountId))
+      );
+    });
+  };
+
+  useEffect(() => {
+    getAllUserList();
+  }, []);
+
   useEffect(() => {
     initGetRolesUsersList({
       PageIndex: pageDto.pageIndex,
@@ -213,5 +236,8 @@ export const useAction = () => {
     handleOperateDelete,
     onSelectedRow,
     handelGetSelectedUsers,
+    selectUser,
+    setSelectUser,
+    currentTeamStaff,
   };
 };

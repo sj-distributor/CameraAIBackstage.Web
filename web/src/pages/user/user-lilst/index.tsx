@@ -1,5 +1,6 @@
 import {
   CloseOutlined,
+  DownOutlined,
   SearchOutlined,
   WarningFilled,
 } from "@ant-design/icons";
@@ -11,11 +12,16 @@ import {
   Form,
   Input,
   Pagination,
+  Popover,
+  Radio,
   Select,
+  Skeleton,
+  Spin,
   Switch,
   Table,
   TableProps,
 } from "antd";
+import { isEmpty } from "ramda";
 import { CustomTagProps } from "rc-select/lib/BaseSelect";
 import { Trans } from "react-i18next";
 
@@ -64,6 +70,25 @@ export const UserList = () => {
     setSelectRange,
     selectUser,
     setSelectUser,
+    openAddUserDrawer,
+    selectLoading,
+    regionData,
+    filterOption,
+    handleCreateTeam,
+    currentTeam,
+    adduserLoading,
+    currentAccount,
+    isSuperAdmin,
+    selectTeamAdminModal,
+    setSelectTeamAdminModal,
+    getUserTeams,
+    teamList,
+    teamLoading,
+    setCurrentUserProfileId,
+    setSelectTeam,
+    selectTeam,
+    adminGrantLoading,
+    AdminGrant,
   } = useAction();
 
   const columns: TableProps<IUserDataItem>["columns"] = [
@@ -92,6 +117,13 @@ export const UserList = () => {
       dataIndex: "positionStatus",
     },
     {
+      title: t(KEYS.ENTERPRISE, source),
+      hidden: !isSuperAdmin,
+      render: () => {
+        return <div />;
+      },
+    },
+    {
       title: t(KEYS.PHONE, source),
       dataIndex: "phone",
     },
@@ -106,6 +138,7 @@ export const UserList = () => {
     {
       title: t(KEYS.IS_QUALIFIED, source),
       dataIndex: "status",
+      hidden: isSuperAdmin,
       render: (status, record) => {
         return (
           <Switch
@@ -122,7 +155,8 @@ export const UserList = () => {
                   status
                     ? BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount
                     : BackGroundRolePermissionEnum.CanDisableCameraAiUserAccount
-                )
+                ) ||
+                isSuperAdmin
               ) {
                 setUpdateUserId(String(record.id));
                 handelUpdateUserData({
@@ -138,6 +172,7 @@ export const UserList = () => {
     {
       title: t(KEYS.OPERATE, source),
       key: "operate",
+      width: 200,
       render: (_, record) => {
         return (
           <ConfigProvider
@@ -155,23 +190,80 @@ export const UserList = () => {
               },
             }}
           >
-            <div className="flex">
-              <Button type="link" onClick={() => navigate(`/user/list/detail`)}>
-                詳情
-              </Button>
-              {myPermissions.includes(
-                BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
-              ) && (
+            <div className="flex items-center">
+              {(myPermissions.includes(
+                BackGroundRolePermissionEnum.CanViewDetailCameraAiUsers
+              ) ||
+                isSuperAdmin) && (
                 <Button
                   type="link"
-                  onClick={() => {
-                    setIsDeleteUsers(false);
-                    setDeleteUserKeys([String(record.id)]);
-                    setIsRemoveUser(true);
-                  }}
+                  onClick={() =>
+                    navigate(
+                      `${
+                        isSuperAdmin
+                          ? "/team/userList/detail"
+                          : "/user/list/detail"
+                      }`,
+                      { state: { record } }
+                    )
+                  }
                 >
-                  {t(KEYS.REMOVE, source)}
+                  {t(KEYS.DETAIL, source)}
                 </Button>
+              )}
+
+              {isSuperAdmin ? (
+                <Popover
+                  arrow={false}
+                  placement="bottomLeft"
+                  className="text-[#2853E3] cursor-pointer ml-[1rem]"
+                  content={
+                    <div className="w-[8rem] h-[3.5rem] flex flex-col justify-around pl-[1rem]">
+                      <div
+                        className="cursor-pointer text-[#2853E3]"
+                        onClick={() => {
+                          getUserTeams(String(record.id));
+                          setSelectTeamAdminModal(true);
+                          setCurrentUserProfileId(String(record.id));
+                        }}
+                      >
+                        設為團隊管理員
+                      </div>
+                      <div
+                        className="cursor-pointer text-[#F04E4E]"
+                        onClick={() => {
+                          setIsDeleteUsers(false);
+                          setDeleteUserKeys([String(record.id)]);
+                          setIsRemoveUser(true);
+                        }}
+                      >
+                        {t(KEYS.REMOVE, source)}
+                      </div>
+                    </div>
+                  }
+                >
+                  更多
+                  <DownOutlined
+                    style={{ fontSize: "0.7rem", marginLeft: "1rem" }}
+                  />
+                </Popover>
+              ) : (
+                myPermissions.includes(
+                  BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
+                ) &&
+                record.id !== Number(currentTeam.leaderId) &&
+                record.id !== currentAccount.id && (
+                  <Button
+                    type="link"
+                    onClick={() => {
+                      setIsDeleteUsers(false);
+                      setDeleteUserKeys([String(record.id)]);
+                      setIsRemoveUser(true);
+                    }}
+                  >
+                    {t(KEYS.REMOVE, source)}
+                  </Button>
+                )
               )}
             </div>
           </ConfigProvider>
@@ -223,14 +315,16 @@ export const UserList = () => {
                   Status: status,
                   Keyword: filterKeyword,
                   PageSize: userListData.PageSize,
+                  TeamId: isSuperAdmin ? undefined : currentTeam.id,
                 })
               }
             />
           </div>
           <div className="flex self-end mb-[.8rem]">
-            {myPermissions.includes(
+            {(myPermissions.includes(
               BackGroundRolePermissionEnum.CanBatchDeleteCameraAiUserAccount
-            ) && (
+            ) ||
+              isSuperAdmin) && (
               <Button
                 type="default"
                 className="mr-[1rem] h-[2.75rem]"
@@ -242,13 +336,16 @@ export const UserList = () => {
                 {t(KEYS.BATCH_REMOVE_USERS, source)}
               </Button>
             )}
-            {myPermissions.includes(
+            {(myPermissions.includes(
               BackGroundRolePermissionEnum.CanAddCameraAiUserAccount
-            ) && (
+            ) ||
+              isSuperAdmin) && (
               <Button
                 type="primary"
                 className="w-[7.25rem] h-[2.75rem]"
-                onClick={() => setOpenDrawer(true)}
+                onClick={() => {
+                  isSuperAdmin ? setIsAddUser(true) : openAddUserDrawer();
+                }}
               >
                 <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
               </Button>
@@ -272,6 +369,11 @@ export const UserList = () => {
                 selectedRowKeys.map((item) => String(item))
               );
             },
+            getCheckboxProps: (record) => ({
+              disabled:
+                record.id === Number(currentTeam.leaderId) ||
+                record.id === currentAccount.id,
+            }),
           }}
         />
       </div>
@@ -298,6 +400,7 @@ export const UserList = () => {
                 PageIndex: page,
                 Status: userListData.Status,
                 Keyword: filterKeyword,
+                TeamId: isSuperAdmin ? undefined : currentTeam.id,
               })
             }
             showSizeChanger
@@ -312,7 +415,9 @@ export const UserList = () => {
         handelGetSelectedUsers={handelGetSelectedUsers}
         staffIdSource={0}
         disableTreeStaffId={disableTreeStaffId}
-        type={TreeTypeEnum.UserList}
+        type={
+          isSuperAdmin ? TreeTypeEnum.SuperAdminUserList : TreeTypeEnum.UserList
+        }
         selectUser={selectUser}
         setSelectUser={setSelectUser}
       />
@@ -358,7 +463,7 @@ export const UserList = () => {
                 {t(KEYS.CURRENT_PASSWORD, source)}
               </span>
               <Input
-                placeholder={t(KEYS.PLEASE_ENTRE)}
+                placeholder={t(KEYS.PLEASE_ENTRE, source)}
                 className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
               />
             </div>
@@ -368,7 +473,7 @@ export const UserList = () => {
               {t(KEYS.NEW_PASSWORD, source)}
             </span>
             <Input
-              placeholder={t(KEYS.PLEASE_ENTRE)}
+              placeholder={t(KEYS.PLEASE_ENTRE, source)}
               className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
             />
           </div>
@@ -377,15 +482,60 @@ export const UserList = () => {
               {t(KEYS.CONFIRM_PASSWORD, source)}
             </span>
             <Input
-              placeholder={t(KEYS.PLEASE_ENTRE)}
+              placeholder={t(KEYS.PLEASE_ENTRE, source)}
               className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
             />
           </div>
         </div>
       </CustomModal>
 
+      <CustomModal
+        title={<div>設置管理員</div>}
+        open={selectTeamAdminModal}
+        onCancle={() => {
+          setSelectTeamAdminModal(false);
+          setSelectTeam("");
+        }}
+        onConfirm={() => {
+          setSelectTeam("");
+
+          if (isEmpty(teamList)) {
+            setSelectTeamAdminModal(false);
+          } else {
+            AdminGrant();
+          }
+        }}
+        className={"customModal"}
+        confirmLoading={adminGrantLoading}
+      >
+        <div>
+          {teamLoading ? (
+            <Skeleton />
+          ) : isEmpty(teamList) ? (
+            <div>該用戶沒有加入任何團隊</div>
+          ) : (
+            <>
+              <div className="mb-[1rem]">
+                請選擇一個團隊，將此用戶設置為該團隊的管理員
+              </div>
+              {teamList.map((item, index) => {
+                return (
+                  <Radio
+                    key={index}
+                    checked={item.id === selectTeam}
+                    onClick={() => setSelectTeam(item.id)}
+                  >
+                    {item.name}
+                  </Radio>
+                );
+              })}
+            </>
+          )}
+        </div>
+      </CustomModal>
+
       <Drawer
-        title="添加用戶"
+        title={t(KEYS.ADD_USERS, source)}
         closable={false}
         open={openDrawer}
         width="33.75rem"
@@ -414,26 +564,28 @@ export const UserList = () => {
                 className="w-[6rem] h-[2.75rem]"
                 onClick={() => setOpenDrawer(false)}
               >
-                取消
+                {t(KEYS.CANCEL, source)}
               </Button>
             </ConfigProvider>
 
-            <Button className="w-[6rem] h-[2.75rem] ml-[1.5rem]" type="primary">
-              確定
+            <Button
+              className="w-[6rem] h-[2.75rem] ml-[1.5rem]"
+              type="primary"
+              loading={adduserLoading}
+              onClick={handleCreateTeam}
+            >
+              {t(KEYS.SUBMIT, source)}
             </Button>
           </div>
         }
       >
         <Form form={form} layout="vertical">
-          <Form.Item
-            label="新增用戶"
-            rules={[{ required: true, message: "請選擇部門或成員" }]}
-          >
+          <Form.Item label={t(KEYS.ADD_NEW_USER, source)} required={true}>
             <Select
               mode="multiple"
               open={false}
               suffixIcon={null}
-              placeholder="請選擇部門或成員"
+              placeholder={t(KEYS.SELECT_USER, source)}
               value={selectUser.map((item) => ({
                 label: item.title,
                 value: item.key,
@@ -452,55 +604,40 @@ export const UserList = () => {
               }}
             />
           </Form.Item>
-          <Form.Item label="查看範圍" required={true}>
+          <Form.Item label={t(KEYS.VIEW_RANGE, source)} required={true}>
             <Select
               value={selectRange}
               mode="multiple"
               allowClear
-              options={[
-                {
-                  value: 0,
-                  label: "不查看任何區域地址",
-                },
-                {
-                  value: 1,
-                  label: "廣東省中山市興政路1號",
-                },
-                {
-                  value: 2,
-                  label: "廣東省中山市中山三路16號",
-                },
-                {
-                  value: 3,
-                  label: "廣東省中山市学院路1號",
-                },
-                {
-                  value: 4,
-                  label: "廣東省中山市中山三路45435號",
-                },
-                {
-                  value: 5,
-                  label: "廣東省中山市学院路asadsad號",
-                },
-              ]}
+              options={regionData}
+              filterOption={filterOption}
+              dropdownRender={(menu) => (
+                <>
+                  {selectLoading ? (
+                    <Spin className="flex justify-center" />
+                  ) : (
+                    <div>{menu}</div>
+                  )}
+                </>
+              )}
               onChange={(value) => {
-                if (value.every((item) => item === 0)) {
+                if (value.every((item) => item === -1)) {
                   setSelectRange(value);
                 } else {
-                  const data = value.filter((item) => item !== 0);
+                  const data = value.filter((item) => item !== -1);
 
                   setSelectRange(data);
                 }
               }}
               onSelect={(value) => {
-                if (value === 0) {
+                if (value === -1) {
                   setSelectRange([value]);
                 }
               }}
               tagRender={(props: CustomTagProps) => {
                 const { label, closable, onClose } = props;
 
-                if (selectRange.includes(0)) {
+                if (selectRange.includes(-1)) {
                   return <span className="ml-2">{label}</span>;
                 }
 
