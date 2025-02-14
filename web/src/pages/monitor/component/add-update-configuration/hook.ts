@@ -1,22 +1,24 @@
 import { useUpdateEffect } from "ahooks";
 import { App, Form } from "antd";
+import dayjs from "dayjs";
+import { Moment } from "moment";
 import { clone, isEmpty } from "ramda";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Moment } from "moment";
-
 import { useAuth } from "@/hooks/use-auth";
-
-import KEYS from "../../../../i18n/language/keys/monitor-configuration-keys";
-import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
-
+import { GetEquipmentPage } from "@/services/api/equipment/list";
 import {
-  ICronListDto,
-  IOptionsNumberDto,
-  IOptionsStringDto,
-  TimeType,
-} from "./props";
+  GetWarningDemand,
+  PostGeneratePlayBack,
+} from "@/services/api/license-plate-management";
+import {
+  GetMonitorSettingDetail,
+  GetUserList,
+  MonitorSettingCreate,
+  MonitorSettingUpdate,
+} from "@/services/api/monitor";
+import { IEquipmentList } from "@/services/dtos/equipment/list";
 import {
   CameraAiMonitorType,
   CameraAiNotificationType,
@@ -25,15 +27,11 @@ import {
   IMonitorSettingsDto,
   IUserProfiles,
 } from "@/services/dtos/monitor";
-import {
-  GetMonitorSettingDetail,
-  GetUserList,
-  MonitorSettingCreate,
-  MonitorSettingUpdate,
-} from "@/services/api/monitor";
-import { GetEquipmentPage } from "@/services/api/equipment/list";
-import dayjs from "dayjs";
 import { getErrorMessage } from "@/utils/error-message";
+
+import KEYS from "../../../../i18n/language/keys/monitor-configuration-keys";
+import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
+import { ICronListDto, IOptionsStringDto, TimeType } from "./props";
 
 export const useAction = () => {
   const { t, currentTeam } = useAuth();
@@ -57,9 +55,9 @@ export const useAction = () => {
     timeZone: "Pacific Standard Time",
     title: "",
     duration: null,
-    notificationContent: "", //通知内容
-    broadcastContent: "", //广播内容
-    monitorTypes: [],
+    notificationContent: "", // 通知内容
+    broadcastContent: "", // 广播内容
+    monitorTypes: isAdd ? (id ? [Number(id)] : null) : null,
     startTime: null,
     endTime: null,
     timeInterval: null,
@@ -126,6 +124,7 @@ export const useAction = () => {
     if (editDetailData?.weekDays.includes(x.value)) {
       x.isActive = true;
     }
+
     return x;
   });
 
@@ -137,13 +136,13 @@ export const useAction = () => {
     return cronList.filter((x) => x.isActive).map((x) => x.value);
   }, [cronList]);
 
-  const [userData, setUserData] = useState<IUserProfiles[]>([]); //接受数据
+  const [userData, setUserData] = useState<IUserProfiles[]>([]); // 接受数据
 
   const [selectUserData, setSelectUserData] = useState<
     IMonitorNotificationsDto[]
-  >(isAdd ? initUserData : editDetailData?.monitorNotifications ?? []); //接口
+  >(isAdd ? initUserData : editDetailData?.monitorNotifications ?? []); // 接口
 
-  const [deviceList, setDeviceList] = useState<IOptionsNumberDto[]>([]);
+  const [deviceList, setDeviceList] = useState<IEquipmentList[]>([]);
 
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
 
@@ -157,7 +156,16 @@ export const useAction = () => {
     CameraAiMonitorType[]
   >([]);
 
-  const [isSelecteSecurity, setIsSelectSecurity] = useState<boolean>(false);
+  const [isPlot, setIsPlot] = useState<boolean>(false);
+
+  const [areaVideo, setAreaVideo] = useState<string>("");
+
+  const coordinatesRef = useRef<
+    {
+      xCoordinate: number;
+      yCoordinate: number;
+    }[]
+  >([]);
 
   const animalOptions = [
     {
@@ -231,6 +239,7 @@ export const useAction = () => {
         if (!isEmpty(item.recipientIds)) {
           acc.push(...item.recipientIds);
         }
+
         return acc;
       },
       []
@@ -244,11 +253,12 @@ export const useAction = () => {
           value: item.staffId,
         });
       }
+
       return acc;
     }, []);
   }, [editDetailData, userData]);
 
-  //构造一个显示的 user option
+  // 构造一个显示的 user option
   const userOptions: IOptionsStringDto[] = useMemo(() => {
     return userData
       ? userData.map((item) => {
@@ -266,6 +276,7 @@ export const useAction = () => {
 
   const handleTotalDuration = (duration: number, unit: TimeType) => {
     let count: number = 0;
+
     // 转换秒数传参
     switch (unit) {
       case TimeType.Second:
@@ -286,6 +297,7 @@ export const useAction = () => {
 
   const handleUnitConversion = (duration: number, isUnit: boolean) => {
     const divisibleMinutes = duration % 60;
+
     const divisibleHours = duration % 3600;
 
     if (divisibleHours === 0) {
@@ -336,8 +348,10 @@ export const useAction = () => {
           label: item.name,
           value: item.staffId,
         };
+
         acc.push(newValue);
       }
+
       return acc;
     }, []);
 
@@ -368,7 +382,6 @@ export const useAction = () => {
     form.validateFields().then(async (values) => {
       const data: IMonitorSettingsDto = {
         title: values.title,
-        duration: handleTotalDuration(values.time, values.timeType),
         notificationContent: values.content,
         monitorTypes: values.exceptionType,
         weekDays: values.repeatEveryWeek,
@@ -379,7 +392,26 @@ export const useAction = () => {
         timeZone: "Pacific Standard Time",
         isActive: true,
         teamId: currentTeam.id,
+        singleNoticeTime: handleTotalDuration(
+          values.singleTime,
+          values.singleTimeType
+        ),
       };
+
+      if (
+        [
+          CameraAiMonitorType.People,
+          CameraAiMonitorType.Vehicles,
+          CameraAiMonitorType.AbnormalVehicles,
+          CameraAiMonitorType.Smoke,
+          CameraAiMonitorType.Fight,
+          CameraAiMonitorType.Costume,
+          CameraAiMonitorType.Security,
+          CameraAiMonitorType.Animal,
+        ].some((type) => selectModalType.includes(type))
+      ) {
+        data.duration = handleTotalDuration(values.time, values.timeType);
+      }
 
       if ((isAdd && !!values.broadcastContent) || !isAdd) {
         data.broadcastContent = values.broadcastContent;
@@ -393,7 +425,7 @@ export const useAction = () => {
         data.id = Number(id); // 编辑添加 id
       }
 
-      if (isSelecteSecurity) {
+      if (selectModalType.includes(CameraAiMonitorType.Security)) {
         data.timeInterval = handleTotalDuration(
           values.securityTime,
           values.securityTimeType
@@ -404,17 +436,17 @@ export const useAction = () => {
         selectModalType.includes(CameraAiMonitorType.Animal) ||
         selectModalType.includes(CameraAiMonitorType.Costume)
       ) {
-        data.monitorTypes = data.monitorTypes.concat(costumeAnimalType);
+        data.monitorTypes = (data?.monitorTypes ?? []).concat(
+          costumeAnimalType
+        );
       }
 
-      if (
-        selectModalType.includes(CameraAiMonitorType.Smoke) ||
-        selectModalType.includes(CameraAiMonitorType.Fight)
-      ) {
-        data.singleNoticeTime = handleTotalDuration(
-          values.singleTime,
-          values.singleTimeType
-        );
+      if (selectModalType.includes(CameraAiMonitorType.TouchGoods)) {
+        if (!data.metadata) {
+          data.metadata = { cameraAiCoordinates: [] };
+        }
+
+        data.metadata.cameraAiCoordinates = coordinatesRef.current;
       }
 
       setSubmitLoadin(true);
@@ -458,7 +490,9 @@ export const useAction = () => {
           const deleteIndex = userItem.recipientIds.findIndex(
             (x) => x === userId
           );
+
           userItem.recipientIds.splice(deleteIndex, 1);
+
           userItem.recipients.splice(deleteIndex, 1);
         } else {
           // 新增勾选，向 recipientIds 中添加 userId
@@ -518,15 +552,10 @@ export const useAction = () => {
     GetEquipmentPage({
       PageSize: 2147483647,
       PageIndex: 1,
-      IsBind: true,
       TeamId: currentTeam.id,
     })
       .then((res) => {
-        const newEquipmentList = res.equipments.map((item) => {
-          return { label: item.equipmentName ?? "", value: item.id };
-        });
-
-        setDeviceList(newEquipmentList);
+        setDeviceList(res.equipments ?? []);
       })
       .catch(() => {
         setDeviceList([]);
@@ -540,14 +569,10 @@ export const useAction = () => {
       .then((res) => {
         serEditDetailData(res);
 
-        setIsSelectSecurity(
-          res.monitorTypes.includes(CameraAiMonitorType.Security)
-        );
-
-        setSelectModalType(res.monitorTypes);
+        setSelectModalType(res.monitorTypes ?? []);
 
         setCostumeAnimalType(
-          res.monitorTypes.filter(
+          (res?.monitorTypes ?? []).filter(
             (type) =>
               type === CameraAiMonitorType.Cat ||
               type === CameraAiMonitorType.Dog ||
@@ -557,6 +582,8 @@ export const useAction = () => {
               type === CameraAiMonitorType.SafetyShoes
           )
         );
+
+        coordinatesRef.current = res?.metadata?.cameraAiCoordinates ?? [];
       })
       .catch(() => {
         message.error("獲取詳情數據失敗");
@@ -600,6 +627,48 @@ export const useAction = () => {
     form.setFieldsValue({ costumeAnimalType: filterType });
   }, [selectModalType]);
 
+  // 设备id获取mp4
+  const getVideoByEquipmentId = (id: string | string[]) => {
+    const formattedValue = selectModalType.includes(
+      CameraAiMonitorType.TouchGoods
+    )
+      ? [id]
+      : id;
+
+    form.setFieldValue("deviceSelect", formattedValue);
+
+    if (selectModalType.includes(CameraAiMonitorType.TouchGoods)) {
+      const data = deviceList.find((item) => item.id === Number(id));
+
+      PostGeneratePlayBack({
+        locationId: data?.locationId ?? "",
+        equipmentCode: data?.equipmentCode ?? "",
+        equipmentId: data?.id.toString() ?? "",
+        startTime: "",
+        endTime: "",
+        monitorTypes: [CameraAiMonitorType.TouchGoods],
+      })
+        .then((res) => {
+          if (res && data?.id.toString()) {
+            GetWarningDemand(data?.id.toString())
+              .then((res) => {
+                setAreaVideo(res.record.replayUrl);
+              })
+              .catch(() => {
+                message.error("获取设备的画面失败");
+              });
+          }
+        })
+        .catch(() => {
+          message.error("设备画面生成失败");
+
+          // setAreaVideo(
+          //   "https://video-builder.oss-cn-hongkong.aliyuncs.com/video/5cf9243b-41c7-4d9c-bc14-1788db711517.mp4"
+          // );
+        });
+    }
+  };
+
   return {
     cronList,
     userOptions,
@@ -616,10 +685,11 @@ export const useAction = () => {
     isAdd,
     detailLoading,
     submitLoading,
-    isSelecteSecurity,
     selectModalType,
     costumeAnimalOption,
     costumeAnimalType,
+    isPlot,
+    areaVideo,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
@@ -629,8 +699,10 @@ export const useAction = () => {
     handleUnitConversion,
     secondsToTime,
     filterOption,
-    setIsSelectSecurity,
     setSelectModalType,
     setCostumeAnimalType,
+    setIsPlot,
+    getVideoByEquipmentId,
+    coordinatesRef,
   };
 };

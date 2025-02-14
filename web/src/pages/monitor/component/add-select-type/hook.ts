@@ -23,7 +23,7 @@ export const useAction = () => {
 
   const [collapseOpenKey, setCollapseOpenKey] = useState<
     IWarningType[] | string[]
-  >([]);
+  >([IWarningType.People, IWarningType.Vehicles, IWarningType.Element]);
 
   const monitorTypeOption: IMonitorType[] = [
     {
@@ -45,6 +45,10 @@ export const useAction = () => {
           value: CameraAiMonitorType.Costume,
           label: `${t(MONITOR_KEY.COSTUME, monitorSource)}`,
         },
+        {
+          value: CameraAiMonitorType.TouchGoods,
+          label: `触摸二层货物规范检测`,
+        },
       ],
     },
     {
@@ -57,6 +61,10 @@ export const useAction = () => {
         {
           value: CameraAiMonitorType.AbnormalVehicles,
           label: `${t(MONITOR_KEY.IDENTIFY_ABNORMAL_VEHICLES, monitorSource)}`,
+        },
+        {
+          value: CameraAiMonitorType.Forklift,
+          label: `叉车荧光带匹配检测`,
         },
       ],
     },

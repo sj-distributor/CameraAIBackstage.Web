@@ -115,6 +115,12 @@ export const Monitor = () => {
 
             case CameraAiMonitorType.Fight:
               return t(KEYS.FIGHT, source);
+
+            case CameraAiMonitorType.Forklift:
+              return "叉車熒光帶匹配檢測";
+
+            case CameraAiMonitorType.TouchGoods:
+              return "觸摸二層貨物規範檢測";
           }
         };
 
@@ -324,6 +330,14 @@ export const Monitor = () => {
                   {
                     value: CameraAiMonitorType.Security,
                     label: `${t(KEYS.SECURITY, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.Forklift,
+                    label: "叉車熒光帶匹配檢測",
+                  },
+                  {
+                    value: CameraAiMonitorType.TouchGoods,
+                    label: "觸摸二層貨物規範檢測",
                   },
                 ]}
                 suffixIcon={<img src={downArrow} />}

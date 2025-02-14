@@ -42,6 +42,7 @@ export interface IEquipmentCreateOrUpdateDto {
   username: string;
   password: string;
   teamId?: string;
+  locationId?: string;
 }
 
 export interface IRegionPageResponse {

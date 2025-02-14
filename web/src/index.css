@@ -227,3 +227,7 @@ code {
   color: #2853e3 !important;
   font-weight: 440 !important;
 }
+
+.plotModal .ant-modal-content {
+  padding: 0 !important;
+}

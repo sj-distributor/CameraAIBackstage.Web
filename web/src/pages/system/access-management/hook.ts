@@ -103,5 +103,6 @@ export const useAction = () => {
     mockCamera,
     updatePaginationDto,
     setAddOrUpdateModal,
+    setAccessListData,
   };
 };

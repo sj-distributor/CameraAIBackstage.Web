@@ -1,5 +1,11 @@
-import { useBoolean, useDebounce, useUpdateEffect } from "ahooks";
+import {
+  useBoolean,
+  useDebounce,
+  useMemoizedFn,
+  useUpdateEffect,
+} from "ahooks";
 import { App, Form } from "antd";
+import { isEmpty } from "ramda";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -7,6 +13,7 @@ import {
   GetEquipmentInfoById,
   GetEquipmentPage,
   GetRegionPage,
+  PostCreateBatch,
   PostCreateEquipment,
   PostDeleteEquipment,
   PostEquipmentBind,
@@ -14,6 +21,7 @@ import {
   PostUpdateEquipment,
 } from "@/services/api/equipment/list";
 import { GetEquipmentTypePage } from "@/services/api/equipment/type";
+import { PostUploadApi } from "@/services/api/team-info";
 import {
   IEquipmentList,
   IEquipmentPageRequest,
@@ -23,6 +31,13 @@ import { IPageDto } from "@/services/dtos/public";
 import { getErrorMessage } from "@/utils/error-message";
 
 import { IBondOrNot, IOnlineOrNot, IOptionDto } from "./props";
+
+export interface IBatchModalProps {
+  open: boolean;
+  submitLoading: boolean;
+  fileName: string;
+  fileUrl: string;
+}
 
 export const useAction = () => {
   const { t, language, myPermissions, currentTeam, isSuperAdmin } = useAuth();
@@ -95,6 +110,21 @@ export const useAction = () => {
   const [regionLoading, setRegionLoading] = useState<boolean>(false);
 
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
+
+  const [batchAddEquipmentModal, setBatchEquipmentModal] =
+    useState<IBatchModalProps>({
+      open: false,
+      submitLoading: false,
+      fileName: "",
+      fileUrl: "",
+    });
+
+  const updateBatchModal = useMemoizedFn((data: Partial<IBatchModalProps>) => {
+    setBatchEquipmentModal((prev) => ({
+      ...prev,
+      ...data,
+    }));
+  });
 
   const initGetEquipmentList = (
     PageIndex = pageDto.PageIndex,
@@ -288,6 +318,57 @@ export const useAction = () => {
     setPageDto((prev) => ({ ...prev, PageIndex: 1 }));
   }, [debouncedValue, isSearchOnline, isSearchBind]);
 
+  const handleFileChange = (records: Record<string, any>) => {
+    const formData = new FormData();
+
+    formData.append("file", records.file);
+
+    PostUploadApi(formData)
+      .then((res) => {
+        updateBatchModal({
+          fileName: res?.originFileName ?? "",
+          fileUrl: res?.fileUrl ?? "",
+        });
+
+        message.success("上傳成功");
+      })
+      .catch((err) => {
+        records.onError(err);
+
+        message.error(`上傳失敗：${err?.msg}`);
+      });
+  };
+
+  const createBatch = () => {
+    if (isEmpty(batchAddEquipmentModal.fileUrl)) {
+      message.info("请上传文件！");
+
+      return;
+    }
+
+    updateBatchModal({ submitLoading: true });
+
+    PostCreateBatch({
+      excelFile: batchAddEquipmentModal.fileUrl,
+      teamId: currentTeam.id,
+    })
+      .then(() => {
+        message.success("新增成功");
+
+        initGetEquipmentList(1);
+
+        updateBatchModal({
+          open: false,
+          fileName: "",
+          fileUrl: "",
+        });
+      })
+      .catch((err) => {
+        message.error(`新增失败：${err?.msg}`);
+      })
+      .finally(() => updateBatchModal({ submitLoading: false }));
+  };
+
   return {
     source,
     isUnbindOpen,
@@ -332,5 +413,9 @@ export const useAction = () => {
     initialEquipmentData,
     onChangePage,
     isSuperAdmin,
+    batchAddEquipmentModal,
+    updateBatchModal,
+    handleFileChange,
+    createBatch,
   };
 };

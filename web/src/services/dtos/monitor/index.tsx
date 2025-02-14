@@ -33,6 +33,12 @@ export enum CameraAiMonitorType {
   Cat = 701,
   Dog = 702,
   Bird = 703,
+  Forklift = 8, // 叉车荧光带匹配
+  DoorRolling = 9, // 卷帘门
+  DoorSafety = 10, // 安全门
+  FloorWater = 11, // 地面水迹
+  FloorIce = 12, // 地面结冰
+  TouchGoods = 13, // 触摸二层货物规范
 }
 
 export interface IMonitorSettingIdDto {
@@ -53,12 +59,18 @@ export interface IMonitorSettingResponse {
 export interface IMonitorSettingsPublicDto {
   id?: number; // 更新填 id
   title: string;
-  duration: number | null;
+  duration?: number | null;
   singleNoticeTime?: number | null;
+  metadata?: {
+    cameraAiCoordinates: {
+      xCoordinate: number;
+      yCoordinate: number;
+    }[];
+  };
   timeInterval?: number | null;
   notificationContent: string; // 通知内容
   broadcastContent?: string | null; // 广播内容
-  monitorTypes: CameraAiMonitorType[]; // 预警类型 id
+  monitorTypes: CameraAiMonitorType[] | null; // 预警类型 id
   startTime: number | null;
   endTime: number | null;
   isActive?: boolean;

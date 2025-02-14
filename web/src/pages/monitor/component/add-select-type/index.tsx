@@ -163,7 +163,7 @@ export const AddSelectType = () => {
                       </>
                     );
                   }}
-                  onChange={(key) => setCollapseOpenKey(key)}
+                  onChange={(key) => setCollapseOpenKey(key as string[])}
                 />
               </div>
             </div>
