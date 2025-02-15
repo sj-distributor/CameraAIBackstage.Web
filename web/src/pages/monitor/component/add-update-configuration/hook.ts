@@ -552,6 +552,7 @@ export const useAction = () => {
     GetEquipmentPage({
       PageSize: 2147483647,
       PageIndex: 1,
+      IsBind: true,
       TeamId: currentTeam.id,
     })
       .then((res) => {
@@ -637,7 +638,10 @@ export const useAction = () => {
 
     form.setFieldValue("deviceSelect", formattedValue);
 
-    if (selectModalType.includes(CameraAiMonitorType.TouchGoods)) {
+    if (
+      selectModalType.includes(CameraAiMonitorType.TouchGoods) ||
+      editDetailData?.monitorTypes?.includes(CameraAiMonitorType.TouchGoods)
+    ) {
       const data = deviceList.find((item) => item.id === Number(id));
 
       PostGeneratePlayBack({

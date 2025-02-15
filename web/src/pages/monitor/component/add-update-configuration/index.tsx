@@ -723,6 +723,9 @@ export const AddOrUpdateConfiguration = () => {
                                 mode={
                                   selectModalType.includes(
                                     CameraAiMonitorType.TouchGoods
+                                  ) ||
+                                  editDetailData?.monitorTypes?.includes(
+                                    CameraAiMonitorType.TouchGoods
                                   )
                                     ? undefined
                                     : "multiple"

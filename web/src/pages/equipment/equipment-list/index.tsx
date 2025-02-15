@@ -9,6 +9,7 @@ import {
   ConfigProvider,
   Form,
   Input,
+  message,
   Pagination,
   Radio,
   Select,
@@ -28,6 +29,7 @@ import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-list-keys";
 import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
+import { downloadFilesByALink } from "@/utils/download";
 
 import downArrow from "../../../assets/public/down-arrow.png";
 import { useAction } from "./hook";
@@ -632,7 +634,18 @@ export const EquipmentList = () => {
           </div>
 
           <div className="mt-[1.75rem] text-[#2853E3]">
-            <div className="cursor-pointer">下载模板</div>
+            <span
+              className="cursor-pointer"
+              onClick={async () => {
+                downloadFilesByALink({
+                  url: (window as any).appSettings.templateUrl,
+                }).then(([res, err]) => {
+                  !res && err && message.error("模版不存在");
+                });
+              }}
+            >
+              下载模板
+            </span>
           </div>
         </div>
       </CustomModal>
