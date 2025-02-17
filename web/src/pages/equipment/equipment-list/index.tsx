@@ -639,8 +639,7 @@ export const EquipmentList = () => {
               onClick={async () => {
                 downloadFilesByALink({
                   url: (window as any).appSettings.templateUrl,
-                }).then(([res, err]) => {
-                  !res && err && message.error("模版不存在");
+                  name: "CAMERA AI 設備批量導入模板",
                 });
               }}
             >

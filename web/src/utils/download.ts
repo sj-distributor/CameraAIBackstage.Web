@@ -2,28 +2,27 @@ export const downloadFilesByALink = async ({
   url,
   name,
 }: {
-  name?: string | null;
+  name: string;
   url: string;
 }) => {
-  try {
-    if (!url) {
-      throw new Error("url is null");
-    }
+  fetch(url)
+    .then((response) => response.blob())
+    .then((blob) => {
+      const blobUrl = URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
+      const a = document.createElement("a");
 
-    link.href = url;
+      a.href = blobUrl;
 
-    link.setAttribute("download", name || "");
+      a.download = name;
 
-    document.body.appendChild(link);
+      document.body.appendChild(a);
 
-    link.click();
+      a.click();
 
-    document.body.removeChild(link);
+      document.body.removeChild(a);
 
-    return Promise.resolve(["success", null]);
-  } catch (error) {
-    return Promise.resolve([null, error]);
-  }
+      URL.revokeObjectURL(blobUrl);
+    })
+    .catch(console.error);
 };
