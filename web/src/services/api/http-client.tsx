@@ -48,7 +48,7 @@ api.interceptors.response.use(
           } else {
             localStorage.removeItem((window as any).appSettings?.tokenKey);
 
-            localStorage.removeItem("backstage");
+            sessionStorage.removeItem("backstage");
 
             localStorage.removeItem("currentTeam");
 

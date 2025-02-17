@@ -65,7 +65,19 @@ export const TeamList = () => {
                   type="link"
                   className="cursor-pointer text-[#2853E3]"
                   onClick={() => {
-                    navigate("/frontdesk");
+                    const newWindow = window.open(
+                      `${window.location.origin}/frontdesk`,
+                      "_blank"
+                    );
+
+                    if (newWindow) {
+                      newWindow.document.write(`
+                        <script>
+                          sessionStorage.setItem("backstage", "superAdmin");
+                          window.location.href = "/frontdesk";
+                        </script>
+                      `);
+                    }
 
                     localStorage.setItem("currentTeam", JSON.stringify(record));
                   }}

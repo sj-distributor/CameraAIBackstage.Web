@@ -5,6 +5,7 @@ import type { Locale } from "antd/es/locale";
 import enUS from "antd/es/locale/en_US";
 import zhCN from "antd/es/locale/zh_CN";
 import { TFunction } from "i18next";
+import { isEmpty, isNil } from "ramda";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, Outlet } from "react-router-dom";
@@ -117,8 +118,8 @@ export default ({ children }: { children: React.ReactNode }) => {
 
   const isSuperAdmin = useMemo(() => {
     // admin 普通后台  superAdmin 超管后台
-    return localStorage.getItem("backstage") === "superAdmin";
-  }, [localStorage.getItem("backstage")]);
+    return sessionStorage.getItem("backstage") === "superAdmin";
+  }, [sessionStorage.getItem("backstage")]);
 
   const signIn = (auth: string, callback?: VoidFunction) => {
     setToken(auth);
@@ -130,7 +131,7 @@ export default ({ children }: { children: React.ReactNode }) => {
     setToken("");
     localStorage.removeItem(tokenKey);
     localStorage.removeItem(userNameKey);
-    localStorage.removeItem("backstage");
+    sessionStorage.removeItem("backstage");
     localStorage.removeItem("currentTeam");
     localStorage.removeItem("currentAccount");
     callback && callback();
@@ -369,8 +370,6 @@ export default ({ children }: { children: React.ReactNode }) => {
             [] as string[]
           );
 
-          console.log(rolePermissions);
-
           setHaveRoles(roles);
           setMyPermissions(rolePermissions);
 
@@ -407,11 +406,23 @@ export default ({ children }: { children: React.ReactNode }) => {
           isGetPermission: true,
           hasSwitchCameraAiBackEnd: true,
         });
+      } else if (
+        (localStorage?.getItem(userNameKey) ?? "").toLowerCase() === "admin" &&
+        isNil(sessionStorage.getItem("backstage"))
+      ) {
+        sessionStorage.setItem("backstage", "superAdmin");
+
+        setDefaultPath("/team/list");
+
+        setPermission({
+          isGetPermission: true,
+          hasSwitchCameraAiBackEnd: true,
+        });
       } else {
         getMyPermission();
       }
     }
-  }, [token, localStorage.getItem("backstage")]);
+  }, [token, sessionStorage.getItem("backstage")]);
 
   useEffect(() => {
     i18n.changeLanguage(language);
