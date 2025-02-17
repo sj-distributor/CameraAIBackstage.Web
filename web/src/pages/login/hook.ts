@@ -91,7 +91,7 @@ export const useAction = () => {
     if (userInfo.userName.toLowerCase() === "admin") {
       setLoginLoading(false);
 
-      localStorage.setItem("backstage", "superAdmin");
+      sessionStorage.setItem("backstage", "superAdmin");
 
       signIn(
         localStorage.getItem(
@@ -100,7 +100,7 @@ export const useAction = () => {
         historyCallback
       );
     } else {
-      localStorage.setItem("backstage", "admin");
+      sessionStorage.setItem("backstage", "admin");
 
       GetTeamsMineApi({ UserProfileId: "" })
         .then((mineTeamsResponse) => {

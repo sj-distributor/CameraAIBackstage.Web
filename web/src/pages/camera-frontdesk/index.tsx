@@ -16,13 +16,19 @@ export const CameraFrondesk = () => {
   const userNameKey = (window as any).appSettings.userNameKey;
 
   const goAdminStage = () => {
-    localStorage.setItem("backstage", "admin");
-
-    window.open(
+    const newWindow = window.open(
       `${window.location.origin}/${defaultPath}`,
-      "_blank",
-      "noopener,noreferrer"
+      "_blank"
     );
+
+    if (newWindow) {
+      newWindow.document.write(`
+        <script>
+          sessionStorage.setItem("backstage", "admin");
+          window.location.href = "${defaultPath}";
+        </script>
+      `);
+    }
   };
 
   useEffect(() => {

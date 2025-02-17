@@ -27,7 +27,7 @@ const initKeyWordDtos = {
 };
 
 export const useAction = () => {
-  const { t } = useAuth();
+  const { t, defaultPath } = useAuth();
 
   const { message } = App.useApp();
 
@@ -100,7 +100,19 @@ export const useAction = () => {
 
         localStorage.setItem("currentTeam", JSON.stringify(record));
 
-        localStorage.setItem("backstage", "admin");
+        const newWindow = window.open(
+          `${window.location.origin}/${defaultPath}`,
+          "_blank"
+        );
+
+        if (newWindow) {
+          newWindow.document.write(`
+            <script>
+              sessionStorage.setItem("backstage", "admin");
+              window.location.href = "${defaultPath}";
+            </script>
+          `);
+        }
 
         window.location.reload();
       });
