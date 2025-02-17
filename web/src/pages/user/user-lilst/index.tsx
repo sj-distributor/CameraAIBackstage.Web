@@ -74,7 +74,7 @@ export const UserList = () => {
     selectLoading,
     regionData,
     filterOption,
-    handleCreateTeam,
+    handleCreateUser,
     currentTeam,
     adduserLoading,
     currentAccount,
@@ -572,7 +572,7 @@ export const UserList = () => {
               className="w-[6rem] h-[2.75rem] ml-[1.5rem]"
               type="primary"
               loading={adduserLoading}
-              onClick={handleCreateTeam}
+              onClick={handleCreateUser}
             >
               {t(KEYS.SUBMIT, source)}
             </Button>

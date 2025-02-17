@@ -261,6 +261,8 @@ export const useAction = () => {
   ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
   const openAddUserDrawer = () => {
+    setSelectUser([]);
+
     setOpenDrawer(true);
 
     setSelectLoading(true);
@@ -288,7 +290,7 @@ export const useAction = () => {
   };
 
   // 普通后台 添加用户
-  const handleCreateTeam = () => {
+  const handleCreateUser = () => {
     if (isEmpty(selectUser) || isEmpty(selectRange)) {
       message.info("請補充完整信息！");
 
@@ -309,6 +311,8 @@ export const useAction = () => {
 
         setOpenDrawer(false);
 
+        getAllUserList();
+
         handelGetUserList({
           PageIndex: 1,
           PageSize: userListData.PageSize,
@@ -318,10 +322,9 @@ export const useAction = () => {
         });
       })
       .catch((err) => {
-        setAddUserLoading(false);
-
         message.error(`新增失败：${(err as Error).message}`);
-      });
+      })
+      .finally(() => setAddUserLoading(false));
   };
 
   const [selectTeamAdminModal, setSelectTeamAdminModal] =
@@ -411,7 +414,7 @@ export const useAction = () => {
     selectLoading,
     regionData,
     filterOption,
-    handleCreateTeam,
+    handleCreateUser,
     currentTeam,
     adduserLoading,
     currentAccount,
