@@ -24,7 +24,6 @@ export const TeamList = () => {
     pagInationDto,
     inputField,
     goBackstageLoading,
-    navigate,
     updatePaginationDto,
     setInputField,
     handleGoBackstage,

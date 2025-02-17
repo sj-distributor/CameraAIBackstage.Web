@@ -5,7 +5,7 @@ import type { Locale } from "antd/es/locale";
 import enUS from "antd/es/locale/en_US";
 import zhCN from "antd/es/locale/zh_CN";
 import { TFunction } from "i18next";
-import { isEmpty, isNil } from "ramda";
+import { isNil } from "ramda";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, Outlet } from "react-router-dom";
