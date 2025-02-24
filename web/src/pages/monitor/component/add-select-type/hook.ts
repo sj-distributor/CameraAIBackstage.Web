@@ -47,7 +47,7 @@ export const useAction = () => {
         },
         {
           value: CameraAiMonitorType.TouchGoods,
-          label: `触摸二层货物规范检测`,
+          label: `${t(MONITOR_KEY.TOUCH_GOODS, source)}`,
         },
       ],
     },
@@ -64,7 +64,7 @@ export const useAction = () => {
         },
         {
           value: CameraAiMonitorType.Forklift,
-          label: `叉车荧光带匹配检测`,
+          label: `${t(MONITOR_KEY.FORKLIFT, source)}`,
         },
       ],
     },
@@ -74,6 +74,14 @@ export const useAction = () => {
         {
           value: CameraAiMonitorType.Animal,
           label: `${t(MONITOR_KEY.ANIMAL, monitorSource)}`,
+        },
+        {
+          label: `${t(MONITOR_KEY.FLOOR_WATER, source)}`,
+          value: CameraAiMonitorType.FloorWater,
+        },
+        {
+          label: `${t(MONITOR_KEY.FLOOR_ICE, source)}`,
+          value: CameraAiMonitorType.FloorIce,
         },
       ],
     },

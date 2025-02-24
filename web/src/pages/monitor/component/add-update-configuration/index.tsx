@@ -117,6 +117,8 @@ export const AddOrUpdateConfiguration = () => {
           CameraAiMonitorType.Costume,
           CameraAiMonitorType.Security,
           CameraAiMonitorType.Animal,
+          CameraAiMonitorType.FloorWater,
+          CameraAiMonitorType.FloorIce,
         ],
         content: (
           <div className="flex flex-col w-[26.4375rem] mr-2">
@@ -539,11 +541,27 @@ export const AddOrUpdateConfiguration = () => {
                                   },
                                   {
                                     value: CameraAiMonitorType.TouchGoods,
-                                    label: "触摸二层货物规范检测",
+                                    label: `${t(MONITOR_KEY.TOUCH_GOODS, {
+                                      ns: "monitor",
+                                    })}`,
                                   },
                                   {
                                     value: CameraAiMonitorType.Forklift,
-                                    label: "叉车荧光带匹配检测",
+                                    label: `${t(MONITOR_KEY.FORKLIFT, {
+                                      ns: "monitor",
+                                    })}`,
+                                  },
+                                  {
+                                    label: `${t(MONITOR_KEY.FLOOR_WATER, {
+                                      ns: "monitor",
+                                    })}`,
+                                    value: CameraAiMonitorType.FloorWater,
+                                  },
+                                  {
+                                    label: `${t(MONITOR_KEY.FLOOR_ICE, {
+                                      ns: "monitor",
+                                    })}`,
+                                    value: CameraAiMonitorType.FloorIce,
                                   },
                                 ]}
                                 filterOption={filterOption}
@@ -733,12 +751,9 @@ export const AddOrUpdateConfiguration = () => {
                               />
                             </FormItem>
                           </div>
-                          {(selectModalType.includes(
+                          {selectModalType.includes(
                             CameraAiMonitorType.TouchGoods
-                          ) ||
-                            editDetailData?.monitorTypes?.includes(
-                              CameraAiMonitorType.TouchGoods
-                            )) && (
+                          ) && (
                             <div className="flex flex-col w-[24.4rem]">
                               <span className="pb-2">繪製區域</span>
                               <div className="flex items-center">

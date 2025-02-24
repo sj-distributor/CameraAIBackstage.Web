@@ -564,7 +564,11 @@ export const useAction = () => {
   }, []);
 
   useEffect(() => {
-    if (isAdd) return; // 新增不请求 detail
+    if (isAdd) {
+      setSelectModalType(editDetailData?.monitorTypes ?? []);
+
+      return;
+    }
     setDetailLoading(true);
     GetMonitorSettingDetail({ settingId: Number(id) })
       .then((res) => {

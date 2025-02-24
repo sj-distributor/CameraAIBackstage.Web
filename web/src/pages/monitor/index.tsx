@@ -117,10 +117,16 @@ export const Monitor = () => {
               return t(KEYS.FIGHT, source);
 
             case CameraAiMonitorType.Forklift:
-              return "叉車熒光帶匹配檢測";
+              return t(KEYS.FORKLIFT, source);
 
             case CameraAiMonitorType.TouchGoods:
-              return "觸摸二層貨物規範檢測";
+              return t(KEYS.TOUCH_GOODS, source);
+
+            case CameraAiMonitorType.FloorWater:
+              return t(KEYS.FLOOR_WATER, source);
+
+            case CameraAiMonitorType.FloorIce:
+              return t(KEYS.FLOOR_ICE, source);
           }
         };
 
@@ -333,11 +339,19 @@ export const Monitor = () => {
                   },
                   {
                     value: CameraAiMonitorType.Forklift,
-                    label: "叉車熒光帶匹配檢測",
+                    label: `${t(KEYS.FORKLIFT, source)}`,
                   },
                   {
                     value: CameraAiMonitorType.TouchGoods,
-                    label: "觸摸二層貨物規範檢測",
+                    label: `${t(KEYS.TOUCH_GOODS, source)}`,
+                  },
+                  {
+                    label: `${t(KEYS.FLOOR_WATER, source)}`,
+                    value: CameraAiMonitorType.FloorWater,
+                  },
+                  {
+                    label: `${t(KEYS.FLOOR_ICE, source)}`,
+                    value: CameraAiMonitorType.FloorIce,
                   },
                 ]}
                 suffixIcon={<img src={downArrow} />}

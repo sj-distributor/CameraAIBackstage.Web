@@ -162,6 +162,14 @@ export const PlotArea = ({
 
       if (!canvasRef.current) return;
 
+      const isOnPoint = getDraggingPoint(offsetX, offsetY);
+
+      if (isOnPoint) {
+        canvas.style.cursor = "pointer";
+      } else {
+        canvas.style.cursor = "default";
+      }
+
       if (isDrawing && rect) {
         setRect((prevRect) => {
           if (!prevRect) return null;
@@ -187,9 +195,15 @@ export const PlotArea = ({
     };
 
     const handleMouseUp = (e: MouseEvent) => {
+      const { offsetX, offsetY } = e;
+
       setIsDrawing(false);
 
       setDraggingPoint(null);
+
+      const isOnPoint = getDraggingPoint(offsetX, offsetY);
+
+      if (!isOnPoint) return;
 
       if (startPointRef.current && rect) {
         const { offsetX, offsetY } = e;
@@ -373,6 +387,7 @@ export const PlotArea = ({
     setIsPlot(false);
   };
 
+  // 获取坐标系百分比后转化为四个点
   const convertToPixelCoordinates = (
     coordinates: {
       xCoordinate: number;
@@ -401,6 +416,26 @@ export const PlotArea = ({
       },
     };
   };
+
+  // window.addEventListener("resize", () => {
+  //   const canvas = canvasRef.current;
+
+  //   const newWidth = window.innerWidth;
+
+  //   const newHeight = window.innerHeight;
+
+  //   if (canvas) {
+  //     const scaleX = newWidth / canvas?.width;
+
+  //     const scaleY = newHeight / canvas?.height;
+
+  //     canvas.width = scaleX * newWidth;
+  //     canvas.height = scaleY * newHeight;
+
+  //     // canvas.style.width = `${(scaleX * newWidth1) / 16}rem`;
+  //     // canvas.style.height = `${(scaleY * newHeight1) / 16}rem`;
+  //   }
+  // });
 
   // window.addEventListener("resize", () => {
   //   const canvas = canvasRef.current;
@@ -458,10 +493,6 @@ export const PlotArea = ({
   //   }
   // });
 
-  useUpdateEffect(() => {
-    console.log(undoStack);
-  }, [undoStack]);
-
   return (
     <div
       className={`my-[1rem] w-full ${
@@ -500,7 +531,7 @@ export const PlotArea = ({
       )}
 
       <div className="flex justify-center items-center mt-[1.5rem] w-full h-full relative">
-        {isEmpty(areaVideo) && loading && (
+        {(isEmpty(areaVideo) || loading) && (
           <Spin className="absolute top-[50%]" />
         )}
 
