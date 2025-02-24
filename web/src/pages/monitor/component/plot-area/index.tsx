@@ -1,5 +1,4 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import { useUpdateEffect } from "ahooks";
 import { Button, ConfigProvider, message, Spin } from "antd";
 import { isEmpty } from "ramda";
 import {
