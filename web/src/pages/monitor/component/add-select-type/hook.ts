@@ -47,7 +47,7 @@ export const useAction = () => {
         },
         {
           value: CameraAiMonitorType.TouchGoods,
-          label: `${t(MONITOR_KEY.TOUCH_GOODS, source)}`,
+          label: `${t(MONITOR_KEY.TOUCH_GOODS, monitorSource)}`,
         },
       ],
     },
@@ -64,7 +64,7 @@ export const useAction = () => {
         },
         {
           value: CameraAiMonitorType.Forklift,
-          label: `${t(MONITOR_KEY.FORKLIFT, source)}`,
+          label: `${t(MONITOR_KEY.FORKLIFT, monitorSource)}`,
         },
       ],
     },
@@ -76,12 +76,12 @@ export const useAction = () => {
           label: `${t(MONITOR_KEY.ANIMAL, monitorSource)}`,
         },
         {
-          label: `${t(MONITOR_KEY.FLOOR_WATER, source)}`,
           value: CameraAiMonitorType.FloorWater,
+          label: `${t(MONITOR_KEY.FLOOR_WATER, monitorSource)}`,
         },
         {
-          label: `${t(MONITOR_KEY.FLOOR_ICE, source)}`,
           value: CameraAiMonitorType.FloorIce,
+          label: `${t(MONITOR_KEY.FLOOR_ICE, monitorSource)}`,
         },
       ],
     },
