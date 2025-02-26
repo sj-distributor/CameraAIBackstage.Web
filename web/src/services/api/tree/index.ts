@@ -6,7 +6,7 @@ import {
 
 import { api } from "../http-client";
 
-// 大后台添加用户用的树
+// 普通后台和大后台添加用户用的树
 export const GetFoundationData = async (data: {
   StaffIdSource: HierarchyStaffIdSourceEnum;
   HierarchyDepth: HierarchyDepthEnum;
@@ -21,7 +21,6 @@ export const GetFoundationData = async (data: {
   return response.data;
 };
 
-// 普通后台添加用户用的树
 export const GetTreeData = async (data: {
   HierarchyDepth?: HierarchyDepthEnum;
   StaffIdSource?: HierarchyStaffIdSourceEnum;

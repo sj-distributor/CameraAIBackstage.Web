@@ -49,7 +49,7 @@ export const useAction = (props: {
 }) => {
   const { disableTreeStaffId, currentTeamStaff = [], type } = props;
 
-  const { t, isSuperAdmin } = useAuth();
+  const { t } = useAuth();
 
   const source = { ns: "userPermissions" };
 
@@ -96,20 +96,23 @@ export const useAction = (props: {
   };
 
   const onGetFoundationData = () => {
-    const getTreeDataApi = isSuperAdmin
-      ? GetFoundationData({
-          StaffIdSource: HierarchyStaffIdSourceEnum.StringStaffId,
-          HierarchyDepth: HierarchyDepthEnum.Group,
-        })
-      : GetTreeData({
-          HierarchyDepth: HierarchyDepthEnum.Group,
-          StaffIdSource:
-            type === TreeTypeEnum.UserPermission
-              ? HierarchyStaffIdSourceEnum.IntegerStaffId
-              : undefined,
-        });
+    // const getTreeDataApi = isSuperAdmin
+    //   ? GetFoundationData({
+    //       StaffIdSource: HierarchyStaffIdSourceEnum.StringStaffId,
+    //       HierarchyDepth: HierarchyDepthEnum.Group,
+    //     })
+    //   : GetTreeData({
+    //       HierarchyDepth: HierarchyDepthEnum.Group,
+    //       StaffIdSource:
+    //         type === TreeTypeEnum.UserPermission
+    //           ? HierarchyStaffIdSourceEnum.IntegerStaffId
+    //           : undefined,
+    //     });
 
-    getTreeDataApi
+    GetFoundationData({
+      StaffIdSource: HierarchyStaffIdSourceEnum.StringStaffId,
+      HierarchyDepth: HierarchyDepthEnum.Group,
+    })
       .then((response) => {
         setTreeData(response ? convertToTreeData(response) : []);
         setTreeFoundationResponse(response);

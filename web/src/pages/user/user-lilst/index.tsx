@@ -138,7 +138,6 @@ export const UserList = () => {
     {
       title: t(KEYS.IS_QUALIFIED, source),
       dataIndex: "status",
-      hidden: isSuperAdmin,
       render: (status, record) => {
         return (
           <Switch
