@@ -82,7 +82,7 @@ export default {
     [KEYS.ADD_USERS]: "添加用戶",
     [KEYS.OPERATION_CONFIRM]: "操作確認",
     [KEYS.DELETE_USERS_PROMPT]: "請確認是否批量移除已選中的用戶？",
-    [KEYS.DELETE_USER_PROMPT]: "確認確認是否移除該用戶？",
+    [KEYS.DELETE_USER_PROMPT]: "確認是否移除該用戶？",
     [KEYS.EDIT_PASSWORD]: "修改密碼",
     [KEYS.CURRENT_PASSWORD]: "當前密碼",
     [KEYS.NEW_PASSWORD]: "新密碼",

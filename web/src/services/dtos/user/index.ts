@@ -64,6 +64,6 @@ export interface IUserProfileItem {
 
 export interface IAddUserRequest {
   teamId: string;
-  userProfileIds: string[];
+  staffIds: string[];
   regionIds: number[];
 }

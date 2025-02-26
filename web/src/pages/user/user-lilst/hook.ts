@@ -12,11 +12,13 @@ import {
   GetUserList,
   PostAddUsersApi,
   PostAdminGrantApi,
+  PostBatchDeleteUserApi,
   PostBatchDeleteUsers,
   PostCreateUsers,
   PostDeleteUser,
   PostDeleteUserApi,
-  PostUpdateUser,
+  PostDisableUserApi,
+  PostEnableUserApi,
 } from "@/services/api/user";
 import { ITeamListProps } from "@/services/dtos/login";
 import {
@@ -114,9 +116,14 @@ export const useAction = () => {
       ? isDeleteUsers
         ? PostBatchDeleteUsers(deleteUserKeys)
         : PostDeleteUser(deleteUserKeys[0])
-      : PostDeleteUserApi({
+      : isDeleteUsers
+      ? PostBatchDeleteUserApi({
           teamId: currentTeam.id,
           userProfileIds: deleteUserKeys,
+        })
+      : PostDeleteUserApi({
+          teamId: currentTeam.id,
+          userProfileId: deleteUserKeys[0],
         });
 
     deletUserFun
@@ -171,21 +178,31 @@ export const useAction = () => {
   };
 
   const { run: handelUpdateUserData, loading: isUpdateUserLoading } =
-    useRequest(PostUpdateUser, {
-      manual: true,
-      onSuccess: () => {
-        handelGetUserList({
-          PageIndex: 1,
-          PageSize: userListData.PageSize,
-          Keyword: filterKeyword,
-          Status: userListData.Status,
-          TeamId: currentTeam.id,
-        });
+    useRequest(
+      (params) => {
+        const api =
+          params.status === UserStatus.Enable
+            ? PostEnableUserApi
+            : PostDisableUserApi;
+
+        return api(params);
       },
-      onError: (err) => {
-        message.error(err.message);
-      },
-    });
+      {
+        manual: true,
+        onSuccess: () => {
+          handelGetUserList({
+            PageIndex: 1,
+            PageSize: userListData.PageSize,
+            Keyword: filterKeyword,
+            Status: userListData.Status,
+            TeamId: currentTeam.id,
+          });
+        },
+        onError: (err) => {
+          message.error(err.message);
+        },
+      }
+    );
 
   const getAllUserList = () => {
     GetUserList({
@@ -301,7 +318,7 @@ export const useAction = () => {
 
     PostAddUsersApi({
       teamId: currentTeam.id,
-      userProfileIds: selectUser
+      staffIds: selectUser
         .map((item) => item.value)
         .filter((value): value is string => value !== undefined),
       regionIds: selectRange.filter((item) => item !== -1),
