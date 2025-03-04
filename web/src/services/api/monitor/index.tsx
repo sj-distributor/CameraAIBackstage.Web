@@ -1,3 +1,5 @@
+import queryString from "query-string";
+
 import {
   IMonitorSettingIdDto,
   IMonitorSettingRequest,
@@ -77,6 +79,18 @@ export const GetUserList = async (data: IPageDto) => {
   const response = await api.get<IUserListResponse>("/api/CameraAi/user/page", {
     params: data,
   });
+
+  return response.data;
+};
+
+export const GetEquipmentPreviews = async (data: {
+  EquipmentIds: string[];
+}) => {
+  const queryData = queryString.stringify(data);
+
+  const response = await api.get(
+    "/api/CameraAi/Equipment/previews?" + queryData
+  );
 
   return response.data;
 };

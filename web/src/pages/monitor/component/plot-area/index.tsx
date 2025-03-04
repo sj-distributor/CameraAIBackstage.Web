@@ -12,12 +12,12 @@ import {
 
 export const PlotArea = ({
   setIsPlot,
-  areaVideo,
+  previewImg,
   coordinatesRef,
   isEdit,
 }: {
   setIsPlot: Dispatch<SetStateAction<boolean>>;
-  areaVideo: string;
+  previewImg: string;
   coordinatesRef: MutableRefObject<
     { xCoordinate: number; yCoordinate: number }[]
   >;
@@ -35,11 +35,11 @@ export const PlotArea = ({
 
   const startPointRef = useRef<Point | null>(null);
 
-  const isFirst = useRef<boolean>(true);
+  // const isFirst = useRef<boolean>(true);
 
   const isFirstPlot = useRef<boolean>(true);
 
-  const firstFrameImg = useRef<string | null>(null);
+  // const firstFrameImg = useRef<string | null>(null);
 
   const [rect, setRect] = useState<Rectangle | null>(null);
 
@@ -252,39 +252,50 @@ export const PlotArea = ({
       canvas.addEventListener("mouseup", handleMouseUp);
     }
 
+    const img = new Image();
+
+    img.crossOrigin = "Anonymous";
+    img.src = previewImg;
+
+    img.onload = () => {
+      setLoading(false);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      draw(ctx);
+    };
+
     // 取视频第一帧
-    if (isFirst.current) {
-      isFirst.current = false;
+    // if (isFirst.current) {
+    //   isFirst.current = false;
 
-      const video = document.createElement("video");
+    //   const video = document.createElement("video");
 
-      video.crossOrigin = "Anonymous";
-      video.src = areaVideo;
+    //   video.crossOrigin = "Anonymous";
+    //   video.src = areaVideo;
 
-      video.load();
+    //   video.load();
 
-      video.onloadeddata = () => {
-        video.currentTime = 0;
-      };
+    //   video.onloadeddata = () => {
+    //     video.currentTime = 0;
+    //   };
 
-      video.onseeked = () => {
-        requestAnimationFrame(() => {
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          firstFrameImg.current = canvas.toDataURL("image/png");
-          setLoading(false);
-          draw(ctx);
-        });
-      };
-    } else if (firstFrameImg.current) {
-      const img = new Image();
+    //   video.onseeked = () => {
+    //     requestAnimationFrame(() => {
+    //       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    //       firstFrameImg.current = canvas.toDataURL("image/png");
+    //       setLoading(false);
+    //       draw(ctx);
+    //     });
+    //   };
+    // } else if (firstFrameImg.current) {
+    //   const img = new Image();
 
-      img.crossOrigin = "Anonymous";
-      img.src = firstFrameImg.current;
-      img.onload = () => {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        draw(ctx);
-      };
-    }
+    //   img.crossOrigin = "Anonymous";
+    //   img.src = firstFrameImg.current;
+    //   img.onload = () => {
+    //     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    //     draw(ctx);
+    //   };
+    // }
 
     return () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
@@ -530,7 +541,7 @@ export const PlotArea = ({
       )}
 
       <div className="flex justify-center items-center mt-[1.5rem] w-full h-full relative">
-        {(isEmpty(areaVideo) || loading) && (
+        {(isEmpty(previewImg) || loading) && (
           <Spin className="absolute top-[50%]" />
         )}
 

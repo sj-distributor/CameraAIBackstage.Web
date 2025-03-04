@@ -47,7 +47,7 @@ export const AddOrUpdateConfiguration = () => {
     costumeAnimalOption,
     costumeAnimalType,
     isPlot,
-    areaVideo,
+    previewImg,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
@@ -362,7 +362,7 @@ export const AddOrUpdateConfiguration = () => {
         types.some((type) => selectModalType.includes(type))
       )
       .map(({ content }, index) => <Fragment key={index}>{content}</Fragment>);
-  }, [selectModalType, areaVideo, coordinatesRef.current]);
+  }, [selectModalType, previewImg, coordinatesRef.current]);
 
   return (
     <ConfigProvider
@@ -399,7 +399,7 @@ export const AddOrUpdateConfiguration = () => {
             <PlotArea
               isEdit={isEdit}
               setIsPlot={setIsPlot}
-              areaVideo={areaVideo}
+              previewImg={previewImg}
               coordinatesRef={coordinatesRef}
             />
           ) : detailLoading ? (
@@ -770,7 +770,7 @@ export const AddOrUpdateConfiguration = () => {
                                       return;
                                     }
 
-                                    if (isEmpty(areaVideo)) {
+                                    if (isEmpty(previewImg)) {
                                       message.info("没有绘制区域");
 
                                       return;
@@ -1164,7 +1164,8 @@ export const AddOrUpdateConfiguration = () => {
             <PlotArea
               isEdit={isEdit}
               setIsPlot={setIsPlot}
-              areaVideo={areaVideo}
+              // areaVideo={areaVideo}
+              previewImg={previewImg}
               coordinatesRef={coordinatesRef}
             />
           </div>

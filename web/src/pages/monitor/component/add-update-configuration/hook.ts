@@ -13,6 +13,7 @@ import {
   PostGeneratePlayBack,
 } from "@/services/api/license-plate-management";
 import {
+  GetEquipmentPreviews,
   GetMonitorSettingDetail,
   GetUserList,
   MonitorSettingCreate,
@@ -158,7 +159,7 @@ export const useAction = () => {
 
   const [isPlot, setIsPlot] = useState<boolean>(false);
 
-  const [areaVideo, setAreaVideo] = useState<string>("");
+  const [previewImg, setPreviewImg] = useState<string>("");
 
   const coordinatesRef = useRef<
     {
@@ -632,7 +633,6 @@ export const useAction = () => {
     form.setFieldsValue({ costumeAnimalType: filterType });
   }, [selectModalType]);
 
-  // 设备id获取mp4
   const getVideoByEquipmentId = (id: string | string[]) => {
     const formattedValue = selectModalType.includes(
       CameraAiMonitorType.TouchGoods
@@ -646,34 +646,48 @@ export const useAction = () => {
       selectModalType.includes(CameraAiMonitorType.TouchGoods) ||
       editDetailData?.monitorTypes?.includes(CameraAiMonitorType.TouchGoods)
     ) {
-      const data = deviceList.find((item) => item.id === Number(id));
-
-      PostGeneratePlayBack({
-        locationId: data?.locationId ?? "",
-        equipmentCode: data?.equipmentCode ?? "",
-        equipmentId: data?.id.toString() ?? "",
-        startTime: "",
-        endTime: "",
-        monitorTypes: [CameraAiMonitorType.TouchGoods],
+      GetEquipmentPreviews({
+        EquipmentIds: Array.isArray(id) ? id : [id],
       })
         .then((res) => {
-          if (res && data?.id.toString()) {
-            GetWarningDemand(data?.id.toString())
-              .then((res) => {
-                setAreaVideo(res.record.replayUrl);
-              })
-              .catch(() => {
-                message.error("获取设备的画面失败");
-              });
-          }
+          setPreviewImg(res?.previewImg ?? "");
+
+          // setPreviewImg(
+          //   "https://smartiestest.oss-cn-hongkong.aliyuncs.com/20250304/57eb9354-6ac5-4122-9155-b0c063cf9f18.png?Expires=253402300799&OSSAccessKeyId=LTAI5tEYyDT8YqJBSXaFDtyk&Signature=qrn1VjvKTtInxE%2FGtYprhKUmRwQ%3D"
+          // );
         })
         .catch(() => {
-          message.error("设备画面生成失败");
+          setPreviewImg("");
 
-          // setAreaVideo(
-          //   "https://video-builder.oss-cn-hongkong.aliyuncs.com/video/5cf9243b-41c7-4d9c-bc14-1788db711517.mp4"
-          // );
+          message.error("获取设备画面失败");
         });
+
+      // PostGeneratePlayBack({
+      //   locationId: data?.locationId ?? "",
+      //   equipmentCode: data?.equipmentCode ?? "",
+      //   equipmentId: data?.id.toString() ?? "",
+      //   startTime: "",
+      //   endTime: "",
+      //   monitorTypes: [CameraAiMonitorType.TouchGoods],
+      // })
+      //   .then((res) => {
+      //     if (res && data?.id.toString()) {
+      //       GetWarningDemand(data?.id.toString())
+      //         .then((res) => {
+      //           setAreaVideo(res.record.replayUrl);
+      //         })
+      //         .catch(() => {
+      //           message.error("获取设备的画面失败");
+      //         });
+      //     }
+      //   })
+      //   .catch(() => {
+      //     message.error("设备画面生成失败");
+
+      //     // setAreaVideo(
+      //     //   "https://video-builder.oss-cn-hongkong.aliyuncs.com/video/5cf9243b-41c7-4d9c-bc14-1788db711517.mp4"
+      //     // );
+      //   });
     }
   };
 
@@ -697,7 +711,7 @@ export const useAction = () => {
     costumeAnimalOption,
     costumeAnimalType,
     isPlot,
-    areaVideo,
+    previewImg,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
