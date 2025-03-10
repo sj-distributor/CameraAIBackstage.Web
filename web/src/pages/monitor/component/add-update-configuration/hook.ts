@@ -9,10 +9,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { GetEquipmentPage } from "@/services/api/equipment/list";
 import {
-  GetWarningDemand,
-  PostGeneratePlayBack,
-} from "@/services/api/license-plate-management";
-import {
   GetEquipmentPreviews,
   GetMonitorSettingDetail,
   GetUserList,

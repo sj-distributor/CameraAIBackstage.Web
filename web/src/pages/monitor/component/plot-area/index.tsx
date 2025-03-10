@@ -1,27 +1,22 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, message, Spin } from "antd";
 import { isEmpty } from "ramda";
-import {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 
 export const PlotArea = ({
-  setIsPlot,
+  type,
   previewImg,
   coordinatesRef,
   isEdit,
+  backPage,
 }: {
-  setIsPlot: Dispatch<SetStateAction<boolean>>;
+  type: boolean; // true 監測管理 false 出入口管理
   previewImg: string;
   coordinatesRef: MutableRefObject<
     { xCoordinate: number; yCoordinate: number }[]
   >;
   isEdit: boolean;
+  backPage: () => void;
 }) => {
   type Point = { x: number; y: number };
   type Rectangle = {
@@ -394,7 +389,7 @@ export const PlotArea = ({
 
     coordinatesRef.current = newCoordinates;
 
-    setIsPlot(false);
+    backPage();
   };
 
   // 获取坐标系百分比后转化为四个点
@@ -505,8 +500,8 @@ export const PlotArea = ({
 
   return (
     <div
-      className={`my-[1rem] w-full ${
-        isEdit ? "h-[calc(100%-15rem)]" : "h-full"
+      className={`w-full ${isEdit ? "h-[calc(100%-15rem)]" : "h-full"} ${
+        type ? "my-[1rem] " : "-mt-4"
       }`}
     >
       {isEdit && (
@@ -553,11 +548,14 @@ export const PlotArea = ({
       </div>
 
       {isEdit && (
-        <div className="h-[5rem] absolute bottom-[2rem] left-[-1.5rem] bg-white w-[calc(100%+3rem)] z-1 flex justify-center items-center shadow-[0_1.875rem_1.25rem_1.25rem_rgba(0,0,0,0.3)]">
-          <Button
-            className="w-[6rem] h-[2.75rem]"
-            onClick={() => setIsPlot(false)}
-          >
+        <div
+          className={`h-[5rem] bg-white flex justify-center items-center ${
+            type
+              ? "absolute bottom-[2rem] left-[-1.5rem] w-[calc(100%+3rem)] z-1 shadow-[0_1.875rem_1.25rem_1.25rem_rgba(0,0,0,0.3)]"
+              : ""
+          }`}
+        >
+          <Button className="w-[6rem] h-[2.75rem]" onClick={() => backPage()}>
             返回
           </Button>
           <ConfigProvider

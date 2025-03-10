@@ -397,10 +397,13 @@ export const AddOrUpdateConfiguration = () => {
           </span>
           {isPlot ? (
             <PlotArea
+              type={true}
               isEdit={isEdit}
-              setIsPlot={setIsPlot}
               previewImg={previewImg}
               coordinatesRef={coordinatesRef}
+              backPage={() => {
+                setIsPlot(false);
+              }}
             />
           ) : detailLoading ? (
             <Spin
@@ -1162,11 +1165,11 @@ export const AddOrUpdateConfiguration = () => {
         >
           <div className="h-[30rem]">
             <PlotArea
+              type={true}
               isEdit={isEdit}
-              setIsPlot={setIsPlot}
-              // areaVideo={areaVideo}
               previewImg={previewImg}
               coordinatesRef={coordinatesRef}
+              backPage={() => {}}
             />
           </div>
 

@@ -353,10 +353,10 @@ export const EquipmentList = () => {
                 suffixIcon={<img src={downArrow} />}
               />
             </div>
-            {myPermissions.includes(
-              BackGroundRolePermissionEnum.CanAddCameraAiEquipment
-            ) && (
-              <div className="flex items-center">
+            <div className="flex items-center">
+              {myPermissions.includes(
+                BackGroundRolePermissionEnum.CanBatchAddEquipments
+              ) && (
                 <Button
                   className="h-[2.75rem] flex items-center mr-[1.5rem]"
                   onClick={() => updateBatchModal({ open: true })}
@@ -364,6 +364,10 @@ export const EquipmentList = () => {
                   <BatchImportIcon />
                   <span className="ml-[.5rem]">批量导入</span>
                 </Button>
+              )}
+              {myPermissions.includes(
+                BackGroundRolePermissionEnum.CanAddCameraAiEquipment
+              ) && (
                 <Button
                   type="primary"
                   className="h-[2.75rem]"
@@ -375,8 +379,8 @@ export const EquipmentList = () => {
                   <PlusOutlined className="pr-[.5rem]" />
                   {t(KEYS.ADD_DEVICE, source)}
                 </Button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
           <div className="flex flex-col h-[calc(100vh-18.15rem)] justify-between pt-[1rem] overflow-y-auto no-scrollbar">
             <Table

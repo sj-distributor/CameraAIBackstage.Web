@@ -15,6 +15,7 @@ export enum FrontRolePermissionEnum {
   CanExportExcelCameraAiFeedback = "CanExportExcelCameraAiFeedback",
   CanViewDetailCameraAiFeedback = "CanViewDetailCameraAiFeedback",
   CanCreateCameraAiTeam = "CanCreateCameraAiTeam",
+  CanViewCameraAiDoorDetection = "CanViewCameraAiDoorDetection",
 }
 
 export const frontRolePermission = {
@@ -34,6 +35,7 @@ export const frontRolePermission = {
   [FrontRolePermissionEnum.CanViewCameraAiFeedbackListPage]: KEYS.FEEDBACK_LIST,
   [FrontRolePermissionEnum.CanExportExcelCameraAiFeedback]: KEYS.EXPORT,
   [FrontRolePermissionEnum.CanViewDetailCameraAiFeedback]: KEYS.VIEW_DETAILS,
+  [FrontRolePermissionEnum.CanViewCameraAiDoorDetection]: "出入口检测",
 };
 
 export enum BackGroundRolePermissionEnum {
@@ -80,6 +82,11 @@ export enum BackGroundRolePermissionEnum {
   CanDeleteCameraAiArea = "CanDeleteCameraAiArea",
   CanViewCameraAiTeam = "CanViewCameraAiTeam",
   CanUpdateCameraAiTeam = "CanUpdateCameraAiTeam",
+  CanBatchAddEquipments = "CanBatchAddEquipments",
+  CanViewCameraAiDoorManage = "CanViewCameraAiDoorManage",
+  CanAddCameraAiDoor = "CanAddCameraAiDoor",
+  CanUpdateCameraAiDoor = "CanUpdateCameraAiDoor",
+  CanDeleteCameraAiDoor = "CanDeleteCameraAiDoor",
 }
 
 export const backGroundRolePermission = {
@@ -110,6 +117,7 @@ export const backGroundRolePermission = {
   [BackGroundRolePermissionEnum.CanUnBindCameraAiEquipment]:
     KEYS.REMOVE_BINDING,
   [BackGroundRolePermissionEnum.CanDeleteCameraAiEquipment]: KEYS.DELETE,
+  [BackGroundRolePermissionEnum.CanBatchAddEquipments]: "批量导入",
   // 設備類型
   [BackGroundRolePermissionEnum.CanViewCameraAiEquipmentTypePage]:
     KEYS.DEVICE_TYPE,
@@ -144,4 +152,9 @@ export const backGroundRolePermission = {
   [BackGroundRolePermissionEnum.CanAddCameraAiArea]: KEYS.ADD,
   [BackGroundRolePermissionEnum.CanUpdateCameraAiArea]: KEYS.EDIT,
   [BackGroundRolePermissionEnum.CanDeleteCameraAiArea]: KEYS.DELETE,
+  // 出入口管理
+  [BackGroundRolePermissionEnum.CanViewCameraAiDoorManage]: "出入口管理",
+  [BackGroundRolePermissionEnum.CanAddCameraAiDoor]: "新增",
+  [BackGroundRolePermissionEnum.CanUpdateCameraAiDoor]: "编辑",
+  [BackGroundRolePermissionEnum.CanDeleteCameraAiDoor]: "删除",
 };
