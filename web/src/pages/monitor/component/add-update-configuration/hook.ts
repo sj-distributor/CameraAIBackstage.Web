@@ -12,7 +12,6 @@ import {
   GetEquipmentPreviews,
   GetMonitorSettingDetail,
   GetNoticeUsers,
-  GetUserList,
   MonitorSettingCreate,
   MonitorSettingUpdate,
 } from "@/services/api/monitor";
@@ -24,7 +23,6 @@ import {
   IMonitorNotificationsDto,
   IMonitorSettingsDto,
   INoticeUsersProps,
-  IUserProfiles,
 } from "@/services/dtos/monitor";
 import { getErrorMessage } from "@/utils/error-message";
 
