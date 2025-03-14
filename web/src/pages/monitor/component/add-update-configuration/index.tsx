@@ -119,6 +119,8 @@ export const AddOrUpdateConfiguration = () => {
           CameraAiMonitorType.Animal,
           CameraAiMonitorType.FloorWater,
           CameraAiMonitorType.FloorIce,
+          CameraAiMonitorType.DoorSafety,
+          CameraAiMonitorType.DoorRolling,
         ],
         content: (
           <div className="flex flex-col w-[26.4375rem] mr-2">
@@ -574,6 +576,14 @@ export const AddOrUpdateConfiguration = () => {
                                       ns: "monitor",
                                     })}`,
                                     value: CameraAiMonitorType.FloorIce,
+                                  },
+                                  {
+                                    label: `安全門關閉檢測`,
+                                    value: CameraAiMonitorType.DoorSafety,
+                                  },
+                                  {
+                                    label: `卷簾門關閉檢測`,
+                                    value: CameraAiMonitorType.DoorRolling,
                                   },
                                 ]}
                                 filterOption={filterOption}

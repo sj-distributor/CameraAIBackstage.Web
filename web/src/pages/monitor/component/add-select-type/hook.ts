@@ -83,6 +83,14 @@ export const useAction = () => {
           value: CameraAiMonitorType.FloorIce,
           label: `${t(MONITOR_KEY.FLOOR_ICE, monitorSource)}`,
         },
+        {
+          value: CameraAiMonitorType.DoorSafety,
+          label: `安全門關閉檢測`,
+        },
+        {
+          value: CameraAiMonitorType.DoorRolling,
+          label: `卷簾門關閉檢測`,
+        },
       ],
     },
   ];

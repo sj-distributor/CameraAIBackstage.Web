@@ -127,6 +127,12 @@ export const Monitor = () => {
 
             case CameraAiMonitorType.FloorIce:
               return t(KEYS.FLOOR_ICE, source);
+
+            case CameraAiMonitorType.DoorSafety:
+              return "安全門關閉檢測";
+
+            case CameraAiMonitorType.DoorRolling:
+              return "卷簾門關閉檢測";
           }
         };
 
@@ -352,6 +358,14 @@ export const Monitor = () => {
                   {
                     label: `${t(KEYS.FLOOR_ICE, source)}`,
                     value: CameraAiMonitorType.FloorIce,
+                  },
+                  {
+                    label: `安全門關閉檢測`,
+                    value: CameraAiMonitorType.DoorSafety,
+                  },
+                  {
+                    label: `卷簾門關閉檢測`,
+                    value: CameraAiMonitorType.DoorRolling,
                   },
                 ]}
                 suffixIcon={<img src={downArrow} />}
