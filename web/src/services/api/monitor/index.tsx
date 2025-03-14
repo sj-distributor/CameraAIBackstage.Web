@@ -5,6 +5,7 @@ import {
   IMonitorSettingRequest,
   IMonitorSettingResponse,
   IMonitorSettingsDto,
+  INoticeUsersProps,
   IUserListResponse,
 } from "@/services/dtos/monitor";
 import { IPageDto } from "@/services/dtos/public";
@@ -79,6 +80,20 @@ export const GetUserList = async (data: IPageDto) => {
   const response = await api.get<IUserListResponse>("/api/CameraAi/user/page", {
     params: data,
   });
+
+  return response.data;
+};
+
+export const GetNoticeUsers = async (data: {
+  KeyWord: string;
+  TeamId: string;
+}) => {
+  const response = await api.get<INoticeUsersProps[]>(
+    "/api/CameraAi/team/users",
+    {
+      params: data,
+    }
+  );
 
   return response.data;
 };

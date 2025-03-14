@@ -155,7 +155,7 @@ export const EquipmentList = () => {
                   )
                 ) {
                   setIsBindingOpen(true);
-                  onOpenBind(record.teamId);
+                  onOpenBind();
                 }
               }}
               className={`${

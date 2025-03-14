@@ -132,6 +132,15 @@ export const AddOrUpdateConfiguration = () => {
                     required: true,
                     message: `${t(KEYS.DURATION_TIME_PLACEHOLDER, source)}`,
                   },
+                  {
+                    validator: (_, value) => {
+                      if (value && value <= 0) {
+                        return Promise.reject(new Error("持續時長不可設置為0"));
+                      }
+
+                      return Promise.resolve();
+                    },
+                  },
                 ]}
                 initialValue={
                   editDetailData?.duration
@@ -624,6 +633,17 @@ export const AddOrUpdateConfiguration = () => {
                                         source
                                       )}`,
                                     },
+                                    {
+                                      validator: (_, value) => {
+                                        if (value && value <= 0) {
+                                          return Promise.reject(
+                                            new Error("限定時間不可設置為0")
+                                          );
+                                        }
+
+                                        return Promise.resolve();
+                                      },
+                                    },
                                   ]}
                                   initialValue={
                                     editDetailData?.singleNoticeTime
@@ -1017,6 +1037,7 @@ export const AddOrUpdateConfiguration = () => {
                                                         onChangeUserNotificationType(
                                                           typeItem.type,
                                                           item.value,
+                                                          item.label,
                                                           e.target.checked
                                                         );
                                                       }}

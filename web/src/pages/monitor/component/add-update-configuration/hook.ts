@@ -11,6 +11,7 @@ import { GetEquipmentPage } from "@/services/api/equipment/list";
 import {
   GetEquipmentPreviews,
   GetMonitorSettingDetail,
+  GetNoticeUsers,
   GetUserList,
   MonitorSettingCreate,
   MonitorSettingUpdate,
@@ -22,6 +23,7 @@ import {
   DayOfWeek,
   IMonitorNotificationsDto,
   IMonitorSettingsDto,
+  INoticeUsersProps,
   IUserProfiles,
 } from "@/services/dtos/monitor";
 import { getErrorMessage } from "@/utils/error-message";
@@ -133,7 +135,7 @@ export const useAction = () => {
     return cronList.filter((x) => x.isActive).map((x) => x.value);
   }, [cronList]);
 
-  const [userData, setUserData] = useState<IUserProfiles[]>([]); // 接受数据
+  const [userData, setUserData] = useState<INoticeUsersProps[]>([]); // 接受数据
 
   const [selectUserData, setSelectUserData] = useState<
     IMonitorNotificationsDto[]
@@ -244,10 +246,10 @@ export const useAction = () => {
 
     // 根据 userData 找对应的recipientIds的名字并凑成一个 option 回显
     return userData.reduce<IOptionsStringDto[]>((acc, item) => {
-      if (editUser.includes(item.staffId)) {
+      if (editUser.includes(item.id)) {
         acc.push({
-          label: item.name,
-          value: item.staffId,
+          label: item.userProfileName,
+          value: item.id,
         });
       }
 
@@ -260,8 +262,8 @@ export const useAction = () => {
     return userData
       ? userData.map((item) => {
           return {
-            label: item.name,
-            value: item.staffId,
+            label: item.userProfileName,
+            value: item.id,
           };
         })
       : [];
@@ -306,13 +308,13 @@ export const useAction = () => {
     }
   };
 
-  const onDeleteNoticeUserItem = (staffId: string) => {
+  const onDeleteNoticeUserItem = (id: string) => {
     // 复制选择的用户列表
     const newSelectUserList = clone(selectUserValue);
 
     // 在 newSelectUserList 中找到要删除的项并删除
     const filteredUserList = newSelectUserList.filter(
-      (user) => user.value !== staffId
+      (user) => user.value !== id
     );
 
     // 更新选择的用户列表状态
@@ -320,12 +322,12 @@ export const useAction = () => {
 
     // 在选择的用户数据列表中找到要删除的项并删除
     const updatedUserData = selectUserData.map((item) => {
-      // 在 recipientIds 数组中找到要删除的 staffId 并删除
-      item.recipientIds = item.recipientIds.filter((id) => id !== staffId);
+      // 在 recipientIds 数组中找到要删除的 id 并删除
+      item.recipientIds = item.recipientIds.filter((id) => id !== id);
 
-      // 在 recipients 数组中找到要删除的 staffId 并删除
+      // 在 recipients 数组中找到要删除的 id 并删除
       item.recipients = item.recipients.filter(
-        (recipient) => recipient.staffId !== staffId
+        (recipient) => recipient.teamUserId !== id
       );
 
       return item;
@@ -340,10 +342,10 @@ export const useAction = () => {
 
     // 构造一个 label value 的 option
     const filterList = userData.reduce<IOptionsStringDto[]>((acc, item) => {
-      if (idList.includes(item.staffId)) {
+      if (idList.includes(item.id)) {
         const newValue: IOptionsStringDto = {
-          label: item.name,
-          value: item.staffId,
+          label: item.userProfileName,
+          value: item.id,
         };
 
         acc.push(newValue);
@@ -446,6 +448,10 @@ export const useAction = () => {
         data.metadata.cameraAiCoordinates = coordinatesRef.current;
       }
 
+      console.log(data);
+
+      // return;
+
       setSubmitLoadin(true);
       isAdd
         ? MonitorSettingCreate(data)
@@ -473,6 +479,7 @@ export const useAction = () => {
   const onChangeUserNotificationType = (
     itemType: CameraAiNotificationType,
     userId: string,
+    name: string,
     isChecked: boolean
   ) => {
     const newList = clone(selectUserData);
@@ -494,7 +501,7 @@ export const useAction = () => {
         } else {
           // 新增勾选，向 recipientIds 中添加 userId
           userItem.recipientIds.push(userId);
-          userItem.recipients.push({ staffId: userId });
+          userItem.recipients.push({ teamUserId: userId, name: name });
         }
       }
     }
@@ -507,7 +514,7 @@ export const useAction = () => {
     if (foundItemIndex === -1) {
       newList.push({
         recipientIds: [userId],
-        recipients: [{ staffId: userId }],
+        recipients: [{ teamUserId: userId, name: name }],
         notifyType: itemType,
       });
     }
@@ -516,14 +523,12 @@ export const useAction = () => {
   };
 
   const initGetUserList = () => {
-    GetUserList({
-      PageSize: 2147483647,
-      PageIndex: 1,
-      Status: 1,
+    GetNoticeUsers({
+      KeyWord: "",
       TeamId: currentTeam.id,
     })
       .then((res) => {
-        setUserData(res.userProfiles);
+        setUserData(res);
       })
       .catch(() => {
         setUserData([]);

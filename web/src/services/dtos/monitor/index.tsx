@@ -97,8 +97,8 @@ export interface IMonitorNotificationsDto {
 }
 
 export interface IRecipientsDto {
-  staffId: string;
-  name?: string;
+  teamUserId: string;
+  name: string;
 }
 
 export interface IRecipients {
@@ -139,6 +139,12 @@ export interface IPermissionsDto {
   displayName: string;
   description: string;
   isSystem: boolean;
+}
+
+export interface INoticeUsersProps {
+  id: string;
+  teamId: string;
+  userProfileName: string;
 }
 
 export interface IUserListResponse {

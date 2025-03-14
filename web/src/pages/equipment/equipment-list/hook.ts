@@ -231,11 +231,12 @@ export const useAction = () => {
       .finally(() => setConfirmLoading(false));
   };
 
-  const onOpenBind = (teamId: string | undefined) => {
+  const onOpenBind = () => {
     setRegionLoading(true);
+
     GetRegionPage({
       IsFilter: true,
-      TeamId: teamId,
+      TeamId: currentTeam.id,
     })
       .then((res) => {
         const newList = res.regions.map((item) => {
