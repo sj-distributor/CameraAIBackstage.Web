@@ -40,8 +40,10 @@ export const NewOrUpdatePermissions = () => {
 
       case FrontRolePermissionEnum.CanExportCameraAiRealtimeVideo:
       case FrontRolePermissionEnum.CanExportCameraAiPlaybackVideo:
-      case FrontRolePermissionEnum.CanViewCameraAiDoorDetection:
         return isEnglish ? 19 : 20;
+
+      case FrontRolePermissionEnum.CanViewCameraAiDoorDetection:
+        return isEnglish ? 24 : 24;
 
       case FrontRolePermissionEnum.CanMarkCameraAiWarning:
         return isEnglish ? 9 : 13;
@@ -168,7 +170,7 @@ export const NewOrUpdatePermissions = () => {
           <div className="font-medium">
             {t(KEYS.FRONT_DESK_FUNCTION_PERMISSIONS, source)}
           </div>
-          <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[16.5rem] pr-[15.75rem] border-2 mt-[1rem] mb-[1rem]">
+          <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[18.4rem] pr-[15.75rem] border-2 mt-[1rem] mb-[1rem]">
             <div className="flex flex-col w-[71.25rem] rounded pl-[4.9rem] pt-[1rem]">
               <div className="flex justify-row mb-[1rem]">
                 <span

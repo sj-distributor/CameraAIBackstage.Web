@@ -74,6 +74,7 @@ export interface IDoorsItem {
 }
 
 export interface IAddDoorParams {
+  teamId?: string;
   doorId: string | undefined;
   doorName: string;
   doorType: DoorType | undefined;

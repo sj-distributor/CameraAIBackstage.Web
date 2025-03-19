@@ -31,7 +31,7 @@ const initAddOrUpdateParams: IAddDoorParams = {
 };
 
 export const useAction = () => {
-  const { currentTeam } = useAuth();
+  const { currentTeam, myPermissions } = useAuth();
 
   const [isPlot, setIsPlot] = useState<boolean>(false);
 
@@ -58,6 +58,7 @@ export const useAction = () => {
     PageSize: 10,
     Keyword: "",
     DoorType: undefined,
+    TeamId: currentTeam.id,
   });
 
   const [doorsList, setDoorsList] = useState<IGetDoorListProps>({
@@ -149,11 +150,13 @@ export const useAction = () => {
             ...addOrUpdateParams,
             orientation: orientation,
             previewUrl: previewImg,
+            teamId: currentTeam.id,
           })
         : UpdateDoorApi({
             ...addOrUpdateParams,
             orientation: orientation,
             previewUrl: previewImg,
+            teamId: currentTeam.id,
           }),
     {
       manual: true,
@@ -213,6 +216,7 @@ export const useAction = () => {
     deleteLoading,
     doorsLoading,
     initAddOrUpdateParams,
+    myPermissions,
     updatePaginationDto,
     getRegionCamera,
     getImgByEquipmentId,

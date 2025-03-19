@@ -26,6 +26,7 @@ import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
 import { PlotArea } from "@/pages/monitor/component/plot-area";
+import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 import { IDoorsItem } from "@/services/dtos/access-management";
 
 import { useAction } from "./hook";
@@ -47,6 +48,7 @@ export const Door = () => {
     deleteLoading,
     doorsLoading,
     initAddOrUpdateParams,
+    myPermissions,
     updatePaginationDto,
     getRegionCamera,
     getImgByEquipmentId,
@@ -105,41 +107,49 @@ export const Door = () => {
       render: (record: IDoorsItem) => {
         return (
           <div>
-            <Button
-              type="link"
-              className="text-[#2853E3]"
-              onClick={() => {
-                getRegionCamera();
+            {myPermissions.includes(
+              BackGroundRolePermissionEnum.CanUpdateCameraAiDoor
+            ) && (
+              <Button
+                type="link"
+                className="text-[#2853E3]"
+                onClick={() => {
+                  getRegionCamera();
 
-                updateDoorsModal({
-                  type: "update",
-                  open: true,
-                });
+                  updateDoorsModal({
+                    type: "update",
+                    open: true,
+                  });
 
-                handleChangeParams(record);
+                  handleChangeParams(record);
 
-                setPreviewImg(record.previewUrl);
+                  setPreviewImg(record.previewUrl);
 
-                const objectArray = record.orientation.map((item) => ({
-                  xCoordinate: item[0],
-                  yCoordinate: item[1],
-                }));
+                  const objectArray = record.orientation.map((item) => ({
+                    xCoordinate: item[0],
+                    yCoordinate: item[1],
+                  }));
 
-                coordinatesRef.current = objectArray;
-              }}
-            >
-              编辑
-            </Button>
-            <Popconfirm
-              title="删除提醒"
-              description="是否确认删除？"
-              rootClassName="portrait"
-              onConfirm={() => deleteDoors(record.doorId)}
-            >
-              <Button type="link" className="text-[#2853E3]">
-                删除
+                  coordinatesRef.current = objectArray;
+                }}
+              >
+                编辑
               </Button>
-            </Popconfirm>
+            )}
+            {myPermissions.includes(
+              BackGroundRolePermissionEnum.CanDeleteCameraAiDoor
+            ) && (
+              <Popconfirm
+                title="删除提醒"
+                description="是否确认删除？"
+                rootClassName="portrait"
+                onConfirm={() => deleteDoors(record.doorId)}
+              >
+                <Button type="link" className="text-[#2853E3]">
+                  删除
+                </Button>
+              </Popconfirm>
+            )}
           </div>
         );
       },
@@ -217,21 +227,25 @@ export const Door = () => {
                   })
                 }
               />
-              <Button
-                type="primary"
-                className="w-[6rem] h-[2.75rem] mr-[1rem] bg-[#2853E3] ml-auto flex items-center justify-around"
-                onClick={() => {
-                  updateDoorsModal({
-                    type: "add",
-                    open: true,
-                  });
+              {myPermissions.includes(
+                BackGroundRolePermissionEnum.CanAddCameraAiDoor
+              ) && (
+                <Button
+                  type="primary"
+                  className="w-[6rem] h-[2.75rem] mr-[1rem] bg-[#2853E3] ml-auto flex items-center justify-around"
+                  onClick={() => {
+                    updateDoorsModal({
+                      type: "add",
+                      open: true,
+                    });
 
-                  getRegionCamera();
-                }}
-              >
-                <PlusOutlined />
-                <div>新增</div>
-              </Button>
+                    getRegionCamera();
+                  }}
+                >
+                  <PlusOutlined />
+                  <div>新增</div>
+                </Button>
+              )}
             </div>
 
             <div className="flex flex-col h-[calc(100vh-15rem)] justify-between">

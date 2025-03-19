@@ -13,6 +13,7 @@ export interface IPaginationDtoProps {
   PageSize: number;
   Keyword: string;
   DoorType: DoorType | undefined;
+  TeamId: string;
 }
 
 export interface IAcccessListProps {
