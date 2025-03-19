@@ -40,6 +40,7 @@ export enum CameraAiMonitorType {
   FloorWater = 1101, // 地面水迹
   FloorIce = 1102, // 地面结冰
   TouchGoods = 13, // 触摸二层货物规范
+  Attendance = 14, // 进出登记
 }
 
 export interface IMonitorSettingIdDto {

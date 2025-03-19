@@ -133,6 +133,9 @@ export const Monitor = () => {
 
             case CameraAiMonitorType.DoorRolling:
               return "卷簾門關閉檢測";
+
+            case CameraAiMonitorType.Attendance:
+              return "進出時間登記";
           }
         };
 
@@ -366,6 +369,10 @@ export const Monitor = () => {
                   {
                     label: `卷簾門關閉檢測`,
                     value: CameraAiMonitorType.DoorRolling,
+                  },
+                  {
+                    label: `進出時間登記`,
+                    value: CameraAiMonitorType.Attendance,
                   },
                 ]}
                 suffixIcon={<img src={downArrow} />}

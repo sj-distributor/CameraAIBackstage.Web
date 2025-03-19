@@ -49,6 +49,10 @@ export const useAction = () => {
           value: CameraAiMonitorType.TouchGoods,
           label: `${t(MONITOR_KEY.TOUCH_GOODS, monitorSource)}`,
         },
+        {
+          value: CameraAiMonitorType.Attendance,
+          label: `進出時間登記`,
+        },
       ],
     },
     {

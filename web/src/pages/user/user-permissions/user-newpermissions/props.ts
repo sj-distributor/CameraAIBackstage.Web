@@ -16,6 +16,7 @@ export enum FrontRolePermissionEnum {
   CanViewDetailCameraAiFeedback = "CanViewDetailCameraAiFeedback",
   CanCreateCameraAiTeam = "CanCreateCameraAiTeam",
   CanViewCameraAiDoorDetection = "CanViewCameraAiDoorDetection",
+  CanViewCameraAiInAndOutRegistration = "CanViewCameraAiInAndOutRegistration",
 }
 
 export const frontRolePermission = {
@@ -36,6 +37,7 @@ export const frontRolePermission = {
   [FrontRolePermissionEnum.CanExportExcelCameraAiFeedback]: KEYS.EXPORT,
   [FrontRolePermissionEnum.CanViewDetailCameraAiFeedback]: KEYS.VIEW_DETAILS,
   [FrontRolePermissionEnum.CanViewCameraAiDoorDetection]: "出入口检测",
+  [FrontRolePermissionEnum.CanViewCameraAiInAndOutRegistration]: "進出登記",
 };
 
 export enum BackGroundRolePermissionEnum {

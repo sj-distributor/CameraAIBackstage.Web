@@ -585,6 +585,10 @@ export const AddOrUpdateConfiguration = () => {
                                     label: `卷簾門關閉檢測`,
                                     value: CameraAiMonitorType.DoorRolling,
                                   },
+                                  {
+                                    label: `進出時間登記`,
+                                    value: CameraAiMonitorType.Attendance,
+                                  },
                                 ]}
                                 filterOption={filterOption}
                                 onChange={(value) => {
