@@ -649,7 +649,7 @@ export const useAction = () => {
         EquipmentIds: Array.isArray(id) ? id : [id],
       })
         .then((res) => {
-          setPreviewImg(res?.previewImg ?? "");
+          setPreviewImg(res?.[0].previewImg ?? "");
 
           // setPreviewImg(
           //   "https://smartiestest.oss-cn-hongkong.aliyuncs.com/20250304/57eb9354-6ac5-4122-9155-b0c063cf9f18.png?Expires=253402300799&OSSAccessKeyId=LTAI5tEYyDT8YqJBSXaFDtyk&Signature=qrn1VjvKTtInxE%2FGtYprhKUmRwQ%3D"

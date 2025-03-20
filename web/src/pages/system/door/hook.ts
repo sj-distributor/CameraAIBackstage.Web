@@ -104,11 +104,11 @@ export const useAction = () => {
   };
 
   const { loading: getImgLoading, run: getImgByEquipmentId } = useRequest(
-    (id: string) => GetEquipmentPreviews({ EquipmentIds: [id] }),
+    (id: string | number) => GetEquipmentPreviews({ EquipmentIds: [id] }),
     {
       manual: true,
       onSuccess: (res) => {
-        setPreviewImg(res?.previewImg ?? "");
+        setPreviewImg(res?.[0].previewImg ?? "");
 
         // setPreviewImg(
         //   "https://smartiestest.oss-cn-hongkong.aliyuncs.com/20250310/633fd663-e868-447c-a254-9f77ba6309e8.jpeg?Expires=253402300799&OSSAccessKeyId=LTAI5tEYyDT8YqJBSXaFDtyk&Signature=ESQlwFVy%2FjvafymSNluUKT%2F%2FhkA%3D"

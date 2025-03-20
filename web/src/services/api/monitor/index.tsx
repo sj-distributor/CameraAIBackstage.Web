@@ -99,7 +99,7 @@ export const GetNoticeUsers = async (data: {
 };
 
 export const GetEquipmentPreviews = async (data: {
-  EquipmentIds: string[];
+  EquipmentIds: (string | number)[];
 }) => {
   const queryData = queryString.stringify(data);
 

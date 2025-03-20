@@ -383,7 +383,13 @@ export const Door = () => {
               style={{ width: "25rem" }}
               options={equipmentOptions}
               value={addOrUpdateParams.equipmentCode}
-              onChange={(value) => {
+              onChange={(value, option) => {
+                const selectedOption = option as unknown as {
+                  label: string;
+                  value: string;
+                  key: string | number;
+                };
+
                 coordinatesRef.current = [];
 
                 cameras.some((region) => {
@@ -395,7 +401,7 @@ export const Door = () => {
                 });
 
                 handleChangeParams({ equipmentCode: value });
-                getImgByEquipmentId(value);
+                getImgByEquipmentId(selectedOption.key);
               }}
             />
           </Form.Item>
