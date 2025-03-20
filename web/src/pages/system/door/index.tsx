@@ -165,6 +165,7 @@ export const Door = () => {
     options: region.cameras.map((camera) => ({
       label: camera.equipmentName,
       value: camera.equipmentCode,
+      key: camera.id,
     })),
   }));
 
