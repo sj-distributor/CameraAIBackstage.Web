@@ -41,14 +41,15 @@ export const Door = () => {
     previewImg,
     addOrUpdateParams,
     isPlot,
+    coordinatesRef,
     isEdit,
     getDoorsLoading,
     doorsList,
-    coordinatesRef,
     deleteLoading,
     doorsLoading,
     initAddOrUpdateParams,
     myPermissions,
+    equipmentName,
     updatePaginationDto,
     getRegionCamera,
     getImgByEquipmentId,
@@ -59,6 +60,7 @@ export const Door = () => {
     updateDoorsModal,
     handleAddOrUpdate,
     setPreviewImg,
+    setEquipmentName,
   } = useAction();
 
   const [viewPlot, setViewPlot] = useState<boolean>(false);
@@ -181,6 +183,7 @@ export const Door = () => {
             isEdit={isEdit}
             previewImg={previewImg}
             coordinatesRef={coordinatesRef}
+            equipmentName={equipmentName}
             backPage={() => {
               setIsPlot(false);
               setIsEdit(false);
@@ -390,6 +393,8 @@ export const Door = () => {
                   key: string | number;
                 };
 
+                setEquipmentName(selectedOption.label);
+
                 coordinatesRef.current = [];
 
                 cameras.some((region) => {
@@ -421,6 +426,7 @@ export const Door = () => {
                     type={false}
                     isEdit={isEdit}
                     previewImg={previewImg}
+                    equipmentName={equipmentName}
                     coordinatesRef={coordinatesRef}
                     backPage={() => {}}
                   />
@@ -475,6 +481,7 @@ export const Door = () => {
             isEdit={isEdit}
             previewImg={previewImg}
             coordinatesRef={coordinatesRef}
+            equipmentName={equipmentName}
             backPage={() => {}}
           />
         </div>

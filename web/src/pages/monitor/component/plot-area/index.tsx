@@ -8,6 +8,7 @@ export const PlotArea = ({
   previewImg,
   coordinatesRef,
   isEdit,
+  equipmentName,
   backPage,
 }: {
   type: boolean; // true 監測管理 false 出入口管理
@@ -16,6 +17,7 @@ export const PlotArea = ({
     { xCoordinate: number; yCoordinate: number }[]
   >;
   isEdit: boolean;
+  equipmentName: string;
   backPage: () => void;
 }) => {
   type Point = { x: number; y: number };
@@ -256,6 +258,10 @@ export const PlotArea = ({
       setLoading(false);
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       draw(ctx);
+    };
+
+    img.onerror = () => {
+      console.error("Image failed to load.", img.src);
     };
 
     // 取视频第一帧
@@ -507,7 +513,7 @@ export const PlotArea = ({
       {isEdit && (
         <div className="grid grid-cols-3 w-full">
           <div className="col-start-2 text-center font-semibold text-[#323444] text-[1.13rem]">
-            设备名称：1800-1-1201
+            设备名称：{equipmentName}
           </div>
           <div className="flex col-start-3 ml-auto relative">
             <div

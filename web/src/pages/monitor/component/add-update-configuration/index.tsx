@@ -62,6 +62,8 @@ export const AddOrUpdateConfiguration = () => {
     setIsPlot,
     getVideoByEquipmentId,
     coordinatesRef,
+    equipmentName,
+    setEquipmentName,
   } = useAction();
 
   const { message } = App.useApp();
@@ -412,6 +414,7 @@ export const AddOrUpdateConfiguration = () => {
               isEdit={isEdit}
               previewImg={previewImg}
               coordinatesRef={coordinatesRef}
+              equipmentName={equipmentName}
               backPage={() => {
                 setIsPlot(false);
               }}
@@ -772,9 +775,15 @@ export const AddOrUpdateConfiguration = () => {
                                   };
                                 })}
                                 filterOption={filterOption}
-                                onChange={(value) =>
-                                  getVideoByEquipmentId(value)
-                                }
+                                onChange={(value, record) => {
+                                  coordinatesRef.current = [];
+
+                                  if (!Array.isArray(record)) {
+                                    setEquipmentName(record.label);
+                                  }
+
+                                  getVideoByEquipmentId(value);
+                                }}
                                 mode={
                                   selectModalType.includes(
                                     CameraAiMonitorType.TouchGoods
@@ -1204,6 +1213,7 @@ export const AddOrUpdateConfiguration = () => {
               isEdit={isEdit}
               previewImg={previewImg}
               coordinatesRef={coordinatesRef}
+              equipmentName={equipmentName}
               backPage={() => {}}
             />
           </div>

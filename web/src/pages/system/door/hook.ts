@@ -70,6 +70,8 @@ export const useAction = () => {
     initAddOrUpdateParams
   );
 
+  const [equipmentName, setEquipmentName] = useState<string>("");
+
   const updatePaginationDto = (data: Partial<IPaginationDtoProps>) => {
     setPaginationDto((prev) => ({
       ...prev,
@@ -217,6 +219,7 @@ export const useAction = () => {
     doorsLoading,
     initAddOrUpdateParams,
     myPermissions,
+    equipmentName,
     updatePaginationDto,
     getRegionCamera,
     getImgByEquipmentId,
@@ -227,5 +230,6 @@ export const useAction = () => {
     updateDoorsModal,
     handleAddOrUpdate,
     setPreviewImg,
+    setEquipmentName,
   };
 };

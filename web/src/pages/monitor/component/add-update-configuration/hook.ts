@@ -157,6 +157,8 @@ export const useAction = () => {
 
   const [previewImg, setPreviewImg] = useState<string>("");
 
+  const [equipmentName, setEquipmentName] = useState<string>("");
+
   const coordinatesRef = useRef<
     {
       xCoordinate: number;
@@ -725,5 +727,7 @@ export const useAction = () => {
     setIsPlot,
     getVideoByEquipmentId,
     coordinatesRef,
+    equipmentName,
+    setEquipmentName,
   };
 };
