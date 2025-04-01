@@ -163,14 +163,18 @@ export const useAction = () => {
     {
       manual: true,
       onSuccess: () => {
-        message.success("新增成功");
+        message.success(
+          `${addOrUpdateModal.type === "add" ? "新增" : "編輯"}成功`
+        );
 
         getDoorsList();
 
         updateDoorsModal({ open: false });
       },
       onError: () => {
-        message.success("新增失败");
+        message.error(
+          `${addOrUpdateModal.type === "add" ? "新增" : "編輯"}失敗`
+        );
       },
     }
   );
