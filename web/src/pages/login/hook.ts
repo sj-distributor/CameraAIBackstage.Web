@@ -11,7 +11,7 @@ import {
   Login,
 } from "@/services/api/login";
 import { GetCurrentAccountPermission } from "@/services/api/user-permission";
-import { IUserInfo } from "@/services/dtos/login";
+import { IUserInfo, LoginTypeEnum } from "@/services/dtos/login";
 import { IUserDataItem } from "@/services/dtos/user";
 import { IMinePermissionResponse } from "@/services/dtos/user-permission";
 
@@ -29,6 +29,7 @@ export const useAction = () => {
   const [userInfo, setUserInfo] = useState<IUserInfo>({
     userName: "",
     password: "",
+    loginType: LoginTypeEnum.OME,
   });
 
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
