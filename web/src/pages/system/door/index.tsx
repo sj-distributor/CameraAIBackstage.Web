@@ -397,12 +397,22 @@ export const Door = () => {
 
                 coordinatesRef.current = [];
 
-                cameras.some((region) => {
-                  const camera = region.cameras.find(
-                    (camera) => camera.equipmentCode === value
-                  );
+                const getLocationIdByEquipmentCode = (value: string) => {
+                  for (const region of cameras) {
+                    const camera = region.cameras.find(
+                      (camera) => camera.equipmentCode === value
+                    );
 
-                  handleChangeParams({ locationId: camera?.locationId });
+                    if (camera) {
+                      return region.locationId;
+                    }
+                  }
+
+                  return "";
+                };
+
+                handleChangeParams({
+                  locationId: getLocationIdByEquipmentCode(value),
                 });
 
                 handleChangeParams({ equipmentCode: value });
