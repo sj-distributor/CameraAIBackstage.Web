@@ -826,6 +826,22 @@ export const AddOrUpdateConfiguration = () => {
 
                                       return;
                                     }
+
+                                    if (
+                                      editDetailData?.equipmentIds &&
+                                      !isAdd
+                                    ) {
+                                      const data = deviceList.find(
+                                        (item) =>
+                                          item.id ===
+                                          editDetailData.equipmentIds[0]
+                                      );
+
+                                      setEquipmentName(
+                                        data?.equipmentName ?? ""
+                                      );
+                                    }
+
                                     setIsPlot(true);
 
                                     setIsEdit(true);
