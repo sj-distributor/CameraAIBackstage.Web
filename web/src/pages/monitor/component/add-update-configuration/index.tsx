@@ -1,4 +1,8 @@
-import { CloseCircleOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  CloseCircleOutlined,
+  CloseOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import {
   App,
   Button,
@@ -48,6 +52,7 @@ export const AddOrUpdateConfiguration = () => {
     costumeAnimalType,
     isPlot,
     previewImg,
+    previewImgLoading,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
@@ -827,9 +832,16 @@ export const AddOrUpdateConfiguration = () => {
                                   }}
                                 >
                                   <PaintAreaIcon />
-                                  <div className="text-[#2853E3] ml-1">
-                                    繪製區域
-                                  </div>
+                                  {previewImgLoading ? (
+                                    <Spin
+                                      indicator={<LoadingOutlined spin />}
+                                      size="small"
+                                    />
+                                  ) : (
+                                    <div className="text-[#2853E3] ml-1">
+                                      繪製區域
+                                    </div>
+                                  )}
                                 </div>
                                 {!isEmpty(coordinatesRef.current) && (
                                   <div

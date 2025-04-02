@@ -1,4 +1,4 @@
-import { useUpdateEffect } from "ahooks";
+import { useRequest, useUpdateEffect } from "ahooks";
 import { App, Form } from "antd";
 import dayjs from "dayjs";
 import { Moment } from "moment";
@@ -591,6 +591,10 @@ export const useAction = () => {
         );
 
         coordinatesRef.current = res?.metadata?.cameraAiCoordinates ?? [];
+
+        if (res.monitorTypes?.includes(CameraAiMonitorType.TouchGoods)) {
+          getPreviewImg(res.equipmentIds[0].toString());
+        }
       })
       .catch(() => {
         message.error("獲取詳情數據失敗");
@@ -647,50 +651,24 @@ export const useAction = () => {
       selectModalType.includes(CameraAiMonitorType.TouchGoods) ||
       editDetailData?.monitorTypes?.includes(CameraAiMonitorType.TouchGoods)
     ) {
-      GetEquipmentPreviews({
-        EquipmentIds: Array.isArray(id) ? id : [id],
-      })
-        .then((res) => {
-          setPreviewImg(res?.[0].previewImg ?? "");
-
-          // setPreviewImg(
-          //   "https://smartiestest.oss-cn-hongkong.aliyuncs.com/20250304/57eb9354-6ac5-4122-9155-b0c063cf9f18.png?Expires=253402300799&OSSAccessKeyId=LTAI5tEYyDT8YqJBSXaFDtyk&Signature=qrn1VjvKTtInxE%2FGtYprhKUmRwQ%3D"
-          // );
-        })
-        .catch(() => {
-          setPreviewImg("");
-
-          message.error("获取设备画面失败");
-        });
-
-      // PostGeneratePlayBack({
-      //   locationId: data?.locationId ?? "",
-      //   equipmentCode: data?.equipmentCode ?? "",
-      //   equipmentId: data?.id.toString() ?? "",
-      //   startTime: "",
-      //   endTime: "",
-      //   monitorTypes: [CameraAiMonitorType.TouchGoods],
-      // })
-      //   .then((res) => {
-      //     if (res && data?.id.toString()) {
-      //       GetWarningDemand(data?.id.toString())
-      //         .then((res) => {
-      //           setAreaVideo(res.record.replayUrl);
-      //         })
-      //         .catch(() => {
-      //           message.error("获取设备的画面失败");
-      //         });
-      //     }
-      //   })
-      //   .catch(() => {
-      //     message.error("设备画面生成失败");
-
-      //     // setAreaVideo(
-      //     //   "https://video-builder.oss-cn-hongkong.aliyuncs.com/video/5cf9243b-41c7-4d9c-bc14-1788db711517.mp4"
-      //     // );
-      //   });
+      getPreviewImg(Array.isArray(id) ? id : [id]);
     }
   };
+
+  const { loading: previewImgLoading, run: getPreviewImg } = useRequest(
+    (id) => GetEquipmentPreviews({ EquipmentIds: id }),
+    {
+      manual: true,
+      onSuccess: (res) => {
+        setPreviewImg(res?.[0].previewImg ?? "");
+      },
+      onError: () => {
+        setPreviewImg("");
+
+        message.error("获取设备画面失败");
+      },
+    }
+  );
 
   return {
     cronList,
@@ -713,6 +691,7 @@ export const useAction = () => {
     costumeAnimalType,
     isPlot,
     previewImg,
+    previewImgLoading,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
