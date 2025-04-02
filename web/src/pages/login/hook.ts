@@ -11,7 +11,7 @@ import {
   Login,
 } from "@/services/api/login";
 import { GetCurrentAccountPermission } from "@/services/api/user-permission";
-import { IUserInfo } from "@/services/dtos/login";
+import { IUserInfo, LoginTypeEnum } from "@/services/dtos/login";
 import { IUserDataItem } from "@/services/dtos/user";
 import { IMinePermissionResponse } from "@/services/dtos/user-permission";
 
@@ -172,7 +172,16 @@ export const useAction = () => {
       userInfo.userName.trim().length !== 0 &&
       userInfo.password.trim().length !== 0
     ) {
-      Login(userInfo)
+      const loginParams = {
+        userName: userInfo.userName,
+        password: userInfo.password,
+        loginType:
+          userInfo.userName.toLowerCase() === "admin"
+            ? undefined
+            : LoginTypeEnum.OME,
+      };
+
+      Login(loginParams)
         .then((res) => {
           if (res) {
             localStorage.setItem(
