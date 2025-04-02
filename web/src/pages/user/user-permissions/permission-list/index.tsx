@@ -57,8 +57,8 @@ export const UserPermissions = () => {
   const columns: ColumnsType<IRole> = [
     {
       title: t(KEYS.ROLE_NAME, source),
-      dataIndex: "displayName",
-      key: "displayName",
+      dataIndex: "name",
+      key: "name",
       className: "w-[16rem]",
     },
     {

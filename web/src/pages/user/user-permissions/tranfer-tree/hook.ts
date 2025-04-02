@@ -9,6 +9,7 @@ import {
   IFoundationResponse,
   TreeTypeEnum,
 } from "@/services/dtos/tree";
+import { useUpdateEffect } from "ahooks";
 
 export interface IFoundationDetail {
   department: {
@@ -108,6 +109,17 @@ export const useAction = (props: {
     //           ? HierarchyStaffIdSourceEnum.IntegerStaffId
     //           : undefined,
     //     });
+
+    // const getTreeDataApi =
+    //   type === TreeTypeEnum.UserPermission
+    //     ? GetTreeData({
+    //         HierarchyDepth: HierarchyDepthEnum.Group,
+    //         StaffIdSource: HierarchyStaffIdSourceEnum.IntegerStaffId,
+    //       })
+    //     : GetFoundationData({
+    //         StaffIdSource: HierarchyStaffIdSourceEnum.StringStaffId,
+    //         HierarchyDepth: HierarchyDepthEnum.Group,
+    //       });
 
     GetFoundationData({
       StaffIdSource: HierarchyStaffIdSourceEnum.StringStaffId,

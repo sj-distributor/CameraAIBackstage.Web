@@ -211,8 +211,9 @@ export const useAction = () => {
       TeamId: isSuperAdmin ? undefined : currentTeam.id,
     }).then((res) => {
       setDisableTreeStaffId(
-        (res?.userProfiles ?? []).map((item) =>
-          isSuperAdmin ? item.staffId : JSON.stringify(item.id)
+        (res?.userProfiles ?? []).map(
+          (item) => item.staffId
+          // isSuperAdmin ? item.staffId : JSON.stringify(item.id)
         )
       );
     });
