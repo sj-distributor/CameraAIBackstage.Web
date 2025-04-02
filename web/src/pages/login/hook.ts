@@ -29,7 +29,6 @@ export const useAction = () => {
   const [userInfo, setUserInfo] = useState<IUserInfo>({
     userName: "",
     password: "",
-    loginType: LoginTypeEnum.OME,
   });
 
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
@@ -173,7 +172,16 @@ export const useAction = () => {
       userInfo.userName.trim().length !== 0 &&
       userInfo.password.trim().length !== 0
     ) {
-      Login(userInfo)
+      const loginParams = {
+        userName: userInfo.userName,
+        password: userInfo.password,
+        loginType:
+          userInfo.userName.toLowerCase() === "admin"
+            ? undefined
+            : LoginTypeEnum.OME,
+      };
+
+      Login(loginParams)
         .then((res) => {
           if (res) {
             localStorage.setItem(

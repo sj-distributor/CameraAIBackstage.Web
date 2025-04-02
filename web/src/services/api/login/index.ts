@@ -1,9 +1,9 @@
-import { ITeamListProps } from "@/services/dtos/login";
+import { ITeamListProps, IUserInfo } from "@/services/dtos/login";
 import { IUserDataItem } from "@/services/dtos/user";
 
 import { api } from "../http-client";
 
-export const Login = async (data: { userName: string; password: string }) => {
+export const Login = async (data: IUserInfo) => {
   const response = await api.post<string>("/auth/login", data);
 
   return response.data;
