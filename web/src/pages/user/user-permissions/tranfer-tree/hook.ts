@@ -9,7 +9,6 @@ import {
   IFoundationResponse,
   TreeTypeEnum,
 } from "@/services/dtos/tree";
-import { useUpdateEffect } from "ahooks";
 
 export interface IFoundationDetail {
   department: {
