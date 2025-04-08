@@ -47,7 +47,8 @@ export const useAction = (props: {
   currentTeamStaff?: string[];
   type: TreeTypeEnum;
 }) => {
-  const { disableTreeStaffId, currentTeamStaff = [], type } = props;
+  // currentTeamStaff = [],
+  const { disableTreeStaffId, type } = props;
 
   const { t } = useAuth();
 
