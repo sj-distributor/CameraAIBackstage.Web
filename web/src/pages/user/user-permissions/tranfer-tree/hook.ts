@@ -74,10 +74,10 @@ export const useAction = (props: {
           value: staff.id,
           key: staff.id,
           isUser: true,
-          disabled:
-            disableTreeStaffId?.some((item) => item === staff.id) ||
-            (type === TreeTypeEnum.UserPermission &&
-              !currentTeamStaff.some((item) => item === staff.id)),
+          disabled: disableTreeStaffId?.some((item) => item === staff.id),
+          // ||
+          //   (type === TreeTypeEnum.UserPermission &&
+          //     !currentTeamStaff.some((item) => item === staff.id)),
         };
       });
     }
@@ -121,7 +121,10 @@ export const useAction = (props: {
     //       });
 
     GetFoundationData({
-      StaffIdSource: HierarchyStaffIdSourceEnum.StringStaffId,
+      StaffIdSource:
+        type === TreeTypeEnum.UserPermission
+          ? HierarchyStaffIdSourceEnum.IntegerStaffId
+          : HierarchyStaffIdSourceEnum.StringStaffId,
       HierarchyDepth: HierarchyDepthEnum.Group,
     })
       .then((response) => {
