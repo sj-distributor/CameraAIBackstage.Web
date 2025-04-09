@@ -20,6 +20,7 @@ import {
   CameraAiMonitorType,
   CameraAiNotificationType,
   DayOfWeek,
+  IMetadataProps,
   IMonitorNotificationsDto,
   IMonitorSettingsDto,
   INoticeUsersProps,
@@ -159,12 +160,7 @@ export const useAction = () => {
 
   const [equipmentName, setEquipmentName] = useState<string>("");
 
-  const coordinatesRef = useRef<
-    {
-      xCoordinate: number;
-      yCoordinate: number;
-    }[]
-  >([]);
+  const coordinatesRef = useRef<IMetadataProps[]>();
 
   const animalOptions = [
     {
@@ -441,11 +437,11 @@ export const useAction = () => {
       }
 
       if (selectModalType.includes(CameraAiMonitorType.TouchGoods)) {
-        if (!data.metadata) {
-          data.metadata = { cameraAiCoordinates: [] };
+        if (!data.metadatas) {
+          data.metadatas = [];
         }
 
-        data.metadata.cameraAiCoordinates = coordinatesRef.current;
+        data.metadatas = coordinatesRef?.current ?? [];
       }
 
       console.log(data);
@@ -590,7 +586,7 @@ export const useAction = () => {
           )
         );
 
-        coordinatesRef.current = res?.metadata?.cameraAiCoordinates ?? [];
+        coordinatesRef.current = res.metadatas ?? [];
 
         if (res.monitorTypes?.includes(CameraAiMonitorType.TouchGoods)) {
           getPreviewImg(res.equipmentIds[0].toString());

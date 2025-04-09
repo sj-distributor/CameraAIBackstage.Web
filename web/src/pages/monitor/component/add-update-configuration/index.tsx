@@ -26,7 +26,7 @@ import downArrow from "@/assets/public/down-arrow.png";
 import { CameraAiMonitorType } from "@/services/dtos/monitor";
 
 import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
-import { PlotArea } from "../plot-area";
+import { MonitorPlotArea } from "../monitor-plot-area";
 import { useAction } from "./hook";
 import { IOptionsStringDto, TimeType } from "./props";
 
@@ -414,7 +414,7 @@ export const AddOrUpdateConfiguration = () => {
               : `${t(KEYS.EDIT, source)}${t(KEYS.CONFIGURATION, source)}`}
           </span>
           {isPlot ? (
-            <PlotArea
+            <MonitorPlotArea
               type={true}
               isEdit={isEdit}
               previewImg={previewImg}
@@ -1236,7 +1236,7 @@ export const AddOrUpdateConfiguration = () => {
           className="plotModal relative"
         >
           <div className="h-[30rem]">
-            <PlotArea
+            <MonitorPlotArea
               type={true}
               isEdit={isEdit}
               previewImg={previewImg}
