@@ -1,4 +1,8 @@
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  ArrowRightOutlined,
+  InfoCircleFilled,
+} from "@ant-design/icons";
 import { Button, ConfigProvider, Spin } from "antd";
 import { isEmpty } from "ramda";
 
@@ -38,8 +42,16 @@ export const MonitorPlotArea = ({
     >
       {isEdit && (
         <div className="grid grid-cols-3 w-full">
-          <div className="col-start-2 text-center font-semibold text-[#323444] text-[1.13rem]">
-            设备名称：{equipmentName}
+          <div className="col-start-2 text-center font-semibold text-[#323444] text-[1.13rem] flex justify-center">
+            <div className="relative w-fit flex">
+              设备名称：{equipmentName}
+              <div className="absolute pl-6 left-full top-[3px] text-[0.77rem] text-[#6c6c6f] flex items-start">
+                <InfoCircleFilled className="mt-[3px]" />
+                <span className="pl-1 items-start min-w-[400px] text-left ">
+                  在图片上点击以创建起始点，移动鼠标绘制线条，绘制过程中可再点击鼠标生成新的点，最后右键单击完成区域绘制。
+                </span>
+              </div>
+            </div>
           </div>
           <div className="flex col-start-3 ml-auto relative">
             <div

@@ -360,35 +360,21 @@ export const PlotArea = ({
 
     const newCoordinates = [
       {
-        xCoordinate: parseFloat(
-          ((rect.topLeft.x / canvas.width) * 100).toFixed(2)
-        ),
-        yCoordinate: parseFloat(
-          ((rect.topLeft.y / canvas.height) * 100).toFixed(2)
-        ),
+        xCoordinate: parseFloat((rect.topLeft.x / canvas.width).toFixed(2)),
+        yCoordinate: parseFloat((rect.topLeft.y / canvas.height).toFixed(2)),
       },
       {
-        xCoordinate: parseFloat(
-          ((rect.topRight.x / canvas.width) * 100).toFixed(2)
-        ),
-        yCoordinate: parseFloat(
-          ((rect.topRight.y / canvas.height) * 100).toFixed(2)
-        ),
+        xCoordinate: parseFloat((rect.topRight.x / canvas.width).toFixed(2)),
+        yCoordinate: parseFloat((rect.topRight.y / canvas.height).toFixed(2)),
       },
       {
-        xCoordinate: parseFloat(
-          ((rect.bottomLeft.x / canvas.width) * 100).toFixed(2)
-        ),
-        yCoordinate: parseFloat(
-          ((rect.bottomLeft.y / canvas.height) * 100).toFixed(2)
-        ),
+        xCoordinate: parseFloat((rect.bottomLeft.x / canvas.width).toFixed(2)),
+        yCoordinate: parseFloat((rect.bottomLeft.y / canvas.height).toFixed(2)),
       },
       {
-        xCoordinate: parseFloat(
-          ((rect.bottomRight.x / canvas.width) * 100).toFixed(2)
-        ),
+        xCoordinate: parseFloat((rect.bottomRight.x / canvas.width).toFixed(2)),
         yCoordinate: parseFloat(
-          ((rect.bottomRight.y / canvas.height) * 100).toFixed(2)
+          (rect.bottomRight.y / canvas.height).toFixed(2)
         ),
       },
     ];
@@ -410,20 +396,20 @@ export const PlotArea = ({
 
     return {
       topLeft: {
-        x: (coordinates[0].xCoordinate / 100) * canvas.width,
-        y: (coordinates[0].yCoordinate / 100) * canvas.height,
+        x: coordinates[0].xCoordinate * canvas.width,
+        y: coordinates[0].yCoordinate * canvas.height,
       },
       topRight: {
-        x: (coordinates[1].xCoordinate / 100) * canvas.width,
-        y: (coordinates[1].yCoordinate / 100) * canvas.height,
+        x: coordinates[1].xCoordinate * canvas.width,
+        y: coordinates[1].yCoordinate * canvas.height,
       },
       bottomLeft: {
-        x: (coordinates[2].xCoordinate / 100) * canvas.width,
-        y: (coordinates[2].yCoordinate / 100) * canvas.height,
+        x: coordinates[2].xCoordinate * canvas.width,
+        y: coordinates[2].yCoordinate * canvas.height,
       },
       bottomRight: {
-        x: (coordinates[3].xCoordinate / 100) * canvas.width,
-        y: (coordinates[3].yCoordinate / 100) * canvas.height,
+        x: coordinates[3].xCoordinate * canvas.width,
+        y: coordinates[3].yCoordinate * canvas.height,
       },
     };
   };

@@ -173,8 +173,8 @@ export const useAction = (props: IProps) => {
       .map(
         (item) =>
           item?.cameraAiCoordinates?.map((point) => ({
-            x: (point.xCoordinate / 100) * canvas.width,
-            y: (point.yCoordinate / 100) * canvas.height,
+            x: point.xCoordinate * canvas.width,
+            y: point.yCoordinate * canvas.height,
           })) ?? []
       )
       .filter((item) => item?.length > 2);
@@ -234,12 +234,8 @@ export const useAction = (props: IProps) => {
       rectList?.map((rectItem) => ({
         cameraAiCoordinates:
           rectItem?.map((point) => ({
-            xCoordinate: parseFloat(
-              ((point.x / canvas.width) * 100).toFixed(2)
-            ),
-            yCoordinate: parseFloat(
-              ((point.y / canvas.height) * 100).toFixed(2)
-            ),
+            xCoordinate: parseFloat((point.x / canvas.width).toFixed(2)),
+            yCoordinate: parseFloat((point.y / canvas.height).toFixed(2)),
           })) ?? [],
       })) ?? [];
 
@@ -344,12 +340,6 @@ export const useAction = (props: IProps) => {
         }
       };
 
-      const _onKeyDown = (e: KeyboardEvent) => {
-        if (e.key == "Enter" && drawing) {
-          handleCompleteDraw();
-        }
-      };
-
       const _onContextMenu = (e: MouseEvent) => {
         if (drawing) {
           e.preventDefault();
@@ -361,14 +351,12 @@ export const useAction = (props: IProps) => {
       canvas.addEventListener("click", _onClick);
       canvas.addEventListener("mousedown", _onMouseDown);
       canvas.addEventListener("mousemove", _onMouseMove);
-      window.addEventListener("keydown", _onKeyDown);
       canvas.addEventListener("contextmenu", _onContextMenu);
 
       return () => {
         canvas.removeEventListener("click", _onClick);
         canvas.removeEventListener("mousedown", _onMouseDown);
         canvas.removeEventListener("mousemove", _onMouseMove);
-        canvas.removeEventListener("keydown", _onKeyDown);
         canvas.removeEventListener("contextmenu", _onContextMenu);
       };
     },
