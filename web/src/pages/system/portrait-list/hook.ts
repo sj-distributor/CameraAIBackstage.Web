@@ -121,7 +121,9 @@ export const useAction = () => {
 
     if (
       fileList.length === 0 ||
-      Object.values(finalCheckValue).some((value) => !value)
+      Object.entries(finalCheckValue)
+        .filter(([key]) => key !== "teamId")
+        .some(([, value]) => !value)
     ) {
       throw new Error("請確認數據填寫完整");
     } else {

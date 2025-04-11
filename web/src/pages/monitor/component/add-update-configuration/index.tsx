@@ -18,7 +18,7 @@ import {
 import { RuleObject } from "antd/es/form";
 import FormItem from "antd/es/form/FormItem";
 import TextArea from "antd/es/input/TextArea";
-import { clone, isEmpty } from "ramda";
+import { clone, isEmpty, isNil } from "ramda";
 import { Fragment, useCallback, useState } from "react";
 
 import { PaintAreaIcon } from "@/assets/monitor";
@@ -608,6 +608,8 @@ export const AddOrUpdateConfiguration = () => {
                                   if (
                                     value === CameraAiMonitorType.TouchGoods
                                   ) {
+                                    coordinatesRef.current = [];
+
                                     form.setFieldValue("deviceSelect", []);
                                   }
                                 }}
@@ -859,7 +861,10 @@ export const AddOrUpdateConfiguration = () => {
                                     </div>
                                   )}
                                 </div>
-                                {!isEmpty(coordinatesRef.current) && (
+                                {!(
+                                  isNil(coordinatesRef.current) ||
+                                  isEmpty(coordinatesRef.current)
+                                ) && (
                                   <div
                                     className="ml-[0.94rem] text-[#2853E3] underline underline-offset-2 cursor-pointer"
                                     onClick={() => {
