@@ -1,4 +1,6 @@
-FROM node:18-alpine
+FROM node:18-alpine AS node
+
+FROM nginx:stable-alpine
 
 COPY --from=node /usr/lib /usr/lib
 COPY --from=node /usr/local/lib /usr/local/lib
