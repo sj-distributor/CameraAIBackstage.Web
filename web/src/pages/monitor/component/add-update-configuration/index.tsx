@@ -124,8 +124,6 @@ export const AddOrUpdateConfiguration = () => {
           CameraAiMonitorType.Costume,
           CameraAiMonitorType.Security,
           CameraAiMonitorType.Animal,
-          CameraAiMonitorType.FloorWater,
-          CameraAiMonitorType.FloorIce,
           CameraAiMonitorType.DoorSafety,
           CameraAiMonitorType.DoorRolling,
         ],
