@@ -403,6 +403,8 @@ export const useAction = () => {
           CameraAiMonitorType.Costume,
           CameraAiMonitorType.Security,
           CameraAiMonitorType.Animal,
+          CameraAiMonitorType.DoorSafety,
+          CameraAiMonitorType.DoorRolling,
         ].some((type) => selectModalType.includes(type))
       ) {
         data.duration = handleTotalDuration(values.time, values.timeType);
