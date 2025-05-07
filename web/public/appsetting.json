@@ -1,5 +1,5 @@
 {
-  "serverUrl": "",
+  "serverUrl": "https://testsmarties.yamimeal.ca",
   "tokenKey": "token",
   "userNameKey": "userName",
   "cameraAIFrontdeskDomain": "https://camerai.wiltechs.com/",
