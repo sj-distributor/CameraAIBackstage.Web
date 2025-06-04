@@ -16,8 +16,6 @@ WORKDIR /usr/share/nginx/html
 RUN npm install --force && npm run build
 
 RUN echo "#!/bin/sh" >> /init.sh &&\
-    echo "cd /usr/share/nginx/html" >> /init.sh &&\
-    echo "npx @import-meta-env/cli -x .env -e .env -p dist/index.html" >> /init.sh &&\
     echo "nginx -g 'daemon off;'" >> /init.sh &&\
     chmod +x /init.sh
 
