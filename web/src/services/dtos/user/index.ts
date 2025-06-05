@@ -65,5 +65,5 @@ export interface IUserProfileItem {
 export interface IAddUserRequest {
   teamId: string;
   staffIds: string[];
-  regionIds: number[];
+  areaIds: number[];
 }

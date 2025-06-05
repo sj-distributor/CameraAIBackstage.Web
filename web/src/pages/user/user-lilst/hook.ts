@@ -322,7 +322,7 @@ export const useAction = () => {
       staffIds: selectUser
         .map((item) => item.value)
         .filter((value): value is string => value !== undefined),
-      regionIds: selectRange.filter((item) => item !== -1),
+      areaIds: selectRange.filter((item) => item !== -1),
     })
       .then(() => {
         message.success("新增成功");
