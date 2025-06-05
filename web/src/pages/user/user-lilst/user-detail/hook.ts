@@ -186,7 +186,7 @@ export const useAction = () => {
             teamId: TeamId,
             userProfileId: userInfoRecord?.id,
             status: res?.userProfileDto?.status,
-            areaIds: res?.cameraAiEquipmentVisibleRangesDto.map(
+            areaIds: (res?.cameraAiEquipmentVisibleRangesDto ?? []).map(
               (item) => item?.areaId
             ),
             userProfileNotificationDto: {
@@ -198,7 +198,9 @@ export const useAction = () => {
           });
 
           setSelectRange(
-            res?.cameraAiEquipmentVisibleRangesDto.map((item) => item.areaId)
+            (res?.cameraAiEquipmentVisibleRangesDto ?? []).map(
+              (item) => item.areaId
+            )
           );
         })
         .catch((err) => {
