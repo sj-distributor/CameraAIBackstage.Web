@@ -13,15 +13,12 @@ import {
   Input,
   Pagination,
   Popover,
-  Radio,
   Select,
-  Skeleton,
   Spin,
   Switch,
   Table,
   TableProps,
 } from "antd";
-import { isEmpty } from "ramda";
 import { CustomTagProps } from "rc-select/lib/BaseSelect";
 import { Trans } from "react-i18next";
 
@@ -81,12 +78,7 @@ export const UserList = () => {
     isSuperAdmin,
     selectTeamAdminModal,
     setSelectTeamAdminModal,
-    getUserTeams,
-    teamList,
-    teamLoading,
     setCurrentUserProfileId,
-    setSelectTeam,
-    selectTeam,
     adminGrantLoading,
     AdminGrant,
   } = useAction();
@@ -221,7 +213,7 @@ export const UserList = () => {
                       <div
                         className="cursor-pointer text-[#2853E3]"
                         onClick={() => {
-                          getUserTeams(String(record.id));
+                          // getUserTeams(String(record.id));
                           setSelectTeamAdminModal(true);
                           setCurrentUserProfileId(String(record.id));
                         }}
@@ -493,21 +485,24 @@ export const UserList = () => {
         open={selectTeamAdminModal}
         onCancle={() => {
           setSelectTeamAdminModal(false);
-          setSelectTeam("");
+          // setSelectTeam("");
         }}
         onConfirm={() => {
-          setSelectTeam("");
+          AdminGrant();
 
-          if (isEmpty(teamList)) {
-            setSelectTeamAdminModal(false);
-          } else {
-            AdminGrant();
-          }
+          // setSelectTeam("");
+
+          // if (isEmpty(teamList)) {
+          //   setSelectTeamAdminModal(false);
+          // } else {
+          //   AdminGrant();
+          // }
         }}
         className={"customModal"}
         confirmLoading={adminGrantLoading}
       >
-        <div>
+        <div>確認將其設置為團隊管理員？</div>
+        {/* <div>
           {teamLoading ? (
             <Skeleton />
           ) : isEmpty(teamList) ? (
@@ -530,7 +525,7 @@ export const UserList = () => {
               })}
             </>
           )}
-        </div>
+        </div> */}
       </CustomModal>
 
       <Drawer
