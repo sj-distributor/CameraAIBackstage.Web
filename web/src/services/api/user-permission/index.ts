@@ -93,7 +93,11 @@ export const PostDeleteRolesUsers = async (data: IDeleteRoleUsers) => {
   await api.post("api/Security/role/users/delete", data);
 };
 
-// 创建角色中的用户
-export const PostCreateRolesUsers = async (data: ICreateRoleUsers) => {
+// 分配角色（旧）
+export const PostCreateRolesUsersOld = async (data: ICreateRoleUsers) => {
   await api.post("/api/Security/role/users/create", data);
+};
+
+export const PostCreateRolesUsers = async (data: ICreateRoleUsers) => {
+  await api.post("/api/CameraAi/team/role/users/create", data);
 };

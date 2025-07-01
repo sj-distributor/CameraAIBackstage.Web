@@ -117,10 +117,10 @@ export const useAction = () => {
 
     const initial = {
       roleUsers: userIds
-        .filter((userId) => !isNaN(Number(userId)))
+        // .filter((userId) => !isNaN(Number(userId)))
         .map((items) => ({
           roleId: Number(id),
-          userId: Number(items),
+          userId: items,
         })),
     };
 
@@ -185,7 +185,7 @@ export const useAction = () => {
       TeamId: currentTeam.id,
     }).then((res) => {
       setCurrentTeamStaff(
-        (res?.userProfiles ?? []).map((item) => String(item.userAccountId))
+        (res?.userProfiles ?? []).map((item) => item.staffId)
       );
     });
   };

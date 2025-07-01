@@ -47,7 +47,8 @@ export const useAction = (props: {
   currentTeamStaff?: string[];
   type: TreeTypeEnum;
 }) => {
-  const { disableTreeStaffId, currentTeamStaff = [], type } = props;
+  // currentTeamStaff = [],
+  const { disableTreeStaffId, type } = props;
 
   const { t } = useAuth();
 
@@ -74,10 +75,10 @@ export const useAction = (props: {
           value: staff.id,
           key: staff.id,
           isUser: true,
-          disabled:
-            disableTreeStaffId?.some((item) => item === staff.id) ||
-            (type === TreeTypeEnum.UserPermission &&
-              !currentTeamStaff.some((item) => item === staff.id)),
+          disabled: disableTreeStaffId?.some((item) => item === staff.id),
+          // ||
+          //   (type === TreeTypeEnum.UserPermission &&
+          //     !currentTeamStaff.some((item) => item === staff.id)),
         };
       });
     }
@@ -109,8 +110,22 @@ export const useAction = (props: {
     //           : undefined,
     //     });
 
+    // const getTreeDataApi =
+    //   type === TreeTypeEnum.UserPermission
+    //     ? GetTreeData({
+    //         HierarchyDepth: HierarchyDepthEnum.Group,
+    //         StaffIdSource: HierarchyStaffIdSourceEnum.IntegerStaffId,
+    //       })
+    //     : GetFoundationData({
+    //         StaffIdSource: HierarchyStaffIdSourceEnum.StringStaffId,
+    //         HierarchyDepth: HierarchyDepthEnum.Group,
+    //       });
+
     GetFoundationData({
-      StaffIdSource: HierarchyStaffIdSourceEnum.StringStaffId,
+      StaffIdSource:
+        type === TreeTypeEnum.UserPermission
+          ? HierarchyStaffIdSourceEnum.IntegerStaffId
+          : HierarchyStaffIdSourceEnum.StringStaffId,
       HierarchyDepth: HierarchyDepthEnum.Group,
     })
       .then((response) => {

@@ -211,8 +211,9 @@ export const useAction = () => {
       TeamId: isSuperAdmin ? undefined : currentTeam.id,
     }).then((res) => {
       setDisableTreeStaffId(
-        (res?.userProfiles ?? []).map((item) =>
-          isSuperAdmin ? item.staffId : JSON.stringify(item.id)
+        (res?.userProfiles ?? []).map(
+          (item) => item.staffId
+          // isSuperAdmin ? item.staffId : JSON.stringify(item.id)
         )
       );
     });
@@ -321,7 +322,7 @@ export const useAction = () => {
       staffIds: selectUser
         .map((item) => item.value)
         .filter((value): value is string => value !== undefined),
-      regionIds: selectRange.filter((item) => item !== -1),
+      areaIds: selectRange.filter((item) => item !== -1),
     })
       .then(() => {
         message.success("新增成功");
@@ -373,14 +374,9 @@ export const useAction = () => {
   const AdminGrant = () => {
     setAdminGrantLoading(true);
 
-    PostAdminGrantApi({
-      UserProfileId: currentUserProfileId,
-      TeamId: selectTeam,
-    })
+    PostAdminGrantApi(currentUserProfileId)
       .then(() => {
         message.success("設置成功");
-
-        setSelectTeam("");
 
         setSelectTeamAdminModal(false);
       })

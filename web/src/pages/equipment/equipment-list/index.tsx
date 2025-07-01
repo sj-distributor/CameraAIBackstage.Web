@@ -1,4 +1,9 @@
-import { PlusOutlined, SearchOutlined, WarningFilled } from "@ant-design/icons";
+import {
+  FileExcelFilled,
+  PlusOutlined,
+  SearchOutlined,
+  WarningFilled,
+} from "@ant-design/icons";
 import {
   Button,
   ConfigProvider,
@@ -11,15 +16,19 @@ import {
   Switch,
   Table,
   Tooltip,
+  Upload,
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
+import { isEmpty } from "ramda";
 import { Trans } from "react-i18next";
 
+import { BatchImportIcon } from "@/assets/equipment";
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-list-keys";
 import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
+import { downloadFilesByALink } from "@/utils/download";
 
 import downArrow from "../../../assets/public/down-arrow.png";
 import { useAction } from "./hook";
@@ -70,6 +79,10 @@ export const EquipmentList = () => {
     initialEquipmentData,
     onChangePage,
     isSuperAdmin,
+    batchAddEquipmentModal,
+    updateBatchModal,
+    handleFileChange,
+    createBatch,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -142,7 +155,7 @@ export const EquipmentList = () => {
                   )
                 ) {
                   setIsBindingOpen(true);
-                  onOpenBind(record.teamId);
+                  onOpenBind();
                 }
               }}
               className={`${
@@ -340,21 +353,34 @@ export const EquipmentList = () => {
                 suffixIcon={<img src={downArrow} />}
               />
             </div>
-            {myPermissions.includes(
-              BackGroundRolePermissionEnum.CanAddCameraAiEquipment
-            ) && (
-              <Button
-                type="primary"
-                className="h-[2.75rem]"
-                onClick={() => {
-                  setIsAddOrEdit(true);
-                  setIsAddOrUpdateOpen(true);
-                }}
-              >
-                <PlusOutlined className="pr-[.5rem]" />
-                {t(KEYS.ADD_DEVICE, source)}
-              </Button>
-            )}
+            <div className="flex items-center">
+              {myPermissions.includes(
+                BackGroundRolePermissionEnum.CanBatchAddEquipments
+              ) && (
+                <Button
+                  className="h-[2.75rem] flex items-center mr-[1.5rem]"
+                  onClick={() => updateBatchModal({ open: true })}
+                >
+                  <BatchImportIcon />
+                  <span className="ml-[.5rem]">批量导入</span>
+                </Button>
+              )}
+              {myPermissions.includes(
+                BackGroundRolePermissionEnum.CanAddCameraAiEquipment
+              ) && (
+                <Button
+                  type="primary"
+                  className="h-[2.75rem]"
+                  onClick={() => {
+                    setIsAddOrEdit(true);
+                    setIsAddOrUpdateOpen(true);
+                  }}
+                >
+                  <PlusOutlined className="pr-[.5rem]" />
+                  {t(KEYS.ADD_DEVICE, source)}
+                </Button>
+              )}
+            </div>
           </div>
           <div className="flex flex-col h-[calc(100vh-18.15rem)] justify-between pt-[1rem] overflow-y-auto no-scrollbar">
             <Table
@@ -565,6 +591,65 @@ export const EquipmentList = () => {
         <span className="pl-[2rem]">
           {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, source)}
         </span>
+      </CustomModal>
+
+      {/* 批量导入 */}
+      <CustomModal
+        modalWidth="600"
+        title={<div>批量导入</div>}
+        onCancle={() => {
+          updateBatchModal({ open: false, fileName: "", fileUrl: "" });
+        }}
+        onConfirm={() => createBatch()}
+        open={batchAddEquipmentModal.open}
+        className="customModal"
+        confirmLoading={batchAddEquipmentModal.submitLoading}
+      >
+        <div>
+          <div className="flex items-center">
+            <div className="w-[24.94rem] h-[2.06rem] border border-solid border-[#E7E8EE] rounded-[0.25rem] flex items-center text-[#9D9FB0] pl-[.75rem] mr-[.5rem]">
+              {isEmpty(batchAddEquipmentModal.fileUrl) ? (
+                "请导入文件。支持格式：.xls、xlsx"
+              ) : (
+                <>
+                  <FileExcelFilled className="text-[#2E7D32] text-[1.5rem] mr-3" />
+                  <div className="text-[0.8rem] font-[500] text-[#9D9FB0]">
+                    {batchAddEquipmentModal.fileName}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <Upload
+              accept=".xls,.xlsx"
+              maxCount={1}
+              customRequest={(record) => {
+                handleFileChange(record);
+              }}
+              fileList={[]}
+            >
+              <div className="text-[#2853E3] cursor-pointer">
+                {isEmpty(batchAddEquipmentModal.fileUrl)
+                  ? "选择文件"
+                  : "重新选择"}
+              </div>
+            </Upload>
+          </div>
+
+          <div className="mt-[1.75rem] text-[#2853E3]">
+            <span
+              className="cursor-pointer"
+              onClick={async () => {
+                downloadFilesByALink({
+                  url: (window as any).appSettings.templateUrl,
+                  name: "CAMERA AI 設備批量導入模板",
+                });
+              }}
+            >
+              下载模板
+            </span>
+          </div>
+        </div>
       </CustomModal>
     </ConfigProvider>
   );

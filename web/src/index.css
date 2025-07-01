@@ -203,3 +203,31 @@ code {
 .teamLogo .ant-upload-list-item:hover::before {
   opacity: 0 !important;
 }
+
+.monitorCollapse .ant-collapse-expand-icon {
+  position: absolute;
+  left: 4rem;
+}
+
+.monitorCollapse .ant-collapse-content {
+  background-color: #f6f8fc !important;
+}
+
+.monitorCollapse .ant-collapse-item {
+  border-bottom: solid 1px #edeef8 !important;
+  margin-top: 1rem;
+}
+
+.accessSelect .ant-select-item {
+  color: #5f6279 !important;
+}
+
+.accessSelect .ant-select-item-option-selected {
+  background-color: white !important;
+  color: #2853e3 !important;
+  font-weight: 440 !important;
+}
+
+.plotModal .ant-modal-content {
+  padding: 0 !important;
+}

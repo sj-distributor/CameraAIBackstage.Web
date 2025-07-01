@@ -48,17 +48,19 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
   const [palybackData, setPalyBlackData] = useState<{
     locationId: string;
+    equipmentId: string;
     equipmentCode: string;
     startTime?: string;
     endTime?: string;
     monitorTypes: number[];
     taskId: string;
   }>({
-    locationId: "string",
-    equipmentCode: "string",
-    startTime: "2024-03-28T10:07:04.871Z",
-    endTime: "2024-03-28T10:07:04.871Z",
-    monitorTypes: [0],
+    locationId: "",
+    equipmentId: "",
+    equipmentCode: "",
+    startTime: "",
+    endTime: "",
+    monitorTypes: [],
     taskId: "",
   });
 
@@ -139,6 +141,8 @@ export const useAction = (props: { showWarningDetails: string }) => {
     if (warningDemandData?.record && warningDemandData.regionAndArea) {
       const {
         monitorType,
+        id,
+        equipmentId,
         equipmentCode,
         replayTaskId,
         occurrenceTime,
@@ -153,6 +157,8 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
       const data = {
         monitorType,
+        id,
+        equipmentId,
         equipmentCode,
         taskId: replayTaskId,
         locationId,
@@ -165,6 +171,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
 
       const getUrlData = {
         monitorTypes: [Number(monitorType)],
+        equipmentId,
         equipmentCode,
         replayTaskId,
         locationId,
@@ -321,6 +328,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
             endTime: endDate.format("YYYY-MM-DDTHH:mm:ss"),
           })
         );
+
         return;
       }
 
@@ -329,6 +337,7 @@ export const useAction = (props: { showWarningDetails: string }) => {
         startTime: dayjs(palybackData.startTime).format("YYYY_MM_DD_HH_mm_ss"),
         endTime: dayjs(palybackData.endTime).format("YYYY_MM_DD_HH_mm_ss"),
         monitorTypes: palybackData.monitorTypes,
+        equipmentId: palybackData.equipmentId,
         equipmentCode: palybackData.equipmentCode,
       };
 

@@ -35,6 +35,10 @@ export default {
     [KEYS.FlUORESCENTCLOTHING]: "FluorescentClothing",
     [KEYS.GLOVES]: "Gloves",
     [KEYS.SAFETYSHOES]: "SafetyShoes",
+    [KEYS.FORKLIFT]: "Froklift",
+    [KEYS.TOUCH_GOODS]: "TouchGoods",
+    [KEYS.FLOOR_WATER]: "FloorWater",
+    [KEYS.FLOOR_ICE]: "FloorIce",
   },
   ch: {
     [KEYS.MONITOR]: "監測管理",
@@ -68,5 +72,9 @@ export default {
     [KEYS.FlUORESCENTCLOTHING]: "螢光衣",
     [KEYS.GLOVES]: "手套",
     [KEYS.SAFETYSHOES]: "安全鞋",
+    [KEYS.FORKLIFT]: "叉車熒光帶匹配檢測",
+    [KEYS.TOUCH_GOODS]: "觸摸二層貨物規範檢測",
+    [KEYS.FLOOR_WATER]: "識別地面水跡",
+    [KEYS.FLOOR_ICE]: "識別地面結冰",
   },
 };

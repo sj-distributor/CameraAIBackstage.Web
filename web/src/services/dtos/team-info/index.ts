@@ -7,6 +7,7 @@ export interface IUpdateTeamProps {
 export interface IGetAttachUrlProps {
   fileUrl: string;
   fileName: string;
+  originFileName: string;
   id?: number;
   uuid?: string;
   createDate?: string;

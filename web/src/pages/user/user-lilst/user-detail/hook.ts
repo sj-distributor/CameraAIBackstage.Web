@@ -30,7 +30,7 @@ const initUserSetting: IPostUpdateUserProps = {
   teamId: "",
   userProfileId: "",
   status: UserStatus.Disable,
-  regionIds: [],
+  areaIds: [],
   userProfileNotificationDto: {
     id: "",
     email: "",
@@ -134,11 +134,7 @@ export const useAction = () => {
 
     console.log(selectRange);
 
-    const updateSetting = { ...userSetting, regionIds: selectRange };
-
-    console.log(updateSetting);
-
-    // return;
+    const updateSetting = { ...userSetting, areaIds: selectRange };
 
     PostUserUpdateApi(updateSetting)
       .then(() => {
@@ -190,8 +186,8 @@ export const useAction = () => {
             teamId: TeamId,
             userProfileId: userInfoRecord?.id,
             status: res?.userProfileDto?.status,
-            regionIds: res?.cameraAiEquipmentVisibleRangesDto.map(
-              (item) => item?.regionId
+            areaIds: (res?.cameraAiEquipmentVisibleRangesDto ?? []).map(
+              (item) => item?.areaId
             ),
             userProfileNotificationDto: {
               id: res?.userProfileNotificationDto?.id,
@@ -202,7 +198,9 @@ export const useAction = () => {
           });
 
           setSelectRange(
-            res?.cameraAiEquipmentVisibleRangesDto.map((item) => item.regionId)
+            (res?.cameraAiEquipmentVisibleRangesDto ?? []).map(
+              (item) => item.areaId
+            )
           );
         })
         .catch((err) => {

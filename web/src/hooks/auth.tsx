@@ -20,6 +20,7 @@ import { Monitor } from "@/pages/monitor";
 import { AddSelectType } from "@/pages/monitor/component/add-select-type";
 import { AddOrUpdateConfiguration } from "@/pages/monitor/component/add-update-configuration";
 import { AreaManagement } from "@/pages/system/area-management";
+import { Door } from "@/pages/system/door";
 import { LicensePlateManagement } from "@/pages/system/license-plate-management";
 import { OperationLog } from "@/pages/system/operation-log";
 import { PortraitList } from "@/pages/system/portrait-list";
@@ -332,6 +333,12 @@ export default ({ children }: { children: React.ReactNode }) => {
               permissions: "CanViewCameraAiAreaManagementPage",
             },
             {
+              path: "/system/door",
+              element: <Door />,
+              name: "出入口管理",
+              permissions: "CanViewCameraAiDoorManage",
+            },
+            {
               path: "/system/log",
               element: <OperationLog />,
               name: t(KEYS.OPERATION_LOG, { ns: "homeMenu" }),
@@ -467,6 +474,10 @@ export default ({ children }: { children: React.ReactNode }) => {
       ? "/system/license"
       : myPermissions.includes(
           BackGroundRolePermissionEnum.CanViewCameraAiAreaManagementPage
+        )
+      ? "/system/door"
+      : myPermissions.includes(
+          BackGroundRolePermissionEnum.CanViewCameraAiDoorManage
         )
       ? "/system/area"
       : "/system/log";

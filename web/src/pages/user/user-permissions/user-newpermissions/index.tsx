@@ -42,6 +42,9 @@ export const NewOrUpdatePermissions = () => {
       case FrontRolePermissionEnum.CanExportCameraAiPlaybackVideo:
         return isEnglish ? 19 : 20;
 
+      case FrontRolePermissionEnum.CanViewCameraAiDoorDetection:
+        return isEnglish ? 24 : 24;
+
       case FrontRolePermissionEnum.CanMarkCameraAiWarning:
         return isEnglish ? 9 : 13;
       default:
@@ -84,8 +87,8 @@ export const NewOrUpdatePermissions = () => {
     } else {
       switch (key) {
         case BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount:
+        case BackGroundRolePermissionEnum.CanBatchAddEquipments:
           return 4;
-        case BackGroundRolePermissionEnum.CanDeleteCameraAiEquipment:
         case BackGroundRolePermissionEnum.CanDeleteCameraAiMonitor:
           return 8;
         case BackGroundRolePermissionEnum.CanDeleteRoles:
@@ -96,6 +99,7 @@ export const NewOrUpdatePermissions = () => {
         case BackGroundRolePermissionEnum.CanDeleteCameraAiPortrait:
         case BackGroundRolePermissionEnum.CanViewDetailCameraAiLicensePlate:
         case BackGroundRolePermissionEnum.CanDeleteCameraAiEquipmentType:
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiArea:
           return 15;
         default:
           return 3;
@@ -166,7 +170,7 @@ export const NewOrUpdatePermissions = () => {
           <div className="font-medium">
             {t(KEYS.FRONT_DESK_FUNCTION_PERMISSIONS, source)}
           </div>
-          <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[15rem] pr-[15.75rem] border-2 mt-[1rem] mb-[1rem]">
+          <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[18.4rem] pr-[15.75rem] border-2 mt-[1rem] mb-[1rem]">
             <div className="flex flex-col w-[71.25rem] rounded pl-[4.9rem] pt-[1rem]">
               <div className="flex justify-row mb-[1rem]">
                 <span
@@ -212,7 +216,7 @@ export const NewOrUpdatePermissions = () => {
           </div>
           <div
             className={`border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl pr-[15.75rem] border-2 my-[1rem] ${
-              isEnglish ? "h-[27rem]" : "h-[25rem]"
+              isEnglish ? "h-[27rem]" : "h-[26rem]"
             }`}
           >
             <div className="flex flex-col w-[71.25rem] rounded pl-[4.9rem] pt-[2rem]">

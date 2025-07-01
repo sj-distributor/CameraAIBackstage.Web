@@ -115,6 +115,27 @@ export const Monitor = () => {
 
             case CameraAiMonitorType.Fight:
               return t(KEYS.FIGHT, source);
+
+            case CameraAiMonitorType.Forklift:
+              return t(KEYS.FORKLIFT, source);
+
+            case CameraAiMonitorType.TouchGoods:
+              return t(KEYS.TOUCH_GOODS, source);
+
+            case CameraAiMonitorType.FloorWater:
+              return t(KEYS.FLOOR_WATER, source);
+
+            case CameraAiMonitorType.FloorIce:
+              return t(KEYS.FLOOR_ICE, source);
+
+            case CameraAiMonitorType.DoorSafety:
+              return "安全門關閉檢測";
+
+            case CameraAiMonitorType.DoorRolling:
+              return "卷簾門關閉檢測";
+
+            case CameraAiMonitorType.Attendance:
+              return "進出時間登記";
           }
         };
 
@@ -324,6 +345,34 @@ export const Monitor = () => {
                   {
                     value: CameraAiMonitorType.Security,
                     label: `${t(KEYS.SECURITY, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.Forklift,
+                    label: `${t(KEYS.FORKLIFT, source)}`,
+                  },
+                  {
+                    value: CameraAiMonitorType.TouchGoods,
+                    label: `${t(KEYS.TOUCH_GOODS, source)}`,
+                  },
+                  {
+                    label: `${t(KEYS.FLOOR_WATER, source)}`,
+                    value: CameraAiMonitorType.FloorWater,
+                  },
+                  {
+                    label: `${t(KEYS.FLOOR_ICE, source)}`,
+                    value: CameraAiMonitorType.FloorIce,
+                  },
+                  {
+                    label: `安全門關閉檢測`,
+                    value: CameraAiMonitorType.DoorSafety,
+                  },
+                  {
+                    label: `卷簾門關閉檢測`,
+                    value: CameraAiMonitorType.DoorRolling,
+                  },
+                  {
+                    label: `進出時間登記`,
+                    value: CameraAiMonitorType.Attendance,
                   },
                 ]}
                 suffixIcon={<img src={downArrow} />}

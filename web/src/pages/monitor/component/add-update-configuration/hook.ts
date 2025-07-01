@@ -1,39 +1,35 @@
-import { useUpdateEffect } from "ahooks";
+import { useRequest, useUpdateEffect } from "ahooks";
 import { App, Form } from "antd";
+import dayjs from "dayjs";
+import { Moment } from "moment";
 import { clone, isEmpty } from "ramda";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Moment } from "moment";
-
 import { useAuth } from "@/hooks/use-auth";
-
-import KEYS from "../../../../i18n/language/keys/monitor-configuration-keys";
-import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
-
+import { GetEquipmentPage } from "@/services/api/equipment/list";
 import {
-  ICronListDto,
-  IOptionsNumberDto,
-  IOptionsStringDto,
-  TimeType,
-} from "./props";
+  GetEquipmentPreviews,
+  GetMonitorSettingDetail,
+  GetNoticeUsers,
+  MonitorSettingCreate,
+  MonitorSettingUpdate,
+} from "@/services/api/monitor";
+import { IEquipmentList } from "@/services/dtos/equipment/list";
 import {
   CameraAiMonitorType,
   CameraAiNotificationType,
   DayOfWeek,
+  IMetadataProps,
   IMonitorNotificationsDto,
   IMonitorSettingsDto,
-  IUserProfiles,
+  INoticeUsersProps,
 } from "@/services/dtos/monitor";
-import {
-  GetMonitorSettingDetail,
-  GetUserList,
-  MonitorSettingCreate,
-  MonitorSettingUpdate,
-} from "@/services/api/monitor";
-import { GetEquipmentPage } from "@/services/api/equipment/list";
-import dayjs from "dayjs";
 import { getErrorMessage } from "@/utils/error-message";
+
+import KEYS from "../../../../i18n/language/keys/monitor-configuration-keys";
+import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
+import { ICronListDto, IOptionsStringDto, TimeType } from "./props";
 
 export const useAction = () => {
   const { t, currentTeam } = useAuth();
@@ -57,9 +53,9 @@ export const useAction = () => {
     timeZone: "Pacific Standard Time",
     title: "",
     duration: null,
-    notificationContent: "", //通知内容
-    broadcastContent: "", //广播内容
-    monitorTypes: [],
+    notificationContent: "", // 通知内容
+    broadcastContent: "", // 广播内容
+    monitorTypes: isAdd ? (id ? [Number(id)] : null) : null,
     startTime: null,
     endTime: null,
     timeInterval: null,
@@ -126,6 +122,7 @@ export const useAction = () => {
     if (editDetailData?.weekDays.includes(x.value)) {
       x.isActive = true;
     }
+
     return x;
   });
 
@@ -137,13 +134,13 @@ export const useAction = () => {
     return cronList.filter((x) => x.isActive).map((x) => x.value);
   }, [cronList]);
 
-  const [userData, setUserData] = useState<IUserProfiles[]>([]); //接受数据
+  const [userData, setUserData] = useState<INoticeUsersProps[]>([]); // 接受数据
 
   const [selectUserData, setSelectUserData] = useState<
     IMonitorNotificationsDto[]
-  >(isAdd ? initUserData : editDetailData?.monitorNotifications ?? []); //接口
+  >(isAdd ? initUserData : editDetailData?.monitorNotifications ?? []); // 接口
 
-  const [deviceList, setDeviceList] = useState<IOptionsNumberDto[]>([]);
+  const [deviceList, setDeviceList] = useState<IEquipmentList[]>([]);
 
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
 
@@ -157,7 +154,13 @@ export const useAction = () => {
     CameraAiMonitorType[]
   >([]);
 
-  const [isSelecteSecurity, setIsSelectSecurity] = useState<boolean>(false);
+  const [isPlot, setIsPlot] = useState<boolean>(false);
+
+  const [previewImg, setPreviewImg] = useState<string>("");
+
+  const [equipmentName, setEquipmentName] = useState<string>("");
+
+  const coordinatesRef = useRef<IMetadataProps[]>();
 
   const animalOptions = [
     {
@@ -231,6 +234,7 @@ export const useAction = () => {
         if (!isEmpty(item.recipientIds)) {
           acc.push(...item.recipientIds);
         }
+
         return acc;
       },
       []
@@ -238,23 +242,24 @@ export const useAction = () => {
 
     // 根据 userData 找对应的recipientIds的名字并凑成一个 option 回显
     return userData.reduce<IOptionsStringDto[]>((acc, item) => {
-      if (editUser.includes(item.staffId)) {
+      if (editUser.includes(item.id)) {
         acc.push({
-          label: item.name,
-          value: item.staffId,
+          label: item.userProfileName,
+          value: item.id,
         });
       }
+
       return acc;
     }, []);
   }, [editDetailData, userData]);
 
-  //构造一个显示的 user option
+  // 构造一个显示的 user option
   const userOptions: IOptionsStringDto[] = useMemo(() => {
     return userData
       ? userData.map((item) => {
           return {
-            label: item.name,
-            value: item.staffId,
+            label: item.userProfileName,
+            value: item.id,
           };
         })
       : [];
@@ -266,6 +271,7 @@ export const useAction = () => {
 
   const handleTotalDuration = (duration: number, unit: TimeType) => {
     let count: number = 0;
+
     // 转换秒数传参
     switch (unit) {
       case TimeType.Second:
@@ -286,6 +292,7 @@ export const useAction = () => {
 
   const handleUnitConversion = (duration: number, isUnit: boolean) => {
     const divisibleMinutes = duration % 60;
+
     const divisibleHours = duration % 3600;
 
     if (divisibleHours === 0) {
@@ -297,13 +304,13 @@ export const useAction = () => {
     }
   };
 
-  const onDeleteNoticeUserItem = (staffId: string) => {
+  const onDeleteNoticeUserItem = (id: string) => {
     // 复制选择的用户列表
     const newSelectUserList = clone(selectUserValue);
 
     // 在 newSelectUserList 中找到要删除的项并删除
     const filteredUserList = newSelectUserList.filter(
-      (user) => user.value !== staffId
+      (user) => user.value !== id
     );
 
     // 更新选择的用户列表状态
@@ -311,12 +318,12 @@ export const useAction = () => {
 
     // 在选择的用户数据列表中找到要删除的项并删除
     const updatedUserData = selectUserData.map((item) => {
-      // 在 recipientIds 数组中找到要删除的 staffId 并删除
-      item.recipientIds = item.recipientIds.filter((id) => id !== staffId);
+      // 在 recipientIds 数组中找到要删除的 id 并删除
+      item.recipientIds = item.recipientIds.filter((id) => id !== id);
 
-      // 在 recipients 数组中找到要删除的 staffId 并删除
+      // 在 recipients 数组中找到要删除的 id 并删除
       item.recipients = item.recipients.filter(
-        (recipient) => recipient.staffId !== staffId
+        (recipient) => recipient.teamUserId !== id
       );
 
       return item;
@@ -331,13 +338,15 @@ export const useAction = () => {
 
     // 构造一个 label value 的 option
     const filterList = userData.reduce<IOptionsStringDto[]>((acc, item) => {
-      if (idList.includes(item.staffId)) {
+      if (idList.includes(item.id)) {
         const newValue: IOptionsStringDto = {
-          label: item.name,
-          value: item.staffId,
+          label: item.userProfileName,
+          value: item.id,
         };
+
         acc.push(newValue);
       }
+
       return acc;
     }, []);
 
@@ -368,7 +377,6 @@ export const useAction = () => {
     form.validateFields().then(async (values) => {
       const data: IMonitorSettingsDto = {
         title: values.title,
-        duration: handleTotalDuration(values.time, values.timeType),
         notificationContent: values.content,
         monitorTypes: values.exceptionType,
         weekDays: values.repeatEveryWeek,
@@ -379,7 +387,28 @@ export const useAction = () => {
         timeZone: "Pacific Standard Time",
         isActive: true,
         teamId: currentTeam.id,
+        singleNoticeTime: handleTotalDuration(
+          values.singleTime,
+          values.singleTimeType
+        ),
       };
+
+      if (
+        [
+          CameraAiMonitorType.People,
+          CameraAiMonitorType.Vehicles,
+          CameraAiMonitorType.AbnormalVehicles,
+          CameraAiMonitorType.Smoke,
+          CameraAiMonitorType.Fight,
+          CameraAiMonitorType.Costume,
+          CameraAiMonitorType.Security,
+          CameraAiMonitorType.Animal,
+          CameraAiMonitorType.DoorSafety,
+          CameraAiMonitorType.DoorRolling,
+        ].some((type) => selectModalType.includes(type))
+      ) {
+        data.duration = handleTotalDuration(values.time, values.timeType);
+      }
 
       if ((isAdd && !!values.broadcastContent) || !isAdd) {
         data.broadcastContent = values.broadcastContent;
@@ -393,7 +422,7 @@ export const useAction = () => {
         data.id = Number(id); // 编辑添加 id
       }
 
-      if (isSelecteSecurity) {
+      if (selectModalType.includes(CameraAiMonitorType.Security)) {
         data.timeInterval = handleTotalDuration(
           values.securityTime,
           values.securityTimeType
@@ -404,18 +433,22 @@ export const useAction = () => {
         selectModalType.includes(CameraAiMonitorType.Animal) ||
         selectModalType.includes(CameraAiMonitorType.Costume)
       ) {
-        data.monitorTypes = data.monitorTypes.concat(costumeAnimalType);
-      }
-
-      if (
-        selectModalType.includes(CameraAiMonitorType.Smoke) ||
-        selectModalType.includes(CameraAiMonitorType.Fight)
-      ) {
-        data.singleNoticeTime = handleTotalDuration(
-          values.singleTime,
-          values.singleTimeType
+        data.monitorTypes = (data?.monitorTypes ?? []).concat(
+          costumeAnimalType
         );
       }
+
+      if (selectModalType.includes(CameraAiMonitorType.TouchGoods)) {
+        if (!data.metadatas) {
+          data.metadatas = [];
+        }
+
+        data.metadatas = coordinatesRef?.current ?? [];
+      }
+
+      console.log(data);
+
+      // return;
 
       setSubmitLoadin(true);
       isAdd
@@ -444,6 +477,7 @@ export const useAction = () => {
   const onChangeUserNotificationType = (
     itemType: CameraAiNotificationType,
     userId: string,
+    name: string,
     isChecked: boolean
   ) => {
     const newList = clone(selectUserData);
@@ -458,12 +492,14 @@ export const useAction = () => {
           const deleteIndex = userItem.recipientIds.findIndex(
             (x) => x === userId
           );
+
           userItem.recipientIds.splice(deleteIndex, 1);
+
           userItem.recipients.splice(deleteIndex, 1);
         } else {
           // 新增勾选，向 recipientIds 中添加 userId
           userItem.recipientIds.push(userId);
-          userItem.recipients.push({ staffId: userId });
+          userItem.recipients.push({ teamUserId: userId, name: name });
         }
       }
     }
@@ -476,7 +512,7 @@ export const useAction = () => {
     if (foundItemIndex === -1) {
       newList.push({
         recipientIds: [userId],
-        recipients: [{ staffId: userId }],
+        recipients: [{ teamUserId: userId, name: name }],
         notifyType: itemType,
       });
     }
@@ -485,14 +521,12 @@ export const useAction = () => {
   };
 
   const initGetUserList = () => {
-    GetUserList({
-      PageSize: 2147483647,
-      PageIndex: 1,
-      Status: 1,
+    GetNoticeUsers({
+      KeyWord: "",
       TeamId: currentTeam.id,
     })
       .then((res) => {
-        setUserData(res.userProfiles);
+        setUserData(res);
       })
       .catch(() => {
         setUserData([]);
@@ -522,11 +556,7 @@ export const useAction = () => {
       TeamId: currentTeam.id,
     })
       .then((res) => {
-        const newEquipmentList = res.equipments.map((item) => {
-          return { label: item.equipmentName ?? "", value: item.id };
-        });
-
-        setDeviceList(newEquipmentList);
+        setDeviceList(res.equipments ?? []);
       })
       .catch(() => {
         setDeviceList([]);
@@ -534,20 +564,20 @@ export const useAction = () => {
   }, []);
 
   useEffect(() => {
-    if (isAdd) return; // 新增不请求 detail
+    if (isAdd) {
+      setSelectModalType(editDetailData?.monitorTypes ?? []);
+
+      return;
+    }
     setDetailLoading(true);
     GetMonitorSettingDetail({ settingId: Number(id) })
       .then((res) => {
         serEditDetailData(res);
 
-        setIsSelectSecurity(
-          res.monitorTypes.includes(CameraAiMonitorType.Security)
-        );
-
-        setSelectModalType(res.monitorTypes);
+        setSelectModalType(res.monitorTypes ?? []);
 
         setCostumeAnimalType(
-          res.monitorTypes.filter(
+          (res?.monitorTypes ?? []).filter(
             (type) =>
               type === CameraAiMonitorType.Cat ||
               type === CameraAiMonitorType.Dog ||
@@ -557,6 +587,12 @@ export const useAction = () => {
               type === CameraAiMonitorType.SafetyShoes
           )
         );
+
+        coordinatesRef.current = res.metadatas ?? [];
+
+        if (res.monitorTypes?.includes(CameraAiMonitorType.TouchGoods)) {
+          getPreviewImg(res.equipmentIds[0].toString());
+        }
       })
       .catch(() => {
         message.error("獲取詳情數據失敗");
@@ -600,6 +636,38 @@ export const useAction = () => {
     form.setFieldsValue({ costumeAnimalType: filterType });
   }, [selectModalType]);
 
+  const getVideoByEquipmentId = (id: string | string[]) => {
+    const formattedValue = selectModalType.includes(
+      CameraAiMonitorType.TouchGoods
+    )
+      ? [id]
+      : id;
+
+    form.setFieldValue("deviceSelect", formattedValue);
+
+    if (
+      selectModalType.includes(CameraAiMonitorType.TouchGoods) ||
+      editDetailData?.monitorTypes?.includes(CameraAiMonitorType.TouchGoods)
+    ) {
+      getPreviewImg(Array.isArray(id) ? id : [id]);
+    }
+  };
+
+  const { loading: previewImgLoading, run: getPreviewImg } = useRequest(
+    (id) => GetEquipmentPreviews({ EquipmentIds: id }),
+    {
+      manual: true,
+      onSuccess: (res) => {
+        setPreviewImg(res?.[0].previewImg ?? "");
+      },
+      onError: () => {
+        setPreviewImg("");
+
+        message.error("获取设备画面失败");
+      },
+    }
+  );
+
   return {
     cronList,
     userOptions,
@@ -616,10 +684,12 @@ export const useAction = () => {
     isAdd,
     detailLoading,
     submitLoading,
-    isSelecteSecurity,
     selectModalType,
     costumeAnimalOption,
     costumeAnimalType,
+    isPlot,
+    previewImg,
+    previewImgLoading,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
@@ -629,8 +699,12 @@ export const useAction = () => {
     handleUnitConversion,
     secondsToTime,
     filterOption,
-    setIsSelectSecurity,
     setSelectModalType,
     setCostumeAnimalType,
+    setIsPlot,
+    getVideoByEquipmentId,
+    coordinatesRef,
+    equipmentName,
+    setEquipmentName,
   };
 };

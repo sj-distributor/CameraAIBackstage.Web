@@ -50,7 +50,7 @@ export interface IUserProfileNotificationDto {
 
 export interface ICameraAiEquipmentVisibleRangesDto {
   id: string;
-  regionId: number;
+  areaId: number;
   teamUserId: string;
 }
 
@@ -58,6 +58,6 @@ export interface IPostUpdateUserProps {
   teamId: string;
   userProfileId: string;
   status: UserStatus;
-  regionIds: number[];
+  areaIds: number[];
   userProfileNotificationDto: IUserProfileNotificationDto;
 }
