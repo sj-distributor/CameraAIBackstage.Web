@@ -374,14 +374,9 @@ export const useAction = () => {
   const AdminGrant = () => {
     setAdminGrantLoading(true);
 
-    PostAdminGrantApi({
-      UserProfileId: currentUserProfileId,
-      TeamId: selectTeam,
-    })
+    PostAdminGrantApi(currentUserProfileId)
       .then(() => {
         message.success("設置成功");
-
-        setSelectTeam("");
 
         setSelectTeamAdminModal(false);
       })
