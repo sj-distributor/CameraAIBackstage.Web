@@ -1,48 +1,16 @@
 import { ConfigProvider } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AuthStatus } from "@/hooks/auth-status";
 import { useAuth } from "@/hooks/use-auth";
+import { CameraFrondesk } from "@/pages/camera-frontdesk";
 import { Home } from "@/pages/home/index";
 import { Login } from "@/pages/login";
 import { IRouterList } from "@/services/dtos/routes";
 
 export const Router = () => {
-  const { routerList, myPermissions, locale, signIn, defaultPath } = useAuth();
-
-  const [aPageData, setAPageData] = useState<string>("");
-
-  const pathname = window.location.pathname;
-
-  useEffect(() => {
-    if (aPageData) {
-      localStorage.setItem(
-        (window as any).appSettings?.tokenKey ?? "tokenKey",
-        aPageData
-      );
-      signIn(aPageData);
-      // localStorage.removeItem("aPageData");
-    }
-  }, [aPageData]);
-
-  useEffect(() => {
-    // 之后修整
-    const aPageData = localStorage.getItem("aPageData");
-
-    if (aPageData) {
-      setAPageData(aPageData);
-    } else {
-      window.addEventListener("message", receiveMessage, false);
-    }
-
-    function receiveMessage(event: { origin: string; data: string }) {
-      if (event.origin !== (window as any).appSettings?.frontDeskDomain) return;
-      if (event.data) {
-        localStorage.setItem("aPageData", event.data);
-      }
-    }
-  }, []);
+  const { routerList, myPermissions, locale, defaultPath } = useAuth();
 
   const AuthRoutes = (Routes: IRouterList[]) => {
     return Routes.map((childrenItem, childrenIndex) => {
@@ -68,30 +36,41 @@ export const Router = () => {
     }).filter(Boolean); // 过滤掉为null的元素;
   };
 
-  const pathsList = routerList
-    .flatMap((item) => [
-      item.path,
-      ...(item.children ? item.children.map((child) => child.path) : []),
-    ])
-    .filter((item) => item && !item.includes("id"));
+  useEffect(() => {
+    const handleTokenRefresh = (token: string, userName: string) => {
+      if (window.$wujie?.props) {
+        window.$wujie.props.token = token;
+        window.$wujie.props.userName = userName;
+      }
+    };
+
+    const registerListener = () => {
+      if (window.$wujie?.bus) {
+        window.$wujie.bus.$on("token_refresh", handleTokenRefresh);
+      } else {
+        console.log("Wujie bus 未初始化");
+      }
+    };
+
+    registerListener();
+
+    return () => {
+      if (window.$wujie?.bus) {
+        window.$wujie.bus.$off("token_refresh", handleTokenRefresh);
+      }
+    };
+  }, []);
 
   return (
     <ConfigProvider locale={locale}>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
-          path="*"
+          path="/frontdesk"
           element={
-            <Navigate
-              to={
-                pathsList.includes(pathname) ||
-                pathname.startsWith("/monitor/configuration/") ||
-                pathname.startsWith("/user/permissions/roles/") ||
-                pathname.startsWith("/user/permissions/distribute/")
-                  ? pathname
-                  : defaultPath
-              }
-            />
+            <AuthStatus>
+              <CameraFrondesk />
+            </AuthStatus>
           }
         />
         <Route element={<Home />}>
@@ -105,6 +84,14 @@ export const Router = () => {
             </Route>
           ))}
         </Route>
+        <Route
+          path="*"
+          element={
+            <AuthStatus>
+              <Navigate to={defaultPath} />
+            </AuthStatus>
+          }
+        />
       </Routes>
     </ConfigProvider>
   );

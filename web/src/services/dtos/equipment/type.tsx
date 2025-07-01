@@ -25,4 +25,5 @@ export interface IEquipmentTypeCreateOrUpdateDto {
   description: string;
   id?: number;
   label: CameraAiEquipmentTypeLabel;
+  teamId?: string;
 }

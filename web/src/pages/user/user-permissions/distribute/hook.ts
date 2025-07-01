@@ -1,3 +1,4 @@
+import { useDebounce } from "ahooks";
 import { message } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -13,12 +14,13 @@ import {
   IUserByRoleIdData,
   IUserByRoleIdResponse,
 } from "@/services/dtos/user-permission";
-import { useDebounce } from "ahooks";
+import { ITreeData } from "../tranfer-tree/hook";
+import { GetUserList } from "@/services/api/user";
 
 export const useAction = () => {
   const { id } = useParams();
 
-  const { t } = useAuth();
+  const { t, currentTeam } = useAuth();
 
   const navigate = useNavigate();
 
@@ -39,6 +41,8 @@ export const useAction = () => {
 
   const [selectedRows, setSelectedRows] = useState<IUserByRoleIdData[]>([]);
 
+  const [selectUser, setSelectUser] = useState<ITreeData[]>([]);
+
   const [record, setRecord] = useState<IUserByRoleIdData>();
 
   const [pageDto, setPageDto] = useState<{
@@ -46,7 +50,7 @@ export const useAction = () => {
     pageSize: number;
   }>({
     pageIndex: 1,
-    pageSize: 5,
+    pageSize: 10,
   });
 
   const initialUserByRoleIdData: IUserByRoleIdResponse = {
@@ -61,6 +65,8 @@ export const useAction = () => {
     useState<IUserByRoleIdResponse>(initialUserByRoleIdData);
 
   const [disableTreeStaffId, setDisableTreeStaffId] = useState<string[]>([]);
+
+  const [currentTeamStaff, setCurrentTeamStaff] = useState<string[]>([]);
 
   const filterKeyword = useDebounce(searchValue, { wait: 500 });
 
@@ -111,10 +117,10 @@ export const useAction = () => {
 
     const initial = {
       roleUsers: userIds
-        .filter((userId) => !isNaN(Number(userId)))
+        // .filter((userId) => !isNaN(Number(userId)))
         .map((items) => ({
           roleId: Number(id),
-          userId: Number(items),
+          userId: items,
         })),
     };
 
@@ -171,6 +177,23 @@ export const useAction = () => {
       });
   };
 
+  // 获取团队所有用户
+  const getAllUserList = () => {
+    GetUserList({
+      PageIndex: 1,
+      PageSize: 2147483647,
+      TeamId: currentTeam.id,
+    }).then((res) => {
+      setCurrentTeamStaff(
+        (res?.userProfiles ?? []).map((item) => item.staffId)
+      );
+    });
+  };
+
+  useEffect(() => {
+    getAllUserList();
+  }, []);
+
   useEffect(() => {
     initGetRolesUsersList({
       PageIndex: pageDto.pageIndex,
@@ -213,5 +236,8 @@ export const useAction = () => {
     handleOperateDelete,
     onSelectedRow,
     handelGetSelectedUsers,
+    selectUser,
+    setSelectUser,
+    currentTeamStaff,
   };
 };

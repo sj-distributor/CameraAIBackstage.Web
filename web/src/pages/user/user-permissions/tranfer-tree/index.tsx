@@ -1,34 +1,38 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Transfer, Tree } from "antd";
 import { TransferItem } from "antd/es/transfer";
-import { Key, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, Key, SetStateAction, useEffect, useState } from "react";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
+import { TreeTypeEnum } from "@/services/dtos/tree";
 
 import { ITreeData, useAction } from "./hook";
-import { TreeTypeEnum } from "@/services/dtos/tree";
 
 export const TransferTree = ({
   isModelOpen,
-  setIsModelOpen,
-  handelGetSelectedUsers,
-  staffIdSource,
   disableTreeStaffId,
   type,
+  selectUser,
+  currentTeamStaff,
+  setSelectUser,
+  setIsModelOpen,
+  handelGetSelectedUsers,
 }: {
   isModelOpen: boolean;
-  setIsModelOpen: (value: SetStateAction<boolean>) => void;
   data?: TransferItem[];
-  handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
   staffIdSource: number;
   disableTreeStaffId: string[];
   type: TreeTypeEnum;
+  selectUser: ITreeData[];
+  currentTeamStaff?: string[];
+  setSelectUser: Dispatch<SetStateAction<ITreeData[]>>;
+  setIsModelOpen: (value: SetStateAction<boolean>) => void;
+  handelGetSelectedUsers: (userIds: string[]) => Promise<boolean>;
 }) => {
-  const { t, source, treeData } = useAction({
-    staffIdSource,
-    isModelOpen,
+  const { t, source, treeData, onGetFoundationData } = useAction({
     disableTreeStaffId,
+    currentTeamStaff,
     type,
   });
 
@@ -208,6 +212,16 @@ export const TransferTree = ({
     }
   }, [targetKeys]);
 
+  useEffect(() => {
+    if (isModelOpen) {
+      onGetFoundationData();
+
+      setTargetAllData(selectUser);
+
+      setTargetKeys(selectUser.map((item) => item.key));
+    }
+  }, [isModelOpen]);
+
   return (
     <CustomModal
       title={
@@ -215,7 +229,10 @@ export const TransferTree = ({
           <div>{t(KEYS.ADD_USER, source)}</div>
           <CloseOutlined
             className="mr-[1rem]"
-            onClick={() => setIsModelOpen(false)}
+            onClick={() => {
+              handelResetSelectData();
+              setIsModelOpen(false);
+            }}
           />
         </div>
       }
@@ -226,17 +243,28 @@ export const TransferTree = ({
       }}
       confirmLoading={isConfirmLoading}
       onConfirm={async () => {
-        const data = targetAllData.map((item) => item.key);
+        if (
+          type === TreeTypeEnum.UserPermission ||
+          type === TreeTypeEnum.SuperAdminUserList
+        ) {
+          const data = targetAllData.map((item) => item.key);
 
-        if (handelGetSelectedUsers && data.length > 0) {
-          const loading = await handelGetSelectedUsers(data);
+          if (handelGetSelectedUsers && data.length > 0) {
+            const loading = await handelGetSelectedUsers(data);
 
-          setIsConfirmLoading(loading);
+            setIsConfirmLoading(loading);
 
-          if (!loading) {
-            handelResetSelectData();
-            setIsModelOpen(false);
+            if (!loading) {
+              handelResetSelectData();
+              setIsModelOpen(false);
+            }
           }
+        } else {
+          setSelectUser(targetAllData);
+
+          setIsModelOpen(false);
+
+          handelResetSelectData();
         }
       }}
       open={isModelOpen}

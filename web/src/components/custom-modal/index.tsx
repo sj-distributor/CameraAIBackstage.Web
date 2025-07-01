@@ -17,8 +17,8 @@ export const CustomModal = ({
   confirmLoading,
 }: {
   title: JSX.Element;
-  onCancle: () => void;
-  onConfirm: () => void;
+  onCancle?: () => void;
+  onConfirm?: () => void;
   children: JSX.Element;
   open: boolean;
   className?: string;

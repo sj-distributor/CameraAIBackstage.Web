@@ -1,4 +1,9 @@
-import { PlusOutlined, SearchOutlined, WarningFilled } from "@ant-design/icons";
+import {
+  FileExcelFilled,
+  PlusOutlined,
+  SearchOutlined,
+  WarningFilled,
+} from "@ant-design/icons";
 import {
   Button,
   ConfigProvider,
@@ -11,15 +16,19 @@ import {
   Switch,
   Table,
   Tooltip,
+  Upload,
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import type { ColumnsType } from "antd/es/table";
+import { isEmpty } from "ramda";
 import { Trans } from "react-i18next";
 
+import { BatchImportIcon } from "@/assets/equipment";
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/equipment-list-keys";
 import { BackGroundRolePermissionEnum } from "@/pages/user/user-permissions/user-newpermissions/props";
 import { IEquipmentList, IRegionDto } from "@/services/dtos/equipment/list";
+import { downloadFilesByALink } from "@/utils/download";
 
 import downArrow from "../../../assets/public/down-arrow.png";
 import { useAction } from "./hook";
@@ -69,6 +78,11 @@ export const EquipmentList = () => {
     myPermissions,
     initialEquipmentData,
     onChangePage,
+    isSuperAdmin,
+    batchAddEquipmentModal,
+    updateBatchModal,
+    handleFileChange,
+    createBatch,
   } = useAction();
 
   const columns: ColumnsType<IEquipmentList> = [
@@ -153,9 +167,17 @@ export const EquipmentList = () => {
       },
     },
     {
+      title: t(KEYS.ENTERPRISE, source),
+      width: "16.6%",
+      hidden: !isSuperAdmin,
+      render: () => {
+        return <div />;
+      },
+    },
+    {
       title: t(KEYS.OPERATE, source),
       key: "operate",
-      width: "16.6%",
+      width: "26.6%",
       render: (_, record) => (
         <div>
           {myPermissions.includes(
@@ -173,9 +195,10 @@ export const EquipmentList = () => {
               {t(KEYS.EDIT, source)}
             </Button>
           )}
-          {myPermissions.includes(
+          {(myPermissions.includes(
             BackGroundRolePermissionEnum.CanDeleteCameraAiEquipment
-          ) && (
+          ) ||
+            isSuperAdmin) && (
             <Button
               type="link"
               className="w-[6rem]"
@@ -253,7 +276,7 @@ export const EquipmentList = () => {
       }}
     >
       <div>
-        <div className="bg-white h-[calc(100vh-5.5rem)] w-full flex-col justify-start p-[1.5rem] overflow-scroll no-scrollbar">
+        <div className="bg-white w-full h-full flex-col justify-start p-[1.5rem]">
           <span className="text-[1.125rem] font-semibold tracking-tight">
             {t(KEYS.DEVICE_LIST, source)}
           </span>
@@ -330,57 +353,70 @@ export const EquipmentList = () => {
                 suffixIcon={<img src={downArrow} />}
               />
             </div>
-            {myPermissions.includes(
-              BackGroundRolePermissionEnum.CanAddCameraAiEquipment
-            ) && (
-              <Button
-                type="primary"
-                className="h-[2.75rem]"
-                onClick={() => {
-                  setIsAddOrEdit(true);
-                  setIsAddOrUpdateOpen(true);
-                }}
-              >
-                <PlusOutlined className="pr-[.5rem]" />
-                {t(KEYS.ADD_DEVICE, source)}
-              </Button>
-            )}
+            <div className="flex items-center">
+              {myPermissions.includes(
+                BackGroundRolePermissionEnum.CanBatchAddEquipments
+              ) && (
+                <Button
+                  className="h-[2.75rem] flex items-center mr-[1.5rem]"
+                  onClick={() => updateBatchModal({ open: true })}
+                >
+                  <BatchImportIcon />
+                  <span className="ml-[.5rem]">批量导入</span>
+                </Button>
+              )}
+              {myPermissions.includes(
+                BackGroundRolePermissionEnum.CanAddCameraAiEquipment
+              ) && (
+                <Button
+                  type="primary"
+                  className="h-[2.75rem]"
+                  onClick={() => {
+                    setIsAddOrEdit(true);
+                    setIsAddOrUpdateOpen(true);
+                  }}
+                >
+                  <PlusOutlined className="pr-[.5rem]" />
+                  {t(KEYS.ADD_DEVICE, source)}
+                </Button>
+              )}
+            </div>
           </div>
-          <div className="flex flex-col h-[calc(100%-4.8rem)] justify-between pt-[1rem]">
+          <div className="flex flex-col h-[calc(100vh-18.15rem)] justify-between pt-[1rem] overflow-y-auto no-scrollbar">
             <Table
               loading={loading}
               rowKey={(record) => record.id}
               columns={columns}
               dataSource={data}
               className="tableHiddenScrollBar flex-1"
-              scroll={{ y: 510 }}
+              scroll={{ y: 510, x: 800 }}
               pagination={false}
             />
-            <div className="flex justify-between items-center py-[1rem]">
-              <div className="text-[#929292]">
-                <Trans
-                  i18nKey={KEYS.PAGINATION}
-                  ns="equipmentList"
-                  values={{ count: dataTotalCount }}
-                  components={{
-                    span: <span className="text-[#2853E3] font-light mx-1" />,
-                  }}
-                />
-              </div>
-              <div>
-                <Pagination
-                  current={pageDto.PageIndex}
-                  pageSize={pageDto.PageSize}
-                  pageSizeOptions={[5, 10, 20]}
-                  total={dataTotalCount}
-                  showQuickJumper
-                  showSizeChanger
-                  onChange={(page, pageSize) => {
-                    onChangePage(page, pageSize);
-                  }}
-                  className="flex flex-wrap justify-center"
-                />
-              </div>
+          </div>
+          <div className="flex justify-between items-center py-[1rem]">
+            <div className="text-[#929292]">
+              <Trans
+                i18nKey={KEYS.PAGINATION}
+                ns="equipmentList"
+                values={{ count: dataTotalCount }}
+                components={{
+                  span: <span className="text-[#2853E3] font-light mx-1" />,
+                }}
+              />
+            </div>
+            <div>
+              <Pagination
+                current={pageDto.PageIndex}
+                pageSize={pageDto.PageSize}
+                pageSizeOptions={[5, 10, 20]}
+                total={dataTotalCount}
+                showQuickJumper
+                showSizeChanger
+                onChange={(page, pageSize) => {
+                  onChangePage(page, pageSize);
+                }}
+                className="flex flex-wrap justify-center"
+              />
             </div>
           </div>
         </div>
@@ -555,6 +591,65 @@ export const EquipmentList = () => {
         <span className="pl-[2rem]">
           {t(KEYS.PLEASE_CONFIRM_WHETHER_TO_DELETE, source)}
         </span>
+      </CustomModal>
+
+      {/* 批量导入 */}
+      <CustomModal
+        modalWidth="600"
+        title={<div>批量导入</div>}
+        onCancle={() => {
+          updateBatchModal({ open: false, fileName: "", fileUrl: "" });
+        }}
+        onConfirm={() => createBatch()}
+        open={batchAddEquipmentModal.open}
+        className="customModal"
+        confirmLoading={batchAddEquipmentModal.submitLoading}
+      >
+        <div>
+          <div className="flex items-center">
+            <div className="w-[24.94rem] h-[2.06rem] border border-solid border-[#E7E8EE] rounded-[0.25rem] flex items-center text-[#9D9FB0] pl-[.75rem] mr-[.5rem]">
+              {isEmpty(batchAddEquipmentModal.fileUrl) ? (
+                "请导入文件。支持格式：.xls、xlsx"
+              ) : (
+                <>
+                  <FileExcelFilled className="text-[#2E7D32] text-[1.5rem] mr-3" />
+                  <div className="text-[0.8rem] font-[500] text-[#9D9FB0]">
+                    {batchAddEquipmentModal.fileName}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <Upload
+              accept=".xls,.xlsx"
+              maxCount={1}
+              customRequest={(record) => {
+                handleFileChange(record);
+              }}
+              fileList={[]}
+            >
+              <div className="text-[#2853E3] cursor-pointer">
+                {isEmpty(batchAddEquipmentModal.fileUrl)
+                  ? "选择文件"
+                  : "重新选择"}
+              </div>
+            </Upload>
+          </div>
+
+          <div className="mt-[1.75rem] text-[#2853E3]">
+            <span
+              className="cursor-pointer"
+              onClick={async () => {
+                downloadFilesByALink({
+                  url: (window as any).appSettings.templateUrl,
+                  name: "CAMERA AI 設備批量導入模板",
+                });
+              }}
+            >
+              下载模板
+            </span>
+          </div>
+        </div>
       </CustomModal>
     </ConfigProvider>
   );

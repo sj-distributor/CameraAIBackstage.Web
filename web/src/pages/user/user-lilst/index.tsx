@@ -1,5 +1,6 @@
 import {
   CloseOutlined,
+  DownOutlined,
   SearchOutlined,
   WarningFilled,
 } from "@ant-design/icons";
@@ -7,23 +8,28 @@ import PlusOutlined from "@ant-design/icons/lib/icons/PlusOutlined";
 import {
   Button,
   ConfigProvider,
+  Drawer,
+  Form,
   Input,
   Pagination,
+  Popover,
   Select,
+  Spin,
   Switch,
   Table,
   TableProps,
 } from "antd";
+import { CustomTagProps } from "rc-select/lib/BaseSelect";
 import { Trans } from "react-i18next";
 
 import { CustomModal } from "@/components/custom-modal";
 import KEYS from "@/i18n/language/keys/user-list-keys";
+import { TreeTypeEnum } from "@/services/dtos/tree";
 import { IUserDataItem, UserStatus } from "@/services/dtos/user";
 
 import { TransferTree } from "../user-permissions/tranfer-tree";
 import { BackGroundRolePermissionEnum } from "../user-permissions/user-newpermissions/props";
 import { useAction } from "./hook";
-import { TreeTypeEnum } from "@/services/dtos/tree";
 
 export const UserList = () => {
   const {
@@ -53,6 +59,28 @@ export const UserList = () => {
     handelGetUserList,
     filterKeyword,
     disableTreeStaffId,
+    navigate,
+    form,
+    openDrawer,
+    setOpenDrawer,
+    selectRange,
+    setSelectRange,
+    selectUser,
+    setSelectUser,
+    openAddUserDrawer,
+    selectLoading,
+    regionData,
+    filterOption,
+    handleCreateUser,
+    currentTeam,
+    adduserLoading,
+    currentAccount,
+    isSuperAdmin,
+    selectTeamAdminModal,
+    setSelectTeamAdminModal,
+    setCurrentUserProfileId,
+    adminGrantLoading,
+    AdminGrant,
   } = useAction();
 
   const columns: TableProps<IUserDataItem>["columns"] = [
@@ -79,6 +107,13 @@ export const UserList = () => {
     {
       title: t(KEYS.POSITION_STATUS, source),
       dataIndex: "positionStatus",
+    },
+    {
+      title: t(KEYS.ENTERPRISE, source),
+      hidden: !isSuperAdmin,
+      render: () => {
+        return <div />;
+      },
     },
     {
       title: t(KEYS.PHONE, source),
@@ -111,7 +146,8 @@ export const UserList = () => {
                   status
                     ? BackGroundRolePermissionEnum.CanEnableCameraAiUserAccount
                     : BackGroundRolePermissionEnum.CanDisableCameraAiUserAccount
-                )
+                ) ||
+                isSuperAdmin
               ) {
                 setUpdateUserId(String(record.id));
                 handelUpdateUserData({
@@ -124,40 +160,10 @@ export const UserList = () => {
         );
       },
     },
-    // {
-    //   title: t(KEYS.OPERATE, source),
-    //   dataIndex: "operate",
-    //   render: () => {
-    //     return (
-    //       <ConfigProvider
-    //         theme={{
-    //           components: {
-    //             Button: {
-    //               colorLink: "#2853E3",
-    //               colorLinkHover: "#5168e3",
-    //               colorPrimary: "#2853E3",
-    //               colorPrimaryHover: "#5168e3",
-    //               defaultBorderColor: "#2853E3",
-    //               defaultColor: "#2853E3",
-    //               linkHoverBg: "#F0F4FF",
-    //             },
-    //           },
-    //         }}
-    //       >
-    //         <Button
-    //           type="link"
-    //           disabled
-    //           onClick={() => setIsResetPassword(true)}
-    //         >
-    //           {t(KEYS.RESET_PASSWORD, source)}
-    //         </Button>
-    //       </ConfigProvider>
-    //     );
-    //   },
-    // },
     {
       title: t(KEYS.OPERATE, source),
       key: "operate",
+      width: 200,
       render: (_, record) => {
         return (
           <ConfigProvider
@@ -175,20 +181,82 @@ export const UserList = () => {
               },
             }}
           >
-            {myPermissions.includes(
-              BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
-            ) && (
-              <Button
-                type="link"
-                onClick={() => {
-                  setIsDeleteUsers(false);
-                  setDeleteUserKeys([String(record.id)]);
-                  setIsRemoveUser(true);
-                }}
-              >
-                {t(KEYS.REMOVE, source)}
-              </Button>
-            )}
+            <div className="flex items-center">
+              {(myPermissions.includes(
+                BackGroundRolePermissionEnum.CanViewDetailCameraAiUsers
+              ) ||
+                isSuperAdmin) && (
+                <Button
+                  type="link"
+                  onClick={() =>
+                    navigate(
+                      `${
+                        isSuperAdmin
+                          ? "/team/userList/detail"
+                          : "/user/list/detail"
+                      }`,
+                      { state: { record } }
+                    )
+                  }
+                >
+                  {t(KEYS.DETAIL, source)}
+                </Button>
+              )}
+
+              {isSuperAdmin ? (
+                <Popover
+                  arrow={false}
+                  placement="bottomLeft"
+                  className="text-[#2853E3] cursor-pointer ml-[1rem]"
+                  content={
+                    <div className="w-[8rem] h-[3.5rem] flex flex-col justify-around pl-[1rem]">
+                      <div
+                        className="cursor-pointer text-[#2853E3]"
+                        onClick={() => {
+                          // getUserTeams(String(record.id));
+                          setSelectTeamAdminModal(true);
+                          setCurrentUserProfileId(String(record.id));
+                        }}
+                      >
+                        設為團隊管理員
+                      </div>
+                      <div
+                        className="cursor-pointer text-[#F04E4E]"
+                        onClick={() => {
+                          setIsDeleteUsers(false);
+                          setDeleteUserKeys([String(record.id)]);
+                          setIsRemoveUser(true);
+                        }}
+                      >
+                        {t(KEYS.REMOVE, source)}
+                      </div>
+                    </div>
+                  }
+                >
+                  更多
+                  <DownOutlined
+                    style={{ fontSize: "0.7rem", marginLeft: "1rem" }}
+                  />
+                </Popover>
+              ) : (
+                myPermissions.includes(
+                  BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount
+                ) &&
+                record.id !== Number(currentTeam.leaderId) &&
+                record.id !== currentAccount.id && (
+                  <Button
+                    type="link"
+                    onClick={() => {
+                      setIsDeleteUsers(false);
+                      setDeleteUserKeys([String(record.id)]);
+                      setIsRemoveUser(true);
+                    }}
+                  >
+                    {t(KEYS.REMOVE, source)}
+                  </Button>
+                )
+              )}
+            </div>
           </ConfigProvider>
         );
       },
@@ -238,14 +306,16 @@ export const UserList = () => {
                   Status: status,
                   Keyword: filterKeyword,
                   PageSize: userListData.PageSize,
+                  TeamId: isSuperAdmin ? undefined : currentTeam.id,
                 })
               }
             />
           </div>
           <div className="flex self-end mb-[.8rem]">
-            {myPermissions.includes(
+            {(myPermissions.includes(
               BackGroundRolePermissionEnum.CanBatchDeleteCameraAiUserAccount
-            ) && (
+            ) ||
+              isSuperAdmin) && (
               <Button
                 type="default"
                 className="mr-[1rem] h-[2.75rem]"
@@ -257,13 +327,16 @@ export const UserList = () => {
                 {t(KEYS.BATCH_REMOVE_USERS, source)}
               </Button>
             )}
-            {myPermissions.includes(
+            {(myPermissions.includes(
               BackGroundRolePermissionEnum.CanAddCameraAiUserAccount
-            ) && (
+            ) ||
+              isSuperAdmin) && (
               <Button
                 type="primary"
                 className="w-[7.25rem] h-[2.75rem]"
-                onClick={() => setIsAddUser(true)}
+                onClick={() => {
+                  isSuperAdmin ? setIsAddUser(true) : openAddUserDrawer();
+                }}
               >
                 <PlusOutlined /> {t(KEYS.ADD_USERS, source)}
               </Button>
@@ -271,7 +344,7 @@ export const UserList = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-between h-[calc(100vh-18.15rem)]  overflow-y-auto no-scrollbar">
+      <div className="flex flex-col justify-between h-[calc(100vh-18.15rem)] overflow-y-auto no-scrollbar">
         <Table
           rowKey={(record) => record.id}
           columns={columns}
@@ -287,6 +360,11 @@ export const UserList = () => {
                 selectedRowKeys.map((item) => String(item))
               );
             },
+            getCheckboxProps: (record) => ({
+              disabled:
+                record.id === Number(currentTeam.leaderId) ||
+                record.id === currentAccount.id,
+            }),
           }}
         />
       </div>
@@ -313,6 +391,7 @@ export const UserList = () => {
                 PageIndex: page,
                 Status: userListData.Status,
                 Keyword: filterKeyword,
+                TeamId: isSuperAdmin ? undefined : currentTeam.id,
               })
             }
             showSizeChanger
@@ -327,7 +406,11 @@ export const UserList = () => {
         handelGetSelectedUsers={handelGetSelectedUsers}
         staffIdSource={0}
         disableTreeStaffId={disableTreeStaffId}
-        type={TreeTypeEnum.UserList}
+        type={
+          isSuperAdmin ? TreeTypeEnum.SuperAdminUserList : TreeTypeEnum.UserList
+        }
+        selectUser={selectUser}
+        setSelectUser={setSelectUser}
       />
 
       <CustomModal
@@ -371,7 +454,7 @@ export const UserList = () => {
                 {t(KEYS.CURRENT_PASSWORD, source)}
               </span>
               <Input
-                placeholder={t(KEYS.PLEASE_ENTRE)}
+                placeholder={t(KEYS.PLEASE_ENTRE, source)}
                 className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
               />
             </div>
@@ -381,7 +464,7 @@ export const UserList = () => {
               {t(KEYS.NEW_PASSWORD, source)}
             </span>
             <Input
-              placeholder={t(KEYS.PLEASE_ENTRE)}
+              placeholder={t(KEYS.PLEASE_ENTRE, source)}
               className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
             />
           </div>
@@ -390,12 +473,187 @@ export const UserList = () => {
               {t(KEYS.CONFIRM_PASSWORD, source)}
             </span>
             <Input
-              placeholder={t(KEYS.PLEASE_ENTRE)}
+              placeholder={t(KEYS.PLEASE_ENTRE, source)}
               className="h-[1.7rem] rounded w-[23rem] ml-[0.5rem]"
             />
           </div>
         </div>
       </CustomModal>
+
+      <CustomModal
+        title={<div>設置管理員</div>}
+        open={selectTeamAdminModal}
+        onCancle={() => {
+          setSelectTeamAdminModal(false);
+          // setSelectTeam("");
+        }}
+        onConfirm={() => {
+          AdminGrant();
+
+          // setSelectTeam("");
+
+          // if (isEmpty(teamList)) {
+          //   setSelectTeamAdminModal(false);
+          // } else {
+          //   AdminGrant();
+          // }
+        }}
+        className={"customModal"}
+        confirmLoading={adminGrantLoading}
+      >
+        <div>確認將其設置為團隊管理員？</div>
+        {/* <div>
+          {teamLoading ? (
+            <Skeleton />
+          ) : isEmpty(teamList) ? (
+            <div>該用戶沒有加入任何團隊</div>
+          ) : (
+            <>
+              <div className="mb-[1rem]">
+                請選擇一個團隊，將此用戶設置為該團隊的管理員
+              </div>
+              {teamList.map((item, index) => {
+                return (
+                  <Radio
+                    key={index}
+                    checked={item.id === selectTeam}
+                    onClick={() => setSelectTeam(item.id)}
+                  >
+                    {item.name}
+                  </Radio>
+                );
+              })}
+            </>
+          )}
+        </div> */}
+      </CustomModal>
+
+      <Drawer
+        title={t(KEYS.ADD_USERS, source)}
+        closable={false}
+        open={openDrawer}
+        width="33.75rem"
+        styles={{ footer: { backgroundColor: "#F6F8FC" } }}
+        onClose={() => setOpenDrawer(false)}
+        keyboard={true}
+        extra={
+          <CloseOutlined
+            className="cursor-pointer"
+            onClick={() => setOpenDrawer(false)}
+          />
+        }
+        footer={
+          <div className="flex justify-end">
+            <ConfigProvider
+              theme={{
+                components: {
+                  Button: {
+                    defaultBorderColor: "#2853E3",
+                    defaultColor: "#2853E3",
+                  },
+                },
+              }}
+            >
+              <Button
+                className="w-[6rem] h-[2.75rem]"
+                onClick={() => setOpenDrawer(false)}
+              >
+                {t(KEYS.CANCEL, source)}
+              </Button>
+            </ConfigProvider>
+
+            <Button
+              className="w-[6rem] h-[2.75rem] ml-[1.5rem]"
+              type="primary"
+              loading={adduserLoading}
+              onClick={handleCreateUser}
+            >
+              {t(KEYS.SUBMIT, source)}
+            </Button>
+          </div>
+        }
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item label={t(KEYS.ADD_NEW_USER, source)} required={true}>
+            <Select
+              mode="multiple"
+              open={false}
+              suffixIcon={null}
+              placeholder={t(KEYS.SELECT_USER, source)}
+              value={selectUser.map((item) => ({
+                label: item.title,
+                value: item.key,
+              }))}
+              labelInValue
+              onFocus={() => {
+                if (!isAddUser) {
+                  (document.activeElement as HTMLElement)?.blur();
+                  setIsAddUser(true);
+                }
+              }}
+              onDeselect={(selectedItem) => {
+                setSelectUser((prev) =>
+                  prev.filter((item) => item.value !== selectedItem.value)
+                );
+              }}
+            />
+          </Form.Item>
+          <Form.Item label={t(KEYS.VIEW_RANGE, source)} required={true}>
+            <Select
+              value={selectRange}
+              mode="multiple"
+              allowClear
+              options={regionData}
+              filterOption={filterOption}
+              dropdownRender={(menu) => (
+                <>
+                  {selectLoading ? (
+                    <Spin className="flex justify-center" />
+                  ) : (
+                    <div>{menu}</div>
+                  )}
+                </>
+              )}
+              onChange={(value) => {
+                if (value.every((item) => item === -1)) {
+                  setSelectRange(value);
+                } else {
+                  const data = value.filter((item) => item !== -1);
+
+                  setSelectRange(data);
+                }
+              }}
+              onSelect={(value) => {
+                if (value === -1) {
+                  setSelectRange([value]);
+                }
+              }}
+              tagRender={(props: CustomTagProps) => {
+                const { label, closable, onClose } = props;
+
+                if (selectRange.includes(-1)) {
+                  return <span className="ml-2">{label}</span>;
+                }
+
+                return (
+                  <span className="ant-select-selection-item !bg-[#F6F8FC] !px-3">
+                    {label}
+                    {closable && (
+                      <span
+                        onClick={onClose}
+                        className="ant-select-selection-item-remove ml-2"
+                      >
+                        <CloseOutlined />
+                      </span>
+                    )}
+                  </span>
+                );
+              }}
+              popupClassName={"selectOptions"}
+            />
+          </Form.Item>
+        </Form>
+      </Drawer>
     </div>
   );
 };

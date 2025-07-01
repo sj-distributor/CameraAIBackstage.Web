@@ -1,5 +1,7 @@
 {
   "serverUrl": "https://testsmarties.yamimeal.ca",
-  "tokenKey": "tokenKey",
-  "frontDeskDomain": ""
+  "tokenKey": "token",
+  "userNameKey": "userName",
+  "cameraAIFrontdeskDomain": "https://camerai.wiltechs.com/",
+  "templateUrl": "https://smartiestest.oss-cn-hongkong.aliyuncs.com/20250215/e6e650fd-2430-4532-8758-7bc72e786b47.xlsx?Expires=253402300799&OSSAccessKeyId=LTAI5tEYyDT8YqJBSXaFDtyk&Signature=wfF9evowjHjO23tVjoNIRawjXPE%3D"
 }

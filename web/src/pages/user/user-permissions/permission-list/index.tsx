@@ -4,12 +4,12 @@ import { ColumnsType } from "antd/es/table";
 import { Trans } from "react-i18next";
 
 import KEYS from "@/i18n/language/keys/user-permissions-keys";
+import { PermissionEnum } from "@/services/dtos/public";
 import { IRole } from "@/services/dtos/user-permission";
 
 import { OperateConfirmModal } from "../operate-confirm";
 import { BackGroundRolePermissionEnum } from "../user-newpermissions/props";
 import { useAction } from "./hook";
-import { PermissionEnum } from "@/services/dtos/public";
 
 export const UserPermissions = () => {
   const {
@@ -57,8 +57,8 @@ export const UserPermissions = () => {
   const columns: ColumnsType<IRole> = [
     {
       title: t(KEYS.ROLE_NAME, source),
-      dataIndex: "displayName",
-      key: "displayName",
+      dataIndex: "name",
+      key: "name",
       className: "w-[16rem]",
     },
     {
@@ -133,7 +133,7 @@ export const UserPermissions = () => {
       <div className="bg-white w-full pr-[1rem] pl-[1.6rem] h-screen">
         <div className="bg-white w-full flex-col justify-start pt-[1.5rem] overflow-scroll no-scrollbar">
           <span className="text-[1.125rem] font-semibold tracking-tight">
-            {t(KEYS.ROLE_LIST, source)}
+            {t(KEYS.USER_PERMISSIONS, source)}
           </span>
           <div className="flex justify-between mb-[1rem] mt-[1.5rem] ">
             <Input

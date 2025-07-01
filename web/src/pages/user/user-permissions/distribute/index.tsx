@@ -7,6 +7,7 @@ import {
   Pagination,
   Table,
 } from "antd";
+import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import { Trans } from "react-i18next";
 
@@ -17,7 +18,6 @@ import { IUserByRoleIdData } from "@/services/dtos/user-permission";
 import { OperateConfirmModal } from "../operate-confirm";
 import { TransferTree } from "../tranfer-tree";
 import { useAction } from "./hook";
-import { ColumnsType } from "antd/es/table";
 
 export const UserDistribute = () => {
   const {
@@ -43,6 +43,9 @@ export const UserDistribute = () => {
     handleOperateDelete,
     onSelectedRow,
     handelGetSelectedUsers,
+    selectUser,
+    setSelectUser,
+    currentTeamStaff,
   } = useAction();
 
   const columns: ColumnsType<IUserByRoleIdData> = [
@@ -195,7 +198,7 @@ export const UserDistribute = () => {
       <OperateConfirmModal
         isModelOpen={isDeletePermissions}
         setIsModelOpen={setIsDeletePermissions}
-        contentText={t(KEYS.CONFIRM_DELETE_ROLE, source)}
+        contentText={t(KEYS.CONFIRM_DELETE_USER, source)}
         handleOperateConfirm={handleOperateDelete}
       />
       <OperateConfirmModal
@@ -212,6 +215,9 @@ export const UserDistribute = () => {
         staffIdSource={HierarchyStaffIdSourceEnum.IntegerStaffId}
         type={TreeTypeEnum.UserPermission}
         disableTreeStaffId={disableTreeStaffId}
+        currentTeamStaff={currentTeamStaff}
+        selectUser={selectUser}
+        setSelectUser={setSelectUser}
       />
     </div>
   );

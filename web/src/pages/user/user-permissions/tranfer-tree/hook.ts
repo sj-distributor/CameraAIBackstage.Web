@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { GetFoundationData, GetTreeData } from "@/services/api/tree";
 import {
   HierarchyDepthEnum,
+  HierarchyStaffIdSourceEnum,
   IFoundationResponse,
   TreeTypeEnum,
 } from "@/services/dtos/tree";
@@ -42,12 +43,12 @@ export interface ITreeSelectNode {
 }
 
 export const useAction = (props: {
-  staffIdSource: number;
-  isModelOpen: boolean;
   disableTreeStaffId: string[];
-  type: number;
+  currentTeamStaff?: string[];
+  type: TreeTypeEnum;
 }) => {
-  const { staffIdSource, isModelOpen, disableTreeStaffId, type } = props;
+  // currentTeamStaff = [],
+  const { disableTreeStaffId, type } = props;
 
   const { t } = useAuth();
 
@@ -75,6 +76,9 @@ export const useAction = (props: {
           key: staff.id,
           isUser: true,
           disabled: disableTreeStaffId?.some((item) => item === staff.id),
+          // ||
+          //   (type === TreeTypeEnum.UserPermission &&
+          //     !currentTeamStaff.some((item) => item === staff.id)),
         };
       });
     }
@@ -92,8 +96,56 @@ export const useAction = (props: {
     return foundationData.staffDepartmentHierarchy.map(convertDetailToTreeData);
   };
 
-  const loadData = (fetchData: Promise<any>) => {
-    fetchData
+  const onGetFoundationData = () => {
+    // const getTreeDataApi = isSuperAdmin
+    //   ? GetFoundationData({
+    //       StaffIdSource: HierarchyStaffIdSourceEnum.StringStaffId,
+    //       HierarchyDepth: HierarchyDepthEnum.Group,
+    //     })
+    //   : GetTreeData({
+    //       HierarchyDepth: HierarchyDepthEnum.Group,
+    //       StaffIdSource:
+    //         type === TreeTypeEnum.UserPermission
+    //           ? HierarchyStaffIdSourceEnum.IntegerStaffId
+    //           : undefined,
+    //     });
+
+    // const getTreeDataApi =
+    //   type === TreeTypeEnum.UserPermission
+    //     ? GetTreeData({
+    //         HierarchyDepth: HierarchyDepthEnum.Group,
+    //         StaffIdSource: HierarchyStaffIdSourceEnum.IntegerStaffId,
+    //       })
+    //     : GetFoundationData({
+    //         StaffIdSource: HierarchyStaffIdSourceEnum.StringStaffId,
+    //         HierarchyDepth: HierarchyDepthEnum.Group,
+    //       });
+
+    GetFoundationData({
+      StaffIdSource:
+        type === TreeTypeEnum.UserPermission
+          ? HierarchyStaffIdSourceEnum.IntegerStaffId
+          : HierarchyStaffIdSourceEnum.StringStaffId,
+      HierarchyDepth: HierarchyDepthEnum.Group,
+    })
+      .then((response) => {
+        setTreeData(response ? convertToTreeData(response) : []);
+        setTreeFoundationResponse(response);
+      })
+      .catch((error) => {
+        message.error((error as Error).message);
+        setTreeData([]);
+      });
+
+    return;
+
+    GetTreeData({
+      HierarchyDepth: HierarchyDepthEnum.Group,
+      StaffIdSource:
+        type === TreeTypeEnum.UserPermission
+          ? HierarchyStaffIdSourceEnum.IntegerStaffId
+          : undefined,
+    })
       .then((response) => {
         setTreeData(response ? convertToTreeData(response) : []);
         setTreeFoundationResponse(response);
@@ -104,23 +156,6 @@ export const useAction = (props: {
       });
   };
 
-  const onGetFoundationData = () => {
-    const fetchDataPromise =
-      type === TreeTypeEnum.UserList
-        ? GetFoundationData(
-            "HierarchyDepth",
-            HierarchyDepthEnum.Group,
-            staffIdSource
-          )
-        : GetTreeData("HierarchyDepth", HierarchyDepthEnum.Group);
-
-    loadData(fetchDataPromise);
-  };
-
-  useEffect(() => {
-    isModelOpen && onGetFoundationData();
-  }, [isModelOpen]);
-
   useEffect(() => {
     disableTreeStaffId?.length &&
       setTreeData(
@@ -130,5 +165,5 @@ export const useAction = (props: {
       );
   }, [disableTreeStaffId]);
 
-  return { t, source, treeData };
+  return { t, source, treeData, onGetFoundationData };
 };

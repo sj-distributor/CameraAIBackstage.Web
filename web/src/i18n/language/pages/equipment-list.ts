@@ -47,6 +47,8 @@ export default {
     [KEYS.CLICK_TO_UNBIND]: "Remove Binding",
     [KEYS.CLICK_TO_BIND]: "Device binding",
     [KEYS.PAGINATION]: "Total <span>{{count}}</span> Item",
+    [KEYS.TEAM_NAME]: "Team Name",
+    [KEYS.ENTERPRISE]: "Enterprise",
   },
   ch: {
     [KEYS.DEVICE_LIST]: "設備列表",
@@ -91,5 +93,7 @@ export default {
     [KEYS.CLICK_TO_UNBIND]: "點擊解除綁定",
     [KEYS.CLICK_TO_BIND]: "點擊綁定",
     [KEYS.PAGINATION]: "共 <span>{{count}}</span> 條",
+    [KEYS.TEAM_NAME]: "團隊名稱",
+    [KEYS.ENTERPRISE]: "所屬企業",
   },
 };

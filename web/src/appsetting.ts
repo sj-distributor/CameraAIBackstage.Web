@@ -1,6 +1,9 @@
 export interface IAppSettings {
   serverUrl: string;
   tokenKey: string;
+  userNameKey: string;
+  cameraAIFrontdeskDomain: string;
+  templateUrl: string;
 }
 
 export const InitialAppSetting = async () => {

@@ -1,7 +1,27 @@
+import { ITeamListProps, IUserInfo } from "@/services/dtos/login";
+import { IUserDataItem } from "@/services/dtos/user";
+
 import { api } from "../http-client";
 
-export const Login = async (data: { userName: string; password: string }) => {
+export const Login = async (data: IUserInfo) => {
   const response = await api.post<string>("/auth/login", data);
+
+  return response.data;
+};
+
+export const GetTeamsMineApi = async (data: { UserProfileId: string }) => {
+  const response = await api.get<ITeamListProps[]>("/api/CameraAi/teams/mine", {
+    params: data,
+  });
+
+  return response.data;
+};
+
+export const GetAccountInfoApi = async (data: object) => {
+  const response = await api.get<{ userProfile: IUserDataItem }>(
+    "/api/CameraAi/user/mine",
+    data
+  );
 
   return response.data;
 };

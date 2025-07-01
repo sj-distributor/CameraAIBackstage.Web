@@ -11,7 +11,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
     "ahooks": "^3.7.4",
-    "antd": "^5.12.8",
+    "antd": "5.13.0",
     "axios": "^1.4.0",
     "dayjs": "^1.11.10",
     "i18next": "^23.7.16",
@@ -23,7 +23,8 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^14.0.0",
     "react-router-dom": "^6.19.0",
-    "swiper": "^11.0.5"
+    "swiper": "^11.0.5",
+    "wujie-react": "^1.0.22"
   },
   "devDependencies": {
     "@sj-distributor/eslint-plugin-react": "^0.7.1",

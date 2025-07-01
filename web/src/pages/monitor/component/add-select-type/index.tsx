@@ -1,33 +1,84 @@
-import { Collapse, CollapseProps, ConfigProvider } from "antd";
+import { DownOutlined, SearchOutlined, UpOutlined } from "@ant-design/icons";
+import { Collapse, CollapseProps, ConfigProvider, Input } from "antd";
 
-import cameraTag from "../../../../assets/monitor/camera-tag.png";
-import collapseDown from "../../../../assets/monitor/collapse-down.png";
 import menuIcon from "../../../../assets/monitor/menu-icon.svg";
+import { IWarningType, IWarningTypeLabel } from "../../props";
 import { useAction } from "./hook";
 
 export const AddSelectType = () => {
-  const { monitorTypeOption, token, navigate, KEYS, t, source } = useAction();
+  const {
+    KEYS,
+    t,
+    source,
+    filteredMonitorTypeOption,
+    keyWord,
+    collapseOpenKey,
+    navigate,
+    setKeyWord,
+    setCollapseOpenKey,
+  } = useAction();
 
-  const collapseItem: () => CollapseProps["items"] = () => [
+  const collapseItem: CollapseProps["items"] = [
     {
-      key: "1",
-      children: (
-        <>
-          {monitorTypeOption.map((item, index) => (
-            <div
-              className="hover:bg-[#F6F8FC] py-[1.5rem] px-[1rem] rounded-lg text-[.875rem]"
-              key={index}
-              onClick={() =>
-                navigate(`/monitor/configuration/add/` + item.value.toString())
-              }
-            >
-              {item.label}
-            </div>
-          ))}
-        </>
+      key: IWarningType.People,
+      label: (
+        <div className="flex items-center">
+          <div className="w-[0.19rem] h-[1rem] bg-[#2853E3] mr-[0.5rem]" />
+          <div className="text-[#2853E3] font-semibold">
+            {IWarningTypeLabel[IWarningType.People]}
+          </div>
+        </div>
       ),
+      children: <></>,
+    },
+    {
+      key: IWarningType.Vehicles,
+      label: (
+        <div className="flex items-center">
+          <div className="w-[0.19rem] h-[1rem] bg-[#2853E3] mr-[0.5rem]" />
+          <div className="text-[#2853E3] font-semibold">
+            {IWarningTypeLabel[IWarningType.Vehicles]}
+          </div>
+        </div>
+      ),
+      children: <></>,
+    },
+    {
+      key: IWarningType.Element,
+      label: (
+        <div className="flex items-center">
+          <div className="w-[0.19rem] h-[1rem] bg-[#2853E3] mr-[0.5rem]" />
+          <div className="text-[#2853E3] font-semibold">
+            {IWarningTypeLabel[IWarningType.Element]}
+          </div>
+        </div>
+      ),
+      children: <></>,
     },
   ];
+
+  const updateCollapseItem = collapseItem
+    .map((item) => {
+      const matchedOption = filteredMonitorTypeOption.find(
+        (option) => option.type === item.key
+      );
+
+      return {
+        ...item,
+        children: matchedOption?.children.map((item, index) => (
+          <div
+            key={index}
+            className="p-[1rem] rounded-lg text-[.875rem] hover:text-[#2853E3] cursor-pointer"
+            onClick={() =>
+              navigate(`/monitor/configuration/add/` + item.value.toString())
+            }
+          >
+            {item.label}
+          </div>
+        )),
+      };
+    })
+    .filter((item) => item.children && item.children.length > 0);
 
   return (
     <ConfigProvider
@@ -56,11 +107,12 @@ export const AddSelectType = () => {
             className="text-[1.125rem] text-[#5F6279] cursor-pointer"
             onClick={() => navigate("/monitor")}
           >
-            {t(KEYS.MONITOR, source)}{" "}
+            {t(KEYS.MONITOR, source)}
           </span>
           <span className="text-[1.125rem] font-semibold tracking-tight">
             / {t(KEYS.ADD, source)}
           </span>
+
           <div className="my-[1rem] h-[calc(100%-8.125rem)] flex justify-center">
             <div className=" w-[71.25rem]">
               <div className="flex items-center">
@@ -70,17 +122,48 @@ export const AddSelectType = () => {
                 </span>
               </div>
               <div className="border border-[#E7E8EE] border-solid rounded-lg p-[2rem_1.5rem] h-full overflow-y-auto customScollbar shadow-md">
+                <div className="flex items-center mb-[1rem]">
+                  <div className="w-[5rem] h-[2.5rem] bg-[#F0F4FF] text-[#2853E3] flex justify-center items-center mr-[0.63rem]">
+                    CAMERA
+                  </div>
+                  <Input
+                    placeholder="请输入"
+                    className="w-[17.5rem] h-[2.5rem]"
+                    suffix={<SearchOutlined />}
+                    value={keyWord}
+                    onChange={(e) => setKeyWord(e.target.value)}
+                  />
+                </div>
+
                 <Collapse
+                  items={updateCollapseItem}
                   bordered={false}
-                  activeKey={["1"]}
-                  expandIcon={() => (
-                    <div className="flex items-center font-semibold">
-                      <img src={collapseDown} />
-                      <img src={cameraTag} className="pl-4" />
-                    </div>
-                  )}
-                  style={{ background: token.colorBgContainer }}
-                  items={collapseItem()}
+                  ghost={true}
+                  activeKey={collapseOpenKey}
+                  className="monitorCollapse"
+                  expandIcon={(panelProps) => {
+                    return (
+                      <>
+                        {panelProps.isActive ? (
+                          <DownOutlined
+                            style={{
+                              fontSize: "0.6rem",
+                              fontWeight: "bolder",
+                              marginLeft: "1rem",
+                            }}
+                          />
+                        ) : (
+                          <UpOutlined
+                            style={{
+                              fontSize: "0.6rem",
+                              marginLeft: "1rem",
+                            }}
+                          />
+                        )}
+                      </>
+                    );
+                  }}
+                  onChange={(key) => setCollapseOpenKey(key as string[])}
                 />
               </div>
             </div>

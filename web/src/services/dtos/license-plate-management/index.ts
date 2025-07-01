@@ -8,6 +8,7 @@ export interface IGetVehicleMonitorRecordsRequest {
   EquipmentName?: string;
   EquipmentCodes?: string[];
   MonitorTypes?: CameraAiMonitorType[];
+  TeamId?: string;
 }
 
 export interface IGetRegisteredVehicleListRequest {
@@ -18,6 +19,7 @@ export interface IGetRegisteredVehicleListRequest {
   Status?: CameraAiMonitorRecordStatus;
   RegisterType?: CameraAiMonitorRegisterType;
   Name?: string;
+  TeamId?: string;
 }
 
 export interface IPostRegisteringCarRequest {
@@ -48,6 +50,7 @@ export interface IGetWarningDemandResponse {
 export interface IWarningRecord {
   id: number;
   correlationId: string;
+  equipmentId: string;
   equipmentCode: string;
   settingId: number;
   monitorType: CameraAiMonitorType;
@@ -119,6 +122,7 @@ export enum CameraAiMonitorType {
 
 export interface IPlayBackGenerateRequest {
   locationId: string;
+  equipmentId: string;
   equipmentCode: string;
   startTime: string;
   endTime: string;
@@ -128,6 +132,7 @@ export interface IPlayBackGenerateRequest {
 
 export interface IGeneratePlayBackRequest {
   locationId: string;
+  equipmentId?: string;
   equipmentCode: string;
   startTime: string;
   endTime: string;

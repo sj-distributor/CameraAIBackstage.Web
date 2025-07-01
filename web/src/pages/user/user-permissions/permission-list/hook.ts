@@ -9,11 +9,10 @@ import {
   IRequestRoles,
   IRole,
   IRoleByPermissionResponse,
-  RoleSystemSourceEnum,
 } from "@/services/dtos/user-permission";
 
 export const useAction = () => {
-  const { t, myPermissions } = useAuth();
+  const { t, myPermissions, currentTeam } = useAuth();
 
   const navigate = useNavigate();
 
@@ -36,7 +35,7 @@ export const useAction = () => {
     pageSize: number;
   }>({
     pageIndex: 1,
-    pageSize: 5,
+    pageSize: 10,
   });
 
   const [isDeletePermissions, setISDeletePermissions] =
@@ -129,7 +128,8 @@ export const useAction = () => {
           PageIndex: pageDto.pageIndex,
           PageSize: pageDto.pageSize,
           KeyWord: filterKeyword,
-          systemSource: RoleSystemSourceEnum.CameraAi,
+          // UserId: currentAccount.id,
+          TeamId: currentTeam.id,
         });
       })
       .catch((error) => message.error((error as Error).message));
@@ -140,7 +140,8 @@ export const useAction = () => {
       PageIndex: pageDto.pageIndex,
       PageSize: pageDto.pageSize,
       KeyWord: filterKeyword,
-      systemSource: RoleSystemSourceEnum.CameraAi,
+      // UserId: currentAccount.id,
+      TeamId: currentTeam.id,
     });
   }, [pageDto.pageIndex, pageDto.pageSize]);
 
@@ -148,9 +149,10 @@ export const useAction = () => {
     isSearch &&
       getRolesAllDataList({
         PageIndex: 1,
-        PageSize: 5,
+        PageSize: 10,
         KeyWord: filterKeyword,
-        systemSource: RoleSystemSourceEnum.CameraAi,
+        // UserId: currentAccount.id,
+        TeamId: currentTeam.id,
       });
   }, [filterKeyword]);
 

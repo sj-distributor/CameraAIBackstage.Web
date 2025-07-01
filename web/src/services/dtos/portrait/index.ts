@@ -15,6 +15,7 @@ export interface IPortraitDto {
   isQualified: boolean;
   faces: IFaceDto[];
   createdTime?: string;
+  teamId?: string;
 }
 
 export interface IPortraitResponse {
@@ -34,6 +35,7 @@ export interface IGetPortraitByParams {
   pageIndex: number;
   pageSize: number;
   keyword?: string;
+  TeamId?: string;
 }
 
 export interface IPreviewImageDto {

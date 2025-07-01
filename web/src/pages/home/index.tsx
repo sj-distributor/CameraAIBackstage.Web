@@ -1,10 +1,11 @@
 import { GlobalOutlined } from "@ant-design/icons";
-import { Avatar, Dropdown, Layout, Menu, MenuProps, Select } from "antd";
+import { Avatar, Dropdown, Layout, Menu, MenuProps, Select, Spin } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import { SubMenuType } from "antd/es/menu/interface";
+import { SubMenuType } from "antd/es/menu/hooks/useItems";
 import { Outlet } from "react-router-dom";
 
+import { LogOutIcon, TeamIcon } from "@/assets/top-menu";
 import { useAuth } from "@/hooks/use-auth";
 import KEYS from "@/i18n/language/keys/home-menu-keys";
 import { IRouterList } from "@/services/dtos/routes";
@@ -50,7 +51,18 @@ type MenuItem = Required<MenuProps>["items"][number];
 export const Home = () => {
   const { menuInformation, navigate, setMenuInformation } = useAction();
 
-  const { language, changeLanguage, t, routerList, myPermissions } = useAuth();
+  const {
+    language,
+    changeLanguage,
+    t,
+    routerList,
+    myPermissions,
+    permission,
+    userNameKey,
+    isSuperAdmin,
+    currentTeam,
+    signOut,
+  } = useAuth();
 
   const hasPermission = (permission: string | undefined) => {
     return permission && myPermissions.includes(permission);
@@ -100,31 +112,30 @@ export const Home = () => {
   const getMenu = () => {
     if (!routerList) return;
 
-    const items = permissionRouterList(routerList).reduce(
-      (accumulator, item) => {
-        if (item && item.path !== "") {
-          const menuItem: MenuItem | SubMenuType = {
-            label: item.name,
-            key: item.path,
-            icon: item.icon,
-          };
+    const items = (
+      isSuperAdmin ? routerList : permissionRouterList(routerList)
+    ).reduce((accumulator, item) => {
+      if (item && item.path !== "") {
+        const menuItem: MenuItem | SubMenuType = {
+          label: item.name,
+          key: item.path,
+          icon: item.icon,
+        };
 
-          if (!!item.children && !item.path.includes("/monitor")) {
-            (menuItem as SubMenuType).children = item.children
-              .filter((child) => child.path !== "")
-              .map((child) => ({
-                label: child.name,
-                key: child.path,
-              }));
-          }
-
-          accumulator.push(menuItem);
+        if (!!item.children && !item.path.includes("/monitor")) {
+          (menuItem as SubMenuType).children = item.children
+            .filter((child) => child.path !== "")
+            .map((child) => ({
+              label: child.name,
+              key: child.path,
+            }));
         }
 
-        return accumulator;
-      },
-      [] as MenuItem[]
-    );
+        accumulator.push(menuItem);
+      }
+
+      return accumulator;
+    }, [] as MenuItem[]);
 
     return items;
   };
@@ -132,22 +143,17 @@ export const Home = () => {
   const items: MenuProps["items"] = [
     {
       label: (
-        <div className="flex items-center hover:text-[#2853e3]">
-          <span className="iconfont icon-a-Key2" />
-          <div className="ml-[.5rem]">
-            {t(KEYS.CHANGE_PASSWORD, { ns: "homeMenu" })}
-          </div>
-        </div>
-      ),
-      key: "0",
-    },
-    {
-      label: (
         <div
           className="flex items-center hover:text-[#2853e3]"
-          onClick={() => navigate("login")}
+          onClick={() => {
+            if (window.__POWERED_BY_WUJIE__) {
+              window.$wujie.props?.signOut();
+            } else {
+              signOut(() => navigate("login", { replace: true }));
+            }
+          }}
         >
-          <span className="iconfont icon-sign_out" />
+          <LogOutIcon />
           <div className="ml-[.5rem]">
             {t(KEYS.SIGN_OUT, { ns: "homeMenu" })}
           </div>
@@ -157,94 +163,124 @@ export const Home = () => {
     },
   ];
 
+  !isSuperAdmin &&
+    items.unshift({
+      label: (
+        <div className="flex items-center hover:text-[#2853e3]">
+          <TeamIcon />
+          <div className="ml-[.5rem] max-w-[10rem] whitespace-nowrap overflow-hidden text-ellipsis text-[#9D9FB0]">
+            {currentTeam?.name ?? ""}
+          </div>
+        </div>
+      ),
+      key: "0",
+    });
+
   return (
     <Layout
       style={layoutStyle}
       className={`${language === "en" ? "englishMenu" : ""}`}
     >
-      <Sider style={siderStyle}>
-        <Header style={siderHeaderStyle}>Camera AI後台管理系統</Header>
-        <Menu
-          className="menuStyle"
-          mode="inline"
-          items={getMenu()}
-          style={{ border: "none" }}
-          openKeys={menuInformation.openKeys}
-          selectedKeys={menuInformation.selectedKeys}
-          onOpenChange={(keyPath) => {
-            setMenuInformation({ ...menuInformation, openKeys: keyPath });
-          }}
-          onClick={({ key, keyPath }) => {
-            setMenuInformation({
-              ...menuInformation,
-              selectedKeys: [keyPath[0]],
-            });
+      {permission.isGetPermission ? (
+        permission.hasSwitchCameraAiBackEnd ? (
+          <>
+            <Sider style={siderStyle}>
+              <Header style={siderHeaderStyle}>Camera AI後台管理系統</Header>
+              <Menu
+                className="menuStyle"
+                mode="inline"
+                items={getMenu()}
+                style={{ border: "none" }}
+                openKeys={menuInformation.openKeys}
+                selectedKeys={menuInformation.selectedKeys}
+                onOpenChange={(keyPath) => {
+                  setMenuInformation({ ...menuInformation, openKeys: keyPath });
+                }}
+                onClick={({ key, keyPath }) => {
+                  setMenuInformation({
+                    ...menuInformation,
+                    selectedKeys: [keyPath[0]],
+                  });
 
-            navigate(key);
-          }}
-        />
-      </Sider>
-      <Layout>
-        <Header style={headerStyle}>
-          <Select
-            className="mr-4"
-            value={language}
-            style={{ width: 120 }}
-            defaultValue="ch"
-            bordered={false}
-            onChange={(value) => changeLanguage(value)}
-            suffixIcon={false}
-            popupClassName="navigation-select-dropdown teamNameSelect"
-            options={[
-              {
-                value: "ch",
-                label: (
-                  <div>
-                    <GlobalOutlined className="mr-2" />
-                    中文繁體
-                  </div>
-                ),
-              },
-              {
-                value: "en",
-                label: (
-                  <div>
-                    <GlobalOutlined className="mr-2" />
-                    English
-                  </div>
-                ),
-              },
-            ]}
-          />
-          <Dropdown
-            menu={{ items }}
-            trigger={["click"]}
-            placement="bottom"
-            rootClassName="dropDownMenu"
-          >
-            <div className="flex items-center">
-              <div className="flex justify-center items-center ml-[2rem]">
-                <Avatar
-                  style={{
-                    backgroundColor: "#2853E4",
-                    verticalAlign: "middle",
-                  }}
-                  size="default"
-                  className="mx-4"
+                  navigate(key);
+                }}
+              />
+            </Sider>
+            <Layout>
+              <Header style={headerStyle}>
+                <Select
+                  className="mr-4"
+                  value={language}
+                  style={{ width: 120 }}
+                  defaultValue="ch"
+                  onChange={(value) => changeLanguage(value)}
+                  suffixIcon={false}
+                  popupClassName="navigation-select-dropdown teamNameSelect"
+                  options={[
+                    {
+                      value: "ch",
+                      label: (
+                        <div>
+                          <GlobalOutlined className="mr-2" />
+                          中文繁體
+                        </div>
+                      ),
+                    },
+                    {
+                      value: "en",
+                      label: (
+                        <div>
+                          <GlobalOutlined className="mr-2" />
+                          English
+                        </div>
+                      ),
+                    },
+                  ]}
+                />
+                <Dropdown
+                  menu={{ items }}
+                  trigger={["click"]}
+                  placement="bottom"
+                  rootClassName="dropDownMenu"
                 >
-                  {"Admin".charAt(0)}
-                </Avatar>
-                Admin
-              </div>
+                  <div className="flex items-center">
+                    <div className="flex justify-center items-center ml-[2rem]">
+                      <Avatar
+                        style={{
+                          backgroundColor: "#2853E4",
+                          verticalAlign: "middle",
+                        }}
+                        size="default"
+                        className="mx-4"
+                      >
+                        {window.__POWERED_BY_WUJIE__
+                          ? window.$wujie.props?.userName?.charAt(0)
+                          : localStorage.getItem(userNameKey)?.charAt(0)}
+                      </Avatar>
+                      {window.__POWERED_BY_WUJIE__
+                        ? window.$wujie.props?.userName
+                        : localStorage.getItem(userNameKey)}
+                    </div>
 
-              <a onClick={(e) => e.preventDefault()}>
-                <img src={downArrow} className="flex items-center" />
-              </a>
-            </div>
-          </Dropdown>
-        </Header>
-        <Outlet />
-      </Layout>
+                    <a onClick={(e) => e.preventDefault()}>
+                      <img src={downArrow} className="flex items-center" />
+                    </a>
+                  </div>
+                </Dropdown>
+              </Header>
+              <Outlet />
+            </Layout>
+          </>
+        ) : (
+          <div className="h-screen flex justify-center items-center font-semibold text-[1.5rem]">
+            您没有进入后台的权限，请联系管理员
+          </div>
+        )
+      ) : (
+        <div className="w-full h-screen flex items-center justify-center">
+          <Spin />
+        </div>
+      )}
     </Layout>
   );
 };

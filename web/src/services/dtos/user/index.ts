@@ -16,11 +16,13 @@ export enum UserProfileOriginType {
 export interface IGetUserListRequest extends IPageDto {
   Status?: UserStatus;
   Keyword?: string;
+  TeamId?: string;
 }
 
 export interface IUserDataItem {
   id: number;
   staffId: string;
+  userAccountId?: string;
   name: string;
   department: string;
   group: string;
@@ -58,4 +60,10 @@ export interface IUserProfileItem {
   from: UserProfileOriginType;
   isDeleted: boolean;
   createdTime: string;
+}
+
+export interface IAddUserRequest {
+  teamId: string;
+  staffIds: string[];
+  areaIds: number[];
 }

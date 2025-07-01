@@ -77,3 +77,12 @@ export const PostEquipmentUnBind = async (data: IEquipmentBindDto) => {
 
   return response.data;
 };
+
+export const PostCreateBatch = async (data: {
+  excelFile: string;
+  teamId: string;
+}) => {
+  const response = await api.post("/api/CameraAi/equipment/create/batch", data);
+
+  return response.data;
+};

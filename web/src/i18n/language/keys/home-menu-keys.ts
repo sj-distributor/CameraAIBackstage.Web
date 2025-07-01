@@ -2,6 +2,7 @@ export default {
   USER_MANAGEMENT: "UserManagement",
   USER_LIST: "UserList",
   USER_PERMISSIONS: "UserPermissions",
+  TEAM_INFO: "TeamInfo",
   DEVICE_MANAGEMENT: "DeviceManagement",
   DEVICE_LIST: "DeviceList",
   DEVICE_TYPE: "DeviceType",
@@ -13,4 +14,7 @@ export default {
   OPERATION_LOG: "OperationLog",
   CHANGE_PASSWORD: "ChangePassword",
   SIGN_OUT: "SignOut",
+  TEAM_MANAGEMENT: "TeamManagement",
+  TEAM_LIST: "TeamList",
+  RESOURCE_MANAGEMENT: "ResourceManagement",
 };

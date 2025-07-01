@@ -9,7 +9,7 @@ import { GetOperateLogsPage } from "@/services/api/operate-log";
 import { IOperateLogsPageResponse } from "@/services/dtos/operate-log";
 
 export const useAction = () => {
-  const { t } = useAuth();
+  const { t, currentTeam } = useAuth();
 
   const initOperateLogsDto = { count: 0, logs: [] };
 
@@ -24,7 +24,7 @@ export const useAction = () => {
     pageSize: number;
   }>({
     pageIndex: 1,
-    pageSize: 5,
+    pageSize: 20,
   });
 
   const [dateRange, setDateRange] = useState<(Dayjs | null)[]>([null, null]);
@@ -62,6 +62,7 @@ export const useAction = () => {
       StartTime: dateRange[0] ? dayjs(dateRange[0]).toISOString() : null,
       EndTime: dateRange[1] ? dayjs(dateRange[1]).toISOString() : null,
       Keyword: filterKeyword,
+      TeamId: currentTeam.id,
     })
       .then((res) => {
         if (res) setOperateLogsDto({ count: res.count, logs: res.logs });

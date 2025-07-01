@@ -1,8 +1,11 @@
+import queryString from "query-string";
+
 import {
   IMonitorSettingIdDto,
   IMonitorSettingRequest,
   IMonitorSettingResponse,
   IMonitorSettingsDto,
+  INoticeUsersProps,
   IUserListResponse,
 } from "@/services/dtos/monitor";
 import { IPageDto } from "@/services/dtos/public";
@@ -17,9 +20,9 @@ export const GetMonitorSettingPage = async (data: IMonitorSettingRequest) => {
   const response = await api.get<IMonitorSettingResponse>(
     `/api/CameraAi/monitor/setting/page?PageSize=${data.PageSize}&PageIndex=${
       data.PageIndex
-    }${data.IsActive !== undefined ? `&IsActive=${data.IsActive}` : ""}${
-      data.MonitorType ? `&${MonitorTypesValues}` : ""
-    }`
+    }&TeamId=${data.TeamId}${
+      data.IsActive !== undefined ? `&IsActive=${data.IsActive}` : ""
+    }${data.MonitorType ? `&${MonitorTypesValues}` : ""}`
   );
 
   return response.data;
@@ -77,6 +80,32 @@ export const GetUserList = async (data: IPageDto) => {
   const response = await api.get<IUserListResponse>("/api/CameraAi/user/page", {
     params: data,
   });
+
+  return response.data;
+};
+
+export const GetNoticeUsers = async (data: {
+  KeyWord: string;
+  TeamId: string;
+}) => {
+  const response = await api.get<INoticeUsersProps[]>(
+    "/api/CameraAi/team/users",
+    {
+      params: data,
+    }
+  );
+
+  return response.data;
+};
+
+export const GetEquipmentPreviews = async (data: {
+  EquipmentIds: (string | number)[];
+}) => {
+  const queryData = queryString.stringify(data);
+
+  const response = await api.get(
+    "/api/CameraAi/Equipment/previews?" + queryData
+  );
 
   return response.data;
 };

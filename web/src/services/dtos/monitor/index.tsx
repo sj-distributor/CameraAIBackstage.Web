@@ -33,6 +33,14 @@ export enum CameraAiMonitorType {
   Cat = 701,
   Dog = 702,
   Bird = 703,
+  Forklift = 8, // 叉车荧光带匹配
+  DoorRolling = 9, // 卷帘门
+  DoorSafety = 10, // 安全门
+  Floor = 11, // 地面检测
+  FloorWater = 1101, // 地面水迹
+  FloorIce = 1102, // 地面结冰
+  TouchGoods = 13, // 触摸二层货物规范
+  Attendance = 14, // 进出登记
 }
 
 export interface IMonitorSettingIdDto {
@@ -42,6 +50,7 @@ export interface IMonitorSettingIdDto {
 export interface IMonitorSettingRequest extends IPageDto {
   IsActive?: boolean;
   MonitorType?: CameraAiMonitorType[];
+  TeamId?: string;
 }
 
 export interface IMonitorSettingResponse {
@@ -49,15 +58,29 @@ export interface IMonitorSettingResponse {
   monitorSettings: IMonitorSettingsDto[];
 }
 
+export interface IMetadataProps {
+  cameraAiCoordinates: {
+    xCoordinate: number;
+    yCoordinate: number;
+  }[];
+}
+
 export interface IMonitorSettingsPublicDto {
   id?: number; // 更新填 id
   title: string;
-  duration: number | null;
+  duration?: number | null;
   singleNoticeTime?: number | null;
+  metadata?: {
+    cameraAiCoordinates: {
+      xCoordinate: number;
+      yCoordinate: number;
+    }[];
+  };
+  metadatas?: IMetadataProps[];
   timeInterval?: number | null;
   notificationContent: string; // 通知内容
   broadcastContent?: string | null; // 广播内容
-  monitorTypes: CameraAiMonitorType[]; // 预警类型 id
+  monitorTypes: CameraAiMonitorType[] | null; // 预警类型 id
   startTime: number | null;
   endTime: number | null;
   isActive?: boolean;
@@ -72,6 +95,7 @@ export interface IMonitorSettingsDto extends IMonitorSettingsPublicDto {
   timeZone: string;
   loading?: boolean; // 自定义
   monitorTypeNames?: string[];
+  teamId?: string;
 }
 
 export interface IMonitorNotificationsDto {
@@ -82,8 +106,8 @@ export interface IMonitorNotificationsDto {
 }
 
 export interface IRecipientsDto {
-  staffId: string;
-  name?: string;
+  teamUserId: string;
+  name: string;
 }
 
 export interface IRecipients {
@@ -124,6 +148,12 @@ export interface IPermissionsDto {
   displayName: string;
   description: string;
   isSystem: boolean;
+}
+
+export interface INoticeUsersProps {
+  id: string;
+  teamId: string;
+  userProfileName: string;
 }
 
 export interface IUserListResponse {

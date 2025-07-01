@@ -35,10 +35,16 @@ export const NewOrUpdatePermissions = () => {
 
   const getFrontSpanValue = (key: string) => {
     switch (key) {
-      case FrontRolePermissionEnum.CanSwitchCameraAiBackEnd:
+      case FrontRolePermissionEnum.CanCreateCameraAiTeam:
+        return isEnglish ? 10 : 18;
+
       case FrontRolePermissionEnum.CanExportCameraAiRealtimeVideo:
       case FrontRolePermissionEnum.CanExportCameraAiPlaybackVideo:
-        return isEnglish ? 19 : 21;
+        return isEnglish ? 19 : 20;
+
+      case FrontRolePermissionEnum.CanViewCameraAiDoorDetection:
+        return isEnglish ? 24 : 24;
+
       case FrontRolePermissionEnum.CanMarkCameraAiWarning:
         return isEnglish ? 9 : 13;
       default:
@@ -50,6 +56,7 @@ export const NewOrUpdatePermissions = () => {
     if (isEnglish) {
       switch (key) {
         case BackGroundRolePermissionEnum.CanViewCameraAiUserAccountPage:
+        case BackGroundRolePermissionEnum.CanViewCameraAiTeam:
         case BackGroundRolePermissionEnum.CanViewCameraAiLicensePlateManagementPage:
         case BackGroundRolePermissionEnum.CanViewCameraAiPortraitManagementPage:
         case BackGroundRolePermissionEnum.CanViewCameraAiMonitorManagementPage:
@@ -69,20 +76,30 @@ export const NewOrUpdatePermissions = () => {
         case BackGroundRolePermissionEnum.CanViewDetailCameraAiLicensePlate:
         case BackGroundRolePermissionEnum.CanDeleteCameraAiArea:
           return 8;
+        case BackGroundRolePermissionEnum.CanUpdateCameraAiTeam:
+          return 18;
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount:
+          return 20;
+
         default:
           return 4;
       }
     } else {
       switch (key) {
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount:
+        case BackGroundRolePermissionEnum.CanBatchAddEquipments:
+          return 4;
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiMonitor:
+          return 8;
         case BackGroundRolePermissionEnum.CanDeleteRoles:
           return 12;
-        case BackGroundRolePermissionEnum.CanDeleteCameraAiEquipment:
-        case BackGroundRolePermissionEnum.CanDeleteCameraAiUserAccount:
-        case BackGroundRolePermissionEnum.CanDeleteCameraAiMonitor:
-          return 9;
+
+        case BackGroundRolePermissionEnum.CanUpdateCameraAiTeam:
+          return 20;
         case BackGroundRolePermissionEnum.CanDeleteCameraAiPortrait:
         case BackGroundRolePermissionEnum.CanViewDetailCameraAiLicensePlate:
         case BackGroundRolePermissionEnum.CanDeleteCameraAiEquipmentType:
+        case BackGroundRolePermissionEnum.CanDeleteCameraAiArea:
           return 15;
         default:
           return 3;
@@ -153,7 +170,7 @@ export const NewOrUpdatePermissions = () => {
           <div className="font-medium">
             {t(KEYS.FRONT_DESK_FUNCTION_PERMISSIONS, source)}
           </div>
-          <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[15rem] pr-[15.75rem] border-2 mt-[1rem] mb-[1rem]">
+          <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[18.4rem] pr-[15.75rem] border-2 mt-[1rem] mb-[1rem]">
             <div className="flex flex-col w-[71.25rem] rounded pl-[4.9rem] pt-[1rem]">
               <div className="flex justify-row mb-[1rem]">
                 <span
@@ -197,7 +214,11 @@ export const NewOrUpdatePermissions = () => {
           <div className="font-medium">
             {t(KEYS.BACKGROUND_FUNCTION_PERMISSIONS, source)}
           </div>
-          <div className="border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl h-[23rem] pr-[15.75rem] border-2 my-[1rem]">
+          <div
+            className={`border-slate-100 border-solid shadow-lg shadow-slate-200 w-[71.25rem] rounded-xl pr-[15.75rem] border-2 my-[1rem] ${
+              isEnglish ? "h-[27rem]" : "h-[26rem]"
+            }`}
+          >
             <div className="flex flex-col w-[71.25rem] rounded pl-[4.9rem] pt-[2rem]">
               <div className="flex justify-row mb-[1.2rem]">
                 <span
