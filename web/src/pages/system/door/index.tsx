@@ -166,7 +166,7 @@ export const Door = () => {
     ),
     options: region.cameras.map((camera) => ({
       label: camera.equipmentName,
-      value: camera.equipmentCode,
+      value: `${region.locationId}::${camera.equipmentCode}`,
       key: camera.id,
     })),
   }));
@@ -385,7 +385,11 @@ export const Door = () => {
               popupClassName="accessSelect"
               style={{ width: "25rem" }}
               options={equipmentOptions}
-              value={addOrUpdateParams.equipmentCode}
+              value={
+                addOrUpdateParams.locationId && addOrUpdateParams.equipmentCode
+                  ? `${addOrUpdateParams.locationId}::${addOrUpdateParams.equipmentCode}`
+                  : undefined
+              }
               onChange={(value, option) => {
                 const selectedOption = option as unknown as {
                   label: string;
@@ -397,25 +401,13 @@ export const Door = () => {
 
                 coordinatesRef.current = [];
 
-                const getLocationIdByEquipmentCode = (value: string) => {
-                  for (const region of cameras) {
-                    const camera = region.cameras.find(
-                      (camera) => camera.equipmentCode === value
-                    );
-
-                    if (camera) {
-                      return region.locationId;
-                    }
-                  }
-
-                  return "";
-                };
+                const [locationId, equipmentCode] = value.split("::");
 
                 handleChangeParams({
-                  locationId: getLocationIdByEquipmentCode(value),
+                  locationId: locationId,
+                  equipmentCode: equipmentCode,
                 });
 
-                handleChangeParams({ equipmentCode: value });
                 getImgByEquipmentId(selectedOption.key);
               }}
             />
