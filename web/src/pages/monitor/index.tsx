@@ -136,6 +136,24 @@ export const Monitor = () => {
 
             case CameraAiMonitorType.Attendance:
               return "進出時間登記";
+
+            case CameraAiMonitorType.Move:
+              return "員工搬貨動作檢測";
+
+            case CameraAiMonitorType.FallDown:
+              return "人員摔跤檢測";
+
+            case CameraAiMonitorType.Antiskid:
+              return "防滑膠墊使用檢測";
+
+            case CameraAiMonitorType.ForkliftFork:
+              return "叉車升降移動檢測";
+
+            case CameraAiMonitorType.Tidy:
+              return "場地環境衛生檢測";
+
+            case CameraAiMonitorType.TrashCanLid:
+              return "垃圾桶關閉檢測";
           }
         };
 
@@ -373,6 +391,30 @@ export const Monitor = () => {
                   {
                     label: `進出時間登記`,
                     value: CameraAiMonitorType.Attendance,
+                  },
+                  {
+                    label: "員工搬貨動作檢測",
+                    value: CameraAiMonitorType.Move,
+                  },
+                  {
+                    label: "人員摔跤檢測",
+                    value: CameraAiMonitorType.FallDown,
+                  },
+                  {
+                    label: "防滑膠墊使用檢測",
+                    value: CameraAiMonitorType.Antiskid,
+                  },
+                  {
+                    label: "叉車升降移動檢測",
+                    value: CameraAiMonitorType.ForkliftFork,
+                  },
+                  {
+                    label: "場地環境衛生檢測",
+                    value: CameraAiMonitorType.Tidy,
+                  },
+                  {
+                    label: "垃圾桶關閉檢測",
+                    value: CameraAiMonitorType.TrashCanLid,
                   },
                 ]}
                 suffixIcon={<img src={downArrow} />}

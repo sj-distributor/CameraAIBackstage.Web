@@ -162,6 +162,8 @@ export const useAction = () => {
 
   const coordinatesRef = useRef<IMetadataProps[]>();
 
+  const environmentImageRef = useRef<string>("");
+
   const animalOptions = [
     {
       value: CameraAiMonitorType.Cat,
@@ -405,6 +407,9 @@ export const useAction = () => {
           CameraAiMonitorType.Animal,
           CameraAiMonitorType.DoorSafety,
           CameraAiMonitorType.DoorRolling,
+          CameraAiMonitorType.Antiskid,
+          CameraAiMonitorType.Tidy,
+          CameraAiMonitorType.TrashCanLid,
         ].some((type) => selectModalType.includes(type))
       ) {
         data.duration = handleTotalDuration(values.time, values.timeType);
@@ -438,7 +443,10 @@ export const useAction = () => {
         );
       }
 
-      if (selectModalType.includes(CameraAiMonitorType.TouchGoods)) {
+      if (
+        selectModalType.includes(CameraAiMonitorType.TouchGoods) ||
+        selectModalType.includes(CameraAiMonitorType.Tidy)
+      ) {
         if (!data.metadatas) {
           data.metadatas = [];
         }
@@ -446,9 +454,15 @@ export const useAction = () => {
         data.metadatas = coordinatesRef?.current ?? [];
       }
 
-      console.log(data);
+      if (selectModalType.includes(CameraAiMonitorType.Tidy)) {
+        data.environmentImage = environmentImageRef.current;
+      }
 
-      // return;
+      if (selectModalType.includes(CameraAiMonitorType.Move)) {
+        data.warningCount = values.warningCount;
+      }
+
+      console.log(data);
 
       setSubmitLoadin(true);
       isAdd
@@ -590,7 +604,10 @@ export const useAction = () => {
 
         coordinatesRef.current = res.metadatas ?? [];
 
-        if (res.monitorTypes?.includes(CameraAiMonitorType.TouchGoods)) {
+        if (
+          res.monitorTypes?.includes(CameraAiMonitorType.TouchGoods) ||
+          res.monitorTypes?.includes(CameraAiMonitorType.Tidy)
+        ) {
           getPreviewImg(res.equipmentIds[0].toString());
         }
       })
@@ -637,17 +654,19 @@ export const useAction = () => {
   }, [selectModalType]);
 
   const getVideoByEquipmentId = (id: string | string[]) => {
-    const formattedValue = selectModalType.includes(
-      CameraAiMonitorType.TouchGoods
-    )
-      ? [id]
-      : id;
+    const formattedValue =
+      selectModalType.includes(CameraAiMonitorType.TouchGoods) ||
+      selectModalType.includes(CameraAiMonitorType.Tidy)
+        ? [id]
+        : id;
 
     form.setFieldValue("deviceSelect", formattedValue);
 
     if (
       selectModalType.includes(CameraAiMonitorType.TouchGoods) ||
-      editDetailData?.monitorTypes?.includes(CameraAiMonitorType.TouchGoods)
+      selectModalType.includes(CameraAiMonitorType.Tidy) ||
+      editDetailData?.monitorTypes?.includes(CameraAiMonitorType.TouchGoods) ||
+      editDetailData?.monitorTypes?.includes(CameraAiMonitorType.Tidy)
     ) {
       getPreviewImg(Array.isArray(id) ? id : [id]);
     }
@@ -690,6 +709,9 @@ export const useAction = () => {
     isPlot,
     previewImg,
     previewImgLoading,
+    coordinatesRef,
+    equipmentName,
+    environmentImageRef,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
@@ -703,8 +725,6 @@ export const useAction = () => {
     setCostumeAnimalType,
     setIsPlot,
     getVideoByEquipmentId,
-    coordinatesRef,
-    equipmentName,
     setEquipmentName,
   };
 };

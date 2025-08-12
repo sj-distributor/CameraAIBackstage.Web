@@ -179,7 +179,6 @@ export const Door = () => {
       <>
         {isPlot ? (
           <PlotArea
-            type={false}
             isEdit={isEdit}
             previewImg={previewImg}
             coordinatesRef={coordinatesRef}
@@ -425,7 +424,6 @@ export const Door = () => {
                   onClick={() => setViewPlot(true)}
                 >
                   <PlotArea
-                    type={false}
                     isEdit={isEdit}
                     previewImg={previewImg}
                     equipmentName={equipmentName}
@@ -479,7 +477,6 @@ export const Door = () => {
       >
         <div className="h-[30rem]">
           <PlotArea
-            type={false}
             isEdit={isEdit}
             previewImg={previewImg}
             coordinatesRef={coordinatesRef}

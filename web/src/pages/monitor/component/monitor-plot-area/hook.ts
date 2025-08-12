@@ -2,14 +2,17 @@ import { useThrottleEffect, useToggle } from "ahooks";
 import { clone, isEmpty } from "ramda";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 
+import { PostUploadApi } from "@/services/api/team-info";
 import { IMetadataProps } from "@/services/dtos/monitor";
+import { message } from "antd";
 
 export interface IProps {
-  type: boolean; // true 監測管理 false 出入口管理
+  type: boolean;
   previewImg: string;
   isEdit: boolean;
   equipmentName: string;
   coordinatesRef: MutableRefObject<IMetadataProps[] | undefined>;
+  environmentImageRef: MutableRefObject<string>;
   backPage: () => void;
 }
 
@@ -19,9 +22,18 @@ export interface IPointProps {
 }
 
 export const useAction = (props: IProps) => {
-  const { previewImg, coordinatesRef, isEdit, backPage } = props;
+  const {
+    type,
+    previewImg,
+    coordinatesRef,
+    environmentImageRef,
+    isEdit,
+    backPage,
+  } = props;
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const [uploadImgLoading, setUploadImgLoading] = useState<boolean>(false);
 
   const [loading, { setRight: closeLoading }] = useToggle<boolean>(true);
 
@@ -225,7 +237,7 @@ export const useAction = (props: IProps) => {
     setRedoStack([]);
   };
 
-  const onSave = () => {
+  const onSave = async () => {
     const canvas = canvasRef.current;
 
     if (!canvas) return;
@@ -241,7 +253,45 @@ export const useAction = (props: IProps) => {
 
     coordinatesRef && (coordinatesRef.current = newCoordinates);
 
-    backPage?.();
+    if (!newCoordinates.length) {
+      message.info("請繪製一個完整的區域");
+
+      return;
+    }
+
+    if (!type) {
+      backPage?.();
+
+      return;
+    }
+
+    setUploadImgLoading(true);
+
+    /* 場地環境衛生檢測需要上傳圖片 */
+    const dataUrl = canvas.toDataURL("image/png");
+
+    const blob = await (await fetch(dataUrl)).blob();
+
+    const file = new File([blob], `canvas.png`, {
+      type: "image/png",
+    });
+
+    const formData = new FormData();
+
+    formData.append("file", file);
+
+    PostUploadApi(formData)
+      .then((res) => {
+        message.success("上傳成功");
+
+        backPage?.();
+
+        environmentImageRef.current = res?.fileUrl ?? "";
+      })
+      .catch(() => {
+        message.error("上传失败");
+      })
+      .finally(() => setUploadImgLoading(false));
   };
 
   useEffect(() => {
@@ -371,6 +421,7 @@ export const useAction = (props: IProps) => {
     loading,
     undoStack,
     redoStack,
+    uploadImgLoading,
     onUndo,
     onRedo,
     onClear,
