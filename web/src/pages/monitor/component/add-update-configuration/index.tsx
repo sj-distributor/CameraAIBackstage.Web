@@ -1311,6 +1311,7 @@ export const AddOrUpdateConfiguration = () => {
               isEdit={isEdit}
               previewImg={previewImg}
               coordinatesRef={coordinatesRef}
+              environmentImageRef={environmentImageRef}
               equipmentName={equipmentName}
               backPage={() => {}}
             />
