@@ -2,6 +2,7 @@ import {
   CloseCircleOutlined,
   CloseOutlined,
   LoadingOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 import {
   App,
@@ -23,12 +24,16 @@ import { Fragment, useCallback, useState } from "react";
 
 import { PaintAreaIcon } from "@/assets/monitor";
 import downArrow from "@/assets/public/down-arrow.png";
-import { CameraAiMonitorType } from "@/services/dtos/monitor";
+import {
+  CameraAiMonitorType,
+  IMonitorSettingsDto,
+} from "@/services/dtos/monitor";
 
 import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
 import { MonitorPlotArea } from "../monitor-plot-area";
 import { useAction } from "./hook";
 import { IOptionsStringDto, TimeType } from "./props";
+import CustomPopconfirm from "../../../../services/dtos/monitor/popconfirm";
 
 export const AddOrUpdateConfiguration = () => {
   const {
@@ -69,6 +74,11 @@ export const AddOrUpdateConfiguration = () => {
     coordinatesRef,
     equipmentName,
     setEquipmentName,
+    openWeChatGroup,
+    enterpriseWeChatGroup,
+    setOpenWeChatGroup,
+    updateEnterpriseWeChatGroup,
+    serEditDetailData,
   } = useAction();
 
   const { message } = App.useApp();
@@ -1190,6 +1200,95 @@ export const AddOrUpdateConfiguration = () => {
                         </Form.Item>
                       </div>
                     </div> */}
+
+                        <div className="flex flex-col p-[0rem_8.6rem_0rem_5.25rem]">
+                          <Form.Item
+                            label="企業微信群組"
+                            initialValue={editDetailData?.enterpriseWeChatGroup}
+                            name="enterpriseWeChatGroup"
+                          >
+                            <div className="flex items-center">
+                              <Input placeholder="點擊添加" />
+                              {/* enterpriseWeChatGroup, , setEnterpriseWeChatGroup,
+                              , */}
+                              <CustomPopconfirm
+                                open={openWeChatGroup}
+                                placement="topLeft"
+                                title="新增企微群組"
+                                body={
+                                  <>
+                                    <Input
+                                      placeholder="請輸入企業微信名"
+                                      className="w-[20.3rem]"
+                                      value={enterpriseWeChatGroup?.name}
+                                      onChange={(e) => {
+                                        updateEnterpriseWeChatGroup({
+                                          name: e.target.value,
+                                        });
+                                      }}
+                                    />
+                                    <Input
+                                      placeholder="请输入企微群組機器人Webhook地址的Key"
+                                      className="w-[20.3rem]"
+                                      value={enterpriseWeChatGroup?.webhookKey}
+                                      onChange={(e) => {
+                                        updateEnterpriseWeChatGroup({
+                                          webhookKey: e.target.value,
+                                        });
+                                      }}
+                                    />
+                                  </>
+                                }
+                                onConfirm={() => {
+                                  // 拿到旧的群组数组
+                                  const oldGroups =
+                                    editDetailData?.enterpriseWeChatGroup || [];
+
+                                  // 把新的群组 push 到后面
+                                  const newGroups = [
+                                    ...oldGroups,
+                                    enterpriseWeChatGroup,
+                                  ];
+
+                                  // 更新表单字段
+                                  form.setFieldValue(
+                                    "enterpriseWeChatGroup",
+                                    newGroups
+                                  );
+
+                                  // 更新 editDetailData 状态
+                                  serEditDetailData((prev) =>
+                                    prev
+                                      ? {
+                                          ...prev,
+                                          enterpriseWeChatGroup: newGroups,
+                                        }
+                                      : ({
+                                          enterpriseWeChatGroup: newGroups,
+                                        } as IMonitorSettingsDto)
+                                  );
+
+                                  // 清空输入框
+                                  updateEnterpriseWeChatGroup({
+                                    name: "",
+                                    webhookKey: "",
+                                  });
+
+                                  // 关闭弹窗
+                                  setOpenWeChatGroup(false);
+                                }}
+                                onCancel={() => {
+                                  setOpenWeChatGroup(false);
+                                }}
+                              >
+                                <PlusCircleOutlined
+                                  className="text-[1.375rem] text-[#5F6279] ml-4 cursor-pointer"
+                                  onClick={() => setOpenWeChatGroup(true)}
+                                />
+                              </CustomPopconfirm>
+                            </div>
+                          </Form.Item>
+                        </div>
                       </div>
                     </Form.Item>
                   </Spin>

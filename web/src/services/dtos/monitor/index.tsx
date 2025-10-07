@@ -96,6 +96,12 @@ export interface IMonitorSettingsDto extends IMonitorSettingsPublicDto {
   loading?: boolean; // 自定义
   monitorTypeNames?: string[];
   teamId?: string;
+  enterpriseWeChatGroup?: IEnterpriseWeChatGroup[];
+}
+
+export interface IEnterpriseWeChatGroup {
+  name: string;
+  webhookKey: string;
 }
 
 export interface IMonitorNotificationsDto {

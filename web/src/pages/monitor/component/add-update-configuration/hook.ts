@@ -20,6 +20,7 @@ import {
   CameraAiMonitorType,
   CameraAiNotificationType,
   DayOfWeek,
+  IEnterpriseWeChatGroup,
   IMetadataProps,
   IMonitorNotificationsDto,
   IMonitorSettingsDto,
@@ -59,6 +60,7 @@ export const useAction = () => {
     startTime: null,
     endTime: null,
     timeInterval: null,
+    enterpriseWeChatGroup: [],
   };
 
   const notifyType = [
@@ -153,6 +155,17 @@ export const useAction = () => {
   const [costumeAnimalType, setCostumeAnimalType] = useState<
     CameraAiMonitorType[]
   >([]);
+
+  const [enterpriseWeChatGroup, setEnterpriseWeChatGroup] =
+    useState<IEnterpriseWeChatGroup>({ name: "", webhookKey: "" });
+
+  const [openWeChatGroup, setOpenWeChatGroup] = useState<boolean>(false);
+
+  const updateEnterpriseWeChatGroup = (data: Partial<IEnterpriseWeChatGroup>) =>
+    setEnterpriseWeChatGroup((prev) => ({
+      ...prev,
+      ...data,
+    }));
 
   const [isPlot, setIsPlot] = useState<boolean>(false);
 
@@ -391,7 +404,12 @@ export const useAction = () => {
           values.singleTime,
           values.singleTimeType
         ),
+
+        enterpriseWeChatGroup: values.enterpriseWeChatGroup,
       };
+
+      console.log(values.enterpriseWeChatGroup);
+      return;
 
       if (
         [
@@ -706,5 +724,10 @@ export const useAction = () => {
     coordinatesRef,
     equipmentName,
     setEquipmentName,
+    openWeChatGroup,
+    enterpriseWeChatGroup,
+    setOpenWeChatGroup,
+    updateEnterpriseWeChatGroup,
+    serEditDetailData,
   };
 };
