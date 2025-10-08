@@ -159,10 +159,24 @@ export const useAction = () => {
   const [enterpriseWeChatGroup, setEnterpriseWeChatGroup] =
     useState<IEnterpriseWeChatGroup>({ name: "", webhookKey: "" });
 
-  const [openWeChatGroup, setOpenWeChatGroup] = useState<boolean>(false);
+  interface IWeChatGroupDto {
+    open: boolean;
+    activeIndex: number | null;
+  }
+
+  const [weChatGroupDto, setWeChatGroupDto] = useState<{
+    open: boolean;
+    activeIndex: number | null;
+  }>({ open: false, activeIndex: null });
 
   const updateEnterpriseWeChatGroup = (data: Partial<IEnterpriseWeChatGroup>) =>
     setEnterpriseWeChatGroup((prev) => ({
+      ...prev,
+      ...data,
+    }));
+
+  const updateWeChatGroupDto = (data: Partial<IWeChatGroupDto>) =>
+    setWeChatGroupDto((prev) => ({
       ...prev,
       ...data,
     }));
@@ -405,11 +419,8 @@ export const useAction = () => {
           values.singleTimeType
         ),
 
-        enterpriseWeChatGroup: values.enterpriseWeChatGroup,
+        enterpriseWeChatGroup: values.enterpriseWeChatGroup, // 企業微信群組
       };
-
-      console.log(values.enterpriseWeChatGroup);
-      return;
 
       if (
         [
@@ -724,9 +735,9 @@ export const useAction = () => {
     coordinatesRef,
     equipmentName,
     setEquipmentName,
-    openWeChatGroup,
     enterpriseWeChatGroup,
-    setOpenWeChatGroup,
+    weChatGroupDto,
+    updateWeChatGroupDto,
     updateEnterpriseWeChatGroup,
     serEditDetailData,
   };

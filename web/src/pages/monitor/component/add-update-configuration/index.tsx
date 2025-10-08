@@ -74,9 +74,10 @@ export const AddOrUpdateConfiguration = () => {
     coordinatesRef,
     equipmentName,
     setEquipmentName,
-    openWeChatGroup,
+
     enterpriseWeChatGroup,
-    setOpenWeChatGroup,
+    weChatGroupDto,
+    updateWeChatGroupDto,
     updateEnterpriseWeChatGroup,
     serEditDetailData,
   } = useAction();
@@ -1208,11 +1209,73 @@ export const AddOrUpdateConfiguration = () => {
                             name="enterpriseWeChatGroup"
                           >
                             <div className="flex items-center">
-                              <Input placeholder="點擊添加" />
-                              {/* enterpriseWeChatGroup, , setEnterpriseWeChatGroup,
-                              , */}
+                              <div className="border border-solid rounded border-[#E7E8EE] min-h-[2rem] w-full py-1 px-2 overflow-auto flex gap-2 flex-wrap">
+                                {(editDetailData?.enterpriseWeChatGroup ?? [])
+                                  .length > 0 ? (
+                                  (
+                                    editDetailData?.enterpriseWeChatGroup ?? []
+                                  ).map((item, index) => {
+                                    return (
+                                      <div
+                                        key={index}
+                                        className="px-3 py-1 text-sm rounded-xl cursor-pointer
+                                        bg-[#F6F8FC] text-[#323444] flex"
+                                        onClick={() =>
+                                          updateWeChatGroupDto({
+                                            activeIndex:
+                                              weChatGroupDto.activeIndex ===
+                                              index
+                                                ? null
+                                                : index,
+                                          })
+                                        }
+                                      >
+                                        {item.name}
+
+                                        {weChatGroupDto.activeIndex ===
+                                          index && (
+                                          <CloseOutlined
+                                            className="text-[0.625rem] ml-2"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+
+                                              const newGroups =
+                                                editDetailData?.enterpriseWeChatGroup?.filter(
+                                                  (_, i) => i !== index
+                                                ) ?? [];
+                                              form.setFieldValue(
+                                                "enterpriseWeChatGroup",
+                                                newGroups
+                                              );
+
+                                              serEditDetailData((prev) =>
+                                                prev
+                                                  ? {
+                                                      ...prev,
+                                                      enterpriseWeChatGroup:
+                                                        newGroups,
+                                                    }
+                                                  : prev
+                                              );
+
+                                              updateWeChatGroupDto({
+                                                activeIndex: null,
+                                              });
+                                            }}
+                                          />
+                                        )}
+                                      </div>
+                                    );
+                                  })
+                                ) : (
+                                  <span className="text-[#9D9FB0] text-sm">
+                                    點擊添加
+                                  </span>
+                                )}
+                              </div>
+
                               <CustomPopconfirm
-                                open={openWeChatGroup}
+                                open={weChatGroupDto.open}
                                 placement="topLeft"
                                 title="新增企微群組"
                                 body={
@@ -1240,23 +1303,25 @@ export const AddOrUpdateConfiguration = () => {
                                   </>
                                 }
                                 onConfirm={() => {
-                                  // 拿到旧的群组数组
+                                  if (
+                                    !enterpriseWeChatGroup.name.trim() ||
+                                    !enterpriseWeChatGroup.webhookKey.trim()
+                                  )
+                                    return;
+
                                   const oldGroups =
                                     editDetailData?.enterpriseWeChatGroup || [];
 
-                                  // 把新的群组 push 到后面
                                   const newGroups = [
                                     ...oldGroups,
                                     enterpriseWeChatGroup,
                                   ];
 
-                                  // 更新表单字段
                                   form.setFieldValue(
                                     "enterpriseWeChatGroup",
                                     newGroups
                                   );
 
-                                  // 更新 editDetailData 状态
                                   serEditDetailData((prev) =>
                                     prev
                                       ? {
@@ -1268,22 +1333,25 @@ export const AddOrUpdateConfiguration = () => {
                                         } as IMonitorSettingsDto)
                                   );
 
-                                  // 清空输入框
                                   updateEnterpriseWeChatGroup({
                                     name: "",
                                     webhookKey: "",
                                   });
 
-                                  // 关闭弹窗
-                                  setOpenWeChatGroup(false);
+                                  updateWeChatGroupDto({
+                                    open: false,
+                                    activeIndex: null,
+                                  });
                                 }}
                                 onCancel={() => {
-                                  setOpenWeChatGroup(false);
+                                  updateWeChatGroupDto({ open: false });
                                 }}
                               >
                                 <PlusCircleOutlined
                                   className="text-[1.375rem] text-[#5F6279] ml-4 cursor-pointer"
-                                  onClick={() => setOpenWeChatGroup(true)}
+                                  onClick={() =>
+                                    updateWeChatGroupDto({ open: true })
+                                  }
                                 />
                               </CustomPopconfirm>
                             </div>
