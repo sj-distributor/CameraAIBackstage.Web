@@ -1151,6 +1151,7 @@ export const AddOrUpdateConfiguration = () => {
                             </Form.Item>
                           </div>
                         </div>
+
                         <div className="flex flex-col p-[0rem_11rem_0rem_5.25rem]">
                           {/* 暂时不做这块内容，注释 UI */}
                           {/* <span className="pb-[1rem] font-semibold">
@@ -1183,6 +1184,7 @@ export const AddOrUpdateConfiguration = () => {
                             </Form.Item>
                           </div>
                         </div>
+
                         {/* <div className="flex flex-col p-[0rem_11rem_0rem_5.25rem]">
                       <span className="pb-[1rem] font-semibold">
                         {t(KEYS.LIGHT_REMINDER, source)}
@@ -1197,7 +1199,7 @@ export const AddOrUpdateConfiguration = () => {
                         </Form.Item>
                       </div>
                     </div> */}
-                        {/* , setWeChatGroupList */}
+
                         <div className="flex flex-col p-[0rem_8.6rem_0rem_5.25rem]">
                           <Form.Item
                             label="企業微信群組"
