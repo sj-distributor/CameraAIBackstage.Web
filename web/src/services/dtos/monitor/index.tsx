@@ -104,6 +104,11 @@ export interface IEnterpriseWeChatGroup {
   webhookKey: string;
 }
 
+export interface IWeChatGroupDto {
+  open: boolean;
+  activeIndex: number | null;
+}
+
 export interface IMonitorNotificationsDto {
   recipientIds: string[];
   recipients: IRecipientsDto[];

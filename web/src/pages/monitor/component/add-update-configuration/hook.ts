@@ -25,6 +25,7 @@ import {
   IMonitorNotificationsDto,
   IMonitorSettingsDto,
   INoticeUsersProps,
+  IWeChatGroupDto,
 } from "@/services/dtos/monitor";
 import { getErrorMessage } from "@/utils/error-message";
 
@@ -159,10 +160,9 @@ export const useAction = () => {
   const [enterpriseWeChatGroup, setEnterpriseWeChatGroup] =
     useState<IEnterpriseWeChatGroup>({ name: "", webhookKey: "" });
 
-  interface IWeChatGroupDto {
-    open: boolean;
-    activeIndex: number | null;
-  }
+  const [weChatGroupList, setWeChatGroupList] = useState<
+    IEnterpriseWeChatGroup[]
+  >([]);
 
   const [weChatGroupDto, setWeChatGroupDto] = useState<{
     open: boolean;
@@ -394,6 +394,47 @@ export const useAction = () => {
     const minute = date.minute();
 
     return hour * 3600 + minute * 60;
+  };
+
+  const handleAddWeChatGroup = () => {
+    if (
+      !enterpriseWeChatGroup.name.trim() ||
+      !enterpriseWeChatGroup.webhookKey.trim()
+    )
+      return;
+
+    const newGroups = [...weChatGroupList, enterpriseWeChatGroup];
+
+    setWeChatGroupList(newGroups);
+
+    form.setFieldValue("enterpriseWeChatGroup", newGroups);
+
+    updateEnterpriseWeChatGroup({
+      name: "",
+      webhookKey: "",
+    });
+
+    updateWeChatGroupDto({
+      open: false,
+      activeIndex: null,
+    });
+  };
+
+  const handleDeleteWeChatGroup = (
+    e: React.MouseEvent<HTMLElement>,
+    index: number
+  ) => {
+    e.stopPropagation();
+
+    const newGroups = weChatGroupList?.filter((_, i) => i !== index) ?? [];
+
+    setWeChatGroupList(newGroups);
+
+    form.setFieldValue("enterpriseWeChatGroup", newGroups);
+
+    updateWeChatGroupDto({
+      activeIndex: null,
+    });
   };
 
   const onSubmit = () => {
@@ -697,6 +738,10 @@ export const useAction = () => {
     }
   );
 
+  useUpdateEffect(() => {
+    setWeChatGroupList(editDetailData?.enterpriseWeChatGroup ?? []);
+  }, [editDetailData?.enterpriseWeChatGroup]);
+
   return {
     cronList,
     userOptions,
@@ -735,10 +780,12 @@ export const useAction = () => {
     coordinatesRef,
     equipmentName,
     setEquipmentName,
-    enterpriseWeChatGroup,
     weChatGroupDto,
+    weChatGroupList,
+    enterpriseWeChatGroup,
     updateWeChatGroupDto,
+    handleAddWeChatGroup,
+    handleDeleteWeChatGroup,
     updateEnterpriseWeChatGroup,
-    serEditDetailData,
   };
 };

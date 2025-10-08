@@ -3,18 +3,15 @@ import { type ReactNode } from "react";
 
 export interface CustomPopconfirmProps extends Omit<PopconfirmProps, "title"> {
   title?: ReactNode;
-  titleLine?: ReactNode;
   body?: ReactNode;
   confirmLoading?: boolean;
   okButtonProps?: ButtonProps;
   cancelButtonProps?: ButtonProps;
-  bodyClass?: string;
 }
 
-const CustomPopconfirm = ({
+export const CustomPopconfirm = ({
   title,
   body,
-  titleLine,
   onConfirm,
   confirmLoading,
   okText = "确定",
@@ -23,12 +20,11 @@ const CustomPopconfirm = ({
   cancelButtonProps,
   children,
   rootClassName,
-  bodyClass,
   ...rest
 }: CustomPopconfirmProps) => {
   return (
     <Popconfirm
-      rootClassName={`customPopconfirm ${rootClassName}`}
+      rootClassName="customPopconfirm"
       placement="top"
       title=""
       onConfirm={onConfirm}
@@ -73,5 +69,3 @@ const CustomPopconfirm = ({
     </Popconfirm>
   );
 };
-
-export default CustomPopconfirm;

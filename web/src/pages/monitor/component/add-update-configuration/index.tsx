@@ -24,16 +24,13 @@ import { Fragment, useCallback, useState } from "react";
 
 import { PaintAreaIcon } from "@/assets/monitor";
 import downArrow from "@/assets/public/down-arrow.png";
-import {
-  CameraAiMonitorType,
-  IMonitorSettingsDto,
-} from "@/services/dtos/monitor";
+import { CameraAiMonitorType } from "@/services/dtos/monitor";
 
 import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
 import { MonitorPlotArea } from "../monitor-plot-area";
 import { useAction } from "./hook";
 import { IOptionsStringDto, TimeType } from "./props";
-import CustomPopconfirm from "../../../../services/dtos/monitor/popconfirm";
+import { CustomPopconfirm } from "../../../../components/popconfirm";
 
 export const AddOrUpdateConfiguration = () => {
   const {
@@ -74,12 +71,13 @@ export const AddOrUpdateConfiguration = () => {
     coordinatesRef,
     equipmentName,
     setEquipmentName,
-
-    enterpriseWeChatGroup,
     weChatGroupDto,
+    weChatGroupList,
+    enterpriseWeChatGroup,
     updateWeChatGroupDto,
+    handleAddWeChatGroup,
+    handleDeleteWeChatGroup,
     updateEnterpriseWeChatGroup,
-    serEditDetailData,
   } = useAction();
 
   const { message } = App.useApp();
@@ -1153,7 +1151,6 @@ export const AddOrUpdateConfiguration = () => {
                             </Form.Item>
                           </div>
                         </div>
-
                         <div className="flex flex-col p-[0rem_11rem_0rem_5.25rem]">
                           {/* 暂时不做这块内容，注释 UI */}
                           {/* <span className="pb-[1rem] font-semibold">
@@ -1186,7 +1183,6 @@ export const AddOrUpdateConfiguration = () => {
                             </Form.Item>
                           </div>
                         </div>
-
                         {/* <div className="flex flex-col p-[0rem_11rem_0rem_5.25rem]">
                       <span className="pb-[1rem] font-semibold">
                         {t(KEYS.LIGHT_REMINDER, source)}
@@ -1201,7 +1197,7 @@ export const AddOrUpdateConfiguration = () => {
                         </Form.Item>
                       </div>
                     </div> */}
-
+                        {/* , setWeChatGroupList */}
                         <div className="flex flex-col p-[0rem_8.6rem_0rem_5.25rem]">
                           <Form.Item
                             label="企業微信群組"
@@ -1210,11 +1206,8 @@ export const AddOrUpdateConfiguration = () => {
                           >
                             <div className="flex items-center">
                               <div className="border border-solid rounded border-[#E7E8EE] min-h-[2rem] w-full py-1 px-2 overflow-auto flex gap-2 flex-wrap">
-                                {(editDetailData?.enterpriseWeChatGroup ?? [])
-                                  .length > 0 ? (
-                                  (
-                                    editDetailData?.enterpriseWeChatGroup ?? []
-                                  ).map((item, index) => {
+                                {weChatGroupList.length > 0 ? (
+                                  weChatGroupList.map((item, index) => {
                                     return (
                                       <div
                                         key={index}
@@ -1236,32 +1229,9 @@ export const AddOrUpdateConfiguration = () => {
                                           index && (
                                           <CloseOutlined
                                             className="text-[0.625rem] ml-2"
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-
-                                              const newGroups =
-                                                editDetailData?.enterpriseWeChatGroup?.filter(
-                                                  (_, i) => i !== index
-                                                ) ?? [];
-                                              form.setFieldValue(
-                                                "enterpriseWeChatGroup",
-                                                newGroups
-                                              );
-
-                                              serEditDetailData((prev) =>
-                                                prev
-                                                  ? {
-                                                      ...prev,
-                                                      enterpriseWeChatGroup:
-                                                        newGroups,
-                                                    }
-                                                  : prev
-                                              );
-
-                                              updateWeChatGroupDto({
-                                                activeIndex: null,
-                                              });
-                                            }}
+                                            onClick={(e) =>
+                                              handleDeleteWeChatGroup(e, index)
+                                            }
                                           />
                                         )}
                                       </div>
@@ -1284,65 +1254,25 @@ export const AddOrUpdateConfiguration = () => {
                                       placeholder="請輸入企業微信名"
                                       className="w-[20.3rem]"
                                       value={enterpriseWeChatGroup?.name}
-                                      onChange={(e) => {
+                                      onChange={(e) =>
                                         updateEnterpriseWeChatGroup({
                                           name: e.target.value,
-                                        });
-                                      }}
+                                        })
+                                      }
                                     />
                                     <Input
                                       placeholder="请输入企微群組機器人Webhook地址的Key"
                                       className="w-[20.3rem]"
                                       value={enterpriseWeChatGroup?.webhookKey}
-                                      onChange={(e) => {
+                                      onChange={(e) =>
                                         updateEnterpriseWeChatGroup({
                                           webhookKey: e.target.value,
-                                        });
-                                      }}
+                                        })
+                                      }
                                     />
                                   </>
                                 }
-                                onConfirm={() => {
-                                  if (
-                                    !enterpriseWeChatGroup.name.trim() ||
-                                    !enterpriseWeChatGroup.webhookKey.trim()
-                                  )
-                                    return;
-
-                                  const oldGroups =
-                                    editDetailData?.enterpriseWeChatGroup || [];
-
-                                  const newGroups = [
-                                    ...oldGroups,
-                                    enterpriseWeChatGroup,
-                                  ];
-
-                                  form.setFieldValue(
-                                    "enterpriseWeChatGroup",
-                                    newGroups
-                                  );
-
-                                  serEditDetailData((prev) =>
-                                    prev
-                                      ? {
-                                          ...prev,
-                                          enterpriseWeChatGroup: newGroups,
-                                        }
-                                      : ({
-                                          enterpriseWeChatGroup: newGroups,
-                                        } as IMonitorSettingsDto)
-                                  );
-
-                                  updateEnterpriseWeChatGroup({
-                                    name: "",
-                                    webhookKey: "",
-                                  });
-
-                                  updateWeChatGroupDto({
-                                    open: false,
-                                    activeIndex: null,
-                                  });
-                                }}
+                                onConfirm={handleAddWeChatGroup}
                                 onCancel={() => {
                                   updateWeChatGroupDto({ open: false });
                                 }}
