@@ -73,7 +73,7 @@ export const AddOrUpdateConfiguration = () => {
     setEquipmentName,
     weChatGroupDto,
     weChatGroupList,
-    enterpriseWeChatGroup,
+    settingWechatWebhooks,
     updateWeChatGroupDto,
     handleAddWeChatGroup,
     handleDeleteWeChatGroup,
@@ -1203,8 +1203,8 @@ export const AddOrUpdateConfiguration = () => {
                         <div className="flex flex-col p-[0rem_8.6rem_0rem_5.25rem]">
                           <Form.Item
                             label="企業微信群組"
-                            initialValue={editDetailData?.enterpriseWeChatGroup}
-                            name="enterpriseWeChatGroup"
+                            initialValue={editDetailData?.settingWechatWebhooks}
+                            name="settingWechatWebhooks"
                           >
                             <div className="flex items-center">
                               <div className="border border-solid rounded border-[#E7E8EE] min-h-[2rem] w-full py-1 px-2 overflow-auto flex gap-2 flex-wrap">
@@ -1225,7 +1225,7 @@ export const AddOrUpdateConfiguration = () => {
                                           })
                                         }
                                       >
-                                        {item.name}
+                                        {item.groupName}
 
                                         {weChatGroupDto.activeIndex ===
                                           index && (
@@ -1255,20 +1255,20 @@ export const AddOrUpdateConfiguration = () => {
                                     <Input
                                       placeholder="請輸入企業微信名"
                                       className="w-[20.3rem]"
-                                      value={enterpriseWeChatGroup?.name}
+                                      value={settingWechatWebhooks?.groupName}
                                       onChange={(e) =>
                                         updateEnterpriseWeChatGroup({
-                                          name: e.target.value,
+                                          groupName: e.target.value,
                                         })
                                       }
                                     />
                                     <Input
                                       placeholder="请输入企微群組機器人Webhook地址的Key"
                                       className="w-[20.3rem]"
-                                      value={enterpriseWeChatGroup?.webhookKey}
+                                      value={settingWechatWebhooks?.webhook}
                                       onChange={(e) =>
                                         updateEnterpriseWeChatGroup({
-                                          webhookKey: e.target.value,
+                                          webhook: e.target.value,
                                         })
                                       }
                                     />

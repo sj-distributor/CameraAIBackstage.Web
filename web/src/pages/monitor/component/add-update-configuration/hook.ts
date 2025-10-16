@@ -61,7 +61,7 @@ export const useAction = () => {
     startTime: null,
     endTime: null,
     timeInterval: null,
-    enterpriseWeChatGroup: [],
+    settingWechatWebhooks: [],
   };
 
   const notifyType = [
@@ -157,8 +157,8 @@ export const useAction = () => {
     CameraAiMonitorType[]
   >([]);
 
-  const [enterpriseWeChatGroup, setEnterpriseWeChatGroup] =
-    useState<IEnterpriseWeChatGroup>({ name: "", webhookKey: "" });
+  const [settingWechatWebhooks, setEnterpriseWeChatGroup] =
+    useState<IEnterpriseWeChatGroup>({ groupName: "", webhook: "" });
 
   const [weChatGroupList, setWeChatGroupList] = useState<
     IEnterpriseWeChatGroup[]
@@ -398,20 +398,20 @@ export const useAction = () => {
 
   const handleAddWeChatGroup = () => {
     if (
-      !enterpriseWeChatGroup.name.trim() ||
-      !enterpriseWeChatGroup.webhookKey.trim()
+      !settingWechatWebhooks.groupName.trim() ||
+      !settingWechatWebhooks.webhook.trim()
     )
       return;
 
-    const newGroups = [...weChatGroupList, enterpriseWeChatGroup];
+    const newGroups = [...weChatGroupList, settingWechatWebhooks];
 
     setWeChatGroupList(newGroups);
 
-    form.setFieldValue("enterpriseWeChatGroup", newGroups);
+    form.setFieldValue("settingWechatWebhooks", newGroups);
 
     updateEnterpriseWeChatGroup({
-      name: "",
-      webhookKey: "",
+      groupName: "",
+      webhook: "",
     });
 
     updateWeChatGroupDto({
@@ -430,7 +430,7 @@ export const useAction = () => {
 
     setWeChatGroupList(newGroups);
 
-    form.setFieldValue("enterpriseWeChatGroup", newGroups);
+    form.setFieldValue("settingWechatWebhooks", newGroups);
 
     updateWeChatGroupDto({
       activeIndex: null,
@@ -460,8 +460,12 @@ export const useAction = () => {
           values.singleTimeType
         ),
 
-        enterpriseWeChatGroup: values.enterpriseWeChatGroup, // 企業微信群組
+        settingWechatWebhooks: values.settingWechatWebhooks, // 企業微信群組
       };
+
+      // console.log(data);
+
+      // return;
 
       if (
         [
@@ -739,8 +743,8 @@ export const useAction = () => {
   );
 
   useUpdateEffect(() => {
-    setWeChatGroupList(editDetailData?.enterpriseWeChatGroup ?? []);
-  }, [editDetailData?.enterpriseWeChatGroup]);
+    setWeChatGroupList(editDetailData?.settingWechatWebhooks ?? []);
+  }, [editDetailData?.settingWechatWebhooks]);
 
   return {
     cronList,
@@ -782,7 +786,7 @@ export const useAction = () => {
     setEquipmentName,
     weChatGroupDto,
     weChatGroupList,
-    enterpriseWeChatGroup,
+    settingWechatWebhooks,
     updateWeChatGroupDto,
     handleAddWeChatGroup,
     handleDeleteWeChatGroup,
