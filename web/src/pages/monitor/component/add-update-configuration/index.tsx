@@ -1202,7 +1202,7 @@ export const AddOrUpdateConfiguration = () => {
 
                         <div className="flex flex-col p-[0rem_8.6rem_0rem_5.25rem]">
                           <Form.Item
-                            label="企業微信群組"
+                            label={t(KEYS.ENTERPRISE_WECHAT_GROUP, source)}
                             initialValue={editDetailData?.settingWechatWebhooks}
                             name="settingWechatWebhooks"
                           >
@@ -1241,7 +1241,7 @@ export const AddOrUpdateConfiguration = () => {
                                   })
                                 ) : (
                                   <span className="text-[#9D9FB0] text-sm">
-                                    點擊添加
+                                    {t(KEYS.CLICK_TO_ADD, source)}
                                   </span>
                                 )}
                               </div>
@@ -1249,11 +1249,17 @@ export const AddOrUpdateConfiguration = () => {
                               <CustomPopconfirm
                                 open={weChatGroupDto.open}
                                 placement="topLeft"
-                                title="新增企微群組"
+                                title={t(
+                                  KEYS.ADD_ENTERPRISE_WECHAT_GROUP,
+                                  source
+                                )}
                                 body={
                                   <>
                                     <Input
-                                      placeholder="請輸入企業微信名"
+                                      placeholder={t(
+                                        KEYS.ENTERPRISE_WECHAT_NAME_PLACEHOLDER,
+                                        source
+                                      )}
                                       className="w-[20.3rem]"
                                       value={settingWechatWebhooks?.groupName}
                                       onChange={(e) =>
@@ -1263,7 +1269,10 @@ export const AddOrUpdateConfiguration = () => {
                                       }
                                     />
                                     <Input
-                                      placeholder="请输入企微群組機器人Webhook地址的Key"
+                                      placeholder={t(
+                                        KEYS.ENTERPRISE_WECHAT_WEBHOOK_KEY_PLACEHOLDER,
+                                        source
+                                      )}
                                       className="w-[20.3rem]"
                                       value={settingWechatWebhooks?.webhook}
                                       onChange={(e) =>

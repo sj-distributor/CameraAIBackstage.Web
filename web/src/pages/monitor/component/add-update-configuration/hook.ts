@@ -463,10 +463,6 @@ export const useAction = () => {
         settingWechatWebhooks: values.settingWechatWebhooks, // 企業微信群組
       };
 
-      // console.log(data);
-
-      // return;
-
       if (
         [
           CameraAiMonitorType.People,
@@ -519,10 +515,6 @@ export const useAction = () => {
 
         data.metadatas = coordinatesRef?.current ?? [];
       }
-
-      console.log(data);
-
-      // return;
 
       setSubmitLoadin(true);
       isAdd

@@ -1,6 +1,9 @@
 import { type ButtonProps, Popconfirm, type PopconfirmProps } from "antd";
 import { type ReactNode } from "react";
 
+import KEYS from "../../i18n/language/keys/monitor-configuration-keys";
+import { useAuth } from "@/hooks/use-auth";
+
 export interface CustomPopconfirmProps extends Omit<PopconfirmProps, "title"> {
   title?: ReactNode;
   body?: ReactNode;
@@ -14,14 +17,18 @@ export const CustomPopconfirm = ({
   body,
   onConfirm,
   confirmLoading,
-  okText = "确定",
-  cancelText = "取消",
+  okText,
+  cancelText,
   okButtonProps,
   cancelButtonProps,
   children,
   rootClassName,
   ...rest
 }: CustomPopconfirmProps) => {
+  const { t } = useAuth();
+
+  const source = { ns: "monitorConfiguration" };
+
   return (
     <Popconfirm
       rootClassName="customPopconfirm"
@@ -50,8 +57,8 @@ export const CustomPopconfirm = ({
         },
         ...cancelButtonProps,
       }}
-      okText={okText}
-      cancelText={cancelText}
+      okText={okText ?? t(KEYS.CONFIRM, source)}
+      cancelText={cancelText ?? t(KEYS.CANCEL, source)}
       description={
         rest.description || (
           <div className="flex flex-col px-6 py-4">
