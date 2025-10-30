@@ -157,6 +157,14 @@ export const useAction = () => {
     CameraAiMonitorType[]
   >([]);
 
+  const [isPlot, setIsPlot] = useState<boolean>(false);
+
+  const [previewImg, setPreviewImg] = useState<string>("");
+
+  const [equipmentName, setEquipmentName] = useState<string>("");
+
+  const coordinatesRef = useRef<IMetadataProps[]>();
+
   const [settingWechatWebhooks, setEnterpriseWeChatGroup] =
     useState<IEnterpriseWeChatGroup>({ groupName: "", webhook: "" });
 
@@ -180,14 +188,6 @@ export const useAction = () => {
       ...prev,
       ...data,
     }));
-
-  const [isPlot, setIsPlot] = useState<boolean>(false);
-
-  const [previewImg, setPreviewImg] = useState<string>("");
-
-  const [equipmentName, setEquipmentName] = useState<string>("");
-
-  const coordinatesRef = useRef<IMetadataProps[]>();
 
   const animalOptions = [
     {

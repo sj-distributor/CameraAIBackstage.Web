@@ -22,7 +22,6 @@ export const CustomPopconfirm = ({
   okButtonProps,
   cancelButtonProps,
   children,
-  rootClassName,
   ...rest
 }: CustomPopconfirmProps) => {
   const { t } = useAuth();
