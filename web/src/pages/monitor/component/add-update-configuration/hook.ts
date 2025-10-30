@@ -20,10 +20,12 @@ import {
   CameraAiMonitorType,
   CameraAiNotificationType,
   DayOfWeek,
+  IEnterpriseWeChatGroup,
   IMetadataProps,
   IMonitorNotificationsDto,
   IMonitorSettingsDto,
   INoticeUsersProps,
+  IWeChatGroupDto,
 } from "@/services/dtos/monitor";
 import { getErrorMessage } from "@/utils/error-message";
 
@@ -59,6 +61,7 @@ export const useAction = () => {
     startTime: null,
     endTime: null,
     timeInterval: null,
+    settingWechatWebhooks: [],
   };
 
   const notifyType = [
@@ -163,6 +166,30 @@ export const useAction = () => {
   const coordinatesRef = useRef<IMetadataProps[]>();
 
   const environmentImageRef = useRef<string>("");
+
+  const [settingWechatWebhooks, setEnterpriseWeChatGroup] =
+    useState<IEnterpriseWeChatGroup>({ groupName: "", webhook: "" });
+
+  const [weChatGroupList, setWeChatGroupList] = useState<
+    IEnterpriseWeChatGroup[]
+  >([]);
+
+  const [weChatGroupDto, setWeChatGroupDto] = useState<{
+    open: boolean;
+    activeIndex: number | null;
+  }>({ open: false, activeIndex: null });
+
+  const updateEnterpriseWeChatGroup = (data: Partial<IEnterpriseWeChatGroup>) =>
+    setEnterpriseWeChatGroup((prev) => ({
+      ...prev,
+      ...data,
+    }));
+
+  const updateWeChatGroupDto = (data: Partial<IWeChatGroupDto>) =>
+    setWeChatGroupDto((prev) => ({
+      ...prev,
+      ...data,
+    }));
 
   const animalOptions = [
     {
@@ -371,6 +398,47 @@ export const useAction = () => {
     return hour * 3600 + minute * 60;
   };
 
+  const handleAddWeChatGroup = () => {
+    if (
+      !settingWechatWebhooks.groupName.trim() ||
+      !settingWechatWebhooks.webhook.trim()
+    )
+      return;
+
+    const newGroups = [...weChatGroupList, settingWechatWebhooks];
+
+    setWeChatGroupList(newGroups);
+
+    form.setFieldValue("settingWechatWebhooks", newGroups);
+
+    updateEnterpriseWeChatGroup({
+      groupName: "",
+      webhook: "",
+    });
+
+    updateWeChatGroupDto({
+      open: false,
+      activeIndex: null,
+    });
+  };
+
+  const handleDeleteWeChatGroup = (
+    e: React.MouseEvent<HTMLElement>,
+    index: number
+  ) => {
+    e.stopPropagation();
+
+    const newGroups = weChatGroupList?.filter((_, i) => i !== index) ?? [];
+
+    setWeChatGroupList(newGroups);
+
+    form.setFieldValue("settingWechatWebhooks", newGroups);
+
+    updateWeChatGroupDto({
+      activeIndex: null,
+    });
+  };
+
   const onSubmit = () => {
     const filterSelectUserData = selectUserData.filter(
       (x) => !isEmpty(x.recipientIds)
@@ -393,6 +461,8 @@ export const useAction = () => {
           values.singleTime,
           values.singleTimeType
         ),
+
+        settingWechatWebhooks: values.settingWechatWebhooks, // 企業微信群組
       };
 
       if (
@@ -687,6 +757,10 @@ export const useAction = () => {
     }
   );
 
+  useUpdateEffect(() => {
+    setWeChatGroupList(editDetailData?.settingWechatWebhooks ?? []);
+  }, [editDetailData?.settingWechatWebhooks]);
+
   return {
     cronList,
     userOptions,
@@ -726,5 +800,12 @@ export const useAction = () => {
     setIsPlot,
     getVideoByEquipmentId,
     setEquipmentName,
+    weChatGroupDto,
+    weChatGroupList,
+    settingWechatWebhooks,
+    updateWeChatGroupDto,
+    handleAddWeChatGroup,
+    handleDeleteWeChatGroup,
+    updateEnterpriseWeChatGroup,
   };
 };
