@@ -165,7 +165,7 @@ export const useAction = () => {
 
   const coordinatesRef = useRef<IMetadataProps[]>();
 
-  const [settingWechatWebhooks, setEnterpriseWeChatGroup] =
+  const [settingWechatWebhooks, setSettingWechatWebhooks] =
     useState<IEnterpriseWeChatGroup>({ groupName: "", webhook: "" });
 
   const [weChatGroupList, setWeChatGroupList] = useState<
@@ -178,7 +178,7 @@ export const useAction = () => {
   }>({ open: false, activeIndex: null });
 
   const updateEnterpriseWeChatGroup = (data: Partial<IEnterpriseWeChatGroup>) =>
-    setEnterpriseWeChatGroup((prev) => ({
+    setSettingWechatWebhooks((prev) => ({
       ...prev,
       ...data,
     }));
