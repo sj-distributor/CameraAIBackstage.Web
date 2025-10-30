@@ -1349,6 +1349,11 @@ export const AddOrUpdateConfiguration = () => {
                                 onConfirm={handleAddWeChatGroup}
                                 onCancel={() => {
                                   updateWeChatGroupDto({ open: false });
+
+                                  updateEnterpriseWeChatGroup({
+                                    groupName: "",
+                                    webhook: "",
+                                  });
                                 }}
                               >
                                 <PlusCircleOutlined

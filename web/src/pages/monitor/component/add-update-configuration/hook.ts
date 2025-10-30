@@ -167,7 +167,7 @@ export const useAction = () => {
 
   const environmentImageRef = useRef<string>("");
 
-  const [settingWechatWebhooks, setEnterpriseWeChatGroup] =
+  const [settingWechatWebhooks, setSettingWechatWebhooks] =
     useState<IEnterpriseWeChatGroup>({ groupName: "", webhook: "" });
 
   const [weChatGroupList, setWeChatGroupList] = useState<
@@ -180,7 +180,7 @@ export const useAction = () => {
   }>({ open: false, activeIndex: null });
 
   const updateEnterpriseWeChatGroup = (data: Partial<IEnterpriseWeChatGroup>) =>
-    setEnterpriseWeChatGroup((prev) => ({
+    setSettingWechatWebhooks((prev) => ({
       ...prev,
       ...data,
     }));
