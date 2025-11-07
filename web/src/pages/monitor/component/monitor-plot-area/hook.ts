@@ -149,7 +149,6 @@ export const useAction = (props: IProps) => {
 
     const img = new Image();
 
-    img.crossOrigin = "Anonymous";
     img.src = previewImg;
 
     img.onload = () => {

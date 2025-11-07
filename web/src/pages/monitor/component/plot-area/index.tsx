@@ -251,7 +251,6 @@ export const PlotArea = ({
 
     const img = new Image();
 
-    img.crossOrigin = "Anonymous";
     img.src = previewImg;
 
     img.onload = () => {
@@ -270,7 +269,6 @@ export const PlotArea = ({
 
     //   const video = document.createElement("video");
 
-    //   video.crossOrigin = "Anonymous";
     //   video.src = areaVideo;
 
     //   video.load();
@@ -290,7 +288,6 @@ export const PlotArea = ({
     // } else if (firstFrameImg.current) {
     //   const img = new Image();
 
-    //   img.crossOrigin = "Anonymous";
     //   img.src = firstFrameImg.current;
     //   img.onload = () => {
     //     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -481,7 +478,6 @@ export const PlotArea = ({
 
   //     const img = new Image();
 
-  //     img.crossOrigin = "Anonymous";
   //     img.src = firstFrameImg.current ?? "";
   //     img.onload = () => {
   //       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
