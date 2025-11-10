@@ -59,4 +59,11 @@ export default {
   SINGLE_NOTICE_TIME: "SingleNoticeTime",
   SINGLE_NOTICE_TIME_TIPS: "SingleNoticeTimeTips",
   SINGLE_NOTICE_TIPS: "SingleNoticeTips",
+  ENTERPRISE_WECHAT_GROUP: "EnterpriseWeChatGroup",
+  ADD_ENTERPRISE_WECHAT_GROUP: "AddEnterpriseWeChatGroup",
+  ENTERPRISE_WECHAT_NAME_PLACEHOLDER: "EnterpriseWeChatNamePlaceholder",
+  ENTERPRISE_WECHAT_WEBHOOK_KEY_PLACEHOLDER:
+    "EnterpriseWeChatWebhookKeyPlaceholder",
+  CLICK_TO_ADD: "ClickToAdd",
+  CANCEL: "Cancel",
 };

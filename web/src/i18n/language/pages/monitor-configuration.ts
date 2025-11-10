@@ -64,6 +64,14 @@ export default {
     [KEYS.SINGLE_NOTICE_TIME]: "limited time",
     [KEYS.SINGLE_NOTICE_TIME_TIPS]: "Please enter a limited time",
     [KEYS.SINGLE_NOTICE_TIPS]: "Note: Only notify once within a limited time",
+    [KEYS.ENTERPRISE_WECHAT_GROUP]: "Enterprise weChat group",
+    [KEYS.ADD_ENTERPRISE_WECHAT_GROUP]: "Add enterprise weChat group",
+    [KEYS.ENTERPRISE_WECHAT_NAME_PLACEHOLDER]:
+      "Please enter the Enterprise WeChat name",
+    [KEYS.ENTERPRISE_WECHAT_WEBHOOK_KEY_PLACEHOLDER]:
+      "Please enter the group robot Webhook Key",
+    [KEYS.CLICK_TO_ADD]: "Click to add",
+    [KEYS.CANCEL]: "Cancel",
   },
   ch: {
     [KEYS.MONITOR]: "監測管理",
@@ -126,5 +134,12 @@ export default {
     [KEYS.SINGLE_NOTICE_TIME]: "限定時間",
     [KEYS.SINGLE_NOTICE_TIME_TIPS]: "請輸入限定時間",
     [KEYS.SINGLE_NOTICE_TIPS]: "說明：限定時間內只通知一次",
+    [KEYS.ENTERPRISE_WECHAT_GROUP]: "企業微信群組",
+    [KEYS.ADD_ENTERPRISE_WECHAT_GROUP]: "新增企微群組",
+    [KEYS.ENTERPRISE_WECHAT_NAME_PLACEHOLDER]: "請輸入企業微信名",
+    [KEYS.ENTERPRISE_WECHAT_WEBHOOK_KEY_PLACEHOLDER]:
+      "請輸入企微群組機器人Webhook地址的Key",
+    [KEYS.CLICK_TO_ADD]: "點擊添加",
+    [KEYS.CANCEL]: "取消",
   },
 };

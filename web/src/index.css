@@ -231,3 +231,12 @@ code {
 .plotModal .ant-modal-content {
   padding: 0 !important;
 }
+
+.customPopconfirm .ant-popover-inner {
+  padding: 0;
+  overflow: hidden;
+}
+
+.customPopconfirm .ant-popconfirm-buttons button {
+  margin-inline-start: 0px !important;
+}
