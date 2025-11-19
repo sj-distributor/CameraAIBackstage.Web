@@ -53,6 +53,14 @@ export const useAction = () => {
           value: CameraAiMonitorType.Attendance,
           label: `進出時間登記`,
         },
+        {
+          label: "員工搬貨動作檢測",
+          value: CameraAiMonitorType.Move,
+        },
+        {
+          label: "人員摔跤檢測",
+          value: CameraAiMonitorType.FallDown,
+        },
       ],
     },
     {
@@ -69,6 +77,14 @@ export const useAction = () => {
         {
           value: CameraAiMonitorType.Forklift,
           label: `${t(MONITOR_KEY.FORKLIFT, monitorSource)}`,
+        },
+        {
+          label: "防滑膠墊使用檢測",
+          value: CameraAiMonitorType.Antiskid,
+        },
+        {
+          label: "叉車升降移動檢測",
+          value: CameraAiMonitorType.ForkliftFork,
         },
       ],
     },
@@ -94,6 +110,14 @@ export const useAction = () => {
         {
           value: CameraAiMonitorType.DoorRolling,
           label: `卷簾門關閉檢測`,
+        },
+        {
+          label: "場地環境衛生檢測",
+          value: CameraAiMonitorType.Tidy,
+        },
+        {
+          label: "垃圾桶關閉檢測",
+          value: CameraAiMonitorType.TrashCanLid,
         },
       ],
     },
