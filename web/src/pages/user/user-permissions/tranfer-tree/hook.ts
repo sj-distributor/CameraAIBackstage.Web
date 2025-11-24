@@ -127,6 +127,7 @@ export const useAction = (props: {
           ? HierarchyStaffIdSourceEnum.IntegerStaffId
           : HierarchyStaffIdSourceEnum.StringStaffId,
       HierarchyDepth: HierarchyDepthEnum.Group,
+      issuer: type === TreeTypeEnum.UserPermission ? 2 : undefined,
     })
       .then((response) => {
         setTreeData(response ? convertToTreeData(response) : []);
