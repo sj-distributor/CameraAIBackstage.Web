@@ -10,6 +10,7 @@ import { api } from "../http-client";
 export const GetFoundationData = async (data: {
   StaffIdSource: HierarchyStaffIdSourceEnum;
   HierarchyDepth: HierarchyDepthEnum;
+  issuer?: number;
 }) => {
   const response = await api.get<IFoundationResponse>(
     "/api/Foundation/department/staff/hierarchy/tree",
