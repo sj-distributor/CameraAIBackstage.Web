@@ -9,9 +9,10 @@ import { isEmpty } from "ramda";
 import { IProps, useAction } from "./hook";
 
 export const MonitorPlotArea = ({
-  type,
+  type, // true 场地环境卫生检测   false 触摸二层货物
   previewImg,
   coordinatesRef,
+  environmentImageRef,
   isEdit,
   equipmentName,
   backPage,
@@ -21,6 +22,7 @@ export const MonitorPlotArea = ({
     loading,
     undoStack,
     redoStack,
+    uploadImgLoading,
     onUndo,
     onRedo,
     onClear,
@@ -29,6 +31,7 @@ export const MonitorPlotArea = ({
     type,
     previewImg,
     coordinatesRef,
+    environmentImageRef,
     isEdit,
     equipmentName,
     backPage,
@@ -36,8 +39,8 @@ export const MonitorPlotArea = ({
 
   return (
     <div
-      className={`w-full ${isEdit ? "h-[calc(100%-15rem)]" : "h-full"} ${
-        type ? "my-[1rem] " : "-mt-4"
+      className={`w-full my-[1rem] ${
+        isEdit ? "h-[calc(100%-15rem)]" : "h-full"
       }`}
     >
       {isEdit && (
@@ -94,13 +97,7 @@ export const MonitorPlotArea = ({
       </div>
 
       {isEdit && (
-        <div
-          className={`h-[5rem] bg-white flex justify-center items-center ${
-            type
-              ? "absolute bottom-[2rem] left-[-1.5rem] w-[calc(100%+3rem)] z-1 shadow-[0_1.875rem_1.25rem_1.25rem_rgba(0,0,0,0.3)]"
-              : ""
-          }`}
-        >
+        <div className="h-[5rem] bg-white flex justify-center items-center absolute bottom-[2rem] left-[-1.5rem] w-[calc(100%+3rem)] z-1 shadow-[0_1.875rem_1.25rem_1.25rem_rgba(0,0,0,0.3)]">
           <Button className="w-[6rem] h-[2.75rem]" onClick={() => backPage()}>
             返回
           </Button>
@@ -130,6 +127,12 @@ export const MonitorPlotArea = ({
           </Button>
         </div>
       )}
+
+      <Spin
+        fullscreen
+        spinning={uploadImgLoading}
+        tip="正在上傳圖片，請稍等..."
+      />
     </div>
   );
 };
