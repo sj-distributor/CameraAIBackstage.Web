@@ -2,6 +2,7 @@ import {
   CloseCircleOutlined,
   CloseOutlined,
   LoadingOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 import {
   App,
@@ -29,6 +30,7 @@ import MONITOR_KEY from "../../../../i18n/language/keys/monitor-keys";
 import { MonitorPlotArea } from "../monitor-plot-area";
 import { useAction } from "./hook";
 import { IOptionsStringDto, TimeType } from "./props";
+import { CustomPopconfirm } from "../../../../components/popconfirm";
 
 export const AddOrUpdateConfiguration = () => {
   const {
@@ -69,6 +71,13 @@ export const AddOrUpdateConfiguration = () => {
     coordinatesRef,
     equipmentName,
     setEquipmentName,
+    weChatGroupDto,
+    weChatGroupList,
+    settingWechatWebhooks,
+    updateWeChatGroupDto,
+    handleAddWeChatGroup,
+    handleDeleteWeChatGroup,
+    updateEnterpriseWeChatGroup,
   } = useAction();
 
   const { message } = App.useApp();
@@ -1190,6 +1199,110 @@ export const AddOrUpdateConfiguration = () => {
                         </Form.Item>
                       </div>
                     </div> */}
+
+                        <div className="flex flex-col p-[0rem_8.6rem_0rem_5.25rem]">
+                          <Form.Item
+                            label={t(KEYS.ENTERPRISE_WECHAT_GROUP, source)}
+                            initialValue={editDetailData?.settingWechatWebhooks}
+                            name="settingWechatWebhooks"
+                          >
+                            <div className="flex items-center">
+                              <div className="border border-solid rounded border-[#E7E8EE] min-h-[2rem] w-full py-1 px-2 overflow-auto flex gap-2 flex-wrap">
+                                {weChatGroupList.length > 0 ? (
+                                  weChatGroupList.map((item, index) => {
+                                    return (
+                                      <div
+                                        key={index}
+                                        className="px-3 py-1 text-sm rounded-xl cursor-pointer
+                                        bg-[#F6F8FC] text-[#323444] flex"
+                                        onClick={() =>
+                                          updateWeChatGroupDto({
+                                            activeIndex:
+                                              weChatGroupDto.activeIndex ===
+                                              index
+                                                ? null
+                                                : index,
+                                          })
+                                        }
+                                      >
+                                        {item.groupName}
+
+                                        {weChatGroupDto.activeIndex ===
+                                          index && (
+                                          <CloseOutlined
+                                            className="text-[0.625rem] ml-2"
+                                            onClick={(e) =>
+                                              handleDeleteWeChatGroup(e, index)
+                                            }
+                                          />
+                                        )}
+                                      </div>
+                                    );
+                                  })
+                                ) : (
+                                  <span className="text-[#9D9FB0] text-sm">
+                                    {t(KEYS.CLICK_TO_ADD, source)}
+                                  </span>
+                                )}
+                              </div>
+
+                              <CustomPopconfirm
+                                open={weChatGroupDto.open}
+                                placement="topLeft"
+                                title={t(
+                                  KEYS.ADD_ENTERPRISE_WECHAT_GROUP,
+                                  source
+                                )}
+                                body={
+                                  <>
+                                    <Input
+                                      placeholder={t(
+                                        KEYS.ENTERPRISE_WECHAT_NAME_PLACEHOLDER,
+                                        source
+                                      )}
+                                      className="w-[20.3rem]"
+                                      value={settingWechatWebhooks?.groupName}
+                                      onChange={(e) =>
+                                        updateEnterpriseWeChatGroup({
+                                          groupName: e.target.value,
+                                        })
+                                      }
+                                    />
+                                    <Input
+                                      placeholder={t(
+                                        KEYS.ENTERPRISE_WECHAT_WEBHOOK_KEY_PLACEHOLDER,
+                                        source
+                                      )}
+                                      className="w-[20.3rem]"
+                                      value={settingWechatWebhooks?.webhook}
+                                      onChange={(e) =>
+                                        updateEnterpriseWeChatGroup({
+                                          webhook: e.target.value,
+                                        })
+                                      }
+                                    />
+                                  </>
+                                }
+                                onConfirm={handleAddWeChatGroup}
+                                onCancel={() => {
+                                  updateWeChatGroupDto({ open: false });
+
+                                  updateEnterpriseWeChatGroup({
+                                    groupName: "",
+                                    webhook: "",
+                                  });
+                                }}
+                              >
+                                <PlusCircleOutlined
+                                  className="text-[1.375rem] text-[#5F6279] ml-4 cursor-pointer"
+                                  onClick={() =>
+                                    updateWeChatGroupDto({ open: true })
+                                  }
+                                />
+                              </CustomPopconfirm>
+                            </div>
+                          </Form.Item>
+                        </div>
                       </div>
                     </Form.Item>
                   </Spin>
