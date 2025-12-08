@@ -55,6 +55,9 @@ export const AddOrUpdateConfiguration = () => {
     isPlot,
     previewImg,
     previewImgLoading,
+    coordinatesRef,
+    equipmentName,
+    environmentImageRef,
     setCronList,
     onDeleteNoticeUserItem,
     onChangeNoticeUserList,
@@ -68,8 +71,6 @@ export const AddOrUpdateConfiguration = () => {
     setCostumeAnimalType,
     setIsPlot,
     getVideoByEquipmentId,
-    coordinatesRef,
-    equipmentName,
     setEquipmentName,
     weChatGroupDto,
     weChatGroupList,
@@ -135,6 +136,9 @@ export const AddOrUpdateConfiguration = () => {
           CameraAiMonitorType.Animal,
           CameraAiMonitorType.DoorSafety,
           CameraAiMonitorType.DoorRolling,
+          CameraAiMonitorType.Antiskid,
+          CameraAiMonitorType.Tidy,
+          CameraAiMonitorType.TrashCanLid,
         ],
         content: (
           <div className="flex flex-col w-[26.4375rem] mr-2">
@@ -336,50 +340,74 @@ export const AddOrUpdateConfiguration = () => {
           </div>
         ),
       },
-      // {
-      //   // 绘制区域
-      //   types: [CameraAiMonitorType.TouchGoods],
-      //   content: (
-      //     <div className="flex flex-col w-[24.4rem]">
-      //       <span className="pb-2">繪製區域</span>
-      //       <div className="flex items-center">
-      //         <div
-      //           className="w-[7.25rem] h-[2rem] rounded-[0.5rem] border-solid border border-[#2853E3] flex justify-center items-center cursor-pointer"
-      //           onClick={() => {
-      //             if (isEmpty(form.getFieldValue("deviceSelect"))) {
-      //               message.info("请先选择设备");
+      {
+        // 次數大於
+        types: [CameraAiMonitorType.Move],
+        content: (
+          <div className="flex flex-col w-[26.4375rem] mr-2">
+            <span className="pb-2">次數大於</span>
+            <div className="flex flex-row">
+              <FormItem
+                className="mr-[.5rem] w-[77%]"
+                name="warningCount"
+                rules={[
+                  {
+                    required: true,
+                    message: "請輸入",
+                  },
+                  {
+                    validator: (_, value) => {
+                      if (value && value <= 0) {
+                        return Promise.reject(new Error("次數不可設置為0"));
+                      }
 
-      //               return;
-      //             }
+                      return Promise.resolve();
+                    },
+                  },
+                ]}
+                initialValue={editDetailData?.warningCount}
+              >
+                <Input
+                  placeholder="請輸入"
+                  type="number"
+                  onChange={(e) => {
+                    const sanitizedValue = e.target.value.replace(
+                      /[^0-9.]/g,
+                      ""
+                    );
 
-      //             if (isEmpty(areaVideo)) {
-      //               message.info("没有绘制区域");
+                    form.setFieldValue("warningCount", sanitizedValue);
+                  }}
+                />
+              </FormItem>
 
-      //               return;
-      //             }
-      //             setIsPlot(true);
-
-      //             setIsEdit(true);
-      //           }}
-      //         >
-      //           <PaintAreaIcon />
-      //           <div className="text-[#2853E3] ml-1">繪製區域</div>
-      //         </div>
-      //         {!isEmpty(coordinatesRef.current) && (
-      //           <div
-      //             className="ml-[0.94rem] text-[#2853E3] underline underline-offset-2 cursor-pointer"
-      //             onClick={() => {
-      //               setViewPlot(true);
-      //               setIsEdit(false);
-      //             }}
-      //           >
-      //             查看繪製截圖
-      //           </div>
-      //         )}
-      //       </div>
-      //     </div>
-      //   ),
-      // },
+              <FormItem
+                className="w-[23%]"
+                rules={[
+                  {
+                    required: true,
+                    message: `${t(KEYS.DURATION_UNIT_RULE_TIPS, source)}`,
+                  },
+                ]}
+                initialValue={0}
+              >
+                <Select
+                  placeholder="請選擇"
+                  defaultActiveFirstOption
+                  value={0}
+                  options={[
+                    {
+                      value: 0,
+                      label: "次",
+                    },
+                  ]}
+                  suffixIcon={<img src={downArrow} />}
+                />
+              </FormItem>
+            </div>
+          </div>
+        ),
+      },
     ];
 
     return conditions
@@ -422,10 +450,11 @@ export const AddOrUpdateConfiguration = () => {
           </span>
           {isPlot ? (
             <MonitorPlotArea
-              type={true}
+              type={selectModalType.includes(CameraAiMonitorType.Tidy)}
               isEdit={isEdit}
               previewImg={previewImg}
               coordinatesRef={coordinatesRef}
+              environmentImageRef={environmentImageRef}
               equipmentName={equipmentName}
               backPage={() => {
                 setIsPlot(false);
@@ -604,6 +633,30 @@ export const AddOrUpdateConfiguration = () => {
                                     label: `進出時間登記`,
                                     value: CameraAiMonitorType.Attendance,
                                   },
+                                  {
+                                    label: "員工搬貨動作檢測",
+                                    value: CameraAiMonitorType.Move,
+                                  },
+                                  {
+                                    label: "人員摔跤檢測",
+                                    value: CameraAiMonitorType.FallDown,
+                                  },
+                                  {
+                                    label: "防滑膠墊使用檢測",
+                                    value: CameraAiMonitorType.Antiskid,
+                                  },
+                                  {
+                                    label: "叉車升降移動檢測",
+                                    value: CameraAiMonitorType.ForkliftFork,
+                                  },
+                                  {
+                                    label: "場地環境衛生檢測",
+                                    value: CameraAiMonitorType.Tidy,
+                                  },
+                                  {
+                                    label: "垃圾桶關閉檢測",
+                                    value: CameraAiMonitorType.TrashCanLid,
+                                  },
                                 ]}
                                 filterOption={filterOption}
                                 onChange={(value) => {
@@ -613,7 +666,8 @@ export const AddOrUpdateConfiguration = () => {
                                 }}
                                 onSelect={(value) => {
                                   if (
-                                    value === CameraAiMonitorType.TouchGoods
+                                    value === CameraAiMonitorType.TouchGoods ||
+                                    value === CameraAiMonitorType.Tidy
                                   ) {
                                     coordinatesRef.current = [];
 
@@ -802,8 +856,14 @@ export const AddOrUpdateConfiguration = () => {
                                   selectModalType.includes(
                                     CameraAiMonitorType.TouchGoods
                                   ) ||
+                                  selectModalType.includes(
+                                    CameraAiMonitorType.Tidy
+                                  ) ||
                                   editDetailData?.monitorTypes?.includes(
                                     CameraAiMonitorType.TouchGoods
+                                  ) ||
+                                  editDetailData?.monitorTypes?.includes(
+                                    CameraAiMonitorType.Tidy
                                   )
                                     ? undefined
                                     : "multiple"
@@ -811,9 +871,12 @@ export const AddOrUpdateConfiguration = () => {
                               />
                             </FormItem>
                           </div>
-                          {selectModalType.includes(
+                          {(selectModalType.includes(
                             CameraAiMonitorType.TouchGoods
-                          ) && (
+                          ) ||
+                            selectModalType.includes(
+                              CameraAiMonitorType.Tidy
+                            )) && (
                             <div className="flex flex-col w-[24.4rem]">
                               <span className="pb-2">繪製區域</span>
                               <div className="flex items-center">
@@ -1353,10 +1416,15 @@ export const AddOrUpdateConfiguration = () => {
         >
           <div className="h-[30rem]">
             <MonitorPlotArea
-              type={true}
+              type={
+                editDetailData?.monitorTypes?.includes(
+                  CameraAiMonitorType.Tidy
+                ) || selectModalType.includes(CameraAiMonitorType.Tidy)
+              }
               isEdit={isEdit}
               previewImg={previewImg}
               coordinatesRef={coordinatesRef}
+              environmentImageRef={environmentImageRef}
               equipmentName={equipmentName}
               backPage={() => {}}
             />
